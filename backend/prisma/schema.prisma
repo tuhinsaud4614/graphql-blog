@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  mobile       String   @unique
+  email        String   @unique
+  password     String
+  role         String?  @default("USER")
+  authorStatus String?
+  slug         String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  posts        Post[]
+  profile      Profile?
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  avatar    Picture? @relation(references: [id], fields: [avatarId])
+  avatarId  String?  @unique
+  about     String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        String              @id @default(cuid())
+  title     String
+  slug      String              @unique
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  posts     CategoriesOnPosts[]
+}
+
+model Post {
+  id          String              @id @default(cuid())
+  author      User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  title       String
+  slug        String              @unique
+  images      Picture[]
+  published   Boolean             @default(false)
+  publishedAt DateTime?
+  content     String
+  tags        TagsOnPosts[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  categories  CategoriesOnPosts[]
+
+}
+
+model CategoriesOnPosts {
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  @@id([postId, categoryId])
+}
+
+model Picture {
+  id        String   @id @default(cuid())
+  height    Int      @default(200)
+  width     Int      @default(100)
+  url       String   @unique
+  profile   Profile?
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id        String        @id @default(cuid())
+  title     String
+  slug      String        @unique
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  posts     TagsOnPosts[]
+}
+
+model TagsOnPosts {
+  Post   Post   @relation(fields: [postId], references: [id])
+  postId String
+  Tag    Tag    @relation(fields: [tagId], references: [id])
+  tagId  String
+
+  @@id([postId, tagId])
+}

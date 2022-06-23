@@ -1,0 +1,10 @@
+scalar File
+
+type Picture {
+  id: ID!
+  url: String!
+  height: Int!
+  width: Int!
+  createdAt: String!
+  updatedAt: String!
+}

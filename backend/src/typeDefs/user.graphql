@@ -1,0 +1,63 @@
+enum UserRole {
+  ADMIN
+  USER
+  AUTHOR
+}
+
+enum AuthorStatus {
+  PENDING
+  VERIFIED
+}
+
+type User {
+  id: ID!
+  name: String
+  mobile: String!
+  email: String!
+  password: String!
+  role: UserRole!
+  authorStatus: AuthorStatus
+  slug: String!
+  createdAt: String!
+  updatedAt: String!
+  posts: [Post!]!
+  profile: Profile
+}
+
+type Profile {
+  id: ID!
+  avatar: Picture
+  about: String
+  user: User!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RegisterUserPayload {
+  email: String!
+  mobile: String!
+  role: String!
+  name: String
+}
+
+enum RegisterUserRole {
+  USER
+  AUTHOR
+}
+
+input RegisterUserInput {
+  email: String!
+  password: String!
+  confirmPassword: String!
+  mobile: String!
+  role: String!
+  name: String
+}
+
+type Query {
+  users: String!
+}
+
+type Mutation {
+  registerUser(data: RegisterUserInput): RegisterUserPayload!
+}
