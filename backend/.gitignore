@@ -3,3 +3,5 @@
 /images
 .DS_Store
 .env
+prisma/*
+!prisma/schema.prisma
