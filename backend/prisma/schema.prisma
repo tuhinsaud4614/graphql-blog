@@ -28,38 +28,29 @@ model User {
 }
 
 model Category {
-  id        String              @id @default(cuid())
+  id        String   @id @default(cuid())
   title     String
-  slug      String              @unique
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  posts     CategoriesOnPosts[]
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
 }
 
 model Post {
-  id          String              @id @default(cuid())
-  author      User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id          String     @id @default(cuid())
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   title       String
-  slug        String              @unique
+  slug        String     @unique
   images      Picture[]
-  published   Boolean             @default(false)
+  published   Boolean    @default(false)
   publishedAt DateTime?
   content     String
-  tags        TagsOnPosts[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  categories  CategoriesOnPosts[]
+  tags        Tag[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  categories  Category[]
 
-}
-
-model CategoriesOnPosts {
-  post       Post     @relation(fields: [postId], references: [id])
-  postId     String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId String
-
-  @@id([postId, categoryId])
 }
 
 model Picture {
@@ -75,19 +66,10 @@ model Picture {
 }
 
 model Tag {
-  id        String        @id @default(cuid())
+  id        String   @id @default(cuid())
   title     String
-  slug      String        @unique
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  posts     TagsOnPosts[]
-}
-
-model TagsOnPosts {
-  Post   Post   @relation(fields: [postId], references: [id])
-  postId String
-  Tag    Tag    @relation(fields: [tagId], references: [id])
-  tagId  String
-
-  @@id([postId, tagId])
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
 }

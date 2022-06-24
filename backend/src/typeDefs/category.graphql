@@ -2,7 +2,11 @@ type Category {
   id: String!
   title: String!
   slug: String!
+  posts: [Post!]!
   createdAt: String!
   updatedAt: String!
-  posts: [Post!]!
+}
+
+type Query {
+  categories: [Category!]!
 }
