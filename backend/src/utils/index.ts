@@ -48,7 +48,14 @@ export function getUserPayload(decoded: string | JwtPayload) {
 export const verifyRefreshToken = async (token: string) => {
   try {
     const decoded = verify(token, process.env.REFRESH_TOKEN_SECRET_KEY!);
-    getUserPayload(decoded);
+    const payload = getUserPayload(decoded);
+
+    const value = await redisClient.get(REFRESH_TOKEN_KEY_NAME(payload.id));
+    if (value && token === JSON.parse(value)) {
+      return payload;
+    }
+    redisClient.del(REFRESH_TOKEN_KEY_NAME(payload.id));
+    throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
   } catch (error) {
     console.log(error);
     throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
@@ -64,7 +71,7 @@ export const verifyAccessToken = async (req: Request) => {
 
     const token = authToken.replace(/^Bearer\s/, "");
     const decoded = verify(token, process.env.ACCESS_TOKEN_SECRET_KEY!);
-    getUserPayload(decoded);
+    return getUserPayload(decoded);
   } catch (error) {
     console.log(error);
     throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);

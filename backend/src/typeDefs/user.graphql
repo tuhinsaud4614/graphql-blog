@@ -18,10 +18,11 @@ type User {
   role: UserRole!
   authorStatus: AuthorStatus
   slug: String!
+  avatar: Picture
+  about: String
+  posts: [Post!]!
   createdAt: String!
   updatedAt: String!
-  posts: [Post!]!
-  profile: Profile
 }
 
 type Profile {
@@ -59,6 +60,11 @@ type LoginPayload {
   refreshToken: String!
 }
 
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
 enum RegisterUserRole {
   USER
   AUTHOR
@@ -85,4 +91,5 @@ type Query {
 type Mutation {
   register(data: RegisterInput): ID!
   login(data: LoginInput): LoginPayload!
+  token(refreshToken: String!): Tokens!
 }
