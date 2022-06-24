@@ -33,11 +33,30 @@ type Profile {
   updatedAt: String!
 }
 
-type RegisterUserPayload {
+type AuthorizedUserPayload {
+  id: ID!
+  name: String
   email: String!
   mobile: String!
-  role: String!
+  role: UserRole!
+  authorStatus: AuthorStatus
+  slug: String!
+  avatar: String
+  about: String
+}
+
+type LoginPayload {
+  id: ID!
   name: String
+  email: String!
+  mobile: String!
+  role: UserRole!
+  authorStatus: AuthorStatus
+  slug: String!
+  avatar: Picture
+  about: String
+  accessToken: String!
+  refreshToken: String!
 }
 
 enum RegisterUserRole {
@@ -45,7 +64,7 @@ enum RegisterUserRole {
   AUTHOR
 }
 
-input RegisterUserInput {
+input RegisterInput {
   email: String!
   password: String!
   confirmPassword: String!
@@ -54,10 +73,16 @@ input RegisterUserInput {
   name: String
 }
 
+input LoginInput {
+  emailOrMobile: String!
+  password: String!
+}
+
 type Query {
   users: String!
 }
 
 type Mutation {
-  registerUser(data: RegisterUserInput): RegisterUserPayload!
+  register(data: RegisterInput): ID!
+  login(data: LoginInput): LoginPayload!
 }

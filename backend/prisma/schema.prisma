@@ -16,24 +16,15 @@ model User {
   mobile       String   @unique
   email        String   @unique
   password     String
-  role         String?  @default("USER")
+  role         String   @default("USER")
   authorStatus String?
   slug         String   @unique
+  avatar       Picture? @relation(references: [id], fields: [avatarId])
+  avatarId     String?  @unique
+  about        String?
+  posts        Post[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  posts        Post[]
-  profile      Profile?
-}
-
-model Profile {
-  id        String   @id @default(cuid())
-  avatar    Picture? @relation(references: [id], fields: [avatarId])
-  avatarId  String?  @unique
-  about     String?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Category {
@@ -76,9 +67,9 @@ model Picture {
   height    Int      @default(200)
   width     Int      @default(100)
   url       String   @unique
-  profile   Profile?
   post      Post?    @relation(fields: [postId], references: [id])
   postId    String?
+  user      User?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

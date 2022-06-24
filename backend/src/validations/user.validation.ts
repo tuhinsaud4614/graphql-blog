@@ -10,7 +10,7 @@ import {
 } from "../utils/constants";
 import { EUserRole } from "../utils/enums";
 
-export const registerUserSchema = yup.object().shape({
+export const registerSchema = yup.object().shape({
   email: yup.string().required(REQUIRED_ERR_MSG("Email")).email(INVALID_EMAIL),
   password: yup
     .string()
@@ -28,4 +28,9 @@ export const registerUserSchema = yup.object().shape({
       [EUserRole.Author, EUserRole.User],
       EITHER_ERR_MSG("Role", "USER/AUTHOR")
     ),
+});
+
+export const loginSchema = yup.object().shape({
+  emailOrMobile: yup.string().required(REQUIRED_ERR_MSG("Email/Mobile")),
+  password: yup.string().required(REQUIRED_ERR_MSG("password")),
 });
