@@ -11,20 +11,24 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String?
-  mobile       String   @unique
-  email        String   @unique
+  mobile       String    @unique
+  email        String    @unique
   password     String
-  role         String   @default("USER")
+  role         String    @default("USER")
   authorStatus String?
-  slug         String   @unique
-  avatar       Picture? @relation(references: [id], fields: [avatarId])
-  avatarId     String?  @unique
+  slug         String    @unique
+  avatar       Picture?  @relation(references: [id], fields: [avatarId])
+  avatarId     String?   @unique
   about        String?
   posts        Post[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  following    User[]    @relation("follow")
+  followers    User[]    @relation("follow")
+  reactionsTo  Post[]    @relation("reaction")
+  comments     Comment[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Category {
@@ -46,11 +50,25 @@ model Post {
   published   Boolean    @default(false)
   publishedAt DateTime?
   content     String
+  categories  Category[]
   tags        Tag[]
+  reactionsBy User[]     @relation("reaction")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  categories  Category[]
+  comments    Comment[]
+}
 
+model Comment {
+  id              String    @id @default(cuid())
+  commenter       User      @relation(references: [id], fields: [commenterId], onDelete: Cascade)
+  commenterId     String
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId          String
+  replies         Comment[] @relation("reply")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  parentComment   Comment?  @relation("reply", fields: [parentCommentId], references: [id])
+  parentCommentId String?
 }
 
 model Picture {
