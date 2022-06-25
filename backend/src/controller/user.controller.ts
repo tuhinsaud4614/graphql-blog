@@ -2,21 +2,22 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
 import { compare, hash } from "bcryptjs";
 import { omit } from "lodash";
-import * as yup from "yup";
 import {
   createUser,
   getUserByEmailOrMobile,
   getUserByEmailOrMobileWithAvatar,
   getUserById,
 } from "../services/user.service";
-import { formatYupError, generateToken, verifyRefreshToken } from "../utils";
+import { generateToken, verifyRefreshToken } from "../utils";
 import {
+  AUTH_FAIL_ERR_MSG,
   CREATION_ERR_MSG,
   EXIST_ERR_MSG,
   INVALID_CREDENTIAL,
-  UN_AUTHORIZED_ERR_MSG,
+  UN_AUTH_ERR_MSG,
 } from "../utils/constants";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
+import { getGraphqlYogaError } from "../validations";
 import { loginSchema, registerSchema } from "../validations/user.validation";
 
 async function generateTokens(user: IUserPayload) {
@@ -57,13 +58,13 @@ export async function registerCtrl(prisma: PrismaClient, args: IRegisterInput) {
     });
 
     return user.id;
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
-    if (error instanceof yup.ValidationError) {
-      const err = formatYupError(error);
-      return new GraphQLYogaError(err);
-    }
-    return new GraphQLYogaError(CREATION_ERR_MSG("User"));
+    return getGraphqlYogaError(
+      error,
+      CREATION_ERR_MSG("User"),
+      "Register input"
+    );
   }
 }
 
@@ -97,11 +98,7 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
     return { ...user, accessToken, refreshToken };
   } catch (error: any) {
     console.log(error);
-    if (error instanceof yup.ValidationError) {
-      const err = formatYupError(error);
-      return new GraphQLYogaError(err);
-    }
-    return new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+    return getGraphqlYogaError(error, AUTH_FAIL_ERR_MSG, "Login input");
   }
 }
 
@@ -111,13 +108,14 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
     const isExist = await getUserById(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
     }
 
     const { accessToken, refreshToken: rfToken } = await generateTokens(user);
 
     return { accessToken, refreshToken: rfToken };
   } catch (error) {
-    return new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+    console.log(error);
+    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
   }
 }

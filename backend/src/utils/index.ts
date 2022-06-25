@@ -2,7 +2,7 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import { randomBytes, randomUUID } from "crypto";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
 import { ValidationError } from "yup";
-import { REFRESH_TOKEN_KEY_NAME, UN_AUTHORIZED_ERR_MSG } from "./constants";
+import { REFRESH_TOKEN_KEY_NAME, UN_AUTH_ERR_MSG } from "./constants";
 import { IUserPayload } from "./interfaces";
 import redisClient from "./redis";
 
@@ -17,7 +17,7 @@ export const formatYupError = (err: ValidationError) => {
       message: e.message,
     });
   });
-  return JSON.stringify(errors);
+  return errors;
 };
 
 export function nanoid(size: number) {
@@ -42,7 +42,7 @@ export function getUserPayload(decoded: string | JwtPayload) {
     } as IUserPayload;
   }
 
-  throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+  throw new GraphQLYogaError(UN_AUTH_ERR_MSG);
 }
 
 export const verifyRefreshToken = async (token: string) => {
@@ -55,18 +55,18 @@ export const verifyRefreshToken = async (token: string) => {
       return payload;
     }
     redisClient.del(REFRESH_TOKEN_KEY_NAME(payload.id));
-    throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+    throw new GraphQLYogaError(UN_AUTH_ERR_MSG);
   } catch (error) {
     console.log(error);
-    throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+    throw new GraphQLYogaError(UN_AUTH_ERR_MSG);
   }
 };
 
-export const verifyAccessToken = async (req: Request) => {
+export const verifyAccessToken = (req: Request) => {
   try {
     const authToken = req.headers.get("Authorization");
     if (!authToken) {
-      throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+      throw new GraphQLYogaError(UN_AUTH_ERR_MSG);
     }
 
     const token = authToken.replace(/^Bearer\s/, "");
@@ -74,7 +74,22 @@ export const verifyAccessToken = async (req: Request) => {
     return getUserPayload(decoded);
   } catch (error) {
     console.log(error);
-    throw new GraphQLYogaError(UN_AUTHORIZED_ERR_MSG);
+    throw new GraphQLYogaError(UN_AUTH_ERR_MSG);
+  }
+};
+
+export const verifyAccessTokenInContext = (req: Request) => {
+  try {
+    const authToken = req.headers.get("Authorization");
+    if (!authToken) {
+      return null;
+    }
+
+    const token = authToken.replace(/^Bearer\s/, "");
+    const decoded = verify(token, process.env.ACCESS_TOKEN_SECRET_KEY!);
+    return getUserPayload(decoded);
+  } catch (error) {
+    return null;
   }
 };
 

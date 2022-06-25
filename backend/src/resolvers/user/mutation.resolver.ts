@@ -1,3 +1,4 @@
+import { GraphQLResolveInfo } from "graphql";
 import {
   loginCtrl,
   registerCtrl,
@@ -11,7 +12,7 @@ export const Mutation = {
     _: any,
     { data }: { data: IRegisterInput },
     { prisma }: YogaContextReturnType,
-    __: any
+    __: GraphQLResolveInfo
   ) {
     const result = await registerCtrl(prisma, data);
     return result;
@@ -21,7 +22,7 @@ export const Mutation = {
     _: any,
     { data }: { data: ILoginInput },
     { prisma }: YogaContextReturnType,
-    __: any
+    __: GraphQLResolveInfo
   ) {
     const result = await loginCtrl(prisma, data);
     return result;
@@ -31,7 +32,7 @@ export const Mutation = {
     _: any,
     { refreshToken }: { refreshToken: string },
     { prisma }: YogaContextReturnType,
-    __: any
+    __: GraphQLResolveInfo
   ) {
     const result = await tokenCtrl(prisma, refreshToken);
     return result;

@@ -4,6 +4,9 @@ import { IUser } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const User = {
+  password() {
+    return null;
+  },
   async avatar(
     { avatarId }: IUser,
     _: any,

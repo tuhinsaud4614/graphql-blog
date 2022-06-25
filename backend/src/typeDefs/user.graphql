@@ -14,22 +14,13 @@ type User {
   name: String
   mobile: String!
   email: String!
-  password: String!
+  password: String
   role: UserRole!
   authorStatus: AuthorStatus
   slug: String!
   avatar: Picture
   about: String
   posts: [Post!]!
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Profile {
-  id: ID!
-  avatar: Picture
-  about: String
-  user: User!
   createdAt: String!
   updatedAt: String!
 }

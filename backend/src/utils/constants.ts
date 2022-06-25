@@ -1,6 +1,6 @@
 // Error Messages
 export const INVALID_CREDENTIAL = "Invalid email, phone or password";
-export const INVALID_EMAIL = "Email must be a valid email";
+export const INVALID_EMAIL = "Enter a valid email";
 export const PASSWORD_NOT_LONG_ENOUGH =
   "Password must be at least 6 characters";
 export const PASSWORD_TOO_LONG =
@@ -15,8 +15,12 @@ export const MATCHED_ERR_MSG = (key: string) => `${key} must be matched`;
 export const EITHER_ERR_MSG = (key: string, value: string) =>
   `${key} should be ${value}`;
 export const CREATION_ERR_MSG = (key: string) => `${key} creation failed`;
+export const VALIDATION_ERROR_MSG = (key?: string) =>
+  key ? `${key} validation error` : "Validation error";
 export const UNKNOWN_ERR_MSG = "Something went wrong";
-export const UN_AUTHORIZED_ERR_MSG = "Authorization failed";
+export const UN_AUTH_ERR_MSG = "You are not authorized";
+export const AUTH_FAIL_ERR_MSG = "Authentication failed";
+export const AUTH_NEED_ERR_MSG = "Authentication is required";
 
 // REDIS KEY
 export const REFRESH_TOKEN_KEY_NAME = (id: string) => `REFRESH_TOKEN-${id}`;
