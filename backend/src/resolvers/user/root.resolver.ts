@@ -36,16 +36,18 @@ export const User = {
     }
   },
 
-  async following(
+  async followings(
     { id }: IUser,
     _: any,
     { prisma }: YogaContextReturnType,
     __: any
   ) {
     try {
-      const users = await prisma.user.findMany({
-        where: { followers: { some: { id } } },
-      });
+      const users = await prisma.user
+        .findUnique({
+          where: { id },
+        })
+        .followings();
       return users;
     } catch (error) {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Followings", "user"));
@@ -59,12 +61,14 @@ export const User = {
     __: any
   ) {
     try {
-      const users = await prisma.user.findMany({
-        where: { following: { some: { id } } },
-      });
+      const users = await prisma.user
+        .findUnique({
+          where: { id: id },
+        })
+        .followers();
       return users;
     } catch (error) {
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Follower", "user"));
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Followers", "user"));
     }
   },
 };

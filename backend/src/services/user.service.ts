@@ -28,16 +28,40 @@ export function getUserByEmailOrMobile(
   return prisma.user.findFirst({ where: { OR: [{ email }, { mobile }] } });
 }
 
-export function getUserByEmailOrMobileWithAvatar(
+const infoIncludes = {
+  avatar: { select: { id: true, height: true, width: true, url: true } },
+  followers: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      mobile: true,
+      avatar: { select: { id: true, height: true, width: true, url: true } },
+    },
+  },
+  followings: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      mobile: true,
+      avatar: { select: { id: true, height: true, width: true, url: true } },
+    },
+  },
+};
+
+export function getUserByIdWithInfo(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({ where: { id }, include: infoIncludes });
+}
+
+export function getUserByEmailOrMobileWithInfo(
   prisma: PrismaClient,
   email: string,
   mobile: string
 ) {
   return prisma.user.findFirst({
     where: { OR: [{ email }, { mobile }] },
-    include: {
-      avatar: true,
-    },
+    include: infoIncludes,
   });
 }
 

@@ -21,7 +21,7 @@ type User {
   avatar: Picture
   about: String
   posts: [Post!]!
-  following: [User!]!
+  followings: [User!]!
   followers: [User!]!
   createdAt: String!
   updatedAt: String!
@@ -37,20 +37,6 @@ type AuthorizedUserPayload {
   slug: String!
   avatar: String
   about: String
-}
-
-type LoginPayload {
-  id: ID!
-  name: String
-  email: String!
-  mobile: String!
-  role: UserRole!
-  authorStatus: AuthorStatus
-  slug: String!
-  avatar: Picture
-  about: String
-  accessToken: String!
-  refreshToken: String!
 }
 
 type Tokens {
@@ -78,7 +64,7 @@ input LoginInput {
 }
 
 type Query {
-  users: String!
+  users: [User!]!
 }
 
 type Mutation {

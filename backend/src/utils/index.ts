@@ -40,6 +40,8 @@ export function getUserPayload(decoded: string | JwtPayload) {
       slug: decoded["slug"],
       avatar: decoded["avatar"],
       about: decoded["about"],
+      followers: decoded["followers"],
+      followings: decoded["followings"],
     } as IUserPayload;
   }
 

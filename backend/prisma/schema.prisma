@@ -22,7 +22,7 @@ model User {
   avatar       Picture?
   about        String?
   posts        Post[]
-  following    User[]    @relation("follow")
+  followings   User[]    @relation("follow")
   followers    User[]    @relation("follow")
   reactionsTo  Post[]    @relation("reaction")
   comments     Comment[]
@@ -75,10 +75,10 @@ model Picture {
   height    Int      @default(200)
   width     Int      @default(100)
   url       String   @unique
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String?  @unique
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

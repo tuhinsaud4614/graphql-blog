@@ -49,6 +49,14 @@ export interface IPicturePayload {
   url: string;
 }
 
+export interface IUserFollow {
+  id: string;
+  name: string | null;
+  mobile: string;
+  email: string;
+  avatar: null | IPicturePayload;
+}
+
 export interface IUserPayload {
   id: string;
   name: string | null;
@@ -59,6 +67,8 @@ export interface IUserPayload {
   slug: string;
   avatar: IPicturePayload | null;
   about: string | null;
+  followers: IUserFollow[];
+  followings: IUserFollow[];
 }
 
 // Mutation Input Interface

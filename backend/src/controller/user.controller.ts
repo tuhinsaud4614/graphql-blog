@@ -1,11 +1,11 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
-import { omit } from "lodash";
+import { pick } from "lodash";
 import {
   createUser,
   getUserByEmailOrMobile,
-  getUserByEmailOrMobileWithAvatar,
+  getUserByEmailOrMobileWithInfo,
   getUserById,
 } from "../services/user.service";
 import { generateToken, verifyRefreshToken } from "../utils";
@@ -74,7 +74,7 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
 
     await loginSchema.validate(args, { abortEarly: false });
 
-    const isUserExist = await getUserByEmailOrMobileWithAvatar(
+    const isUserExist = await getUserByEmailOrMobileWithInfo(
       prisma,
       emailOrMobile,
       emailOrMobile
@@ -89,13 +89,25 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
     if (!isValidPassword) {
       return new GraphQLYogaError(INVALID_CREDENTIAL);
     }
+
     const user = {
-      ...omit(isUserExist, ["password", "avatarId", "createdAt", "updatedAt"]),
-      avatar: isUserExist.avatar,
+      ...pick(isUserExist, [
+        "id",
+        "name",
+        "mobile",
+        "email",
+        "role",
+        "authorStatus",
+        "slug",
+        "about",
+        "avatar",
+        "followers",
+        "followings",
+      ]),
     } as IUserPayload;
     const { accessToken, refreshToken } = await generateTokens(user);
 
-    return { ...user, accessToken, refreshToken };
+    return { accessToken, refreshToken };
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, AUTH_FAIL_ERR_MSG, "Login input");
