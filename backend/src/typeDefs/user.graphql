@@ -27,18 +27,6 @@ type User {
   updatedAt: String!
 }
 
-type AuthorizedUserPayload {
-  id: ID!
-  name: String
-  email: String!
-  mobile: String!
-  role: UserRole!
-  authorStatus: AuthorStatus
-  slug: String!
-  avatar: String
-  about: String
-}
-
 type Tokens {
   accessToken: String!
   refreshToken: String!
@@ -71,4 +59,5 @@ type Mutation {
   register(data: RegisterInput): ID!
   login(data: LoginInput): Tokens!
   token(refreshToken: String!): Tokens!
+  uploadAvatar(avatar: File!): Picture!
 }

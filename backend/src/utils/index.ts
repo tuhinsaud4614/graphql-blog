@@ -1,9 +1,18 @@
 import { randomBytes, randomUUID } from "crypto";
+import fs from "fs";
+import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
 import ms from "ms";
+import path from "path";
+import { promisify } from "util";
 import { ValidationError } from "yup";
 import { CustomError } from "../validations";
-import { REFRESH_TOKEN_KEY_NAME, UN_AUTH_ERR_MSG } from "./constants";
+import {
+  FAILED_FILE_ERR_MSG,
+  INVALID_FILE_ERR_MSG,
+  REFRESH_TOKEN_KEY_NAME,
+  UN_AUTH_ERR_MSG,
+} from "./constants";
 import { IUserPayload } from "./interfaces";
 import redisClient from "./redis";
 
@@ -21,7 +30,7 @@ export const formatYupError = (err: ValidationError) => {
   return errors;
 };
 
-export function nanoid(size: number) {
+export function nanoid(size?: number) {
   if (size && size <= 256) {
     return randomBytes(size).toString("base64");
   }
@@ -101,3 +110,55 @@ export const generateToken = async (
   }
   return token;
 };
+
+export const AsyncImageSize = promisify(imageSize);
+export const maxFileSize = (mb: number) => mb * 1000000;
+
+type FileFilterCallbackFunctionType = (
+  error: CustomError | null,
+  valid?: boolean
+) => void;
+
+type FileFilterFunctionType = (
+  file: File,
+  cb: FileFilterCallbackFunctionType
+) => void;
+
+const fileFilterCb = (error: CustomError | null, valid?: boolean) => {
+  if (error !== null) {
+    throw error;
+  } else if (valid === false) {
+    throw new CustomError(INVALID_FILE_ERR_MSG);
+  }
+};
+
+export async function fileUpload(
+  file: File,
+  {
+    filterFunction,
+    dest,
+    name,
+  }: {
+    dest?: string;
+    name?: string;
+    filterFunction: FileFilterFunctionType;
+  }
+) {
+  try {
+    filterFunction(file, fileFilterCb);
+    const newDest = dest || path.join(process.cwd(), "files");
+    fs.mkdirSync(newDest, { recursive: true });
+
+    const newName = name ? name + path.extname(file.name) : file.name;
+    const filePath = path.join(newDest, newName);
+
+    await fs.promises.writeFile(filePath, file.stream());
+
+    return { ...file, name: newName, ext: path.extname(newName), filePath };
+  } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(FAILED_FILE_ERR_MSG);
+  }
+}

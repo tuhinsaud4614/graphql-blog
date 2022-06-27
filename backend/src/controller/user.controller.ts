@@ -1,23 +1,35 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
-import { pick } from "lodash";
+import { unlink } from "fs";
+import { has, pick } from "lodash";
+import path from "path";
 import {
   createUser,
   getUserByEmailOrMobile,
   getUserByEmailOrMobileWithInfo,
   getUserById,
+  getUserByIdWithInfo,
 } from "../services/user.service";
-import { generateToken, verifyRefreshToken } from "../utils";
+import {
+  AsyncImageSize,
+  fileUpload,
+  generateToken,
+  maxFileSize,
+  nanoid,
+  verifyRefreshToken,
+} from "../utils";
 import {
   AUTH_FAIL_ERR_MSG,
   CREATION_ERR_MSG,
   EXIST_ERR_MSG,
+  IMAGE_MIMES,
   INVALID_CREDENTIAL,
+  NOT_IMG_ERR_MSG,
   UN_AUTH_ERR_MSG,
 } from "../utils/constants";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
-import { getGraphqlYogaError } from "../validations";
+import { CustomError, getGraphqlYogaError } from "../validations";
 import { loginSchema, registerSchema } from "../validations/user.validation";
 
 async function generateTokens(user: IUserPayload) {
@@ -126,6 +138,77 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
     const { accessToken, refreshToken: rfToken } = await generateTokens(user);
 
     return { accessToken, refreshToken: rfToken };
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+  }
+}
+
+export async function uploadAvatar(
+  prisma: PrismaClient,
+  avatar: File,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getUserByIdWithInfo(prisma, user.id);
+
+    if (!isExist) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+
+    const uId = nanoid();
+    const dest = path.join(process.cwd(), "images");
+
+    const { name, filePath } = await fileUpload(avatar, {
+      dest,
+      name: uId,
+      filterFunction(newFile, cb) {
+        const { type, size } = newFile;
+        if (!has(IMAGE_MIMES, type)) {
+          return cb(new CustomError(NOT_IMG_ERR_MSG));
+        }
+
+        if (size > maxFileSize(5)) {
+          return cb(new CustomError("File size should be less than 5 Mb"));
+        }
+
+        return cb(null, true);
+      },
+    });
+
+    const dimensions = await AsyncImageSize(filePath);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        avatar: {
+          upsert: {
+            create: {
+              url: `images/${name}`,
+              width: dimensions?.width || 200,
+              height: dimensions?.height || 200,
+            },
+            update: {
+              url: `images/${name}`,
+              width: dimensions?.width || 200,
+              height: dimensions?.height || 200,
+            },
+          },
+        },
+      },
+      include: { avatar: true },
+    });
+
+    if (updatedUser.avatar && isExist.avatar) {
+      const oldAvatarPath = `${process.cwd()}/${isExist.avatar.url}`;
+      unlink(oldAvatarPath, (linkErr) => {
+        if (linkErr) {
+          console.log(linkErr);
+        }
+      });
+    }
+
+    return pick(updatedUser.avatar, ["id", "url", "height", "width"]);
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);

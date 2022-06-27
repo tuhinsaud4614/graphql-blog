@@ -1,9 +1,12 @@
+import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import {
   loginCtrl,
   registerCtrl,
   tokenCtrl,
+  uploadAvatar,
 } from "../../controller/user.controller";
+import { UN_AUTH_ERR_MSG } from "../../utils/constants";
 import { ILoginInput, IRegisterInput } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
@@ -35,6 +38,19 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     const result = await tokenCtrl(prisma, refreshToken);
+    return result;
+  },
+  async uploadAvatar(
+    _: any,
+    { avatar }: { avatar: File },
+    { prisma, user }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+
+    const result = await uploadAvatar(prisma, avatar, user);
     return result;
   },
 };
