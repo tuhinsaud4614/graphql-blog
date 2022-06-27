@@ -8,19 +8,14 @@ export const User = {
     return null;
   },
   async avatar(
-    { avatarId }: IUser,
+    { id }: IUser,
     _: any,
     { prisma }: YogaContextReturnType,
     __: any
   ) {
     try {
-      if (!avatarId) {
-        return null;
-      }
-      const image = await prisma.picture.findFirst({ where: { id: avatarId } });
-      if (!image) {
-        return null;
-      }
+      const image = await prisma.picture.findFirst({ where: { userId: id } });
+
       return image;
     } catch (error) {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Avatar", "user"));
@@ -38,6 +33,38 @@ export const User = {
       return posts;
     } catch (error) {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
+    }
+  },
+
+  async following(
+    { id }: IUser,
+    _: any,
+    { prisma }: YogaContextReturnType,
+    __: any
+  ) {
+    try {
+      const users = await prisma.user.findMany({
+        where: { followers: { some: { id } } },
+      });
+      return users;
+    } catch (error) {
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Followings", "user"));
+    }
+  },
+
+  async followers(
+    { id }: IUser,
+    _: any,
+    { prisma }: YogaContextReturnType,
+    __: any
+  ) {
+    try {
+      const users = await prisma.user.findMany({
+        where: { following: { some: { id } } },
+      });
+      return users;
+    } catch (error) {
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Follower", "user"));
     }
   },
 };

@@ -1,6 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
-import { compare, hash } from "bcryptjs";
+import { hash, verify } from "argon2";
 import { omit } from "lodash";
 import {
   createUser,
@@ -47,7 +47,7 @@ export async function registerCtrl(prisma: PrismaClient, args: IRegisterInput) {
       return new GraphQLYogaError(EXIST_ERR_MSG("User"));
     }
 
-    const hashPassword = await hash(password, 12);
+    const hashPassword = await hash(password);
 
     const user = await createUser(prisma, {
       email,
@@ -84,7 +84,7 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
       return new GraphQLYogaError(INVALID_CREDENTIAL);
     }
 
-    const isValidPassword = await compare(password, isUserExist.password);
+    const isValidPassword = await verify(isUserExist.password, password);
 
     if (!isValidPassword) {
       return new GraphQLYogaError(INVALID_CREDENTIAL);

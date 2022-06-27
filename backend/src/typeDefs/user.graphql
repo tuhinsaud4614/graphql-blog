@@ -21,6 +21,8 @@ type User {
   avatar: Picture
   about: String
   posts: [Post!]!
+  following: [User!]!
+  followers: [User!]!
   createdAt: String!
   updatedAt: String!
 }
@@ -81,6 +83,6 @@ type Query {
 
 type Mutation {
   register(data: RegisterInput): ID!
-  login(data: LoginInput): LoginPayload!
+  login(data: LoginInput): Tokens!
   token(refreshToken: String!): Tokens!
 }

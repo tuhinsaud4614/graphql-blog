@@ -1,0 +1,7 @@
+type Comment {
+  id: String!
+  commenter: User!
+  replies: [Comment!]!
+  createdAt: String!
+  updatedAt: String!
+}

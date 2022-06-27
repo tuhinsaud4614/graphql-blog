@@ -9,6 +9,8 @@ type Post {
   publishedAt: String!
   content: String!
   tags: [Tag!]!
+  reactions: [User!]!
+  comments: [Comment!]!
   createdAt: String!
   updatedAt: String!
 }

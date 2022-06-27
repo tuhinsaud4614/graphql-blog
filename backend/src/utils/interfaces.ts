@@ -1,4 +1,11 @@
-import type { Category, Picture, Post, Tag, User } from "@prisma/client";
+import type {
+  Category,
+  Comment,
+  Picture,
+  Post,
+  Tag,
+  User,
+} from "@prisma/client";
 import { EAuthorStatus, EUserRole } from "./enums";
 import { YogaContextReturnType } from "./types";
 
@@ -7,6 +14,8 @@ export interface IPicture extends Picture {}
 export interface IUser extends User {}
 
 export interface ICategory extends Category {}
+
+export interface IComment extends Comment {}
 
 export interface IPost extends Post {}
 
