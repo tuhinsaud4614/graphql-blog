@@ -1,6 +1,11 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
-import { getCategoryById } from "../services/category.service";
+import {
+  createCategory,
+  deleteCategory,
+  getCategoryById,
+  updateCategory,
+} from "../services/category.service";
 import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
@@ -11,12 +16,9 @@ import { getGraphqlYogaError } from "../validations";
 
 export async function createCategoryCtrl(prisma: PrismaClient, title: string) {
   try {
-    const category = await prisma.category.create({
-      data: {
-        title,
-      },
-      include: { posts: true },
-    });
+    const category = await createCategory(prisma, title);
+    console.log(category);
+
     return category;
   } catch (error) {
     console.log(error);
@@ -35,11 +37,7 @@ export async function updateCategoryCtrl(
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Category"));
     }
 
-    const category = await prisma.category.update({
-      where: { id },
-      data: { title },
-      include: { posts: true },
-    });
+    const category = await updateCategory(prisma, id, title);
     return category;
   } catch (error) {
     console.log(error);
@@ -54,9 +52,7 @@ export async function deleteCategoryCtrl(prisma: PrismaClient, id: string) {
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Category"));
     }
 
-    const category = await prisma.category.delete({
-      where: { id },
-    });
+    const category = await deleteCategory(prisma, id);
     return category.id;
   } catch (error) {
     console.log(error);

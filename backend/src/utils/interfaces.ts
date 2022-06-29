@@ -42,34 +42,6 @@ export interface ResolverMap {
   };
 }
 
-export interface IPicturePayload {
-  id: string;
-  height: number;
-  width: number;
-  url: string;
-}
-
-export interface IUserFollow {
-  id: string;
-  name: string | null;
-  mobile: string;
-  email: string;
-  avatar: null | IPicturePayload;
-}
-
-export interface IUserPayload {
-  id: string;
-  name: string | null;
-  mobile: string;
-  email: string;
-  role: EUserRole;
-  authorStatus: EAuthorStatus | null;
-  avatar: IPicturePayload | null;
-  about: string | null;
-  followers: IUserFollow[];
-  followings: IUserFollow[];
-}
-
 // Mutation Input Interface
 export interface IRegisterInput {
   email: string;
@@ -92,4 +64,73 @@ export interface IPostInput {
   published: boolean;
   content: string;
   tags: string[];
+}
+
+// Payload
+export interface IPicturePayload {
+  id: string;
+  height: number;
+  width: number;
+  url: string;
+}
+export interface IUserFollow {
+  id: string;
+  name: string | null;
+  mobile: string;
+  email: string;
+  avatar: null | IPicturePayload;
+}
+export interface IUserPayload {
+  id: string;
+  name: string | null;
+  mobile: string;
+  email: string;
+  role: EUserRole;
+  authorStatus: EAuthorStatus | null;
+  avatar: IPicturePayload | null;
+  about: string | null;
+  followers: IUserFollow[];
+  followings: IUserFollow[];
+}
+
+export interface ICategoryPayload {
+  id: string;
+  title: string;
+  posts: IPostPayload[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ITagPayload {
+  id: string;
+  title: string;
+  posts: IPostPayload[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ICommentPayload {
+  id: string;
+  content: string;
+  commenter: IUserPayload;
+  post: IPostPayload;
+  replies: ICommentPayload[];
+  parentComment: ICommentPayload | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IPostPayload {
+  id: string;
+  title: string;
+  image: IPicturePayload | null;
+  published: boolean;
+  publishedAt: Date | null;
+  content: string;
+  categories: ICategory[];
+  tags: ITagPayload[];
+  reactionsBy: IUserPayload[];
+  comments: ICommentPayload[];
+  createdAt: Date;
+  updatedAt: Date;
 }

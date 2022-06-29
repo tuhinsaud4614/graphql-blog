@@ -38,7 +38,12 @@ export async function createPostCtrl(
         },
         published,
         publishedAt: published ? new Date() : undefined,
-        tags: { connect: tags.map((tag) => ({ id: tag })) },
+        tags: {
+          connectOrCreate: tags.map((tag) => ({
+            create: { title: tag },
+            where: { title: tag },
+          })),
+        },
       },
     });
     return post.id;
