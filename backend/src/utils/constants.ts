@@ -12,8 +12,21 @@ export const UNKNOWN_ERR_MSG = "Something went wrong";
 export const UN_AUTH_ERR_MSG = "You are not authorized";
 export const AUTH_FAIL_ERR_MSG = "Authentication failed";
 export const AUTH_NEED_ERR_MSG = "Authentication is required";
-export const NOT_IMG_ERR_MSG = "File should be image";
+export const NOT_IMG_ERR_MSG =
+  "File should be image (gif, svg, jpeg, jpg, png, webp)";
+export const VERIFIED_AUTHOR_ERR_MSG = `You must a verified author`;
+export const TOO_LARGE_FILE_ERR_MSG = (field: string, value: string) =>
+  `${field} size should be less than ${value}`;
+export const ARRAY_LENGTH_ERR_MSG = (
+  mode: "min" | "max",
+  field: string,
+  min: number
+) => `${mode === "min" ? "At least" : "Maximum"} ${min} ${field} required`;
 export const EXIST_ERR_MSG = (key: string) => `${key} already exist`;
+export const ROLE_ERR_MSG = (
+  role: "admin" | "author" | "user",
+  orRole?: "admin" | "author" | "user"
+) => `You must be ${role}${orRole ? " or " + orRole : ""}`;
 export const NOT_EXIST_ERR_MSG = (key: string) => `${key} not exist`;
 export const NOT_EXIST_FOR_ERR_MSG = (field: string, fr: string) =>
   `${field} not exist for ${fr}`;
@@ -22,6 +35,8 @@ export const MATCHED_ERR_MSG = (key: string) => `${key} must be matched`;
 export const EITHER_ERR_MSG = (key: string, value: string) =>
   `${key} should be ${value}`;
 export const CREATION_ERR_MSG = (key: string) => `${key} creation failed`;
+export const UPDATE_ERR_MSG = (key: string) => `${key} update failed`;
+export const DELETE_ERR_MSG = (key: string) => `${key} delete failed`;
 export const VALIDATION_ERR_MSG = (key?: string) =>
   key ? `${key} validation error` : "Validation error";
 

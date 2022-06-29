@@ -18,7 +18,6 @@ model User {
   password     String
   role         String    @default("USER")
   authorStatus String?
-  slug         String    @unique
   avatar       Picture?
   about        String?
   posts        Post[]
@@ -33,7 +32,6 @@ model User {
 model Category {
   id        String   @id @default(cuid())
   title     String
-  slug      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]
@@ -44,7 +42,6 @@ model Post {
   author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   title       String
-  slug        String     @unique
   image       Picture?
   published   Boolean    @default(false)
   publishedAt DateTime?
@@ -86,7 +83,6 @@ model Picture {
 model Tag {
   id        String   @id @default(cuid())
   title     String
-  slug      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]

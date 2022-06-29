@@ -17,7 +17,6 @@ type User {
   password: String
   role: UserRole!
   authorStatus: AuthorStatus
-  slug: String!
   avatar: Picture
   about: String
   posts: [Post!]!

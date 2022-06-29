@@ -18,7 +18,7 @@ export const Post = {
       return author;
     } catch (error) {
       console.log(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("User", "post"));
     }
   },
   async categories(
@@ -36,7 +36,7 @@ export const Post = {
     } catch (error) {
       console.log(error);
 
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Categories", "post"));
     }
   },
   async tags(
@@ -53,24 +53,24 @@ export const Post = {
       return categories;
     } catch (error) {
       console.log(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Tags", "post"));
     }
   },
-  async images(
+  async image(
     { id }: IPost,
     _: any,
     { prisma }: YogaContextReturnType,
     __: any
   ) {
     try {
-      const categories = await prisma.picture.findMany({
+      const categories = await prisma.picture.findFirst({
         where: { postId: id },
       });
 
       return categories;
     } catch (error) {
       console.log(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Image", "post"));
     }
   },
 };

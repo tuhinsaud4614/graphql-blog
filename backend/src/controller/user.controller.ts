@@ -26,6 +26,7 @@ import {
   IMAGE_MIMES,
   INVALID_CREDENTIAL,
   NOT_IMG_ERR_MSG,
+  TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
 } from "../utils/constants";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
@@ -110,7 +111,6 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
         "email",
         "role",
         "authorStatus",
-        "slug",
         "about",
         "avatar",
         "followers",
@@ -169,7 +169,7 @@ export async function uploadAvatar(
         }
 
         if (size > maxFileSize(5)) {
-          return cb(new CustomError("File size should be less than 5 Mb"));
+          return cb(new CustomError(TOO_LARGE_FILE_ERR_MSG("Image", "5 Mb")));
         }
 
         return cb(null, true);

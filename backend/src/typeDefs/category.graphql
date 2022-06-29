@@ -1,7 +1,6 @@
 type Category {
   id: String!
   title: String!
-  slug: String!
   posts: [Post!]!
   createdAt: String!
   updatedAt: String!
@@ -9,4 +8,10 @@ type Category {
 
 type Query {
   categories: [Category!]!
+}
+
+type Mutation {
+  createCategory(title: String!): Category!
+  updateCategory(id: String!, title: String!): Category!
+  deleteCategory(id: String!): ID!
 }

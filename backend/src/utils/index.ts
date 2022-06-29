@@ -1,7 +1,8 @@
-import { randomBytes, randomUUID } from "crypto";
+import { randomUUID } from "crypto";
 import fs from "fs";
 import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
+import { has, random } from "lodash";
 import ms from "ms";
 import path from "path";
 import { promisify } from "util";
@@ -9,8 +10,11 @@ import { ValidationError } from "yup";
 import { CustomError } from "../validations";
 import {
   FAILED_FILE_ERR_MSG,
+  IMAGE_MIMES,
   INVALID_FILE_ERR_MSG,
+  NOT_IMG_ERR_MSG,
   REFRESH_TOKEN_KEY_NAME,
+  TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
 } from "./constants";
 import { IUserPayload } from "./interfaces";
@@ -32,7 +36,19 @@ export const formatYupError = (err: ValidationError) => {
 
 export function nanoid(size?: number) {
   if (size && size <= 256) {
-    return randomBytes(size).toString("base64");
+    const arr = Array.from({ length: size }, (_, i) => i * random(0, size));
+    return arr.reduce(
+      (t, e) =>
+        (t +=
+          (e &= 63) < 36
+            ? e.toString(36)
+            : e < 62
+            ? (e - 26).toString(36).toUpperCase()
+            : e > 62
+            ? "-"
+            : "_"),
+      ""
+    );
   }
   return randomUUID();
 }
@@ -46,7 +62,6 @@ export function getUserPayload(decoded: string | JwtPayload) {
       email: decoded["email"],
       role: decoded["role"],
       authorStatus: decoded["authorStatus"],
-      slug: decoded["slug"],
       avatar: decoded["avatar"],
       about: decoded["about"],
       followers: decoded["followers"],
@@ -161,4 +176,36 @@ export async function fileUpload(
     }
     throw new CustomError(FAILED_FILE_ERR_MSG);
   }
+}
+
+export async function imageUpload(
+  file: File,
+  dest: string,
+  name: string,
+  maxSize: number = maxFileSize(5)
+) {
+  const { name: newName, filePath } = await fileUpload(file, {
+    dest,
+    name,
+    filterFunction(newFile, cb) {
+      const { type, size } = newFile;
+      if (!has(IMAGE_MIMES, type)) {
+        return cb(new CustomError(NOT_IMG_ERR_MSG));
+      }
+
+      if (size > maxSize) {
+        return cb(new CustomError(TOO_LARGE_FILE_ERR_MSG("Image", "5 Mb")));
+      }
+
+      return cb(null, true);
+    },
+  });
+
+  const dimensions = await AsyncImageSize(filePath);
+
+  return {
+    name: newName,
+    width: dimensions?.width,
+    height: dimensions?.height,
+  } as const;
 }

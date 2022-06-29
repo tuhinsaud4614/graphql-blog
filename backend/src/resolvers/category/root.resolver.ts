@@ -11,13 +11,14 @@ export const Category = {
     __: any
   ) {
     try {
-      const posts = await prisma.post.findMany({
-        where: { categories: { every: { id } } },
-      });
+      const posts = await prisma.category
+        .findFirst({
+          where: { id },
+        })
+        .posts();
       return posts;
     } catch (error) {
       console.log(error);
-
       throw new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
     }
   },

@@ -64,7 +64,6 @@ export interface IUserPayload {
   email: string;
   role: EUserRole;
   authorStatus: EAuthorStatus | null;
-  slug: string;
   avatar: IPicturePayload | null;
   about: string | null;
   followers: IUserFollow[];
@@ -84,4 +83,13 @@ export interface IRegisterInput {
 export interface ILoginInput {
   emailOrMobile: string;
   password: string;
+}
+
+export interface IPostInput {
+  title: string;
+  image: File;
+  categories: string[];
+  published: boolean;
+  content: string;
+  tags: string[];
 }
