@@ -1,6 +1,8 @@
 type Comment {
   id: String!
   commenter: User!
+  content: String!
+  parentComment: Comment
   replies: [Comment!]!
   createdAt: String!
   updatedAt: String!

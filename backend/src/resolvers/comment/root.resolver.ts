@@ -17,6 +17,23 @@ export const Comment = {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Commenter", "user"));
     }
   },
+  async parentComment(
+    { id }: IComment,
+    _: any,
+    { prisma }: YogaContextReturnType,
+    __: any
+  ) {
+    try {
+      const comment = await prisma.comment
+        .findUnique({ where: { id } })
+        .parentComment();
+      return comment;
+    } catch (error) {
+      return new GraphQLYogaError(
+        NOT_EXIST_FOR_ERR_MSG("Parent comment", "user")
+      );
+    }
+  },
   async replies(
     { id }: IComment,
     _: any,

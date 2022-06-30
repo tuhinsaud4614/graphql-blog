@@ -46,7 +46,9 @@ export async function createPostCtrl(
         },
       },
     });
-    return post.id;
+    console.log(post);
+
+    return post;
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, CREATION_ERR_MSG("Post"), "Post input");

@@ -46,11 +46,13 @@ export const Post = {
     __: any
   ) {
     try {
-      const categories = await prisma.tag.findMany({
-        where: { posts: { every: { id } } },
-      });
+      const tags = await prisma.post
+        .findUnique({
+          where: { id },
+        })
+        .tags();
 
-      return categories;
+      return tags;
     } catch (error) {
       console.log(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Tags", "post"));
@@ -71,6 +73,44 @@ export const Post = {
     } catch (error) {
       console.log(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Image", "post"));
+    }
+  },
+  async reactions(
+    { id }: IPost,
+    _: any,
+    { prisma }: YogaContextReturnType,
+    __: any
+  ) {
+    try {
+      const reactions = await prisma.post
+        .findUnique({
+          where: { id },
+        })
+        .reactionsBy();
+
+      return reactions;
+    } catch (error) {
+      console.log(error);
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Reactions", "post"));
+    }
+  },
+  async comments(
+    { id }: IPost,
+    _: any,
+    { prisma }: YogaContextReturnType,
+    __: any
+  ) {
+    try {
+      const comments = await prisma.post
+        .findUnique({
+          where: { id },
+        })
+        .comments();
+
+      return comments;
+    } catch (error) {
+      console.log(error);
+      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Comments", "post"));
     }
   },
 };
