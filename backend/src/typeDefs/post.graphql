@@ -14,6 +14,15 @@ type Post {
   updatedAt: String!
 }
 
+type PaginatePosts {
+  data: [Post!]!
+  total: Int!
+  hasNext: Boolean!
+  nextPage: Int!
+  previousPage: Int!
+  totalPages: Int!
+}
+
 input CreatePostInput {
   title: String!
   image: File!
@@ -34,11 +43,12 @@ input UpdatePostInput {
 }
 
 type Query {
-  posts: [Post!]!
+  posts(limit: Int, page: Int): PaginatePosts
+  post(id: ID!): Post!
 }
 
 type Mutation {
   createPost(data: CreatePostInput): Post!
   updatePost(data: UpdatePostInput): Post!
-  deletePost(id: String!): String!
+  deletePost(id: ID!): ID!
 }

@@ -21,6 +21,14 @@ const server = createServer({
   },
   renderGraphiQL,
   context: (props) => createContext(props),
+  // maskedErrors: {
+  //   formatError(err, msg) {
+  //     console.log("err", err);
+  //     console.log("msg", msg);
+
+  //     return new GraphQLYogaError(msg);
+  //   },
+  // },
 });
 
 // app.use(helmet());

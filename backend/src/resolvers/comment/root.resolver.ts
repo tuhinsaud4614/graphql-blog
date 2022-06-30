@@ -5,13 +5,15 @@ import { YogaContextReturnType } from "../../utils/types";
 
 export const Comment = {
   async commenter(
-    { commenterId }: IComment,
+    { id }: IComment,
     _: any,
     { prisma }: YogaContextReturnType,
     __: any
   ) {
     try {
-      const user = await prisma.user.findFirst({ where: { id: commenterId } });
+      const user = await prisma.comment
+        .findUnique({ where: { id } })
+        .commenter();
       return user;
     } catch (error) {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Commenter", "user"));
@@ -41,9 +43,11 @@ export const Comment = {
     __: any
   ) {
     try {
-      const comments = await prisma.comment.findFirst({
-        where: { parentCommentId: id },
-      });
+      const comments = await prisma.comment
+        .findUnique({
+          where: { id },
+        })
+        .replies();
       return comments;
     } catch (error) {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Commenter", "user"));

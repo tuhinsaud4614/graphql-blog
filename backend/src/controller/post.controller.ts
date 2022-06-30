@@ -12,6 +12,7 @@ import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
   NOT_EXIST_ERR_MSG,
+  UPDATE_ERR_MSG,
 } from "../utils/constants";
 import {
   ICreatePostInput,
@@ -103,7 +104,7 @@ export async function updatePostCtrl(
   } catch (error) {
     removeFile(imagePath);
     console.log(error);
-    return getGraphqlYogaError(error, CREATION_ERR_MSG("Post"), "Post input");
+    return getGraphqlYogaError(error, UPDATE_ERR_MSG("Post"), "Post input");
   }
 }
 
@@ -120,7 +121,6 @@ export async function deletePostCtrl(
     }
 
     const deletedPost = await deletePost(prisma, id);
-
     return deletedPost.id;
   } catch (error) {
     console.log(error);

@@ -64,7 +64,7 @@ model Comment {
   replies         Comment[] @relation("reply")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  parentComment   Comment?  @relation("reply", fields: [parentCommentId], references: [id])
+  parentComment   Comment?  @relation("reply", fields: [parentCommentId], references: [id], onDelete: Cascade)
   parentCommentId String?
 }
 
