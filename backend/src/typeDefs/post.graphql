@@ -8,13 +8,13 @@ type Post {
   publishedAt: String
   content: String!
   tags: [Tag!]!
-  reactions: [User!]!
+  reactionsBy: [User!]!
   comments: [Comment!]!
   createdAt: String!
   updatedAt: String!
 }
 
-input PostInput {
+input CreatePostInput {
   title: String!
   image: File!
   categories: [String!]!
@@ -23,10 +23,22 @@ input PostInput {
   tags: [String!]!
 }
 
+input UpdatePostInput {
+  id: String!
+  title: String
+  image: File
+  categories: [String!]
+  published: Boolean
+  content: String
+  tags: [String!]
+}
+
 type Query {
   posts: [Post!]!
 }
 
 type Mutation {
-  createPost(data: PostInput): Post!
+  createPost(data: CreatePostInput): Post!
+  updatePost(data: UpdatePostInput): Post!
+  deletePost(id: String!): String!
 }

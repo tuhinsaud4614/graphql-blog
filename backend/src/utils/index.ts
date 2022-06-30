@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import fs from "fs";
+import fs, { unlink } from "fs";
 import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
 import { has, random } from "lodash";
@@ -207,5 +207,17 @@ export async function imageUpload(
     name: newName,
     width: dimensions?.width,
     height: dimensions?.height,
+    filePath,
   } as const;
+}
+
+export function removeFile(filePath?: string) {
+  if (!filePath) {
+    return;
+  }
+  unlink(filePath, (linkErr) => {
+    if (linkErr) {
+      console.error(linkErr?.message);
+    }
+  });
 }

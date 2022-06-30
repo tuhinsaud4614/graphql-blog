@@ -5,15 +5,17 @@ import { YogaContextReturnType } from "../../utils/types";
 
 export const Post = {
   async author(
-    { authorId }: IPost,
+    { id }: IPost,
     _: any,
     { prisma }: YogaContextReturnType,
     __: any
   ) {
     try {
-      const author = await prisma.user.findFirst({
-        where: { id: authorId },
-      });
+      const author = await prisma.post
+        .findUnique({
+          where: { id },
+        })
+        .author();
 
       return author;
     } catch (error) {
@@ -28,10 +30,11 @@ export const Post = {
     __: any
   ) {
     try {
-      const categories = await prisma.category.findMany({
-        where: { posts: { every: { id } } },
-      });
-
+      const categories = await prisma.post
+        .findUnique({
+          where: { id },
+        })
+        .categories();
       return categories;
     } catch (error) {
       console.log(error);
@@ -75,7 +78,7 @@ export const Post = {
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Image", "post"));
     }
   },
-  async reactions(
+  async reactionsBy(
     { id }: IPost,
     _: any,
     { prisma }: YogaContextReturnType,

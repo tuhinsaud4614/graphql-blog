@@ -57,13 +57,23 @@ export interface ILoginInput {
   password: string;
 }
 
-export interface IPostInput {
+export interface ICreatePostInput {
   title: string;
   image: File;
   categories: string[];
   published: boolean;
   content: string;
   tags: string[];
+}
+
+export interface IUpdatePostInput {
+  id: string;
+  title?: string;
+  image?: File;
+  categories?: string[];
+  published?: boolean;
+  content?: string;
+  tags?: string[];
 }
 
 // Payload
