@@ -7,3 +7,13 @@ type Comment {
   createdAt: String!
   updatedAt: String!
 }
+
+input CreateCommentInput {
+  postId: ID!
+  parentComment: ID
+  content: String!
+}
+
+type Mutation {
+  createComment(data: CreateCommentInput): Comment!
+}

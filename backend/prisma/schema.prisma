@@ -59,8 +59,8 @@ model Comment {
   content         String
   commenter       User      @relation(references: [id], fields: [commenterId], onDelete: Cascade)
   commenterId     String
-  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId          String
+  post            Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId          String?
   replies         Comment[] @relation("reply")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
