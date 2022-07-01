@@ -1,7 +1,18 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
+import {
+  createComment,
+  createReply,
+  getCommentForReply,
+  getCommentForUser,
+  updateComment,
+} from "../services/comment.service";
 import { getPostById } from "../services/post.service";
-import { CREATION_ERR_MSG, NOT_EXIST_ERR_MSG } from "../utils/constants";
+import {
+  CREATION_ERR_MSG,
+  NOT_EXIST_ERR_MSG,
+  UPDATE_ERR_MSG,
+} from "../utils/constants";
 import { IUserPayload } from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
 import { createCommentSchema } from "../validations/comment.validation";
@@ -21,21 +32,13 @@ export async function createCommentCtrl(
 
     // If parent comment is valid thats means it's a reply
     if (parentComment) {
-      const parent = await prisma.comment.findFirst({
-        where: { id: parentComment, postId: postId },
-      });
+      const parent = await getCommentForReply(prisma, parentComment, postId);
 
       if (!parent) {
         return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment"));
       }
 
-      const comment = await prisma.comment.create({
-        data: {
-          content,
-          commenter: { connect: { id: user.id } },
-          parentComment: { connect: { id: parent.id } },
-        },
-      });
+      const comment = await createReply(prisma, parent.id, user.id, content);
       return comment;
     }
 
@@ -44,25 +47,35 @@ export async function createCommentCtrl(
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
     }
 
-    const comment = await prisma.comment.create({
-      data: {
-        content: content,
-        commenter: {
-          connect: {
-            id: user.id,
-          },
-        },
-        post: {
-          connect: {
-            id: isExist.id,
-          },
-        },
-      },
-    });
+    const comment = await createComment(prisma, isExist.id, user.id, content);
 
     return comment;
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, CREATION_ERR_MSG("Comment"));
+  }
+}
+
+export async function updateCommentCtrl(
+  prisma: PrismaClient,
+  commentId: string,
+  content: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getCommentForUser(prisma, commentId, user.id);
+    if (!isExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment or Reply"));
+    }
+
+    if (isExist.content === content) {
+      return isExist;
+    }
+
+    const comment = await updateComment(prisma, commentId, content);
+    return comment;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, UPDATE_ERR_MSG("Comment"));
   }
 }
