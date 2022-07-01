@@ -34,14 +34,17 @@ export const REQUIRED_ERR_MSG = (key: string) => `${key} is required`;
 export const MATCHED_ERR_MSG = (key: string) => `${key} must be matched`;
 export const EITHER_ERR_MSG = (key: string, value: string) =>
   `${key} should be ${value}`;
+export const NOT_NUM_ERR_MSG = (field: string, value: string = "number") =>
+  `${field} should be ${value}`;
 export const CREATION_ERR_MSG = (key: string) => `${key} creation failed`;
 export const UPDATE_ERR_MSG = (key: string) => `${key} update failed`;
 export const DELETE_ERR_MSG = (key: string) => `${key} delete failed`;
 export const VALIDATION_ERR_MSG = (key?: string) =>
   key ? `${key} validation error` : "Validation error";
 
-// REDIS KEY
+// REDIS KEY START
 export const REFRESH_TOKEN_KEY_NAME = (id: string) => `REFRESH_TOKEN-${id}`;
+// REDIS KEY END
 
 export const IMAGE_MIMES = {
   "image/gif": "gif",

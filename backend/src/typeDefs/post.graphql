@@ -14,13 +14,17 @@ type Post {
   updatedAt: String!
 }
 
-type PaginatePosts {
-  data: [Post!]!
-  total: Int!
+type PageInfo {
   hasNext: Boolean!
   nextPage: Int!
   previousPage: Int!
   totalPages: Int!
+}
+
+type PaginatePosts {
+  data: [Post!]!
+  total: Int!
+  pageInfo: PageInfo
 }
 
 input CreatePostInput {
@@ -43,7 +47,7 @@ input UpdatePostInput {
 }
 
 type Query {
-  posts(limit: Int, page: Int): PaginatePosts
+  posts(role: String!, limit: Int, page: Int): PaginatePosts!
   post(id: ID!): Post!
 }
 

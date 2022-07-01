@@ -4,11 +4,14 @@ import { maxFileSize } from "../utils";
 
 import {
   ARRAY_LENGTH_ERR_MSG,
+  EITHER_ERR_MSG,
   IMAGE_MIMES,
   NOT_IMG_ERR_MSG,
+  NOT_NUM_ERR_MSG,
   REQUIRED_ERR_MSG,
   TOO_LARGE_FILE_ERR_MSG,
 } from "../utils/constants";
+import { EUserRole } from "../utils/enums";
 
 export const createPostSchema = yup.object().shape({
   title: yup.string().required(REQUIRED_ERR_MSG("Title")),
@@ -54,4 +57,13 @@ export const updatePostSchema = yup.object().shape({
   published: yup.bool(),
   content: yup.string(),
   tags: yup.array().of(yup.string()),
+});
+
+export const getAllPostSSchema = yup.object().shape({
+  role: yup
+    .string()
+    .required(REQUIRED_ERR_MSG("Role"))
+    .oneOf(Object.values(EUserRole), EITHER_ERR_MSG("Role", "AUTHOR, ADMIN")),
+  limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
+  page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
 });

@@ -144,3 +144,11 @@ export interface IPostPayload {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IPageInfo {
+  total: number;
+  hasNext: boolean;
+  nextPage: number;
+  previousPage: number;
+  totalPages: number;
+}

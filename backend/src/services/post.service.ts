@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { ICreatePostInput, IUpdatePostInput } from "../utils/interfaces";
 
 export function getPostById(prisma: PrismaClient, id: string) {
@@ -11,6 +11,28 @@ export function getPostByIdForUser(
   authorId: string
 ) {
   return prisma.post.findFirst({ where: { id, authorId } });
+}
+
+export function getAllPost(
+  prisma: PrismaClient,
+  condition?: Prisma.PostFindManyArgs
+) {
+  return prisma.post.findMany({
+    ...condition,
+  });
+}
+
+export function getPaginatePosts(
+  prisma: PrismaClient,
+  page: number,
+  limit: number,
+  condition?: Prisma.PostFindManyArgs
+) {
+  return prisma.post.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    ...condition,
+  });
 }
 
 export function createPost(

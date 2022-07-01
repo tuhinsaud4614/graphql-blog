@@ -1,9 +1,10 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
 import {
   createPost,
   deletePost,
+  getPaginatePosts,
   getPostByIdForUser,
   updatePost,
 } from "../services/post.service";
@@ -16,12 +17,14 @@ import {
 } from "../utils/constants";
 import {
   ICreatePostInput,
+  IPageInfo,
   IUpdatePostInput,
   IUserPayload,
 } from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
 import {
   createPostSchema,
+  getAllPostSSchema,
   updatePostSchema,
 } from "../validations/post.validation";
 
@@ -125,5 +128,41 @@ export async function deletePostCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, DELETE_ERR_MSG("Post"), "Post input");
+  }
+}
+
+export async function getAllPostsCtrl(
+  prisma: PrismaClient,
+  params: { role: string; limit?: number; page?: number },
+  args?: Prisma.PostFindManyArgs
+) {
+  try {
+    await getAllPostSSchema.validate(params, { abortEarly: false });
+
+    const { limit, page } = params;
+
+    // limit && page all have value return paginate value
+
+    const count = await prisma.post.count();
+    if (limit && page) {
+      const result = await getPaginatePosts(prisma, page, limit, args);
+
+      return {
+        data: result,
+        total: count,
+        pageInfo: {
+          hasNext: limit * page < count,
+          nextPage: page + 1,
+          previousPage: page - 1,
+          totalPages: Math.ceil(count / limit),
+        } as IPageInfo,
+      };
+    }
+
+    const result = await prisma.post.findMany(args);
+    return { data: result, total: count };
+  } catch (error: any) {
+    console.log(error);
+    return new GraphQLYogaError(error);
   }
 }
