@@ -63,3 +63,7 @@ export function updateComment(
 ) {
   return prisma.comment.update({ where: { id }, data: { content } });
 }
+
+export function deleteComment(prisma: PrismaClient, id: string) {
+  return prisma.comment.delete({ where: { id } });
+}

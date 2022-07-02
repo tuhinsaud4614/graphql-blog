@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import {
   createComment,
   createReply,
+  deleteComment,
   getCommentForReply,
   getCommentForUser,
   updateComment,
@@ -10,6 +11,7 @@ import {
 import { getPostById } from "../services/post.service";
 import {
   CREATION_ERR_MSG,
+  DELETE_ERR_MSG,
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
@@ -77,5 +79,25 @@ export async function updateCommentCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, UPDATE_ERR_MSG("Comment"));
+  }
+}
+
+export async function deleteCommentCtrl(
+  prisma: PrismaClient,
+  commentId: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getCommentForUser(prisma, commentId, user.id);
+
+    if (!isExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment or Reply"));
+    }
+
+    const comment = await deleteComment(prisma, commentId);
+    return comment.id;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, DELETE_ERR_MSG("Comment"));
   }
 }

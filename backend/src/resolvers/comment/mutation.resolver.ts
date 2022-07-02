@@ -2,6 +2,7 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import {
   createCommentCtrl,
+  deleteCommentCtrl,
   updateCommentCtrl,
 } from "../../controller/comment.controller";
 import { UN_AUTH_ERR_MSG } from "../../utils/constants";
@@ -43,6 +44,20 @@ export const Mutation = {
     }
 
     const result = await updateCommentCtrl(prisma, commentId, content, user);
+    return result;
+  },
+
+  async deleteComment(
+    _: any,
+    { commentId }: { commentId: string },
+    { prisma, user }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+
+    const result = await deleteCommentCtrl(prisma, commentId, user);
     return result;
   },
 };
