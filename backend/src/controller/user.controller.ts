@@ -20,15 +20,20 @@ import {
   verifyRefreshToken,
 } from "../utils";
 import {
+  ALREADY_FOLLOWED_ERR_MSG,
   AUTH_FAIL_ERR_MSG,
   CREATION_ERR_MSG,
   EXIST_ERR_MSG,
+  FOLLOW_ERR_MSG,
   IMAGE_MIMES,
   INVALID_CREDENTIAL,
+  NOT_EXIST_ERR_MSG,
   NOT_IMG_ERR_MSG,
   TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
+  USER_FOLLOWED_ERR_MSG,
 } from "../utils/constants";
+import { EUserRole } from "../utils/enums";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
 import { CustomError, getGraphqlYogaError } from "../validations";
 import { loginSchema, registerSchema } from "../validations/user.validation";
@@ -212,5 +217,40 @@ export async function uploadAvatar(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+  }
+}
+
+export async function followRequestCtrl(
+  prisma: PrismaClient,
+  toId: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getUserByIdWithInfo(prisma, toId);
+
+    if (!isExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+    }
+
+    if (isExist.role === EUserRole.User) {
+      return new GraphQLYogaError(USER_FOLLOWED_ERR_MSG);
+    }
+
+    const index = isExist.followers.findIndex(
+      (follower) => follower.id === user.id
+    );
+
+    if (index !== -1) {
+      return new GraphQLYogaError(ALREADY_FOLLOWED_ERR_MSG);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: toId },
+      data: { followers: { connect: { id: user.id } } },
+    });
+    return updatedUser.id;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FOLLOW_ERR_MSG);
   }
 }

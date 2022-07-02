@@ -12,6 +12,10 @@ export const UNKNOWN_ERR_MSG = "Something went wrong";
 export const UN_AUTH_ERR_MSG = "You are not authorized";
 export const AUTH_FAIL_ERR_MSG = "Authentication failed";
 export const AUTH_NEED_ERR_MSG = "Authentication is required";
+export const FOLLOW_OWN_ERR_MSG = "You can't follow yourself";
+export const ALREADY_FOLLOWED_ERR_MSG = "You already followed him/her";
+export const USER_FOLLOWED_ERR_MSG = "You can follow Admin or Author";
+export const FOLLOW_ERR_MSG = "Follow request failed";
 export const NOT_IMG_ERR_MSG =
   "File should be image (gif, svg, jpeg, jpg, png, webp)";
 export const VERIFIED_AUTHOR_ERR_MSG = `You must a verified author`;

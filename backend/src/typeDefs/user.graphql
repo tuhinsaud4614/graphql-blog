@@ -59,4 +59,5 @@ type Mutation {
   login(data: LoginInput): Tokens!
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!
+  followRequest(toId: ID!): String!
 }
