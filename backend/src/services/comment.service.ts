@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 export function getCommentForUser(
   prisma: PrismaClient,
@@ -16,6 +16,23 @@ export function getCommentForReply(
   return prisma.comment.findFirst({
     where: { id: parentCommentId, postId: postId },
   });
+}
+
+export function getPaginateComments(
+  prisma: PrismaClient,
+  page: number,
+  limit: number,
+  condition?: Prisma.CommentFindManyArgs
+) {
+  return prisma.comment.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    ...condition,
+  });
+}
+
+export function countCommentsForPost(prisma: PrismaClient, postId: string) {
+  return prisma.comment.count({ where: { postId } });
 }
 
 export function createComment(

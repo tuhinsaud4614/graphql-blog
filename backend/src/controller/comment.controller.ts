@@ -1,23 +1,29 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import {
+  countCommentsForPost,
   createComment,
   createReply,
   deleteComment,
   getCommentForReply,
   getCommentForUser,
+  getPaginateComments,
   updateComment,
 } from "../services/comment.service";
 import { getPostById } from "../services/post.service";
 import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
+  FETCH_ERR_MSG,
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
-import { IUserPayload } from "../utils/interfaces";
+import { IPageInfo, IUserPayload } from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
-import { createCommentSchema } from "../validations/comment.validation";
+import {
+  createCommentSchema,
+  getAllCommentsSchema,
+} from "../validations/comment.validation";
 
 export async function createCommentCtrl(
   prisma: PrismaClient,
@@ -99,5 +105,55 @@ export async function deleteCommentCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, DELETE_ERR_MSG("Comment"));
+  }
+}
+
+export async function getAllCommentsCtrl(
+  prisma: PrismaClient,
+  params: { postId: string; limit?: number; page?: number }
+) {
+  try {
+    await getAllCommentsSchema.validate(params, { abortEarly: false });
+
+    const { postId, limit, page } = params;
+
+    const isPostExist = await getPostById(prisma, postId);
+
+    if (!isPostExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+    }
+
+    const count = await countCommentsForPost(prisma, postId);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const args: Prisma.CommentFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      where: { postId },
+    };
+
+    // limit && page all have value return paginate value
+
+    if (limit && page) {
+      const result = await getPaginateComments(prisma, page, limit, args);
+
+      return {
+        data: result,
+        total: count,
+        pageInfo: {
+          hasNext: limit * page < count,
+          nextPage: page + 1,
+          previousPage: page - 1,
+          totalPages: Math.ceil(count / limit),
+        } as IPageInfo,
+      };
+    }
+
+    const result = await prisma.comment.findMany(args);
+    return { data: result, total: count };
+  } catch (error: any) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
   }
 }

@@ -19,6 +19,16 @@ input UpdateCommentInput {
   content: String!
 }
 
+type PaginateComments {
+  data: [Comment!]!
+  total: Int!
+  pageInfo: PageInfo
+}
+
+type Query {
+  comments(postId: ID!, limit: Int, page: Int): PaginateComments!
+}
+
 type Mutation {
   createComment(data: CreateCommentInput): Comment!
   updateComment(data: UpdateCommentInput): Comment!

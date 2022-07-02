@@ -15,6 +15,7 @@ import { imageUpload, nanoid, removeFile } from "../utils";
 import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
+  FETCH_ERR_MSG,
   NOT_EXIST_ERR_MSG,
   REACTIONS_ERR_MSG,
   SUBSCRIPTION_REACTIONS,
@@ -216,6 +217,6 @@ export async function getAllPostsCtrl(
     return { data: result, total: count };
   } catch (error: any) {
     console.log(error);
-    return new GraphQLYogaError(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }

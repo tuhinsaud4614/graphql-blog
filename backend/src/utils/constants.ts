@@ -44,6 +44,7 @@ export const EITHER_ERR_MSG = (key: string, value: string) =>
 export const NOT_NUM_ERR_MSG = (field: string, value: string = "number") =>
   `${field} should be ${value}`;
 export const CREATION_ERR_MSG = (key: string) => `${key} creation failed`;
+export const FETCH_ERR_MSG = (key: string) => `Failed to fetch ${key}`;
 export const UPDATE_ERR_MSG = (key: string) => `${key} update failed`;
 export const DELETE_ERR_MSG = (key: string) => `${key} delete failed`;
 export const VALIDATION_ERR_MSG = (key?: string) =>
