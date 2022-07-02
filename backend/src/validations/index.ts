@@ -1,7 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import * as yup from "yup";
 import { formatYupError } from "../utils";
-import { VALIDATION_ERR_MSG } from "../utils/constants";
+import { REQUIRED_ERR_MSG, VALIDATION_ERR_MSG } from "../utils/constants";
 
 export class CustomError {
   constructor(public message: string) {
@@ -22,3 +22,7 @@ export function getGraphqlYogaError(error: any, msg: string, errFor?: string) {
   }
   return new GraphQLYogaError(msg);
 }
+
+export const uploadFileSchema = yup.object().shape({
+  file: yup.mixed<File>().required(REQUIRED_ERR_MSG("File")),
+});

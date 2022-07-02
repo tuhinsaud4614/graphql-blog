@@ -8,3 +8,7 @@ type Picture {
   createdAt: String!
   updatedAt: String!
 }
+
+type Mutation {
+  uploadFile(file: File!): String!
+}

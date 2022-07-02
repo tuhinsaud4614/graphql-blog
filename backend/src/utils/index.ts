@@ -156,11 +156,11 @@ export async function fileUpload(
   }: {
     dest?: string;
     name?: string;
-    filterFunction: FileFilterFunctionType;
+    filterFunction?: FileFilterFunctionType;
   }
 ) {
   try {
-    filterFunction(file, fileFilterCb);
+    filterFunction && filterFunction(file, fileFilterCb);
     const newDest = dest || path.join(process.cwd(), "files");
     fs.mkdirSync(newDest, { recursive: true });
 
