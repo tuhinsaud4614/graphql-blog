@@ -6,10 +6,12 @@ import { has, pick } from "lodash";
 import path from "path";
 import {
   createUser,
+  followTo,
   getUserByEmailOrMobile,
   getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWithInfo,
+  unfollowTo,
 } from "../services/user.service";
 import {
   AsyncImageSize,
@@ -21,6 +23,7 @@ import {
 } from "../utils";
 import {
   ALREADY_FOLLOWED_ERR_MSG,
+  ALREADY_UN_FOLLOWED_ERR_MSG,
   AUTH_FAIL_ERR_MSG,
   CREATION_ERR_MSG,
   EXIST_ERR_MSG,
@@ -244,11 +247,36 @@ export async function followRequestCtrl(
       return new GraphQLYogaError(ALREADY_FOLLOWED_ERR_MSG);
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: toId },
-      data: { followers: { connect: { id: user.id } } },
-    });
-    return updatedUser.id;
+    const followedUser = await followTo(prisma, toId, user.id);
+    return followedUser;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FOLLOW_ERR_MSG);
+  }
+}
+
+export async function unfollowRequestCtrl(
+  prisma: PrismaClient,
+  toId: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getUserByIdWithInfo(prisma, toId);
+
+    if (!isExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+    }
+
+    const index = isExist.followers.findIndex(
+      (follower) => follower.id === user.id
+    );
+
+    if (index === -1) {
+      return new GraphQLYogaError(ALREADY_UN_FOLLOWED_ERR_MSG);
+    }
+
+    await unfollowTo(prisma, toId, user.id);
+    return toId;
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, FOLLOW_ERR_MSG);

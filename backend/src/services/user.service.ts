@@ -100,3 +100,17 @@ export function createUser(
     },
   });
 }
+
+export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
+  return prisma.user.update({
+    where: { id: toId },
+    data: { followers: { connect: { id: ownId } } },
+  });
+}
+
+export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
+  return prisma.user.update({
+    where: { id: toId },
+    data: { followers: { disconnect: { id: ownId } } },
+  });
+}

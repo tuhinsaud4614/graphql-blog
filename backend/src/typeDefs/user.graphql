@@ -67,11 +67,18 @@ type Mutation {
   login(data: LoginInput): Tokens!
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!
-  followRequest(toId: ID!): String!
+  followRequest(toId: ID!): UserFollow!
+  unFollowRequest(toId: ID!): ID!
+}
+
+enum FollowingMutationStatus {
+  FOLLOW
+  UNFOLLOW
 }
 
 type SubFollowedBY {
   followedBy: UserFollow!
+  mutation: FollowingMutationStatus!
 }
 
 type Subscription {

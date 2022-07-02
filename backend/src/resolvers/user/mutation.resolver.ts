@@ -5,13 +5,16 @@ import {
   loginCtrl,
   registerCtrl,
   tokenCtrl,
+  unfollowRequestCtrl,
   uploadAvatar,
 } from "../../controller/user.controller";
 import {
   FOLLOW_OWN_ERR_MSG,
   SUBSCRIPTION_FOLLOWING,
   UN_AUTH_ERR_MSG,
+  UN_FOLLOW_OWN_ERR_MSG,
 } from "../../utils/constants";
+import { EFollowingMutationStatus } from "../../utils/enums";
 import { ILoginInput, IRegisterInput } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
@@ -78,6 +81,31 @@ export const Mutation = {
     pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
       following: {
         followedBy: user,
+        mutation: EFollowingMutationStatus.follow,
+      },
+    });
+    return result;
+  },
+
+  async unFollowRequest(
+    _: any,
+    { toId }: { toId: string },
+    { prisma, user, pubSub }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+
+    if (user.id === toId) {
+      return new GraphQLYogaError(UN_FOLLOW_OWN_ERR_MSG);
+    }
+
+    const result = await unfollowRequestCtrl(prisma, toId, user);
+    pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
+      following: {
+        followedBy: user,
+        mutation: EFollowingMutationStatus.unfollow,
       },
     });
     return result;
