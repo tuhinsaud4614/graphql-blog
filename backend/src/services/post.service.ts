@@ -5,6 +5,13 @@ export function getPostById(prisma: PrismaClient, id: string) {
   return prisma.post.findUnique({ where: { id } });
 }
 
+export function getPostByIdWithReactions(prisma: PrismaClient, id: string) {
+  return prisma.post.findUnique({
+    where: { id },
+    include: { reactionsBy: true },
+  });
+}
+
 export function getPostByIdForUser(
   prisma: PrismaClient,
   id: string,
@@ -131,5 +138,27 @@ export function updatePost(
 export function deletePost(prisma: PrismaClient, id: string) {
   return prisma.post.delete({
     where: { id },
+  });
+}
+
+export function reactionToPost(
+  prisma: PrismaClient,
+  id: string,
+  reactById: string
+) {
+  return prisma.post.update({
+    where: { id },
+    data: { reactionsBy: { connect: { id: reactById } } },
+  });
+}
+
+export function reactionWithdrawToPost(
+  prisma: PrismaClient,
+  id: string,
+  withdrawById: string
+) {
+  return prisma.post.update({
+    where: { id },
+    data: { reactionsBy: { disconnect: { id: withdrawById } } },
   });
 }

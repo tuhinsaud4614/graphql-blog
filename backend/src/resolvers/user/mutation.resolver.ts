@@ -81,7 +81,7 @@ export const Mutation = {
     pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
       following: {
         followedBy: user,
-        mutation: EFollowingMutationStatus.follow,
+        mutation: EFollowingMutationStatus.Follow,
       },
     });
     return result;
@@ -105,7 +105,7 @@ export const Mutation = {
     pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
       following: {
         followedBy: user,
-        mutation: EFollowingMutationStatus.unfollow,
+        mutation: EFollowingMutationStatus.Unfollow,
       },
     });
     return result;

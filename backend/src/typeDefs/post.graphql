@@ -55,4 +55,19 @@ type Mutation {
   createPost(data: CreatePostInput): Post!
   updatePost(data: UpdatePostInput): Post!
   deletePost(id: ID!): ID!
+  reactionToPost(toId: ID!): UserFollow!
+}
+
+enum EReactionsMutationStatus {
+  REACT
+  WITHDRAW
+}
+
+type SubReaction {
+  reactBy: UserFollow!
+  mutation: EReactionsMutationStatus!
+}
+
+type Subscription {
+  reactions(postId: ID!): SubReaction!
 }

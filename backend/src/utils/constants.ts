@@ -18,6 +18,7 @@ export const ALREADY_FOLLOWED_ERR_MSG = "You already followed him/her";
 export const ALREADY_UN_FOLLOWED_ERR_MSG = "You already un-follow him/her";
 export const USER_FOLLOWED_ERR_MSG = "You can follow Admin or Author";
 export const FOLLOW_ERR_MSG = "Follow request failed";
+export const REACTIONS_ERR_MSG = "Reactions request failed";
 export const NOT_IMG_ERR_MSG =
   "File should be image (gif, svg, jpeg, jpg, png, webp)";
 export const VERIFIED_AUTHOR_ERR_MSG = `You must a verified author`;
@@ -65,8 +66,10 @@ export const IMAGE_MIMES = {
 // error msg start
 export const SUBSCRIPTION_FOLLOWING_ERR_MSG = "Subscription following failed";
 export const SUBSCRIPTION_UN_FOLLOWING_ERR_MSG = "Subscription unfollow failed";
+export const SUBSCRIPTION_REACTIONS_ERR_MSG = "Subscription reactions failed";
 // error msg end
 
 export const SUBSCRIPTION_FOLLOWING = (toId: string) => `FOLLOWING_${toId}`;
+export const SUBSCRIPTION_REACTIONS = (toId: string) => `REACTIONS_${toId}`;
 
 // SUBSCRIPTION END

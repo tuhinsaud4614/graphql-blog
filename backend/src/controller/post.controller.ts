@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLYogaError, PubSub } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
 import {
@@ -6,6 +6,9 @@ import {
   deletePost,
   getPaginatePosts,
   getPostByIdForUser,
+  getPostByIdWithReactions,
+  reactionToPost,
+  reactionWithdrawToPost,
   updatePost,
 } from "../services/post.service";
 import { imageUpload, nanoid, removeFile } from "../utils";
@@ -13,8 +16,11 @@ import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
   NOT_EXIST_ERR_MSG,
+  REACTIONS_ERR_MSG,
+  SUBSCRIPTION_REACTIONS,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
+import { EReactionsMutationStatus } from "../utils/enums";
 import {
   ICreatePostInput,
   IPageInfo,
@@ -128,6 +134,53 @@ export async function deletePostCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, DELETE_ERR_MSG("Post"), "Post input");
+  }
+}
+
+export async function reactionToCtrl(
+  prisma: PrismaClient,
+  // @ts-ignore
+  pubSub: PubSub<PubSubPublishArgsByKey>,
+  toId: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getPostByIdWithReactions(prisma, toId);
+
+    if (!isExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+    }
+
+    const index = isExist.reactionsBy.findIndex(
+      (reactor) => reactor.id === user.id
+    );
+
+    if (index === -1) {
+      await reactionToPost(prisma, toId, user.id);
+
+      pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
+        reactions: {
+          reactBy: user,
+          mutation: EReactionsMutationStatus.React,
+        },
+      });
+
+      return user;
+    }
+
+    await reactionWithdrawToPost(prisma, toId, user.id);
+
+    pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
+      reactions: {
+        reactBy: user,
+        mutation: EReactionsMutationStatus.Withdraw,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, REACTIONS_ERR_MSG);
   }
 }
 

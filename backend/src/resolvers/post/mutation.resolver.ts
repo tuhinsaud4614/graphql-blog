@@ -3,6 +3,7 @@ import { GraphQLResolveInfo } from "graphql";
 import {
   createPostCtrl,
   deletePostCtrl,
+  reactionToCtrl,
   updatePostCtrl,
 } from "../../controller/post.controller";
 import {
@@ -80,6 +81,19 @@ export const Mutation = {
     }
 
     const result = await deletePostCtrl(prisma, id, user);
+    return result;
+  },
+
+  async reactionToPost(
+    _: any,
+    { toId }: { toId: string },
+    { prisma, user, pubSub }: YogaContextReturnType,
+    ___: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+    const result = await reactionToCtrl(prisma, pubSub, toId, user);
     return result;
   },
 };
