@@ -9,6 +9,14 @@ enum AuthorStatus {
   VERIFIED
 }
 
+type UserFollow {
+  id: ID!
+  name: String
+  mobile: String!
+  email: String!
+  avatar: Picture
+}
+
 type User {
   id: ID!
   name: String
@@ -20,8 +28,8 @@ type User {
   avatar: Picture
   about: String
   posts: [Post!]!
-  followings: [User!]!
-  followers: [User!]!
+  followings: [UserFollow!]!
+  followers: [UserFollow!]!
   createdAt: String!
   updatedAt: String!
 }
@@ -60,4 +68,12 @@ type Mutation {
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!
   followRequest(toId: ID!): String!
+}
+
+type SubFollowedBY {
+  followedBy: UserFollow!
+}
+
+type Subscription {
+  following: SubFollowedBY!
 }

@@ -59,6 +59,26 @@ export function getUserByEmailOrMobileWithInfo(
   });
 }
 
+export function getUserFollowerList(
+  prisma: PrismaClient,
+  id: string,
+  followerId: string
+) {
+  return prisma.user.findFirst({
+    where: { id, followers: { some: { id: followerId } } },
+  });
+}
+
+export function getUserFollowingList(
+  prisma: PrismaClient,
+  id: string,
+  followingId: string
+) {
+  return prisma.user.findFirst({
+    where: { id, followings: { some: { id: followingId } } },
+  });
+}
+
 export function createUser(
   prisma: PrismaClient,
   {

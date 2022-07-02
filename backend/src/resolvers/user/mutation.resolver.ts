@@ -7,7 +7,11 @@ import {
   tokenCtrl,
   uploadAvatar,
 } from "../../controller/user.controller";
-import { FOLLOW_OWN_ERR_MSG, UN_AUTH_ERR_MSG } from "../../utils/constants";
+import {
+  FOLLOW_OWN_ERR_MSG,
+  SUBSCRIPTION_FOLLOWING,
+  UN_AUTH_ERR_MSG,
+} from "../../utils/constants";
 import { ILoginInput, IRegisterInput } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
@@ -59,7 +63,7 @@ export const Mutation = {
   async followRequest(
     _: any,
     { toId }: { toId: string },
-    { prisma, user }: YogaContextReturnType,
+    { prisma, user, pubSub }: YogaContextReturnType,
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
@@ -71,6 +75,11 @@ export const Mutation = {
     }
 
     const result = await followRequestCtrl(prisma, toId, user);
+    pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
+      following: {
+        followedBy: user,
+      },
+    });
     return result;
   },
 };

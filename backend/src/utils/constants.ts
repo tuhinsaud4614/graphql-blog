@@ -58,3 +58,12 @@ export const IMAGE_MIMES = {
   "image/png": "png",
   "image/webp": "webp",
 };
+
+// SUBSCRIPTION START
+// error msg start
+export const SUBSCRIPTION_FOLLOWING_ERR_MSG = "Subscription following failed";
+// error msg end
+
+export const SUBSCRIPTION_FOLLOWING = (toId: string) => `FOLLOWING_${toId}`;
+
+// SUBSCRIPTION END
