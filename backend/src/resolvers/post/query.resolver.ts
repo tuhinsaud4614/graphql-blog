@@ -5,13 +5,16 @@ import {
 } from "../../controller/post.controller";
 import { getPostById } from "../../services/post.service";
 import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
-import { IPostsByTagParams, IPostsParams } from "../../utils/interfaces";
+import {
+  IPostsByTagQueryParams,
+  IPostsQueryParams,
+} from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Query = {
   async posts(
     _: any,
-    params: IPostsParams,
+    params: IPostsQueryParams,
     { prisma }: YogaContextReturnType,
     ___: any
   ) {
@@ -36,7 +39,7 @@ export const Query = {
 
   async tagPosts(
     _: any,
-    params: IPostsByTagParams,
+    params: IPostsByTagQueryParams,
     { prisma }: YogaContextReturnType,
     ___: any
   ) {

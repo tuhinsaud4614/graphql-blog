@@ -18,7 +18,11 @@ import {
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
-import { IPageInfo, IUserPayload } from "../utils/interfaces";
+import {
+  ICommentsQueryParams,
+  IPageInfo,
+  IUserPayload,
+} from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
 import {
   createCommentSchema,
@@ -110,7 +114,7 @@ export async function deleteCommentCtrl(
 
 export async function getAllCommentsCtrl(
   prisma: PrismaClient,
-  params: { postId: string; limit?: number; page?: number }
+  params: ICommentsQueryParams
 ) {
   try {
     await getAllCommentsSchema.validate(params, { abortEarly: false });

@@ -26,8 +26,8 @@ import { EReactionsMutationStatus, EUserRole } from "../utils/enums";
 import {
   ICreatePostInput,
   IPageInfo,
-  IPostsByTagParams,
-  IPostsParams,
+  IPostsByTagQueryParams,
+  IPostsQueryParams,
   IUpdatePostInput,
   IUserPayload,
 } from "../utils/interfaces";
@@ -191,7 +191,7 @@ export async function reactionToCtrl(
 
 export async function getAllPostsCtrl(
   prisma: PrismaClient,
-  params: IPostsParams
+  params: IPostsQueryParams
 ) {
   try {
     await getAllPostSSchema.validate(params, { abortEarly: false });
@@ -238,7 +238,7 @@ export async function getAllPostsCtrl(
 
 export async function getAllPostsByTagCtrl(
   prisma: PrismaClient,
-  params: IPostsByTagParams
+  params: IPostsByTagQueryParams
 ) {
   try {
     await getAllPostsByTagSchema.validate(params, { abortEarly: false });

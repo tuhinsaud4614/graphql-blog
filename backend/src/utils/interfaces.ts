@@ -153,15 +153,21 @@ export interface IPageInfo {
   totalPages: number;
 }
 
-export interface IPostsParams {
+export interface IPostsQueryParams {
   role: string;
   limit?: number;
   page?: number;
 }
 
-export interface IPostsByTagParams {
+export interface IPostsByTagQueryParams {
   role: string;
   tag: string;
+  limit?: number;
+  page?: number;
+}
+
+export interface ICommentsQueryParams {
+  postId: string;
   limit?: number;
   page?: number;
 }
