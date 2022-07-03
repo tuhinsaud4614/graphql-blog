@@ -1,23 +1,21 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { Prisma } from "@prisma/client";
-import { getAllPostsCtrl } from "../../controller/post.controller";
+import {
+  getAllPostsByTagCtrl,
+  getAllPostsCtrl,
+} from "../../controller/post.controller";
 import { getPostById } from "../../services/post.service";
 import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
-import { EUserRole } from "../../utils/enums";
+import { IPostsByTagParams, IPostsParams } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Query = {
   async posts(
     _: any,
-    params: { role: string; limit?: number; page?: number },
+    params: IPostsParams,
     { prisma }: YogaContextReturnType,
     ___: any
   ) {
-    const args: Prisma.PostFindManyArgs = {
-      orderBy: { updatedAt: "desc" },
-      where: params.role === EUserRole.User ? { published: true } : undefined,
-    };
-    const result = await getAllPostsCtrl(prisma, params, args);
+    const result = await getAllPostsCtrl(prisma, params);
     return result;
   },
   async post(
@@ -34,5 +32,15 @@ export const Query = {
       console.log(error);
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
     }
+  },
+
+  async tagPosts(
+    _: any,
+    params: IPostsByTagParams,
+    { prisma }: YogaContextReturnType,
+    ___: any
+  ) {
+    const result = await getAllPostsByTagCtrl(prisma, params);
+    return result;
   },
 };

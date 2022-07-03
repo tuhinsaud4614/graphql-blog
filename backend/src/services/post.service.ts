@@ -29,15 +29,11 @@ export function getAllPost(
   });
 }
 
-export function getPaginatePosts(
+export function getPostsByTag(
   prisma: PrismaClient,
-  page: number,
-  limit: number,
   condition?: Prisma.PostFindManyArgs
 ) {
   return prisma.post.findMany({
-    skip: (page - 1) * limit,
-    take: limit,
     ...condition,
   });
 }

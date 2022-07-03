@@ -4,9 +4,10 @@ import path from "path";
 import {
   createPost,
   deletePost,
-  getPaginatePosts,
+  getAllPost,
   getPostByIdForUser,
   getPostByIdWithReactions,
+  getPostsByTag,
   reactionToPost,
   reactionWithdrawToPost,
   updatePost,
@@ -21,16 +22,19 @@ import {
   SUBSCRIPTION_REACTIONS,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
-import { EReactionsMutationStatus } from "../utils/enums";
+import { EReactionsMutationStatus, EUserRole } from "../utils/enums";
 import {
   ICreatePostInput,
   IPageInfo,
+  IPostsByTagParams,
+  IPostsParams,
   IUpdatePostInput,
   IUserPayload,
 } from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
 import {
   createPostSchema,
+  getAllPostsByTagSchema,
   getAllPostSSchema,
   updatePostSchema,
 } from "../validations/post.validation";
@@ -187,19 +191,30 @@ export async function reactionToCtrl(
 
 export async function getAllPostsCtrl(
   prisma: PrismaClient,
-  params: { role: string; limit?: number; page?: number },
-  args?: Prisma.PostFindManyArgs
+  params: IPostsParams
 ) {
   try {
     await getAllPostSSchema.validate(params, { abortEarly: false });
 
     const { limit, page } = params;
+    const condition = {
+      where: params.role === EUserRole.User ? { published: true } : undefined,
+    };
+    let args: Prisma.PostFindManyArgs = {
+      ...condition,
+      orderBy: { updatedAt: "desc" },
+    };
 
     // limit && page all have value return paginate value
 
-    const count = await prisma.post.count();
+    const count = await prisma.post.count(condition);
     if (limit && page) {
-      const result = await getPaginatePosts(prisma, page, limit, args);
+      args = {
+        ...args,
+        skip: (page - 1) * limit,
+        take: limit,
+      };
+      const result = await getAllPost(prisma, args);
 
       return {
         data: result,
@@ -218,5 +233,58 @@ export async function getAllPostsCtrl(
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+  }
+}
+
+export async function getAllPostsByTagCtrl(
+  prisma: PrismaClient,
+  params: IPostsByTagParams
+) {
+  try {
+    await getAllPostsByTagSchema.validate(params, { abortEarly: false });
+
+    const { limit, page, tag } = params;
+
+    const condition = {
+      where: {
+        ...(params.role === EUserRole.User ? { published: true } : undefined),
+        tags: { some: { title: tag } },
+      },
+    };
+
+    let args: Prisma.PostFindManyArgs = {
+      ...condition,
+      orderBy: {
+        updatedAt: "desc",
+      },
+    };
+    // limit && page all have value return paginate value
+    const count = await prisma.post.count(condition);
+
+    if (limit && page) {
+      args = {
+        ...args,
+        skip: (page - 1) * limit,
+        take: limit,
+      };
+      const result = await getPostsByTag(prisma, args);
+
+      return {
+        data: result,
+        total: count,
+        pageInfo: {
+          hasNext: limit * page < count,
+          nextPage: page + 1,
+          previousPage: page - 1,
+          totalPages: Math.ceil(count / limit),
+        } as IPageInfo,
+      };
+    }
+
+    const result = await getPostsByTag(prisma, args);
+    return { data: result, total: count };
+  } catch (error: any) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("Posts"));
   }
 }

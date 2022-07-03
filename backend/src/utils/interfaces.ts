@@ -152,3 +152,16 @@ export interface IPageInfo {
   previousPage: number;
   totalPages: number;
 }
+
+export interface IPostsParams {
+  role: string;
+  limit?: number;
+  page?: number;
+}
+
+export interface IPostsByTagParams {
+  role: string;
+  tag: string;
+  limit?: number;
+  page?: number;
+}

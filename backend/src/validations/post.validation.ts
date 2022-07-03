@@ -67,3 +67,13 @@ export const getAllPostSSchema = yup.object().shape({
   limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
   page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
 });
+
+export const getAllPostsByTagSchema = yup.object().shape({
+  role: yup
+    .string()
+    .required(REQUIRED_ERR_MSG("Role"))
+    .oneOf(Object.values(EUserRole), EITHER_ERR_MSG("Role", "AUTHOR, ADMIN")),
+  tag: yup.string().required(REQUIRED_ERR_MSG("Tag")),
+  limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
+  page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
+});

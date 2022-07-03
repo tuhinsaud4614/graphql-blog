@@ -49,6 +49,7 @@ input UpdatePostInput {
 type Query {
   posts(role: String!, limit: Int, page: Int): PaginatePosts!
   post(id: ID!): Post!
+  tagPosts(role: String!, tag: String!, limit: Int, page: Int): PaginatePosts!
 }
 
 type Mutation {
