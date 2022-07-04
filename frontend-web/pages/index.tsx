@@ -1,17 +1,22 @@
-import type { NextPage } from "next";
+import { Header } from "@component";
+import { NextPageWithLayout } from "@types";
 import Link from "next/link";
+import * as React from "react";
 
 const className = {
   root: "bg-base-100",
 };
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   return (
-    <div className={className.root}>
-      <Link href="/posts">
-        <a>Posts</a>
-      </Link>
-    </div>
+    <React.Fragment>
+      <Header />
+      <div className={className.root}>
+        <Link href="/posts">
+          <a>Posts</a>
+        </Link>
+      </div>
+    </React.Fragment>
   );
 };
 

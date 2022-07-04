@@ -16,11 +16,11 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@component": ["components"]
+      "@component": ["components"],
+      "@types": ["utils/types"]
       // "@component/home": ["components/home"],
       // "@component/about-us": ["components/about-us"],
       // "@component/icons": ["components/icons"],
-      // "@util": ["utils"],
       // "@locale": ["locales"]
     }
   },

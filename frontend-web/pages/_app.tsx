@@ -1,18 +1,9 @@
 import { ProgressBar } from "@component";
-import { NextPage } from "next";
-import type { AppProps } from "next/app";
+import type { AppPropsWithLayout } from "@types";
 import Head from "next/head";
 import Router from "next/router";
 import * as React from "react";
 import "../styles/globals.css";
-
-type NextPageWithLayout = NextPage & {
-  getLayout?: (page: React.ReactElement) => React.ReactNode;
-};
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-};
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
@@ -31,7 +22,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <React.Fragment>
       <Head>
         <title>The RAT Diary</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
       {progress && <ProgressBar className="fixed top-0 left-0 right-0" />}
       <Component {...pageProps} />
