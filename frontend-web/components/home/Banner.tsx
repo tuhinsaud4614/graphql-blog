@@ -1,5 +1,5 @@
 const className = {
-  banner: "bg-primary pt-16",
+  banner: "bg-primary pt-16 border-b border-secondary",
   bannerContent: "px-4 sm:mx-auto max-w-5xl flex items-center",
   left: "flex flex-col justify-center items-start pb-12",
   title: "text-[5.3125rem] md:text-[6.625rem] text-base-100 mb-8",
