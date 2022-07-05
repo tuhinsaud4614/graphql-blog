@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const className = {
-  root: "fixed top-0 left-0 right-0 border-b border-secondary h-16",
+  root: "fixed top-0 left-0 right-0 border-b border-secondary h-16 z-50",
   main: "px-4 sm:mx-auto max-w-5xl flex items-center justify-between h-full",
   homeLink: "flex items-center justify-center",
   items: "list-none m-0 flex items-center",
