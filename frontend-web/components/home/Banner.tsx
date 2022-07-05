@@ -1,8 +1,9 @@
 const className = {
-  banner: "bg-primary pt-16 border-b border-secondary",
+  banner: "bg-primary pt-24 border-b border-secondary",
   bannerContent: "px-4 sm:mx-auto max-w-5xl flex items-center",
   left: "flex flex-col justify-center items-start pb-12",
-  title: "text-[5.3125rem] md:text-[6.625rem] text-base-100 mb-8",
+  title:
+    "text-[5.3125rem] leading-[5.3125rem] md:text-[6.625rem] md:leading-[6.625rem] text-base-100 mb-8 tracking-[-0.05em]",
   subtitle: "text-2xl text-base-100 mb-12 w-[80%] leading-6",
   btn: "outline-none border-0 px-5 py-2 rounded-full text-xl inline-block bg-accent text-neutral hover:text-neutral-focus active:scale-95",
 };

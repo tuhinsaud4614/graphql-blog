@@ -9,7 +9,7 @@ const className = {
     "line-clamp-2 md1:text-2xl font-bold leading-5 pt-2 text-neutral text-ellipsis",
   body: "pt-1 text-neutral/50 hidden md:line-clamp-2 text-ellipsis",
   timeBox: "pt-2 flex items-center text-xs text-neutral/70",
-  tag: "py-0.5 px-2 text-xs text-neutral/75 bg-neutral/5 active:scale-95 capitalize rounded-full",
+  tag: "py-0.5 px-2 text-sm text-neutral/75 bg-neutral/5 active:scale-95 capitalize rounded-full whitespace-nowrap",
   imgContainer:
     "min-w-0 w-[6.25rem] md:w-[12.5rem] bg-neutral/5 flex items-center justify-center",
 };

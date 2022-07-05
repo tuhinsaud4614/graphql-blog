@@ -1,4 +1,5 @@
 import PostItem from "./Item";
+import PostItemSkeleton from "./ItemSkeleton";
 import Sidebar from "./Sidebar";
 
 const className = {
@@ -15,6 +16,8 @@ export default function Content() {
         {Array.from({ length: 10 }).map((_, index) => (
           <PostItem key={index} />
         ))}
+        <PostItemSkeleton />
+        <PostItemSkeleton />
       </ul>
     </section>
   );

@@ -12,15 +12,15 @@ const className = {
 };
 
 export default function HomeHeader() {
-  const { scrollYProgress } = useViewportScroll();
+  const { scrollY } = useViewportScroll();
   const rootBG = useTransform(
-    scrollYProgress,
-    [0, 0.4, 0.5],
+    scrollY,
+    [0, 250, 280],
     ["#570DF8", "#570DF8", "#F2F2F2"]
   );
   const linkColor = useTransform(
-    scrollYProgress,
-    [0, 0.4, 0.5],
+    scrollY,
+    [0, 250, 280],
     ["#FFFFFF", "#FFFFFF", "#37CDBE"]
   );
 
