@@ -17,8 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@component": ["components"],
-      "@types": ["utils/types"]
-      // "@component/home": ["components/home"],
+      "@component/home": ["components/home"],
+      "@types": ["utils/types"],
+      "@hooks": ["hooks"]
       // "@component/about-us": ["components/about-us"],
       // "@component/icons": ["components/icons"],
       // "@locale": ["locales"]

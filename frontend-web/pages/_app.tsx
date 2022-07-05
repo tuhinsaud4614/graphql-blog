@@ -22,6 +22,14 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <React.Fragment>
       <Head>
         <title>The RAT Diary</title>
+        <meta
+          name="title"
+          content="The RAT Diary – Where good ideas find you."
+        />
+        <meta
+          name="description"
+          content="The RAT Diary is an open platform where readers find dynamic thinking, and where expert and undiscovered voices can share their writing on any topic."
+        />
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
       {progress && <ProgressBar className="fixed top-0 left-0 right-0" />}
