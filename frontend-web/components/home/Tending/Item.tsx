@@ -2,7 +2,7 @@ import UserLink from "components/UserLink";
 import Link from "next/link";
 
 const className = {
-  root: "basis-full md:basis-1/2 px-3 md:px-4",
+  root: "basis-full md:basis-1/2 md1:basis-1/3 px-3 md:px-4",
   container: "flex mb-6",
   index: "mr-4 -mt-2.5 inline-block text-3xl text-neutral opacity-20 font-bold",
   content: "flex flex-col",

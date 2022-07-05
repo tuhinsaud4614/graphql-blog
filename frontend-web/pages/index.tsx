@@ -1,5 +1,5 @@
 import { Header } from "@component";
-import { Banner, Tending } from "@component/home";
+import { Banner, HomeContent, Tending } from "@component/home";
 import { NextPageWithLayout } from "@types";
 import * as React from "react";
 
@@ -14,6 +14,7 @@ const Home: NextPageWithLayout = () => {
       <main className={className.main}>
         <Banner />
         <Tending />
+        <HomeContent />
       </main>
     </React.Fragment>
   );

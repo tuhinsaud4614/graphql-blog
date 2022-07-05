@@ -42,6 +42,9 @@ module.exports = {
         error: "#F87272",
         "error-content": "#470000",
       },
+      screens: {
+        md1: "901px",
+      },
       animation: {
         "progress-bar": "progress-bar 2s linear infinite",
       },
