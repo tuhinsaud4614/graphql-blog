@@ -16,7 +16,7 @@ export default function UserHeader() {
       <nav className={className.nav}>
         <Link href="/" passHref>
           <a className={className.homeLink} aria-label="Home">
-            <Image src="/logo.svg" alt="The Rat Diary" height={60} width={60} />
+            <Image src="/logo.svg" alt="The Rat Diary" height={50} width={50} />
           </a>
         </Link>
         <Link href="/account/notifications" passHref>
