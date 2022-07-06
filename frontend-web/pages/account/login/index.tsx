@@ -6,7 +6,8 @@ import {
   FormControl,
 } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
-import { Fragment, ReactElement, useId } from "react";
+import Head from "next/head";
+import { ReactElement, useId } from "react";
 import * as yup from "yup";
 
 const className = {
@@ -58,53 +59,54 @@ const Login: NextPageWithLayout = () => {
   });
 
   return (
-    <Fragment>
-      <Form
-        changeLink="/account/register"
-        changeLinkText="Create one"
-        changeText="No account?"
-        onSubmit={handleSubmit}
+    <Form
+      changeLink="/account/register"
+      changeLinkText="Create one"
+      changeText="No account?"
+      onSubmit={handleSubmit}
+    >
+      <Head>
+        <title>The RAT Diary | Login</title>
+      </Head>
+      <FormControl
+        classes={{ root: className.control }}
+        id={emailId}
+        title="Your email or mobile"
+        name="emailMobile"
+        aria-label="email"
+        aria-invalid={Boolean(touched.emailMobile && errors.emailMobile)}
+        type="text"
+        valid={!(touched.emailMobile && errors.emailMobile)}
+        errorText={touched.emailMobile && errors.emailMobile}
+        value={values.emailMobile}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required
+      />
+      <FormControl
+        classes={{ root: className.control }}
+        id={passwordId}
+        title="Your password"
+        name="password"
+        aria-label="password"
+        aria-invalid={Boolean(touched.password && errors.password)}
+        type="password"
+        valid={!(touched.password && errors.password)}
+        errorText={touched.password && errors.password}
+        value={values.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required
+      />
+      <FormButton
+        type="submit"
+        aria-label="Login"
+        loader={isSubmitting}
+        disabled={!(isValid && dirty) || isSubmitting}
       >
-        <FormControl
-          classes={{ root: className.control }}
-          id={emailId}
-          title="Your email or mobile"
-          name="emailMobile"
-          aria-label="email"
-          aria-invalid={Boolean(touched.emailMobile && errors.emailMobile)}
-          type="text"
-          valid={!(touched.emailMobile && errors.emailMobile)}
-          errorText={touched.emailMobile && errors.emailMobile}
-          value={values.emailMobile}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-        />
-        <FormControl
-          classes={{ root: className.control }}
-          id={passwordId}
-          title="Your password"
-          name="password"
-          aria-label="password"
-          aria-invalid={Boolean(touched.password && errors.password)}
-          type="password"
-          valid={!(touched.password && errors.password)}
-          errorText={touched.password && errors.password}
-          value={values.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-        />
-        <FormButton
-          type="submit"
-          aria-label="Login"
-          loader={isSubmitting}
-          disabled={!(isValid && dirty) || isSubmitting}
-        >
-          Login
-        </FormButton>
-      </Form>
-    </Fragment>
+        Login
+      </FormButton>
+    </Form>
   );
 };
 
