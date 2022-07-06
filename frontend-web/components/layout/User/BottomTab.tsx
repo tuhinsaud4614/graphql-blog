@@ -15,7 +15,6 @@ const className = {
 
 export default function UserBottomTab() {
   const { pathname } = useRouter();
-  console.log(pathname);
 
   return (
     <nav className={className.root}>

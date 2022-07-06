@@ -1,5 +1,5 @@
-import { UserBottomTab, UserHeader } from "@component";
 import { NextPageWithLayout } from "@types";
+import { UserLayout } from "components/layout";
 import { Fragment, ReactElement } from "react";
 
 const MyHome: NextPageWithLayout = () => {
@@ -7,13 +7,7 @@ const MyHome: NextPageWithLayout = () => {
 };
 
 MyHome.getLayout = (page: ReactElement) => {
-  return (
-    <Fragment>
-      <UserHeader />
-      {page}
-      <UserBottomTab />
-    </Fragment>
-  );
+  return <UserLayout>{page}</UserLayout>;
 };
 
 export default MyHome;
