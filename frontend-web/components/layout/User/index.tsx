@@ -1,6 +1,7 @@
 import { Fragment, ReactNode } from "react";
 import BottomTab from "./BottomTab";
 import Header from "./Header";
+import Sidebar from "./Sidebar";
 import SideNav from "./SideNav";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 
 const className = {
   container: "max-w-[94rem] mx-auto flex",
+  main: "h-[1000px] flex-auto px-4 py-[4.5rem] lg:py-4",
 };
 
 export default function UserLayout({ children }: Props) {
@@ -17,7 +19,8 @@ export default function UserLayout({ children }: Props) {
       <Header />
       <section className={className.container}>
         <SideNav />
-        <main className="h-[1000px]">{children}</main>
+        <main className={className.main}>{children}</main>
+        <Sidebar />
       </section>
       <BottomTab />
     </Fragment>
