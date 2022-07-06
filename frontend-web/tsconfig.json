@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@component": ["components"],
+      "@component/home": ["components/home"],
       "@types": ["utils/types"],
       "@hooks": ["hooks"]
       // "@component/about-us": ["components/about-us"],

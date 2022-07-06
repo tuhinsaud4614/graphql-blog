@@ -5,7 +5,7 @@ import { BsInfoCircle } from "react-icons/bs";
 const className = {
   formControl: "flex flex-col items-center justify-center w-full",
   formLabel: "mb-3 text-sm",
-  requiredText: "text-xs",
+  requiredText: "text-xs text-error",
   formInputBox: "relative border-b flex items-center w-[inherit]",
   formInput:
     "text-neutral leading-6 min-w-0 basis-full bg-transparent outline-none border-0 text-center",
