@@ -1,37 +1,84 @@
 import type { NextPageWithLayout } from "@types";
-import { Form, FormContainer, FormControl } from "components/account";
+import {
+  Form,
+  FormButton,
+  FormContainer,
+  FormControl,
+} from "components/account";
+import { FormikHelpers, useFormik } from "formik";
 import { Fragment, ReactElement, useId } from "react";
+import * as yup from "yup";
 
 const className = {
   control: "mb-4",
-  btnContainer: "flex justify-center py-3",
-  btn: "w-[14.125rem] outline-none border-0 px-5 py-2 rounded-full inline-block bg-accent hover:bg-accent-focus text-base-200 hover:text-base-100 active:scale-95",
 };
 
+interface IValues {
+  emailMobile: string;
+  password: string;
+}
+
+// validation
+const schema = yup.object().shape({
+  emailMobile: yup
+    .string()
+    .required("Email address is required.")
+    .email("Must be a valid email address."),
+  password: yup.string().required("Password is required."),
+});
+
 const Login: NextPageWithLayout = () => {
+  const initialValues: IValues = {
+    emailMobile: "",
+    password: "",
+  };
+
   const emailId = useId();
   const passwordId = useId();
+
+  const onSubmit = async (
+    values: IValues,
+    formikHelpers: FormikHelpers<IValues>
+  ) => {};
+
+  const {
+    handleSubmit,
+    touched,
+    handleChange,
+    handleBlur,
+    errors,
+    isValid,
+    dirty,
+    values,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema: schema,
+  });
+
   return (
     <Fragment>
       <Form
         changeLink="/account/register"
         changeLinkText="Create one"
         changeText="No account?"
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
+        onSubmit={handleSubmit}
       >
         <FormControl
           classes={{ root: className.control }}
           id={emailId}
-          title="Your email"
-          name="email"
+          title="Your email or mobile"
+          name="emailMobile"
           aria-label="email"
-          aria-invalid="true"
-          aria-describedby="error"
+          aria-invalid={Boolean(touched.emailMobile && errors.emailMobile)}
           type="text"
-          // valid={false}
-          errorText="Please enter a valid email address."
+          valid={!(touched.emailMobile && errors.emailMobile)}
+          errorText={touched.emailMobile && errors.emailMobile}
+          value={values.emailMobile}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required
         />
         <FormControl
           classes={{ root: className.control }}
@@ -39,24 +86,32 @@ const Login: NextPageWithLayout = () => {
           title="Your password"
           name="password"
           aria-label="password"
-          aria-invalid="true"
-          aria-describedby="error"
+          aria-invalid={Boolean(touched.password && errors.password)}
           type="password"
-          // valid={false}
-          errorText="Please enter a valid password."
+          valid={!(touched.password && errors.password)}
+          errorText={touched.password && errors.password}
+          value={values.password}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required
         />
-        <div className={className.btnContainer}>
-          <button type="submit" aria-label="Register" className={className.btn}>
-            Login
-          </button>
-        </div>
+        <FormButton
+          type="submit"
+          aria-label="Login"
+          loader={isSubmitting}
+          disabled={!(isValid && dirty) || isSubmitting}
+        >
+          Login
+        </FormButton>
       </Form>
     </Fragment>
   );
 };
 
 Login.getLayout = (page: ReactElement) => {
-  return <FormContainer title="Sign in with email">{page}</FormContainer>;
+  return (
+    <FormContainer title="Sign in with email or mobile">{page}</FormContainer>
+  );
 };
 
 export default Login;

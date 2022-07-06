@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ComponentPropsWithoutRef, Fragment } from "react";
 
 const className = {
-  form: "mt-12 w-full",
+  form: "mt-8 w-full",
   linkText: "my-3 flex items-center justify-center text-neutral",
   link: "ml-2 text-success hover:text-success-content active:scale-95",
 };

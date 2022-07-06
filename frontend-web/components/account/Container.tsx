@@ -2,7 +2,8 @@ import { ReactNode } from "react";
 
 const className = {
   root: "h-screen w-screen flex items-center justify-center bg-base-200",
-  container: "w-[18.875rem] p-4 shadow-md bg-base-100",
+  container:
+    "w-[18.875rem] p-4 shadow-md bg-base-100 overflow-y-auto max-h-[90vh]",
   main: "flex flex-col items-center justify-center",
   title: "tracking-[-0.03em] text-[1.5rem] leading-8 text-primary",
 };

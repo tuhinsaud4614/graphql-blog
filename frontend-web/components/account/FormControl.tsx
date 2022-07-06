@@ -5,6 +5,7 @@ import { BsInfoCircle } from "react-icons/bs";
 const className = {
   formControl: "flex flex-col items-center justify-center w-full",
   formLabel: "mb-3 text-sm",
+  requiredText: "text-xs",
   formInputBox: "relative border-b flex items-center w-[inherit]",
   formInput:
     "text-neutral leading-6 min-w-0 basis-full bg-transparent outline-none border-0 text-center",
@@ -33,6 +34,7 @@ export default function FormControl({
   classes,
   valid = true,
   errorText,
+  required,
   ...rest
 }: Props) {
   return (
@@ -46,6 +48,7 @@ export default function FormControl({
         )}
       >
         {title}
+        {required && <sup className={className.requiredText}>*</sup>}
       </label>
       <div
         className={classNames(
@@ -58,6 +61,7 @@ export default function FormControl({
           {...rest}
           className={classNames(className.formInput, classes?.input, cls)}
           id={id}
+          required={required}
         />
         {!valid && (
           <BsInfoCircle
