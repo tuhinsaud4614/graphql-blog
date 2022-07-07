@@ -4,3 +4,4 @@ export { default as useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffec
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useMediaQuery } from "./useMediaQuery";
 export { default as useReadLocalStorage } from "./useReadLocalStorage";
+export { default as useSynchronizeAnimation } from "./useSynchronizeAnimation";

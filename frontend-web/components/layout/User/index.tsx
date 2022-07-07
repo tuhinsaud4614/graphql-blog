@@ -19,6 +19,9 @@ export default function UserLayout({ children }: Props) {
     <Container
       sidebar={
         <Fragment>
+          {/* <Skeleton />
+          <div className="pt-5" />
+          <Skeleton /> */}
           <Categories />
           <div className={className.divider} />
           <Tags />
