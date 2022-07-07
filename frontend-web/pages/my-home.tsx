@@ -23,6 +23,8 @@ const MyHome: NextPageWithLayout = () => {
         </a>
       </Link>
       <UserHomeFollowList />
+      {/* <UserHomeFollowSkeleton /> */}
+      {/* <Tabs></Tabs>  */}
     </Fragment>
   );
 };

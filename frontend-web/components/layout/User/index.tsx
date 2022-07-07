@@ -9,8 +9,6 @@ interface Props {
 }
 
 const className = {
-  container: "max-w-[94rem] mx-auto flex",
-  main: "h-[1000px] mx-auto lg:m-0 max-w-[43.25rem] lg:max-w-full flex-auto px-4 py-[4.5rem] lg:py-4",
   divider: "bg-neutral w-full border-b my-4",
 };
 

@@ -11,7 +11,7 @@ interface Props {
 
 const className = {
   container: "max-w-[94rem] mx-auto flex",
-  main: "h-[1000px] mx-auto max-w-[43.25rem] flex-auto px-4 py-[4.5rem] lg:py-4 overflow-x-hidden",
+  main: "mx-auto max-w-[43.25rem] flex-auto px-4 py-[4.5rem] lg:py-4 overflow-x-hidden",
 };
 
 export default function Container({ sidebar, children }: Props) {
