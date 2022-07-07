@@ -5,5 +5,5 @@
     "source.fixAll.tslint": true,
     "source.organizeImports": true
   },
-  "cSpell.words": ["Formik", "Loadbar", "tailwindcss"]
+  "cSpell.words": ["Formik", "Loadbar", "Swiper", "tailwindcss"]
 }

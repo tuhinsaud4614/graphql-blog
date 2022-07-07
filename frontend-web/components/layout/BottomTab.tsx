@@ -13,7 +13,7 @@ const className = {
   avatar: "w-7 h-7 rounded-full",
 };
 
-export default function UserBottomTab() {
+export default function BottomTab() {
   const { pathname } = useRouter();
 
   return (

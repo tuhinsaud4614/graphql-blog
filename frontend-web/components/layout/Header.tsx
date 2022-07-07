@@ -10,7 +10,7 @@ const className = {
     "w-9 h-9 flex items-center justify-center rounded-full border border-accent text-accent cursor-pointer select-none active:scale-95",
 };
 
-export default function UserHeader() {
+export default function Header() {
   return (
     <header className={className.root}>
       <nav className={className.nav}>

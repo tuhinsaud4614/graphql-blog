@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "@types";
-import { UserLayout } from "components/layout";
+import { UserLayout } from "components/Layout";
 import { Fragment, ReactElement } from "react";
 
 const Notifications: NextPageWithLayout = () => {

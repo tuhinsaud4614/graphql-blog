@@ -3,6 +3,9 @@ import type { AppPropsWithLayout } from "@types";
 import Head from "next/head";
 import Router from "next/router";
 import * as React from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
