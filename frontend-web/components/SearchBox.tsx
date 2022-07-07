@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ComponentPropsWithRef, RefObject } from "react";
+import { forwardRef, HTMLAttributes, RefObject } from "react";
 import { BiSearch } from "react-icons/bi";
 
 const className = {
@@ -10,7 +10,7 @@ const className = {
     "bg-transparent border-none outline-none mr-5 text-sm text-neutral w-full",
 };
 
-interface Props extends ComponentPropsWithRef<"input"> {
+interface Props extends HTMLAttributes<HTMLInputElement> {
   rootRef?: RefObject<HTMLDivElement>;
   classes?: {
     root?: string;
@@ -20,28 +20,29 @@ interface Props extends ComponentPropsWithRef<"input"> {
   };
 }
 
-export default function SearchBox({
-  rootRef,
-  classes,
-  className: cls,
-  ...rest
-}: Props) {
-  return (
-    <div className={classNames(className.root, classes?.root)}>
-      <div
-        className={classNames(className.container, classes?.container)}
-        ref={rootRef}
-      >
-        <span className={classNames(className.icon, className.icon)}>
-          <BiSearch size={24} />
-        </span>
-        <input
-          {...rest}
-          aria-label="search"
-          placeholder="Search"
-          className={classNames(className.input, className.input, cls)}
-        />
+const SearchBox = forwardRef<HTMLInputElement, Props>(
+  ({ rootRef, classes, className: cls, ...rest }, ref) => {
+    return (
+      <div className={classNames(className.root, classes?.root)}>
+        <div
+          className={classNames(className.container, classes?.container)}
+          ref={rootRef}
+        >
+          <span className={classNames(className.icon, className.icon)}>
+            <BiSearch size={24} />
+          </span>
+          <input
+            {...rest}
+            ref={ref}
+            aria-label="search"
+            placeholder="Search"
+            className={classNames(className.input, className.input, cls)}
+          />
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
+
+SearchBox.displayName = "SearchBox";
+export default SearchBox;

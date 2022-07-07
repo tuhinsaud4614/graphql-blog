@@ -1,6 +1,8 @@
-import { useMediaQuery } from "@hooks";
+import { useLocalStorage, useMediaQuery } from "@hooks";
 import { Menu, SearchBox } from "components";
-import { ChangeEvent, Fragment, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { ChangeEvent, Fragment, KeyboardEvent, useRef, useState } from "react";
+import { RECENT_SEARCHES } from "utils/constants";
 import Result from "./Result";
 import ResultItem from "./ResultItem";
 
@@ -11,7 +13,14 @@ const className = {
 
 export default function Search() {
   const [anchorEle, setAnchorEle] = useState<null | HTMLDivElement>(null);
+  const [_, setRecentSearches] = useLocalStorage<string[] | null>(
+    RECENT_SEARCHES,
+    null
+  );
   const searchRef = useRef<null | HTMLDivElement>(null);
+  const inputRef = useRef<null | HTMLInputElement>(null);
+
+  const { push } = useRouter();
 
   const matches = useMediaQuery("(min-width: 1024px)");
 
@@ -23,11 +32,27 @@ export default function Search() {
     }
   };
 
+  const keyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputRef.current) {
+      setRecentSearches((prev) => {
+        if (inputRef.current) {
+          return prev
+            ? [...prev, inputRef.current.value]
+            : [inputRef.current?.value];
+        }
+        return prev;
+      });
+      push(`/search?q=${inputRef.current.value}`);
+    }
+  };
+
   return (
     <Fragment>
       <SearchBox
+        ref={inputRef}
         rootRef={searchRef}
         onChange={changeHandler}
+        onKeyDown={keyDownHandler}
         classes={{ root: className.searchBox }}
       />
       {matches && (

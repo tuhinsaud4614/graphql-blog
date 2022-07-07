@@ -52,3 +52,16 @@ export const getPositions = (
     arrowTop,
   };
 };
+
+// Set to local storage
+export const setLocalStorage = <T>(key: string, value: T) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    const item = window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.warn(`Error writing localStorage “${key}”:`, error);
+  }
+};

@@ -1,5 +1,5 @@
-import { useIsomorphicLayoutEffect } from "framer-motion";
 import { RefObject, useEffect, useRef } from "react";
+import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
 
 // Window Event based useEventListener interface
 function useEventListener<K extends keyof WindowEventMap>(
