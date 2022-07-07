@@ -1,6 +1,7 @@
 import { Fragment, ReactNode } from "react";
 import Container from "../Container";
 import Categories from "./Categories";
+import Follow from "./Follow";
 import Tags from "./Tags";
 
 interface Props {
@@ -21,6 +22,8 @@ export default function UserLayout({ children }: Props) {
           <Categories />
           <div className={className.divider} />
           <Tags />
+          <div className={className.divider} />
+          <Follow />
         </Fragment>
       }
     >
