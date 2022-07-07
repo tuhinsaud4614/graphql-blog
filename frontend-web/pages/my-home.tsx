@@ -12,7 +12,7 @@ const MyHome: NextPageWithLayout = () => {
 };
 
 MyHome.getLayout = (page: ReactElement) => {
-  return <UserLayout sidebar={<div>Hello</div>}>{page}</UserLayout>;
+  return <UserLayout>{page}</UserLayout>;
 };
 
 export default MyHome;

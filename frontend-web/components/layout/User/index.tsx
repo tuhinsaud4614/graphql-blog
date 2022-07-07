@@ -1,29 +1,30 @@
 import { Fragment, ReactNode } from "react";
-import BottomTab from "./BottomTab";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import SideNav from "./SideNav";
+import Container from "../Container";
+import Categories from "./Categories";
+import Tags from "./Tags";
 
 interface Props {
   children: ReactNode;
-  sidebar?: ReactNode;
 }
 
 const className = {
   container: "max-w-[94rem] mx-auto flex",
-  main: "h-[1000px] flex-auto px-4 py-[4.5rem] lg:py-4",
+  main: "h-[1000px] mx-auto lg:m-0 max-w-[43.25rem] lg:max-w-full flex-auto px-4 py-[4.5rem] lg:py-4",
+  divider: "bg-neutral w-full border-b my-4",
 };
 
-export default function UserLayout({ sidebar, children }: Props) {
+export default function UserLayout({ children }: Props) {
   return (
-    <Fragment>
-      <Header />
-      <section className={className.container}>
-        <SideNav />
-        <main className={className.main}>{children}</main>
-        {sidebar && <Sidebar>{sidebar}</Sidebar>}
-      </section>
-      <BottomTab />
-    </Fragment>
+    <Container
+      sidebar={
+        <Fragment>
+          <Categories />
+          <div className={className.divider} />
+          <Tags />
+        </Fragment>
+      }
+    >
+      {children}
+    </Container>
   );
 }
