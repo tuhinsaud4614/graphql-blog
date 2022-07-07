@@ -3,11 +3,16 @@ import { UserLayout } from "components/layout";
 import { Fragment, ReactElement } from "react";
 
 const MyHome: NextPageWithLayout = () => {
-  return <Fragment></Fragment>;
+  return (
+    <Fragment>
+      <div>hello</div>
+      <div>hi</div>
+    </Fragment>
+  );
 };
 
 MyHome.getLayout = (page: ReactElement) => {
-  return <UserLayout>{page}</UserLayout>;
+  return <UserLayout sidebar={<div>Hello</div>}>{page}</UserLayout>;
 };
 
 export default MyHome;

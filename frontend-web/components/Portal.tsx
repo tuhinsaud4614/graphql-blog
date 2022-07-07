@@ -5,20 +5,17 @@ interface Props {
   children: React.ReactNode;
 }
 
+const isBrowser = typeof window !== "undefined";
+
 const Portal = ({ children }: Props) => {
-  const [mounted, setMounted] = React.useState(false);
+  if (!isBrowser) {
+    return null;
+  }
 
-  React.useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
-  return mounted
-    ? createPortal(
-        children,
-        document.getElementById("presentational") as HTMLElement
-      )
-    : null;
+  return createPortal(
+    children,
+    document.getElementById("presentational") as HTMLElement
+  );
 };
 
 export default Portal;

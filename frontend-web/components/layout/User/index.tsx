@@ -6,6 +6,7 @@ import SideNav from "./SideNav";
 
 interface Props {
   children: ReactNode;
+  sidebar?: ReactNode;
 }
 
 const className = {
@@ -13,14 +14,14 @@ const className = {
   main: "h-[1000px] flex-auto px-4 py-[4.5rem] lg:py-4",
 };
 
-export default function UserLayout({ children }: Props) {
+export default function UserLayout({ sidebar, children }: Props) {
   return (
     <Fragment>
       <Header />
       <section className={className.container}>
         <SideNav />
         <main className={className.main}>{children}</main>
-        <Sidebar />
+        {sidebar && <Sidebar>{sidebar}</Sidebar>}
       </section>
       <BottomTab />
     </Fragment>
