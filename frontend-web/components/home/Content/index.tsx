@@ -1,5 +1,4 @@
-import PostItem from "./Item";
-import PostItemSkeleton from "./ItemSkeleton";
+import { PostItem, PostItemSkeleton } from "components";
 import Sidebar from "./Sidebar";
 
 const className = {

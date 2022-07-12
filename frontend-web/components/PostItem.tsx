@@ -1,6 +1,7 @@
-import UserLink from "components/UserLink";
+import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
+import UserLink from "./UserLink";
 
 const className = {
   root: "flex items-center",
@@ -14,15 +15,27 @@ const className = {
     "min-w-0 w-[6.25rem] md:w-[12.5rem] bg-neutral/5 flex items-center justify-center",
 };
 
-export default function PostItem() {
+interface Props {
+  classes?: {
+    root?: string;
+    left?: string;
+    title?: string;
+    body?: string;
+    timeBox?: string;
+    tag?: string;
+    imgContainer?: string;
+  };
+}
+
+export default function PostItem({ classes }: Props) {
   return (
-    <li className={className.root}>
-      <div className={className.left}>
+    <li className={classNames(className.root, classes?.root)}>
+      <div className={classNames(className.left, classes?.left)}>
         <UserLink href="/account/profile" src="/favicon.ico">
           Blake Lemoine
         </UserLink>
         <Link href="/post/1234" passHref>
-          <a className={className.title}>
+          <a className={classNames(className.title, classes?.title)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis
             excepturi consequatur dolore enim autem perferendis repellat
@@ -30,26 +43,28 @@ export default function PostItem() {
           </a>
         </Link>
         <Link href="/post/1234" passHref>
-          <a className={className.body}>
+          <a className={classNames(className.body, classes?.body)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis
             excepturi consequatur dolore enim autem perferendis repellat
             exercitationem voluptate eaque, natus accusantium.
           </a>
         </Link>
-        <div className={className.timeBox}>
+        <div className={classNames(className.timeBox, classes?.timeBox)}>
           <time>Jun 11</time>
           <span className="px-1.5">·</span>
-          <time>44 min</time>
-          <span className="px-1.5">·</span>
           <Link href="/post/tag/1234" passHref>
-            <a className={className.tag}>Technology</a>
+            <a className={classNames(className.tag, classes?.tag)}>
+              Technology
+            </a>
           </Link>
         </div>
       </div>
-      <div className={className.imgContainer}>
+      <div
+        className={classNames(className.imgContainer, classes?.imgContainer)}
+      >
         <Image
-          className={className.imgContainer}
+          className={classNames(className.imgContainer, classes?.imgContainer)}
           src="/demo.png"
           alt="Post"
           width={200}

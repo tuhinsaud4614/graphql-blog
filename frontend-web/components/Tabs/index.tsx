@@ -6,7 +6,7 @@ import TabPanel from "./TabPanel";
 const className = {
   list: "flex border-b space-x-4 space-y-4 relative overflow-x-auto scrollbar-hide",
   tabItem:
-    "text-neutral hover:text-accent-focus border-none outline-none py-3 first:mt-4 shrink-0",
+    "text-neutral hover:text-accent-focus border-none outline-none py-3 first:mt-4 shrink-0 capitalize",
   slider: "h-0.5 rounded-tr-lg rounded-tl-lg mx-1 absolute bottom-0 bg-accent",
 };
 
@@ -14,10 +14,15 @@ interface Props {
   tabs: string[];
   children?: ReactNode;
   onTab?(index: number, key: string): void;
+  selectedTab?: number;
 }
 
-export default function Tabs({ tabs, children, onTab }: Props) {
-  const [value, setValue] = useState(0);
+export default function Tabs({
+  tabs,
+  children,
+  onTab,
+  selectedTab = 0,
+}: Props) {
   const tabItemsRef = useRef(new Map<number, HTMLButtonElement | null>());
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [slider, setSlider] = useState({
@@ -28,7 +33,7 @@ export default function Tabs({ tabs, children, onTab }: Props) {
   });
 
   useEffect(() => {
-    const target = tabItemsRef.current.get(value);
+    const target = tabItemsRef.current.get(selectedTab);
     const container = containerRef.current;
     if (target && container) {
       const cRect = container.getBoundingClientRect();
@@ -43,7 +48,7 @@ export default function Tabs({ tabs, children, onTab }: Props) {
         right: right,
       });
     }
-  }, [value]);
+  }, [selectedTab]);
 
   return (
     <Fragment>
@@ -52,11 +57,10 @@ export default function Tabs({ tabs, children, onTab }: Props) {
           <button
             className={classNames(
               className.tabItem,
-              index === value && "text-accent"
+              index === selectedTab && "text-accent"
             )}
             key={index}
             onClick={() => {
-              setValue(index);
               onTab && onTab(index, text);
             }}
             aria-label={text}
@@ -73,7 +77,7 @@ export default function Tabs({ tabs, children, onTab }: Props) {
           />
         )}
       </div>
-      <TabPanel value={value}>{children}</TabPanel>
+      <TabPanel value={selectedTab}>{children}</TabPanel>
     </Fragment>
   );
 }
