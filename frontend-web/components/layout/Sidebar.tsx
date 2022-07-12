@@ -1,4 +1,4 @@
-import { Search } from "components";
+import { SidebarSearch } from "components";
 import { ReactNode } from "react";
 
 const className = {
@@ -14,7 +14,7 @@ export default function Sidebar({ children }: Props) {
   return (
     <aside className={className.root}>
       <section className={className.container}>
-        <Search />
+        <SidebarSearch />
         {children}
       </section>
     </aside>

@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import SideNav from "./SideNav";
 
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
   sidebar?: ReactNode;
 }
 

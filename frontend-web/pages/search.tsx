@@ -1,12 +1,27 @@
 import { NextPageWithLayout } from "@types";
-import { useRouter } from "next/router";
+import { SearchLayout } from "components/Layout";
+import { RecentSearch } from "components/search";
+import { GetServerSideProps } from "next";
 import { Fragment } from "react";
 
-const Search: NextPageWithLayout = () => {
-  const { query } = useRouter();
-  console.log(query);
+interface Props {
+  query: { [key: string]: any };
+}
 
-  return <Fragment>Search</Fragment>;
+const Search: NextPageWithLayout<Props> = ({ query }) => {
+  if (!("q" in query) || query.q === "") {
+    return (
+      <SearchLayout sidebar={<Fragment />}>
+        <RecentSearch />
+      </SearchLayout>
+    );
+  }
+
+  return <SearchLayout sidebar={<Fragment />}>{query["q"]}</SearchLayout>;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  return { props: { query } };
 };
 
 export default Search;

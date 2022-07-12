@@ -1,8 +1,7 @@
+import { Categories, Follow, Tags } from "components/Sidebar";
 import { Fragment, ReactNode } from "react";
-import Container from "../Container";
-import Categories from "./Categories";
-import Follow from "./Follow";
-import Tags from "./Tags";
+
+import Container from "./Container";
 
 interface Props {
   children: ReactNode;
