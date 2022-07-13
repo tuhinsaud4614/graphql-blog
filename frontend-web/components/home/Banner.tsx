@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+
 const className = {
   banner: "bg-primary pt-24 border-b border-secondary",
   bannerContent: "px-4 sm:mx-auto max-w-5xl flex items-center",
@@ -9,6 +11,7 @@ const className = {
 };
 
 export default function Banner() {
+  const { replace } = useRouter();
   return (
     <section className={className.banner}>
       <div className={className.bannerContent}>
@@ -17,7 +20,13 @@ export default function Banner() {
           <h3 className={className.subtitle}>
             Discover stories, thinking, and expertise from writers on any topic.
           </h3>
-          <button aria-label="Start reading" className={className.btn}>
+          <button
+            aria-label="Start reading"
+            className={className.btn}
+            onClick={() => {
+              replace("/my-home");
+            }}
+          >
             Start reading
           </button>
         </div>

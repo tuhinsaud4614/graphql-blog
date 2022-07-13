@@ -35,7 +35,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         />
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
-      {progress && <ProgressBar className="fixed top-0 left-0 right-0" />}
+      {progress && <ProgressBar className="fixed z-50 top-0 left-0 right-0" />}
       <Component {...pageProps} />
     </React.Fragment>
   );

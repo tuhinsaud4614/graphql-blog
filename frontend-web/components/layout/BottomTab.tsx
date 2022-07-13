@@ -6,7 +6,7 @@ import { FiSearch } from "react-icons/fi";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
 
 const className = {
-  root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 bg-base-200 px-4 shadow-top",
+  root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 px-4 shadow-top",
   items: " flex items-center h-full",
   item: "flex-1",
   link: "w-full h-full flex items-center justify-center text-neutral outline-none border-0 active:scale-95",
@@ -20,10 +20,10 @@ export default function BottomTab() {
     <nav className={className.root}>
       <ul className={className.items}>
         <li className={className.item}>
-          <Link href="/" passHref>
+          <Link href="/my-home" passHref>
             <a className={className.link}>
               {pathname === "/my-home" ? (
-                <HiHome size={24} />
+                <HiHome size={24} className="text-secondary" />
               ) : (
                 <HiOutlineHome size={24} />
               )}
@@ -36,7 +36,7 @@ export default function BottomTab() {
               <FiSearch
                 className={
                   pathname === "/search"
-                    ? "text-neutral-focus font-bold"
+                    ? "text-secondary font-bold"
                     : "font-light"
                 }
                 size={pathname === "/search" ? 24 : 22}
@@ -48,7 +48,7 @@ export default function BottomTab() {
           <Link href="/favorite" passHref>
             <a className={className.link}>
               {pathname === "/favorite" ? (
-                <AiFillHeart size={24} />
+                <AiFillHeart size={24} className="text-secondary" />
               ) : (
                 <AiOutlineHeart size={24} />
               )}

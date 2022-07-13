@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BiBell } from "react-icons/bi";
 
 const className = {
-  root: "lg:hidden fixed top-0 left-0 right-0 h-14 bg-base-200 shadow-md px-4",
+  root: "lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-base-200 shadow-md px-4",
   nav: "flex items-center justify-between",
   homeLink: "flex items-center justify-center",
   notifications:

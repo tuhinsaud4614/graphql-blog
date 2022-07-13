@@ -6,7 +6,7 @@ import { BiX } from "react-icons/bi";
 const className = {
   root: "",
   title:
-    "my-6 text-neutral-focus font-bold line-clamp-1 text-ellipsis leading-[3.25rem] text-[2.625rem]",
+    "my-6 text-neutral-focus font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
   items: "list-none m-0 flex flex-col",
   divider: "block w-full border-b mt-2 mb-3",
   item: "flex justify-between items-center text-neutral",

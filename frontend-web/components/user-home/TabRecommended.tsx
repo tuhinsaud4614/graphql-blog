@@ -1,6 +1,4 @@
-import { PostItem } from "components";
-import NotFoundMessage from "./NotFoundMessage";
-import TabBox from "./TabBox";
+import { NotFoundMessage, PostItem, TabBox } from "components";
 
 const className = {
   item: "border-b last:border-none py-5 last:pb-0",

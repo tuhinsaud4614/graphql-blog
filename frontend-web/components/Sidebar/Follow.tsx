@@ -1,6 +1,6 @@
+import { FollowItem } from "components";
 import Link from "next/link";
 import { Fragment } from "react";
-import FollowItem from "./FollowItem";
 
 const className = {
   title: "text-neutral mb-2 font-medium",

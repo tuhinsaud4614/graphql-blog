@@ -1,9 +1,8 @@
-import { PostItem } from "components";
 import { ReactNode } from "react";
-import PostItems from "./PostItems";
 
 const className = {
   root: "pt-3",
+  items: "list-none m-0 pt-3",
   item: "border-b last:border-none py-5",
 };
 
@@ -19,10 +18,8 @@ export default function TabBox({ children, notFound }: Props) {
     return <section className="pt-3">{notFound}</section>;
   }
   return (
-    <PostItems>
-      {Array.from({ length: 10 }).map((_, index) => (
-        <PostItem key={index} classes={{ root: className.item }} />
-      ))}
-    </PostItems>
+    <section>
+      <ul className={className.items}>{children}</ul>
+    </section>
   );
 }
