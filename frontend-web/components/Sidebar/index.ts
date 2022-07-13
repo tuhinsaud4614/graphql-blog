@@ -1,5 +1,4 @@
-export { default as Categories } from "./Categories";
-export { default as Category } from "./Category";
-export { default as Follow } from "./Follow";
+export { default as SidebarCategory } from "./Category";
+export { default as SidebarContent } from "./Content";
+export { default as SidebarPostItem } from "./PostItem";
 export { default as SidebarSkeleton } from "./Skeleton";
-export { default as Tags } from "./Tags";

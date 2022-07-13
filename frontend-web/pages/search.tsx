@@ -6,18 +6,18 @@ import {
   SearchAuthor,
   SearchCategories,
   SearchPosts,
+  SearchPostsSidebarContent,
   SearchTags,
 } from "components/search";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
+import { SEARCH_TABS } from "utils/constants";
 
 const className = {
   title:
     "my-6 text-neutral/60 font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
 };
-
-const tabs = ["posts", "author", "categories", "tags"];
 
 interface Props {
   query: { [key: string]: any };
@@ -29,7 +29,7 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
 
   useEffect(() => {
     if (query && "t" in query && query.t) {
-      const tab = tabs.findIndex((t) => t === query.t);
+      const tab = SEARCH_TABS.findIndex((t) => t === query.t);
       setCurrentTab(tab === -1 ? 0 : tab);
     } else {
       setCurrentTab(0);
@@ -45,12 +45,19 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
   }
 
   return (
-    <SearchLayout sidebar={<Fragment />}>
+    <SearchLayout
+      sidebar={
+        <SearchPostsSidebarContent
+          hide={SEARCH_TABS[currentTab]}
+          query={query["q"]}
+        />
+      }
+    >
       <h1 className={className.title}>
         Results for <span className="text-neutral">{query["q"]}</span>
       </h1>
       <Tabs
-        tabs={tabs}
+        tabs={[...SEARCH_TABS]}
         onTab={(index, key) => {
           replace(
             index !== 0
@@ -70,7 +77,7 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
         )}
         {currentTab === 1 ? (
           <SearchAuthor
-            link={`/search?q=${query["q"]}&t=${tabs[2]}`}
+            link={`/search?q=${query["q"]}&t=${SEARCH_TABS[2]}`}
             linkText="Browse searched categories"
           />
         ) : (
@@ -78,7 +85,7 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
         )}
         {currentTab === 2 ? (
           <SearchCategories
-            link={`/search?q=${query["q"]}&t=${tabs[3]}`}
+            link={`/search?q=${query["q"]}&t=${SEARCH_TABS[3]}`}
             linkText="Browse searched tags"
           />
         ) : (
@@ -86,7 +93,7 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
         )}
         {currentTab === 3 ? (
           <SearchTags
-            link={`/search?q=${query["q"]}&t=${tabs[0]}`}
+            link={`/search?q=${query["q"]}&t=${SEARCH_TABS[0]}`}
             linkText="Browse searched posts"
           />
         ) : (
