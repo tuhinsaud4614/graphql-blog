@@ -1,7 +1,13 @@
 import { Tabs } from "@component";
 import { NextPageWithLayout } from "@types";
 import { SearchLayout } from "components/Layout";
-import { RecentSearch, SearchAuthor, SearchPosts } from "components/search";
+import {
+  RecentSearch,
+  SearchAuthor,
+  SearchCategories,
+  SearchPosts,
+  SearchTags,
+} from "components/search";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
@@ -57,21 +63,35 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
         {currentTab === 0 ? (
           <SearchPosts
             link={`/search?q=${query["q"]}`}
-            linkText="Browse following author"
+            linkText="Browse searched author"
           />
         ) : (
           <Fragment />
         )}
         {currentTab === 1 ? (
           <SearchAuthor
-            link={`/search?q=${query["q"]}&t=${tabs[currentTab + 1]}`}
-            linkText="Browse following author"
+            link={`/search?q=${query["q"]}&t=${tabs[2]}`}
+            linkText="Browse searched categories"
           />
         ) : (
           <Fragment />
         )}
-        <div>categories</div>
-        <div>tags</div>
+        {currentTab === 2 ? (
+          <SearchCategories
+            link={`/search?q=${query["q"]}&t=${tabs[3]}`}
+            linkText="Browse searched tags"
+          />
+        ) : (
+          <Fragment />
+        )}
+        {currentTab === 3 ? (
+          <SearchTags
+            link={`/search?q=${query["q"]}&t=${tabs[0]}`}
+            linkText="Browse searched posts"
+          />
+        ) : (
+          <Fragment />
+        )}
       </Tabs>
     </SearchLayout>
   );

@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import classNames from "classnames";
+import { Fragment, ReactNode } from "react";
 
 const className = {
   root: "pt-3",
@@ -6,20 +7,28 @@ const className = {
   item: "border-b last:border-none py-5",
 };
 
-const isTrue = false;
-
 interface Props {
   notFound?: ReactNode;
   children?: ReactNode;
+  classes?: {
+    root?: string;
+    items?: string;
+  };
 }
 
-export default function TabBox({ children, notFound }: Props) {
+export default function TabBox({ children, notFound, classes }: Props) {
   if (notFound) {
-    return <section className="pt-3">{notFound}</section>;
+    return (
+      <section className={classNames("pt-3", classes?.root)}>
+        {notFound}
+      </section>
+    );
   }
   return (
-    <section>
-      <ul className={className.items}>{children}</ul>
-    </section>
+    <Fragment>
+      <ul className={classNames(className.items, classes?.items)}>
+        {children}
+      </ul>
+    </Fragment>
   );
 }
