@@ -1,4 +1,5 @@
-import { Tabs } from "@component";
+import { SearchBox, Tabs } from "@component";
+import { useLocalStorage, useMediaQuery } from "@hooks";
 import { NextPageWithLayout } from "@types";
 import { SearchLayout } from "components/Layout";
 import {
@@ -11,8 +12,8 @@ import {
 } from "components/search";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
-import { SEARCH_TABS } from "utils/constants";
+import { Fragment, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { RECENT_SEARCHES, SEARCH_TABS } from "utils/constants";
 
 const className = {
   title:
@@ -25,7 +26,34 @@ interface Props {
 
 const Search: NextPageWithLayout<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(0);
+  const [_, setRecentSearches] = useLocalStorage<string[] | null>(
+    RECENT_SEARCHES,
+    null
+  );
+  const searchRef = useRef<null | HTMLDivElement>(null);
+  const inputRef = useRef<null | HTMLInputElement>(null);
   const { replace } = useRouter();
+  const matches = useMediaQuery("(min-width: 1024px)");
+
+  const keyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputRef.current) {
+      if (inputRef.current.value.trim()) {
+        setRecentSearches((prev) => {
+          if (inputRef.current) {
+            return prev
+              ? [...prev, inputRef.current.value]
+              : [inputRef.current?.value];
+          }
+          return prev;
+        });
+      }
+      replace(
+        `/search?q=${inputRef.current.value}${
+          currentTab === 0 ? "" : "&t=" + SEARCH_TABS[currentTab]
+        }`
+      );
+    }
+  };
 
   useEffect(() => {
     if (query && "t" in query && query.t) {
@@ -53,6 +81,12 @@ const Search: NextPageWithLayout<Props> = ({ query }) => {
         />
       }
     >
+      <SearchBox
+        ref={inputRef}
+        rootRef={searchRef}
+        onKeyDown={keyDownHandler}
+        classes={{ root: "lg:hidden" }}
+      />
       <h1 className={className.title}>
         Results for <span className="text-neutral">{query["q"]}</span>
       </h1>

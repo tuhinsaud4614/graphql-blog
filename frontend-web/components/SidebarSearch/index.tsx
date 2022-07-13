@@ -34,14 +34,16 @@ export default function Search() {
 
   const keyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputRef.current) {
-      setRecentSearches((prev) => {
-        if (inputRef.current) {
-          return prev
-            ? [...prev, inputRef.current.value]
-            : [inputRef.current?.value];
-        }
-        return prev;
-      });
+      if (inputRef.current.value.trim()) {
+        setRecentSearches((prev) => {
+          if (inputRef.current) {
+            return prev
+              ? [...prev, inputRef.current.value]
+              : [inputRef.current?.value];
+          }
+          return prev;
+        });
+      }
       push(`/search?q=${inputRef.current.value}`);
     }
   };

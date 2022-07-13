@@ -1,7 +1,9 @@
+import { useIsomorphicLayoutEffect, useLocalStorage } from "@hooks";
 import classNames from "classnames";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { BiX } from "react-icons/bi";
+import { RECENT_SEARCHES } from "utils/constants";
 
 const className = {
   root: "",
@@ -16,11 +18,27 @@ const className = {
 
 export default function RecentSearch() {
   const { replace } = useRouter();
-  return (
-    <>
-      <h1 className={className.title}>Recent searches</h1>
+  const isRender = useRef(false);
+  const [recentSearches, setRecentSearches] = useLocalStorage<string[] | null>(
+    RECENT_SEARCHES,
+    null
+  );
+  let result;
+
+  useIsomorphicLayoutEffect(() => {
+    isRender.current = true;
+  }, []);
+
+  if (!isRender.current) {
+    return null;
+  }
+
+  if (recentSearches === null || recentSearches.length === 0) {
+    result = <p className="text-neutral">You have no recent searches</p>;
+  } else {
+    result = (
       <ul className={className.items}>
-        {Array.from({ length: 10 }).map((_, index) => {
+        {recentSearches.map((value, index) => {
           return (
             <Fragment key={index}>
               {index !== 0 && <li className={className.divider} />}
@@ -30,15 +48,22 @@ export default function RecentSearch() {
                   type="button"
                   className={className.btn}
                   onClick={() => {
-                    replace(encodeURI(`/search?q=h-${index}`));
+                    replace(encodeURI(`/search?q=${value}`));
                   }}
                 >
-                  h-{index}
+                  {value}
                 </button>
                 <button
                   aria-label="Clear"
                   type="button"
                   className={classNames(className.btn, className.clear)}
+                  onClick={() => {
+                    setRecentSearches((prev) => {
+                      const old =
+                        prev && prev?.filter((old) => old !== prev[index]);
+                      return old;
+                    });
+                  }}
                 >
                   <BiX size={28} />
                 </button>
@@ -47,6 +72,12 @@ export default function RecentSearch() {
           );
         })}
       </ul>
-    </>
+    );
+  }
+  return (
+    <div>
+      <h1 className={className.title}>Recent searches</h1>
+      {result}
+    </div>
   );
 }
