@@ -24,7 +24,7 @@ interface Props {
   query: { [key: string]: any };
 }
 
-const Search: NextPageWithLayout<Props> = ({ query }) => {
+const SearchPage: NextPageWithLayout<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [_, setRecentSearches] = useLocalStorage<string[] | null>(
     RECENT_SEARCHES,
@@ -142,4 +142,4 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return { props: { query } };
 };
 
-export default Search;
+export default SearchPage;

@@ -2,6 +2,7 @@ import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { ROUTES } from "utils/constants";
 import UserLink from "./UserLink";
 
 const className = {
@@ -36,7 +37,7 @@ export default function PostItem({ classes }: Props) {
         <UserLink href="/account/profile" src="/favicon.ico">
           Blake Lemoine
         </UserLink>
-        <Link href="/post/1234" passHref>
+        <Link href={ROUTES.post("1234")} passHref>
           <a className={classNames(className.title, classes?.title)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis
@@ -44,7 +45,7 @@ export default function PostItem({ classes }: Props) {
             exercitationem voluptate eaque, natus accusantium.
           </a>
         </Link>
-        <Link href="/post/1234" passHref>
+        <Link href={ROUTES.post("1234")} passHref>
           <a className={classNames(className.body, classes?.body)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis
