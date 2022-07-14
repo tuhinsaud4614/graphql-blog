@@ -10,14 +10,16 @@ const className = {
 
 const isTrue = false;
 
-export default function TabDrafts() {
+export default function TabPublished() {
   return (
     <TabBox
       classes={{ root: className.root }}
       notFound={
         isTrue && (
           <Fragment>
-            <p className={className.notFound}>You have no drafts.</p>
+            <p className={className.notFound}>
+              You haven’t published any public stories yet.
+            </p>
           </Fragment>
         )
       }

@@ -27,7 +27,7 @@ interface Props {
   };
 }
 
-export default function DraftPost({ classes }: Props) {
+export default function PostItem({ classes }: Props) {
   const { push } = useRouter();
   const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
   const [openModel, setOpenModel] = useState(false);

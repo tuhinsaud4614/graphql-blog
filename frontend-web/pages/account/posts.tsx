@@ -1,6 +1,9 @@
 import { LinkButton, Tabs } from "@component";
 import { NextPageWithLayout } from "@types";
-import { AccountPostsTabDrafts } from "components/account";
+import {
+  AccountPostsTabDrafts,
+  AccountPostsTabPublished,
+} from "components/account";
 import { UserLayout } from "components/Layout";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useEffect, useState } from "react";
@@ -38,7 +41,7 @@ const MyPostsPage: NextPageWithLayout = () => {
         selectedTab={currentTab}
       >
         {currentTab === 0 ? <AccountPostsTabDrafts /> : <Fragment />}
-        {currentTab === 1 ? <AccountPostsTabDrafts /> : <Fragment />}
+        {currentTab === 1 ? <AccountPostsTabPublished /> : <Fragment />}
       </Tabs>
     </Fragment>
   );
