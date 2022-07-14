@@ -3,6 +3,8 @@ export { default as FollowItem } from "./FollowItem";
 export { default as Header } from "./Header";
 export { default as LinkButton } from "./LinkButton";
 export { default as Menu } from "./Menu";
+export { default as Modal } from "./Modal";
+export { default as ModalHeader } from "./ModalHeader";
 export { default as NotFoundMessage } from "./NotFoundMessage";
 export { default as Portal } from "./Portal";
 export { default as PostItem } from "./PostItem";

@@ -61,26 +61,6 @@ export default function PostItem({ classes }: Props) {
                 Technology
               </a>
             </Link>
-            <Link href="/post/tag/1234" passHref>
-              <a className={classNames(className.tag, classes?.tag)}>
-                Technology
-              </a>
-            </Link>
-            <Link href="/post/tag/1234" passHref>
-              <a className={classNames(className.tag, classes?.tag)}>
-                Technology
-              </a>
-            </Link>
-            <Link href="/post/tag/1234" passHref>
-              <a className={classNames(className.tag, classes?.tag)}>
-                Technology
-              </a>
-            </Link>
-            <Link href="/post/tag/1234" passHref>
-              <a className={classNames(className.tag, classes?.tag)}>
-                Technology
-              </a>
-            </Link>
           </div>
           <button
             type="button"

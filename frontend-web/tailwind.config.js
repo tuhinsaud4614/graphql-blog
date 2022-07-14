@@ -41,6 +41,7 @@ module.exports = {
         warning: "#FBBD23",
         "warning-content": "#382800",
         error: "#F87272",
+        "error-focus": "#f83636",
         "error-content": "#470000",
       },
       screens: {

@@ -80,11 +80,11 @@ export default function SideNav() {
             </Link>
           </li>
           <li className={className.item}>
-            <Link href="/posts/me" passHref>
+            <Link href={ROUTES.myPosts} passHref>
               <a
                 className={classNames(
                   className.link,
-                  pathname === "/posts/me" && "!text-secondary"
+                  pathname === ROUTES.myPosts && "!text-secondary"
                 )}
               >
                 <CgLoadbarDoc size={24} />
@@ -92,11 +92,11 @@ export default function SideNav() {
             </Link>
           </li>
           <li className={className.item}>
-            <Link href="/posts/create" passHref>
+            <Link href={ROUTES.createPost} passHref>
               <a
                 className={classNames(
                   className.link,
-                  pathname === "/posts/create" && "!text-secondary"
+                  pathname === ROUTES.createPost && "!text-secondary"
                 )}
               >
                 <BiEdit size={24} />
