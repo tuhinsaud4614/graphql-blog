@@ -10,6 +10,7 @@ export { default as Portal } from "./Portal";
 export { default as PostItem } from "./PostItem";
 export { default as PostItemSkeleton } from "./PostItemSkeleton";
 export { default as ProgressBar } from "./ProgressBar";
+export { default as ReactBox } from "./ReactBox";
 export { default as SearchBox } from "./SearchBox";
 export { default as SidebarSearch } from "./SidebarSearch";
 export { default as TabBox } from "./TabBox";

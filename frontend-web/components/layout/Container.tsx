@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Fragment, ReactNode } from "react";
 import BottomTab from "./BottomTab";
 import Header from "./Header";
@@ -7,6 +8,10 @@ import SideNav from "./SideNav";
 interface Props {
   children?: ReactNode;
   sidebar?: ReactNode;
+  classes?: {
+    container?: string;
+    main?: string;
+  };
 }
 
 const className = {
@@ -14,13 +19,15 @@ const className = {
   main: "mx-auto max-w-[43.25rem] flex-auto px-4 py-[4.5rem] lg:py-4 overflow-x-hidden",
 };
 
-export default function Container({ sidebar, children }: Props) {
+export default function Container({ sidebar, classes, children }: Props) {
   return (
     <Fragment>
       <Header />
-      <section className={className.container}>
+      <section className={classNames(className.container, classes?.container)}>
         <SideNav />
-        <main className={className.main}>{children}</main>
+        <main className={classNames(className.main, classes?.main)}>
+          {children}
+        </main>
         {sidebar && <Sidebar>{sidebar}</Sidebar>}
       </section>
       <BottomTab />

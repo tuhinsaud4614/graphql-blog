@@ -1,3 +1,4 @@
+import { ReactBox } from "@component";
 import { LayoutContainer } from "components/Layout";
 import {
   SidebarContent,
@@ -19,7 +20,7 @@ interface IParams extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { postId } = context.params as IParams;
 
-  return { props: { postId } };
+  return { props: { postId }, revalidate: 10 };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -39,7 +40,7 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
           <SidebarUserProfiler classes={{ root: "mb-10" }} />
           <SidebarContent
             title="More from The RAT Diary"
-            classes={{ items: "space-y-4" }}
+            classes={{ items: "space-y-4 pb-8" }}
           >
             <SidebarPostItem />
             <SidebarPostItem />
@@ -49,7 +50,8 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
         </Fragment>
       }
     >
-      <div>{postId}</div>
+      {postId}
+      <ReactBox />
     </LayoutContainer>
   );
 };
