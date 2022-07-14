@@ -32,15 +32,15 @@ export default function BottomTab() {
           </Link>
         </li>
         <li className={className.item}>
-          <Link href="/search" passHref>
+          <Link href={ROUTES.search} passHref>
             <a className={className.link}>
               <FiSearch
                 className={
-                  pathname === "/search"
+                  pathname === ROUTES.search
                     ? "text-secondary font-bold"
                     : "font-light"
                 }
-                size={pathname === "/search" ? 24 : 22}
+                size={pathname === ROUTES.search ? 24 : 22}
               />
             </a>
           </Link>

@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { BiBell } from "react-icons/bi";
+import { FaBell } from "react-icons/fa";
+import { ROUTES } from "utils/constants";
 
 const className = {
   root: "lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-base-200 shadow-md px-4",
@@ -11,6 +14,7 @@ const className = {
 };
 
 export default function Header() {
+  const { pathname } = useRouter();
   return (
     <header className={className.root}>
       <nav className={className.nav}>
@@ -19,9 +23,13 @@ export default function Header() {
             <Image src="/logo.svg" alt="The Rat Diary" height={50} width={50} />
           </a>
         </Link>
-        <Link href="/account/notifications" passHref>
+        <Link href={ROUTES.notifications} passHref>
           <a className={className.notifications} aria-label="Notifications">
-            <BiBell size={20} />
+            {pathname === ROUTES.notifications ? (
+              <FaBell size={20} />
+            ) : (
+              <BiBell size={20} />
+            )}
           </a>
         </Link>
       </nav>

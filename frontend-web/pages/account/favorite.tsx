@@ -10,7 +10,7 @@ const className = {
   item: "border-b last:border-none py-5",
 };
 
-const Favorite: NextPageWithLayout = () => {
+const FavoritePage: NextPageWithLayout = () => {
   return (
     <Fragment>
       <h1 className={className.title}>Your favorite posts</h1>
@@ -24,8 +24,8 @@ const Favorite: NextPageWithLayout = () => {
   );
 };
 
-Favorite.getLayout = (page: ReactElement) => {
+FavoritePage.getLayout = (page: ReactElement) => {
   return <UserLayout>{page}</UserLayout>;
 };
 
-export default Favorite;
+export default FavoritePage;

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiEdit } from "react-icons/bi";
 import { CgLoadbarDoc } from "react-icons/cg";
+import { FaBell } from "react-icons/fa";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
 import { ROUTES } from "utils/constants";
 
@@ -47,14 +48,18 @@ export default function SideNav() {
             </Link>
           </li>
           <li className={className.item}>
-            <Link href="/notifications" passHref>
+            <Link href={ROUTES.notifications} passHref>
               <a
                 className={classNames(
                   className.link,
-                  pathname === "/notifications" && "!text-secondary"
+                  pathname === ROUTES.notifications && "!text-secondary"
                 )}
               >
-                <BiBell size={24} />
+                {pathname === ROUTES.notifications ? (
+                  <FaBell size={24} />
+                ) : (
+                  <BiBell size={24} />
+                )}
               </a>
             </Link>
           </li>
