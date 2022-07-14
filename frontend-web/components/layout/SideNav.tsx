@@ -6,6 +6,7 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiEdit } from "react-icons/bi";
 import { CgLoadbarDoc } from "react-icons/cg";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
+import { ROUTES } from "utils/constants";
 
 const className = {
   root: "hidden lg:block min-h-screen w-20 border-r relative",
@@ -58,14 +59,14 @@ export default function SideNav() {
             </Link>
           </li>
           <li className={className.item}>
-            <Link href="/favorite" passHref>
+            <Link href={ROUTES.favorite} passHref>
               <a
                 className={classNames(
                   className.link,
-                  pathname === "/favorite" && "!text-secondary"
+                  pathname === ROUTES.favorite && "!text-secondary"
                 )}
               >
-                {pathname === "/favorite" ? (
+                {pathname === ROUTES.favorite ? (
                   <AiFillHeart size={24} />
                 ) : (
                   <AiOutlineHeart size={24} />
