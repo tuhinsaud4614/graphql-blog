@@ -22,7 +22,7 @@ export default function TabDrafts() {
         )
       }
     >
-      {Array.from({ length: 4 }).map((_, index) => (
+      {Array.from({ length: 12 }).map((_, index) => (
         <PostItem key={index} classes={{ root: className.item }} />
       ))}
     </TabBox>

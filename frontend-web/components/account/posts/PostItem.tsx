@@ -66,7 +66,7 @@ export default function PostItem({ classes }: Props) {
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}
         onClose={() => setAnchorEle(null)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <section className={className.actions}>
           <button

@@ -27,6 +27,14 @@ const variants: Variants = {
   },
 };
 
+const className = {
+  backdrop: "fixed z-[950] inset-0",
+  root: "fixed z-[951] bg-base-100 shadow-mine-2 rounded",
+  arrow:
+    "fixed block bg-base-100 transform rotate-45 shadow-mine-2 w-3.5 h-3.5",
+  container: "relative z-10 w-full h-full bg-base-100 rounded overflow-hidden",
+};
+
 interface Props {
   open: boolean;
   anchorEle?: null | Element;
@@ -97,7 +105,7 @@ const MenuComponent = ({
       {!!onClose && (
         <div
           onClick={onClose}
-          className={classNames("fixed z-[950] inset-0", classes?.backdrop)}
+          className={classNames(className.backdrop, classes?.backdrop)}
         />
       )}
       <motion.section
@@ -106,10 +114,7 @@ const MenuComponent = ({
         initial="hidden"
         animate="visible"
         exit="exit"
-        className={classNames(
-          "fixed z-[951] bg-base-200 shadow-md rounded",
-          classes?.root
-        )}
+        className={classNames(className.root, classes?.root)}
         style={{
           left: selfLeft,
           top: selfTop,
@@ -126,22 +131,14 @@ const MenuComponent = ({
               },
             }}
             exit={{ opacity: 0 }}
-            className={classNames(
-              "fixed block bg-base-200 transform rotate-45 shadow-md w-3.5 h-3.5",
-              classes?.arrow
-            )}
+            className={classNames(className.arrow, classes?.arrow)}
             style={{
               left: arrowLeft,
               top: arrowTop,
             }}
           />
         )}
-        <div
-          className={classNames(
-            "relative z-10 w-full h-full bg-base-200 rounded overflow-hidden",
-            classes?.container
-          )}
-        >
+        <div className={classNames(className.container, classes?.container)}>
           {children}
         </div>
       </motion.section>

@@ -1,13 +1,15 @@
 import { ReactBox } from "@component";
 import { LayoutContainer } from "components/Layout";
+import { PostDetailAuthorInfo } from "components/post-detail";
 import {
   SidebarContent,
   SidebarPostItem,
   SidebarUserProfiler,
 } from "components/Sidebar";
+import { AnimatePresence } from "framer-motion";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 
 const className = {
   root: "bg-base-100",
@@ -31,7 +33,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const PostPage: NextPage<IParams> = ({ postId }) => {
-  console.log(postId);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <LayoutContainer
@@ -50,8 +52,13 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
         </Fragment>
       }
     >
-      {postId}
-      <ReactBox />
+      <div ref={contentRef}>
+        <PostDetailAuthorInfo />
+        <div>content-{postId}</div>
+      </div>
+      <AnimatePresence>
+        <ReactBox siblingRef={contentRef} />
+      </AnimatePresence>
     </LayoutContainer>
   );
 };
