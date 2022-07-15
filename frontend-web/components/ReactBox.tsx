@@ -1,6 +1,6 @@
-import { useMediaQuery } from "@hooks";
+import { useMediaQuery, useTooltip } from "@hooks";
 import { motion } from "framer-motion";
-import { RefObject, useEffect, useState } from "react";
+import { Fragment, RefObject, useEffect, useRef, useState } from "react";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 
@@ -21,7 +21,9 @@ interface Props {
 
 export default function ReactBox({ onComment, onLike, siblingRef }: Props) {
   const [show, setShow] = useState<boolean>(true);
+  const likeEle = useRef<HTMLButtonElement | null>(null);
   const matches = useMediaQuery("(min-width: 1024px)");
+  const { onHoverEnd, onHoverStart } = useTooltip();
 
   useEffect(() => {
     const sibling = siblingRef.current;
@@ -57,47 +59,56 @@ export default function ReactBox({ onComment, onLike, siblingRef }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, matches]);
 
-  console.log(show);
-
   if (!show) {
     return null;
   }
 
   return (
-    <div className={className.root}>
-      <motion.div
-        className={className.reactBar}
-        initial={{ y: 200, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <button
-          aria-label="Like"
-          type="button"
-          className={className.reactBtn}
-          onClick={onLike}
+    <Fragment>
+      <div className={className.root}>
+        <motion.div
+          className={className.reactBar}
+          initial={{ y: 200, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          {false ? (
-            <AiFillLike
-              size={24}
-              className="text-secondary hover:text-secondary-focus"
-            />
-          ) : (
-            <AiOutlineLike className="hover:text-secondary" size={24} />
-          )}
-          <span className="ml-1">100</span>
-        </button>
-        <span className={className.divide} />
-        <button
-          aria-label="Like"
-          type="button"
-          className={className.reactBtn}
-          onClick={onComment}
-        >
-          <BsChat size={20} className="text-accent hover:text-accent-focus" />
-          <span className="ml-1">100</span>
-        </button>
-      </motion.div>
-    </div>
+          <button
+            aria-label="Like"
+            type="button"
+            className={className.reactBtn}
+            onClick={onLike}
+            onMouseEnter={(e) => {
+              onHoverStart(e, {
+                text: "View Likes",
+                anchorOrigin: { vertical: "top", horizontal: "center" },
+              });
+            }}
+            onMouseLeave={() => {
+              onHoverEnd();
+            }}
+          >
+            {false ? (
+              <AiFillLike
+                size={24}
+                className="text-secondary hover:text-secondary-focus"
+              />
+            ) : (
+              <AiOutlineLike className="hover:text-secondary" size={24} />
+            )}
+            <span className="ml-1">100</span>
+          </button>
+          <span className={className.divide} />
+          <button
+            aria-label="Like"
+            type="button"
+            className={className.reactBtn}
+            onClick={onComment}
+          >
+            <BsChat size={20} className="text-accent hover:text-accent-focus" />
+            <span className="ml-1">100</span>
+          </button>
+        </motion.div>
+      </div>
+    </Fragment>
   );
 }

@@ -18,7 +18,8 @@ class MyDocument extends Document {
         <Head />
         <body>
           <Main />
-          <div id="presentational" role="presentation"></div>
+          <div id="presentational" role="presentation" />
+          <div id="tooltip" role="tooltip" />
           <NextScript />
         </body>
       </Html>
