@@ -52,6 +52,11 @@ export default function useTooltip() {
       tooltipEle.current.innerHTML = `${text}`;
       tooltipEle.current.ariaLabel = `Tooltip`;
       tooltipEle.current.className = className.tip;
+      // Add extra class name
+      const extraCls = cls?.replace(/\s+/g, " ").trim().split(" ");
+      if (extraCls && extraCls.length) {
+        tooltipEle.current.classList.add(...extraCls);
+      }
     }
 
     appendInDom(tooltipEle.current);
@@ -85,12 +90,6 @@ export default function useTooltip() {
         ? "animate-tooltipTopArrow"
         : "animate-tooltipBottomArrow"
     );
-
-    // Add extra class name
-    const extraCls = cls?.replace(/\s+/g, " ").trim().split(" ");
-    if (extraCls && extraCls.length) {
-      tooltipEle.current.classList.add(...extraCls);
-    }
   };
 
   const onHoverEnd = () => {
