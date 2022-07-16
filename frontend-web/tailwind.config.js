@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./hooks/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -48,8 +49,11 @@ module.exports = {
         md1: "901px",
       },
       animation: {
-        tooltip: "tooltip .1s ease-out",
-        tooltipArrow: "tooltipArrow .1s ease-out",
+        toolBottomTip: "tooltipBottom .15s ease-out",
+        toolTopTip: "tooltipTop .15s ease-out",
+        tooltipArrow: "tooltipArrow .15s ease-out",
+        tooltipBottomArrow: "tooltipBottomArrow .15s ease-out",
+        tooltipTopArrow: "tooltipTopArrow .15s ease-out",
         "progress-bar": "progress-bar 2s linear infinite",
       },
       keyframes: {
@@ -61,24 +65,44 @@ module.exports = {
             "background-position": "0%",
           },
         },
-        tooltip: {
+        tooltipTop: {
           "0%": {
             opacity: "0",
-            transform: "scale(1.2)",
+            transform: "scale(0) translateY(100%)",
           },
           "100%": {
             opacity: "1",
-            transform: "scale(1)",
+            transform: "scale(1) translateY(0)",
           },
         },
-        tooltipArrow: {
+        tooltipBottom: {
           "0%": {
             opacity: "0",
-            transform: "scale(1.2) rotate(45deg)",
+            transform: "scale(0) translateY(-100%)",
           },
           "100%": {
             opacity: "1",
-            transform: "scale(1) rotate(45deg)",
+            transform: "scale(1) translateY(0)",
+          },
+        },
+        tooltipBottomArrow: {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0) rotate(45deg) translateY(-100%)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1) rotate(45deg) translateY(0)",
+          },
+        },
+        tooltipTopArrow: {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0) rotate(45deg) translateY(100%)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1) rotate(45deg) translateY(0)",
           },
         },
       },

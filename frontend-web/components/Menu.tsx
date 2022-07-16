@@ -16,14 +16,19 @@ const variants: Variants = {
     y: 0,
     transition: {
       duration: 0.1,
-      type: "spring",
-      damping: 25,
-      stiffness: 500,
     },
   },
-  exit: {
-    y: 16,
+};
+
+const arrowVariants: Variants = {
+  hidden: {
     opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.1,
+    },
   },
 };
 
@@ -113,7 +118,7 @@ const MenuComponent = ({
         variants={variants}
         initial="hidden"
         animate="visible"
-        exit="exit"
+        exit="hidden"
         className={classNames(className.root, classes?.root)}
         style={{
           left: selfLeft,
@@ -122,15 +127,10 @@ const MenuComponent = ({
       >
         {!hideArrow && (
           <motion.span
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: {
-                duration: 0.1,
-                delay: 0.5,
-              },
-            }}
-            exit={{ opacity: 0 }}
+            variants={arrowVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
             className={classNames(className.arrow, classes?.arrow)}
             style={{
               left: arrowLeft,

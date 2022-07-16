@@ -14,6 +14,8 @@ export const getPositions = (
   let arrowTop = 0;
   let FRACTION = 1;
 
+  let vertical: IAnchorOrigin["vertical"] = anchorOrigin.vertical;
+
   if (anchorRect) {
     const selfWidth = selfRect ? selfRect.width : 0;
     const selfHeight = selfRect ? selfRect.height : 0;
@@ -60,7 +62,6 @@ export const getPositions = (
       window.innerHeight >
       anchorRect.bottom + selfHeight + (hideArrow ? 4 : ARROW_SIZE);
 
-    let vertical: IAnchorOrigin["vertical"] = anchorOrigin.vertical;
     if (anchorOrigin.vertical === "top" && !hasTopSpace && hasBottomSpace) {
       vertical = "bottom";
     } else if (
@@ -88,7 +89,8 @@ export const getPositions = (
     selfTop,
     arrowLeft,
     arrowTop,
-  };
+    vertical,
+  } as const;
 };
 
 // Set to local storage

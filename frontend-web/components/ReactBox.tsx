@@ -80,7 +80,7 @@ export default function ReactBox({ onComment, onLike, siblingRef }: Props) {
             onMouseEnter={(e) => {
               onHoverStart(e, {
                 text: "View Likes",
-                anchorOrigin: { vertical: "top", horizontal: "center" },
+                anchorOrigin: { vertical: "bottom", horizontal: "center" },
               });
             }}
             onMouseLeave={() => {

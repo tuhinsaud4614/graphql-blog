@@ -2,6 +2,11 @@ import React from "react";
 import { getPositions } from "utils";
 import { IAnchorOrigin } from "utils/interfaces";
 
+const className = {
+  tip: "fixed select-none z-[999] w-auto px-1.5 py-1 min-w-max rounded-sm text-white bg-neutral text-xs font-bold",
+  arrow: "fixed bg-neutral transform rotate-45 w-3.5 h-3.5 z-[998]",
+};
+
 interface Props {
   anchorOrigin?: IAnchorOrigin;
   hideArrow?: boolean;
@@ -46,13 +51,13 @@ export default function useTooltip() {
       tooltipEle.current = document.createElement("span");
       tooltipEle.current.innerHTML = `${text}`;
       tooltipEle.current.ariaLabel = `Tooltip`;
-      tooltipEle.current.className = "tooltip";
+      tooltipEle.current.className = className.tip;
     }
 
     appendInDom(tooltipEle.current);
 
     const currEle = e.currentTarget;
-    const { arrowLeft, arrowTop, selfLeft, selfTop } = getPositions(
+    const { arrowLeft, arrowTop, selfLeft, selfTop, vertical } = getPositions(
       currEle.getBoundingClientRect(),
       tooltipEle.current.getBoundingClientRect(),
       anchorOrigin,
@@ -64,16 +69,22 @@ export default function useTooltip() {
     tooltipEle.current.style.top = `${selfTop}px`;
     if (!arrowEle.current && !hideArrow) {
       arrowEle.current = document.createElement("span");
-      arrowEle.current.className =
-        "fixed bg-neutral transform rotate-45 w-3.5 h-3.5";
+      arrowEle.current.className = className.arrow;
 
       appendInDom(arrowEle.current);
-      arrowEle.current.style.zIndex = "998";
       arrowEle.current.style.left = `${arrowLeft}px`;
       arrowEle.current.style.top = `${arrowTop}px`;
     }
-    tooltipEle.current.classList.add("animate-tooltip");
-    arrowEle.current?.classList.add("animate-tooltipArrow");
+    tooltipEle.current.classList.add(
+      vertical && vertical === "top"
+        ? "animate-toolTopTip"
+        : "animate-toolBottomTip"
+    );
+    arrowEle.current?.classList.add(
+      vertical && vertical === "top"
+        ? "animate-tooltipTopArrow"
+        : "animate-tooltipBottomArrow"
+    );
 
     // Add extra class name
     const extraCls = cls?.replace(/\s+/g, " ").trim().split(" ");
