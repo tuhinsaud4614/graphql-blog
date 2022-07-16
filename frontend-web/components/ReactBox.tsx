@@ -1,7 +1,7 @@
 import { useMediaQuery, useTooltip } from "@hooks";
 import classNames from "classnames";
-import { motion } from "framer-motion";
-import { Fragment, RefObject, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { RefObject, useEffect, useState } from "react";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 
@@ -71,77 +71,78 @@ export default function ReactBox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, matches]);
 
-  if (!show) {
-    return null;
-  }
-
   return (
-    <Fragment>
-      <div className={className.root}>
-        <motion.div
-          className={className.reactBar}
-          initial={{ y: 200, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <span
-            className={className.like}
-            onMouseEnter={(e) => {
-              onHoverStart(e, {
-                text: "View Likes",
-                anchorOrigin: { vertical: "top", horizontal: "center" },
-                className: "px-3 py-2",
-              });
-            }}
-            onMouseLeave={() => {
-              onHoverEnd();
-            }}
+    <AnimatePresence>
+      {show && (
+        <div className={className.root}>
+          <motion.div
+            className={className.reactBar}
+            initial={{ y: 200, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
+            <span
+              className={className.like}
+              onMouseEnter={(e) => {
+                onHoverStart(e, {
+                  text: "View Likes",
+                  anchorOrigin: { vertical: "top", horizontal: "center" },
+                  className: "px-3 py-2",
+                });
+              }}
+              onMouseLeave={() => {
+                onHoverEnd();
+              }}
+            >
+              <button
+                aria-label="Like"
+                type="button"
+                className={className.likeBtn}
+                onClick={onLike}
+              >
+                {false ? (
+                  <AiFillLike
+                    size={24}
+                    className="text-secondary hover:text-secondary-focus"
+                  />
+                ) : (
+                  <AiOutlineLike className="hover:text-secondary" size={24} />
+                )}
+              </button>
+              <button
+                aria-label="Liker list"
+                onClick={onLiker}
+                className={classNames(className.commentBtn, "ml-1")}
+              >
+                {likeCount}
+              </button>
+            </span>
+            <span className={className.divide} />
             <button
-              aria-label="Like"
+              aria-label="Comments"
               type="button"
-              className={className.likeBtn}
-              onClick={onLike}
+              className={className.commentBtn}
+              onClick={onComment}
+              onMouseEnter={(e) => {
+                onHoverStart(e, {
+                  text: "View Comments",
+                  anchorOrigin: { vertical: "top", horizontal: "center" },
+                  className: "px-3 py-2",
+                });
+              }}
+              onMouseLeave={() => {
+                onHoverEnd();
+              }}
             >
-              {false ? (
-                <AiFillLike
-                  size={24}
-                  className="text-secondary hover:text-secondary-focus"
-                />
-              ) : (
-                <AiOutlineLike className="hover:text-secondary" size={24} />
-              )}
+              <BsChat
+                size={20}
+                className="text-accent hover:text-accent-focus"
+              />
+              <span className="ml-1">{commentCount}</span>
             </button>
-            <button
-              aria-label="Liker list"
-              onClick={onLiker}
-              className={classNames(className.commentBtn, "ml-1")}
-            >
-              {likeCount}
-            </button>
-          </span>
-          <span className={className.divide} />
-          <button
-            aria-label="Comments"
-            type="button"
-            className={className.commentBtn}
-            onClick={onComment}
-            onMouseEnter={(e) => {
-              onHoverStart(e, {
-                text: "View Comments",
-                anchorOrigin: { vertical: "top", horizontal: "center" },
-                className: "px-3 py-2",
-              });
-            }}
-            onMouseLeave={() => {
-              onHoverEnd();
-            }}
-          >
-            <BsChat size={20} className="text-accent hover:text-accent-focus" />
-            <span className="ml-1">{commentCount}</span>
-          </button>
-        </motion.div>
-      </div>
-    </Fragment>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

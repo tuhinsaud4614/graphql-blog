@@ -1,15 +1,16 @@
-import { ReactBox, ReactorModal, ReactorModalItem } from "@component";
 import { LayoutContainer } from "components/Layout";
-import { PostDetailAuthorInfo } from "components/post-detail";
+import {
+  PostDetailAuthorInfo,
+  PostDetailReactions,
+} from "components/post-detail";
 import {
   SidebarContent,
   SidebarPostItem,
   SidebarUserProfiler,
 } from "components/Sidebar";
-import { AnimatePresence } from "framer-motion";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef } from "react";
 
 const className = {
   root: "bg-base-100",
@@ -33,7 +34,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const PostPage: NextPage<IParams> = ({ postId }) => {
-  const [open, setOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -58,24 +58,8 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
           <PostDetailAuthorInfo />
           <div>content-{postId}</div>
         </div>
-        <AnimatePresence>
-          <ReactBox
-            siblingRef={contentRef}
-            commentCount={100}
-            likeCount={100}
-            onLiker={() => setOpen(true)}
-          />
-        </AnimatePresence>
+        <PostDetailReactions siblingRef={contentRef} />
       </LayoutContainer>
-      <ReactorModal
-        title={`578 likes for "Goodbye Node JS"`}
-        open={open}
-        onHide={() => setOpen(false)}
-      >
-        {Array.from({ length: 15 }).map((_, index) => (
-          <ReactorModalItem key={index} />
-        ))}
-      </ReactorModal>
     </Fragment>
   );
 };
