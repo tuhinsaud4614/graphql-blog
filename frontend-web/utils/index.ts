@@ -105,3 +105,5 @@ export const setLocalStorage = <T>(key: string, value: T) => {
     console.warn(`Error writing localStorage “${key}”:`, error);
   }
 };
+
+// regex replace replace classes?: "min-w-[0]"; to classes?:string; -> \?:\s"(.*)"

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useCallback, useState } from "react";
 import { BiBold, BiItalic } from "react-icons/bi";
 import { ImSpinner2 } from "react-icons/im";
@@ -33,28 +33,42 @@ const initialValue: Descendant[] = [
   },
 ];
 
-const rootVariants: Variants = {};
-
 interface Props {
+  expanded?: boolean;
   value?: Descendant[];
   onChange?(value: Descendant[]): void;
   onSubmit?(): void;
+  onCancel?(): void;
   loader?: boolean;
   placeholder?: string;
   disabled?: boolean;
   children?: ReactNode;
+  classes?: {
+    root?: string;
+    editorBox?: string;
+    editorContainer?: string;
+    controlBox?: string;
+    controlBoxContent?: string;
+    cancelBtn?: string;
+    respondBtn?: string;
+    respondBtnLoader?: string;
+    respondBtnSpin?: string;
+  };
 }
 
 export default function CommentBox({
+  expanded = false,
   onChange,
   value = initialValue,
   loader = false,
   placeholder = "What are your thoughts?",
   onSubmit,
+  onCancel,
   disabled = false,
+  classes,
   children,
 }: Props) {
-  const [expand, setExpand] = useState(false);
+  const [expand, setExpand] = useState(expanded);
   const [editor] = useState(() =>
     withHistory(withReact(createEditor() as ReactEditor))
   );
@@ -95,18 +109,22 @@ export default function CommentBox({
               },
             }
       }
-      className={classNames(className.root)}
+      className={classNames(className.root, classes?.root)}
     >
       <AnimatePresence>{expand && children}</AnimatePresence>
       <Slate editor={editor} value={value} onChange={onChange}>
         <section
           className={classNames(
             "duration-[400ms]",
-            expand ? className.editorBox : "min-h-[1rem]"
+            expand ? className.editorBox : "min-h-[1rem]",
+            classes?.editorBox
           )}
         >
           <div
-            className={className.editorContainer}
+            className={classNames(
+              className.editorContainer,
+              classes?.editorContainer
+            )}
             onClick={() => setExpand(true)}
           >
             <Editable placeholder={placeholder} renderLeaf={renderElement} />
@@ -122,9 +140,14 @@ export default function CommentBox({
               }}
               exit={{ maxHeight: 0, opacity: 0 }}
               transition={{ duration: 0.3, bounce: 0 }}
-              className={className.controlBox}
+              className={classNames(className.controlBox, classes?.controlBox)}
             >
-              <div className={className.controlBoxContent}>
+              <div
+                className={classNames(
+                  className.controlBoxContent,
+                  classes?.controlBoxContent
+                )}
+              >
                 <FormatButton
                   aria-label="Format bold"
                   hotKey="mod+b"
@@ -142,12 +165,23 @@ export default function CommentBox({
                   <BiItalic size={21} />
                 </FormatButton>
               </div>
-              <div className={className.controlBoxContent}>
+              <div
+                className={classNames(
+                  className.controlBoxContent,
+                  classes?.controlBoxContent
+                )}
+              >
                 <button
                   type="button"
                   aria-label="Cancel"
-                  className={className.cancelBtn}
+                  className={classNames(
+                    className.cancelBtn,
+                    classes?.cancelBtn
+                  )}
                   onClick={() => {
+                    if (onCancel) {
+                      return onCancel();
+                    }
                     setExpand(false);
                     onChange && onChange(initialValue);
                     Transforms.delete(editor, {
@@ -166,7 +200,8 @@ export default function CommentBox({
                   onClick={onSubmit}
                   className={classNames(
                     className.respondBtn,
-                    loader && className.respondBtnLoader
+                    loader && className.respondBtnLoader,
+                    classes?.respondBtn
                   )}
                   disabled={disabled}
                 >

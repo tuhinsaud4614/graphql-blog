@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 const className = {
   containerCommon:
-    "fixed z-[911] bg-white shadow-mine-2 overflow-hidden right-0 bottom-0 ",
+    "fixed z-[911] bg-white shadow-mine-2 overflow-hidden right-0 bottom-0",
   containerNotMatched:
     "h-[calc(100vh-2rem)] w-screen rounded-tl-[1.25rem] rounded-tr-[1.25rem]",
   containerMatched: "w-[25.875rem] h-screen",
@@ -47,16 +47,28 @@ const matchedVariants: Variants = {
 interface Props {
   open: boolean;
   onHide(): void;
+  classes?: {
+    backdrop?: string;
+    container?: string;
+  };
   children?: ReactNode;
 }
 
-export default function BottomSheet({ onHide, open, children }: Props) {
+export default function BottomSheet({
+  onHide,
+  open,
+  classes,
+  children,
+}: Props) {
   const matches = useMediaQuery("(min-width: 768px)");
   return (
     <Portal>
       <AnimatePresence>
         {open && (
-          <Backdrop onClick={onHide} className={classNames("z-[910]")} />
+          <Backdrop
+            onClick={onHide}
+            className={classNames("z-[910]", classes?.backdrop)}
+          />
         )}
       </AnimatePresence>
       <AnimatePresence>
@@ -69,6 +81,7 @@ export default function BottomSheet({ onHide, open, children }: Props) {
             exit="hidden"
             className={classNames(
               className.containerCommon,
+              classes?.container,
               matches
                 ? className.containerMatched
                 : className.containerNotMatched
