@@ -10,7 +10,7 @@ import Comment from "./Comment";
 
 const className = {
   bottomHeader: "border-none",
-  bottomBody: "overflow-y-auto pb-6",
+  bottomBody: "overflow-y-auto pb-6 pt-2",
 };
 
 interface Props {
@@ -51,6 +51,7 @@ export default function Reactions({ siblingRef }: Props) {
         </ModalHeader>
         <div className={className.bottomBody}>
           <Comment />
+          {/* <CommentItem /> */}
         </div>
       </BottomSheet>
     </Fragment>

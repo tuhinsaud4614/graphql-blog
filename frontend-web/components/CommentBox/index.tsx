@@ -1,8 +1,9 @@
 import classNames from "classnames";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { ReactNode, useCallback, useState } from "react";
 import { BiBold, BiItalic } from "react-icons/bi";
 import { ImSpinner2 } from "react-icons/im";
-import { createEditor, Descendant } from "slate";
+import { createEditor, Descendant, Editor, Transforms } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
@@ -14,7 +15,7 @@ import {
 import FormatButton from "./FormatButton";
 
 const className = {
-  root: "shadow-mine-2 mx-4 mb-5 py-3.5 bg-base-100 rounded",
+  root: "shadow-mine-2 mx-4 mb-5 bg-base-100 rounded",
   editorBox: "min-h-[6.25rem]",
   editorContainer: "p-3.5",
   controlBox: "flex items-center justify-between px-3.5",
@@ -26,6 +27,14 @@ const className = {
   respondBtnSpin: "text-white animate-spin ml-2 text-sm",
 };
 
+const initialValue: Descendant[] = [
+  {
+    children: [{ text: "" }],
+  },
+];
+
+const rootVariants: Variants = {};
+
 interface Props {
   value?: Descendant[];
   onChange?(value: Descendant[]): void;
@@ -36,12 +45,6 @@ interface Props {
   children?: ReactNode;
 }
 
-const initialValue: Descendant[] = [
-  {
-    children: [{ text: "" }],
-  },
-];
-
 export default function CommentBox({
   onChange,
   value = initialValue,
@@ -51,6 +54,7 @@ export default function CommentBox({
   disabled = false,
   children,
 }: Props) {
+  const [expand, setExpand] = useState(false);
   const [editor] = useState(() =>
     withHistory(withReact(createEditor() as ReactEditor))
   );
@@ -73,57 +77,109 @@ export default function CommentBox({
   );
 
   return (
-    <div className={className.root}>
-      {children}
+    <motion.div
+      animate={
+        expand
+          ? {
+              paddingTop: 14,
+              paddingBottom: 14,
+              transition: {
+                duration: 0.4,
+              },
+            }
+          : {
+              paddingTop: 0,
+              paddingBottom: 0,
+              transition: {
+                duration: 0.4,
+              },
+            }
+      }
+      className={classNames(className.root)}
+    >
+      <AnimatePresence>{expand && children}</AnimatePresence>
       <Slate editor={editor} value={value} onChange={onChange}>
-        <section className={className.editorBox}>
-          <div className={className.editorContainer}>
+        <section
+          className={classNames(
+            "duration-[400ms]",
+            expand ? className.editorBox : "min-h-[1rem]"
+          )}
+        >
+          <div
+            className={className.editorContainer}
+            onClick={() => setExpand(true)}
+          >
             <Editable placeholder={placeholder} renderLeaf={renderElement} />
           </div>
         </section>
-        <div className={className.controlBox}>
-          <div className={className.controlBoxContent}>
-            <FormatButton
-              aria-label="Format bold"
-              hotKey="mod+b"
-              mark="bold"
-              tip="Bold (⌘B)"
+        <AnimatePresence>
+          {expand && (
+            <motion.div
+              initial={{ maxHeight: 0, opacity: 0 }}
+              animate={{
+                maxHeight: 100,
+                opacity: 1,
+              }}
+              exit={{ maxHeight: 0, opacity: 0 }}
+              transition={{ duration: 0.3, bounce: 0 }}
+              className={className.controlBox}
             >
-              <BiBold size={21} />
-            </FormatButton>
-            <FormatButton
-              aria-label="Format italic"
-              hotKey="mod+i"
-              mark="italic"
-              tip="Italic (⌘I)"
-            >
-              <BiItalic size={21} />
-            </FormatButton>
-          </div>
-          <div className={className.controlBoxContent}>
-            <button
-              type="button"
-              aria-label="Cancel"
-              className={className.cancelBtn}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              aria-label="Respond"
-              onClick={onSubmit}
-              className={classNames(
-                className.respondBtn,
-                loader && className.respondBtnLoader
-              )}
-              disabled={disabled}
-            >
-              Respond
-              {loader && <ImSpinner2 className={className.respondBtnSpin} />}
-            </button>
-          </div>
-        </div>
+              <div className={className.controlBoxContent}>
+                <FormatButton
+                  aria-label="Format bold"
+                  hotKey="mod+b"
+                  mark="bold"
+                  tip="Bold (⌘B)"
+                >
+                  <BiBold size={21} />
+                </FormatButton>
+                <FormatButton
+                  aria-label="Format italic"
+                  hotKey="mod+i"
+                  mark="italic"
+                  tip="Italic (⌘I)"
+                >
+                  <BiItalic size={21} />
+                </FormatButton>
+              </div>
+              <div className={className.controlBoxContent}>
+                <button
+                  type="button"
+                  aria-label="Cancel"
+                  className={className.cancelBtn}
+                  onClick={() => {
+                    setExpand(false);
+                    onChange && onChange(initialValue);
+                    Transforms.delete(editor, {
+                      at: {
+                        anchor: Editor.start(editor, []),
+                        focus: Editor.end(editor, []),
+                      },
+                    });
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  aria-label="Respond"
+                  onClick={onSubmit}
+                  className={classNames(
+                    className.respondBtn,
+                    loader && className.respondBtnLoader
+                  )}
+                  disabled={disabled}
+                >
+                  Respond
+                  {loader && (
+                    <ImSpinner2 className={className.respondBtnSpin} />
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Slate>
-    </div>
+    </motion.div>
   );
 }

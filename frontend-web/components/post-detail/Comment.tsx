@@ -1,6 +1,7 @@
 import { CommentBox, CommentBoxCommenter } from "components";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Descendant } from "slate";
+import CommentItem from "./CommentItem";
 
 const initialValue: Descendant[] = [
   {
@@ -10,9 +11,15 @@ const initialValue: Descendant[] = [
 
 export default function Comment() {
   const [value, setValue] = useState<Descendant[]>(initialValue);
+
+  console.log(value);
+
   return (
-    <CommentBox value={value} onChange={(value) => setValue(value)}>
-      <CommentBoxCommenter />
-    </CommentBox>
+    <Fragment>
+      <CommentBox value={value} onChange={(v) => setValue(v)}>
+        <CommentBoxCommenter />
+      </CommentBox>
+      <CommentItem body={JSON.stringify(value)} />
+    </Fragment>
   );
 }

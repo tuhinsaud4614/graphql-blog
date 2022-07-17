@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 const className = {
@@ -8,7 +9,28 @@ const className = {
 
 export default function Commenter() {
   return (
-    <div className={className.header}>
+    <motion.div
+      initial={{
+        opacity: 0,
+        maxHeight: 0,
+        marginBottom: 0,
+      }}
+      animate={{
+        opacity: 1,
+        maxHeight: 100,
+        marginBottom: 6,
+      }}
+      transition={{
+        duration: 0.3,
+        bounce: 0,
+      }}
+      exit={{
+        opacity: 0,
+        maxHeight: 0,
+        marginBottom: 0,
+      }}
+      className={className.header}
+    >
       <span className={className.img}>
         <Image
           src="/demo.png"
@@ -20,6 +42,6 @@ export default function Commenter() {
         />
       </span>
       <p className={className.name}>My Name</p>
-    </div>
+    </motion.div>
   );
 }
