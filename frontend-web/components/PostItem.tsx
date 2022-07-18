@@ -37,7 +37,7 @@ export default function PostItem({ classes }: Props) {
         <UserLink href="/account/profile" src="/favicon.ico">
           Blake Lemoine
         </UserLink>
-        <Link href={ROUTES.post("1234")} passHref>
+        <Link href={ROUTES.post("1")} passHref>
           <a className={classNames(className.title, classes?.title)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis

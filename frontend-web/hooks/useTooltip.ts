@@ -74,6 +74,7 @@ export default function useTooltip() {
     tooltipEle.current.style.top = `${selfTop}px`;
     if (!arrowEle.current && !hideArrow) {
       arrowEle.current = document.createElement("span");
+      tooltipEle.current.ariaLabel = `Tooltip arrow`;
       arrowEle.current.className = className.arrow;
 
       appendInDom(arrowEle.current);

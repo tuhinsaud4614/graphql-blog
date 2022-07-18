@@ -3,7 +3,7 @@ export { default as BottomSheet } from "./BottomSheet";
 export { default as CommentBox } from "./CommentBox";
 export { default as CommentBoxCommenter } from "./CommentBox/Commenter";
 export { default as FollowItem } from "./FollowItem";
-export { default as Header } from "./Header";
+export { default as Header } from "./home/Header";
 export { default as LinkButton } from "./LinkButton";
 export { default as Menu } from "./Menu";
 export { default as Modal } from "./Modal";

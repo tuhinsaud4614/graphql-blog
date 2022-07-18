@@ -1,5 +1,4 @@
-import { Header } from "@component";
-import { Banner, HomeContent, Tending } from "@component/home";
+import { Banner, HomeContent, HomeHeader, Tending } from "@component/home";
 import { NextPageWithLayout } from "@types";
 import * as React from "react";
 
@@ -10,7 +9,7 @@ const className = {
 const Home: NextPageWithLayout = () => {
   return (
     <React.Fragment>
-      <Header />
+      <HomeHeader />
       <main className={className.main}>
         <Banner />
         <Tending />

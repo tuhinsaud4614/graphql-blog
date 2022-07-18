@@ -1,6 +1,7 @@
 import { LayoutContainer } from "components/Layout";
 import {
   PostDetailAuthorInfo,
+  PostDetailImage,
   PostDetailReactions,
 } from "components/post-detail";
 import {
@@ -11,10 +12,6 @@ import {
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { Fragment, useRef } from "react";
-
-const className = {
-  root: "bg-base-100",
-};
 
 interface IParams extends ParsedUrlQuery {
   postId: string;
@@ -54,10 +51,11 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
           </Fragment>
         }
       >
-        <div ref={contentRef}>
+        <article ref={contentRef}>
           <PostDetailAuthorInfo />
+          <PostDetailImage />
           <div>content-{postId}</div>
-        </div>
+        </article>
         <PostDetailReactions siblingRef={contentRef} />
       </LayoutContainer>
     </Fragment>

@@ -15,17 +15,24 @@ const className = {
 
 export default function UserLink({ href, src, children }: Props) {
   return (
-    <Link href={href} passHref>
-      <a aria-label={children} className={className.root}>
-        <Image
-          src={src}
-          width={20}
-          height={20}
-          alt={children}
-          className={className.img}
-        />
-        <span className={className.text}>{children}</span>
-      </a>
-    </Link>
+    <div className={className.root}>
+      <Link href={href} passHref>
+        <a aria-label={children} className={className.img}>
+          <Image
+            src={src}
+            width={20}
+            height={20}
+            alt={children}
+            objectFit="cover"
+            layout="responsive"
+          />
+        </a>
+      </Link>
+      <Link href={href} passHref>
+        <a className={className.text} aria-label={children}>
+          {children}
+        </a>
+      </Link>
+    </div>
   );
 }

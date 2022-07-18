@@ -19,7 +19,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <div id="presentational" role="presentation" />
-          <div id="tooltip" role="tooltip" />
+          <div id="tooltip" role="tooltip" aria-label="tooltip" />
           <NextScript />
         </body>
       </Html>

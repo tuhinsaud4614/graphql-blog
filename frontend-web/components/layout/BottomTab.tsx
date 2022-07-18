@@ -22,7 +22,7 @@ export default function BottomTab() {
       <ul className={className.items}>
         <li className={className.item}>
           <Link href="/my-home" passHref>
-            <a className={className.link}>
+            <a className={className.link} aria-label="Home">
               {pathname === "/my-home" ? (
                 <HiHome size={24} className="text-secondary" />
               ) : (
@@ -33,7 +33,7 @@ export default function BottomTab() {
         </li>
         <li className={className.item}>
           <Link href={ROUTES.search} passHref>
-            <a className={className.link}>
+            <a className={className.link} aria-label="Search">
               <FiSearch
                 className={
                   pathname === ROUTES.search
@@ -47,7 +47,7 @@ export default function BottomTab() {
         </li>
         <li className={className.item}>
           <Link href={ROUTES.favorite} passHref>
-            <a className={className.link}>
+            <a className={className.link} aria-label="Favorite">
               {pathname === ROUTES.favorite ? (
                 <AiFillHeart size={24} className="text-secondary" />
               ) : (

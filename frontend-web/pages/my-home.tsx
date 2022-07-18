@@ -50,8 +50,8 @@ const MyHome: NextPageWithLayout = () => {
         }}
         selectedTab={currentTab}
       >
-        <UserHomeTabFollowing />
-        <UserHomeTabRecommended />
+        {currentTab === 0 ? <UserHomeTabFollowing /> : <Fragment />}
+        {currentTab === 1 ? <UserHomeTabRecommended /> : <Fragment />}
       </Tabs>
     </Fragment>
   );

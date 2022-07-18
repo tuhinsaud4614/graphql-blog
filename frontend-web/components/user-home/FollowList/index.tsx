@@ -60,8 +60,8 @@ export default function FollowList() {
       slidesPerGroup={3}
       slidesPerView="auto"
     >
-      <PrevButton className={prevId} />
-      <NextButton className={nextId} />
+      <PrevButton className={prevId} aria-label="Previous" />
+      <NextButton className={nextId} aria-label="Next" />
       {Array.from({ length: 20 }).map((_, index) => (
         <SwiperSlide
           key={index}
