@@ -1,3 +1,5 @@
+import escapeHtml from "escape-html";
+import { Text } from "slate";
 import { IAnchorOrigin } from "./interfaces";
 
 const ARROW_SIZE = 14;
@@ -107,3 +109,25 @@ export const setLocalStorage = <T>(key: string, value: T) => {
 };
 
 // regex replace replace classes?: "min-w-[0]"; to classes?:string; -> \?:\s"(.*)"
+
+// Serialize comment form slate editor
+export const commentSerialize = (node: any) => {
+  if (Text.isText(node)) {
+    let string = escapeHtml(node.text);
+    // @ts-ignore
+    if (node.bold) {
+      string = `<strong>${string}</strong>`;
+    }
+
+    // @ts-ignore
+    if (node.italic) {
+      string = `<em>${string}</em>`;
+    }
+
+    return string;
+  }
+
+  //   @ts-ignore
+  const children = node.children.map((n) => commentSerialize(n)).join("");
+  return children;
+};

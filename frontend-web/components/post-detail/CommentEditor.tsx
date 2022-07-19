@@ -1,35 +1,14 @@
-import escapeHtml from "escape-html";
 import { useState } from "react";
-import { Descendant, Text } from "slate";
+import { Descendant } from "slate";
 
 import { CommentBox, CommentBoxCommenter } from "components";
+import { commentSerialize } from "utils";
 
 const initialValue: Descendant[] = [
   {
     children: [{ text: "" }],
   },
 ];
-
-const serialize = (node: any) => {
-  if (Text.isText(node)) {
-    let string = escapeHtml(node.text);
-    // @ts-ignore
-    if (node.bold) {
-      string = `<strong>${string}</strong>`;
-    }
-
-    // @ts-ignore
-    if (node.italic) {
-      string = `<em>${string}</em>`;
-    }
-
-    return string;
-  }
-
-  //   @ts-ignore
-  const children = node.children.map((n) => serialize(n)).join("");
-  return children;
-};
 
 interface Props {
   userInfo?: string;
@@ -38,7 +17,7 @@ interface Props {
   expanded?: boolean;
 }
 
-export default function Comment({
+export default function CommentEditor({
   userInfo,
   commentBoxClassName,
   onHide,
@@ -46,7 +25,7 @@ export default function Comment({
 }: Props) {
   const [value, setValue] = useState<Descendant[]>(initialValue);
   console.log("value", value);
-  console.log("serialize", serialize({ children: value }));
+  console.log("serialize", commentSerialize({ children: value }));
   return (
     <CommentBox
       value={value}

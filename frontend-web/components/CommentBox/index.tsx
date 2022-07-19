@@ -38,6 +38,7 @@ interface Props {
   value?: Descendant[];
   onChange?(value: Descendant[]): void;
   onSubmit?(): void;
+  submitBtnText?: string;
   onCancel?(): void;
   loader?: boolean;
   placeholder?: string;
@@ -63,6 +64,7 @@ export default function CommentBox({
   loader = false,
   placeholder = "What are your thoughts?",
   onSubmit,
+  submitBtnText = "Respond",
   onCancel,
   disabled = false,
   classes,
@@ -196,7 +198,7 @@ export default function CommentBox({
                 </button>
                 <button
                   type="button"
-                  aria-label="Respond"
+                  aria-label={submitBtnText}
                   onClick={onSubmit}
                   className={classNames(
                     className.respondBtn,
@@ -205,7 +207,7 @@ export default function CommentBox({
                   )}
                   disabled={disabled}
                 >
-                  Respond
+                  {submitBtnText}
                   {loader && (
                     <ImSpinner2 className={className.respondBtnSpin} />
                   )}

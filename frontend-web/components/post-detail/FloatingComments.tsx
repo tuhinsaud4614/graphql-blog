@@ -1,6 +1,6 @@
 import { BottomSheet, ModalHeader } from "components";
 import { useMemo } from "react";
-import Comment from "./CommentEditor";
+import CommentEditor from "./CommentEditor";
 import CommentItem from "./CommentItem";
 
 const className = {
@@ -14,6 +14,9 @@ const body =
   "hgsxfhgashfg<strong> hdjgdgjjghd </strong><em><strong>djhggjdshgjds </strong></em><em>hgddg</em>";
 
 const comments = [
+  {
+    text: body,
+  },
   {
     text: body,
     reply: [
@@ -80,9 +83,11 @@ export default function FloatingComments({ onClose, open }: Props) {
           key={index}
           body={c.text}
           classes={{
+            root: "border-b last:border-none",
             replyContainer:
               count === 0 ? "overflow-x-auto scrollbar-hide" : `w-fit`,
             bodyContainer: count > 0 ? "max-w-[20rem]" : undefined,
+            header: count > 0 ? "max-w-[20rem]" : undefined,
           }}
         >
           {"reply" in c && Array.isArray(c.reply) && result(c.reply, count + 1)}
@@ -104,8 +109,7 @@ export default function FloatingComments({ onClose, open }: Props) {
         Responses (9)
       </ModalHeader>
       <div className={className.bottomBody}>
-        <Comment userInfo="g" />
-        <CommentItem body={body} />
+        <CommentEditor userInfo="g" />
         {items}
       </div>
     </BottomSheet>

@@ -46,7 +46,8 @@ const matchedVariants: Variants = {
 
 interface Props {
   open: boolean;
-  onHide(): void;
+  onHide?(): void;
+  staticBack?: boolean;
   classes?: {
     backdrop?: string;
     container?: string;
@@ -55,6 +56,7 @@ interface Props {
 }
 
 export default function BottomSheet({
+  staticBack = false,
   onHide,
   open,
   classes,
@@ -66,7 +68,7 @@ export default function BottomSheet({
       <AnimatePresence>
         {open && (
           <Backdrop
-            onClick={onHide}
+            onClick={staticBack ? undefined : onHide}
             className={classNames("z-[910]", classes?.backdrop)}
           />
         )}
