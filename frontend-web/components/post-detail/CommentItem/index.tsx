@@ -29,8 +29,8 @@ interface Props {
 }
 
 export default function CommentItem({ body, children, classes }: Props) {
-  const [openReplies, setReplies] = useState(false);
-  const [openCommentBox, setOpenCommentBox] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
+  const [openReplyEditor, setOpenReplyEditor] = useState(false);
   return (
     <section className={classNames(className.root, classes?.root)}>
       <div className={classNames(className.container, classes?.container)}>
@@ -41,9 +41,9 @@ export default function CommentItem({ body, children, classes }: Props) {
             </Header>
             <Body
               body={body}
-              openReplies={openReplies}
-              toggleReplies={() => setReplies((prev) => !prev)}
-              toggleCommentBox={() => setOpenCommentBox((prev) => !prev)}
+              showReplies={showReplies}
+              toggleReplies={() => setShowReplies((prev) => !prev)}
+              toggleReplyEditor={() => setOpenReplyEditor((prev) => !prev)}
               className={classes?.bodyContainer}
             >
               {children}
@@ -52,17 +52,17 @@ export default function CommentItem({ body, children, classes }: Props) {
         </EditProvider>
       </div>
       {/* Replies start */}
-      {(openReplies || openCommentBox) && (
+      {(showReplies || openReplyEditor) && (
         <section
           className={classNames(
             className.replyContainer,
             classes?.replyContainer
           )}
         >
-          {openCommentBox && (
-            <ReplyEditor onHide={() => setOpenCommentBox(false)} />
+          {openReplyEditor && (
+            <ReplyEditor onHide={() => setOpenReplyEditor(false)} />
           )}
-          {openReplies && children}
+          {showReplies && children}
         </section>
       )}
       {/* Replies End */}

@@ -15,17 +15,17 @@ interface Props {
   className?: string;
   body: string;
   children?: ReactNode;
-  openReplies: boolean;
+  showReplies: boolean;
   toggleReplies?(): void;
-  toggleCommentBox?(): void;
+  toggleReplyEditor?(): void;
 }
 
 export default function Body({
   className: cls,
   body,
-  openReplies,
+  showReplies,
   toggleReplies,
-  toggleCommentBox,
+  toggleReplyEditor,
   children,
 }: Props) {
   return (
@@ -59,7 +59,7 @@ export default function Body({
             >
               <BsChat size={20} />
               <span className="ml-2">
-                {openReplies ? "Hide replies" : "2 replies"}
+                {showReplies ? "Hide replies" : "2 replies"}
               </span>
             </button>
           </div>
@@ -69,7 +69,7 @@ export default function Body({
             type="button"
             aria-label="Reply"
             className={className.actionBtn}
-            onClick={toggleCommentBox}
+            onClick={toggleReplyEditor}
           >
             Reply
           </button>
