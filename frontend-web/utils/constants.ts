@@ -17,4 +17,5 @@ export const ROUTES = {
   createPost: "/posts/create",
   editPost: (id: string) => `/posts/${id}/edit`,
   notifications: "/account/notifications",
+  accountSettings: "/account/settings",
 };
