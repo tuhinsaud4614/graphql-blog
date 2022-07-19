@@ -1,5 +1,5 @@
 import escapeHtml from "escape-html";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { Descendant, Text } from "slate";
 
 import { CommentBox, CommentBoxCommenter } from "components";
@@ -48,16 +48,14 @@ export default function Comment({
   console.log("value", value);
   console.log("serialize", serialize({ children: value }));
   return (
-    <Fragment>
-      <CommentBox
-        value={value}
-        onChange={(v) => setValue(v)}
-        classes={{ root: commentBoxClassName }}
-        expanded={expanded}
-        onCancel={onHide}
-      >
-        {userInfo && <CommentBoxCommenter />}
-      </CommentBox>
-    </Fragment>
+    <CommentBox
+      value={value}
+      onChange={(v) => setValue(v)}
+      classes={{ root: commentBoxClassName }}
+      expanded={expanded}
+      onCancel={onHide}
+    >
+      {userInfo && <CommentBoxCommenter />}
+    </CommentBox>
   );
 }

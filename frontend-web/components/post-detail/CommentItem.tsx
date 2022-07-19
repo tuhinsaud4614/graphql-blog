@@ -5,7 +5,7 @@ import { ReactNode, useState } from "react";
 import { BsChat } from "react-icons/bs";
 
 import { ROUTES } from "utils/constants";
-import Comment from "./Comment";
+import Comment from "./CommentEditor";
 
 const className = {
   root: "mx-4",

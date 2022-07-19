@@ -1,147 +1,67 @@
-import {
-  BottomSheet,
-  ModalHeader,
-  ReactBox,
-  ReactorModal,
-  ReactorModalItem,
-} from "components";
-import { Fragment, RefObject, useState } from "react";
-import Comment from "./Comment";
-import CommentItem from "./CommentItem";
+import { useLockBody } from "@hooks";
+import { Fragment, useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import CommentButton from "./CommentButton";
+import FloatingComments from "./FloatingComments";
+import FloatingLikes from "./FloatingLikes";
+import LikeButton from "./LikeButton";
 
 const className = {
-  bottomHeader: "border-none",
-  bottomBody: "pb-6 pt-2",
-  noComment:
-    "my-12 flex flex-col items-center justify-center text-neutral/60 font-extralight italic",
+  root: "flex items-center justify-between mt-4",
+  left: "flex items-center",
+  right: "flex items-center",
+  favBtn: "p-2 active:scale-95 hover:text-secondary-focus",
 };
 
-const body =
-  "hgsxfhgashfg<strong> hdjgdgjjghd </strong><em><strong>djhggjdshgjds </strong></em><em>hgddg</em>";
-
-const comments = [
-  {
-    text: body,
-    reply: [
-      {
-        text: body,
-        reply: [
-          {
-            text: body,
-            reply: [
-              {
-                text: body,
-                reply: [
-                  {
-                    text: body,
-                    reply: [
-                      {
-                        text: body,
-                        reply: [
-                          {
-                            text: body,
-                            reply: [
-                              {
-                                text: body,
-                                reply: [
-                                  {
-                                    text: body,
-                                    reply: [
-                                      { text: body, reply: [{ text: body }] },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    text: body,
-  },
-];
-
-const re = (comments: any, cnt?: number) => {
-  const count = cnt || 0;
-  // @ts-ignore
-  const x = comments.map((c, index) => (
-    <CommentItem
-      key={index}
-      body={c.text}
-      classes={{
-        replyContainer:
-          count === 0 ? "overflow-x-auto scrollbar-hide" : `w-fit`,
-        bodyContainer: count > 0 ? "max-w-[20rem]" : undefined,
-      }}
-    >
-      {"reply" in c && Array.isArray(c.reply) && re(c.reply, count + 1)}
-    </CommentItem>
-  ));
-  return x;
-};
-
-interface Props {
-  siblingRef: RefObject<Element>;
-}
-
-export default function Reactions({ siblingRef }: Props) {
+export default function Reactions() {
   const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
 
+  useLockBody(openLikeModal || openCommentModal);
+
   return (
     <Fragment>
-      <ReactBox
-        siblingRef={siblingRef}
-        commentCount={100}
-        likeCount={100}
-        onLiker={() => setOpenLikeBox(true)}
-        onComment={() => setOpenCommentModal(true)}
-      />
-      <ReactorModal
-        title={`578 likes for "Goodbye Node JS"`}
-        open={openLikeModal}
-        onHide={() => setOpenLikeBox(false)}
-      >
-        {Array.from({ length: 15 }).map((_, index) => (
-          <ReactorModalItem key={index} />
-        ))}
-      </ReactorModal>
-      <BottomSheet
-        open={openCommentModal}
-        onHide={() => setOpenCommentModal(false)}
-        classes={{ container: "overflow-y-auto" }}
-      >
-        <ModalHeader
-          onClose={() => setOpenCommentModal(false)}
-          className={className.bottomHeader}
-        >
-          Responses (9)
-        </ModalHeader>
-        <div className={className.bottomBody}>
-          <Comment userInfo="g" />
-          <CommentItem body={body} />
-          {re(comments)}
+      <section className={className.root}>
+        <div className={className.left}>
+          <LikeButton
+            onLike={() => {
+              console.log("Like Click");
+            }}
+            count={100}
+            onLikeText={() => setOpenLikeBox(true)}
+            className="py-2"
+          />
+          <CommentButton
+            count={100}
+            className="py-2 ml-6"
+            onComment={() => setOpenCommentModal(true)}
+          />
         </div>
-      </BottomSheet>
+        <span className={className.right}>
+          <button
+            type="button"
+            aria-label="Favorite"
+            className={className.favBtn}
+          >
+            {true ? (
+              <AiFillHeart
+                size={20}
+                className="text-secondary hover:text-secondary-focus"
+              />
+            ) : (
+              <AiOutlineHeart size={20} />
+            )}
+          </button>
+        </span>
+      </section>
+      <FloatingLikes
+        onClose={() => setOpenLikeBox(false)}
+        open={openLikeModal}
+      />
+      <FloatingComments
+        onClose={() => setOpenCommentModal(false)}
+        open={openCommentModal}
+      />
     </Fragment>
-  );
-}
-
-function NoComment() {
-  return (
-    <div className={className.noComment}>
-      <p>There are currently no responses for this story.</p>
-      <p>Be the first to respond.</p>
-    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEventListener } from "@hooks";
+import { useEventListener, useLockBody } from "@hooks";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -10,7 +10,7 @@ const className = {
   shadeOpen: "pointer-events-auto opacity-1",
   shadeClose: "pointer-events-none opacity-0",
   img: "inset-0",
-  imgClose: "absolute w-full h-full z-50",
+  imgClose: "absolute w-full h-full z-30",
   imgOpen: "fixed w-auto h-auto m-auto max-w-full z-[999]",
 };
 
@@ -24,6 +24,8 @@ const Img = () => {
   const [isOpen, setOpen] = useState(false);
 
   useEventListener("scroll", () => isOpen && setOpen(false));
+
+  useLockBody(isOpen);
 
   return (
     <div

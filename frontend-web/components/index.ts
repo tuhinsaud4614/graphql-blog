@@ -13,7 +13,6 @@ export { default as Portal } from "./Portal";
 export { default as PostItem } from "./PostItem";
 export { default as PostItemSkeleton } from "./PostItemSkeleton";
 export { default as ProgressBar } from "./ProgressBar";
-export { default as ReactBox } from "./ReactBox";
 export { default as ReactorModal } from "./ReactorModal";
 export { default as ReactorModalItem } from "./ReactorModal/ReactorItem";
 export { default as SearchBox } from "./SearchBox";
