@@ -19,7 +19,7 @@ export default function ReplyEditor({ onHide }: Props) {
     <CommentBox
       value={value}
       onChange={(v) => setValue(v)}
-      classes={{ root: "w-[17.5rem] mt-1" }}
+      classes={{ root: "w-[20rem] mt-1" }}
       expanded
       onCancel={onHide}
     />

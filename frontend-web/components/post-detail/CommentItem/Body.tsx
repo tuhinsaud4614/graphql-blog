@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { ReactNode } from "react";
 import { BsChat } from "react-icons/bs";
 
@@ -5,7 +6,7 @@ const className = {
   body: "mt-1.5 text-neutral",
   moreBtn:
     "my-1.5 text-success hover:text-success-focus text-sm active:scale-95",
-  actionsBar: "flex items-center justify-between mt-3.5",
+  actionsBar: "flex items-center mt-3.5",
   actionsContainer: "flex items-center",
   actionBtn:
     "border-none outline-none text-neutral text-sm hover:text-accent active:scale-95 flex items-center underline",
@@ -48,7 +49,12 @@ export default function Body({
       {/* More Button End */}
 
       {/* Actions bar Start */}
-      <div className={className.actionsBar}>
+      <div
+        className={classNames(
+          className.actionsBar,
+          children ? "justify-between" : "justify-end"
+        )}
+      >
         {children && (
           <div className={className.actionsContainer}>
             <button

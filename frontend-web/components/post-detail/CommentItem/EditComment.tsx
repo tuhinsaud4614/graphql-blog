@@ -22,6 +22,7 @@ export default function EditComment() {
       onChange={(v) => setValue(v)}
       onCancel={closer}
       submitBtnText="Update"
+      classes={{ root: "!m-0" }}
       expanded
     />
   );
