@@ -16,6 +16,7 @@ const className = {
 interface IValues {
   title: string;
   categories: { name: string; value: string }[];
+  tags: { name: string; value: string }[];
 }
 
 // validation
@@ -29,17 +30,28 @@ const schema = yup.object().shape({
         value: yup.string().required("Option value is required"),
       })
     )
-    .min(1, "At least one category"),
+    .min(1, "At least one category required"),
+  tags: yup
+    .array()
+    .of(
+      yup.object().shape({
+        name: yup.string().required("Tag name is required"),
+        value: yup.string().required("Tag value is required"),
+      })
+    )
+    .min(1, "At least one tag required"),
 });
 
 const CreatePost: NextPageWithLayout = () => {
   const initialValues: IValues = {
     title: "",
     categories: [],
+    tags: [],
   };
 
   const titleId = useId();
   const categoriesId = useId();
+  const tagsId = useId();
 
   const onSubmit = async (
     values: IValues,
@@ -88,7 +100,7 @@ const CreatePost: NextPageWithLayout = () => {
         title="Post categories"
         name="categories"
         aria-label="Post categories"
-        aria-invalid={Boolean(touched.title && errors.title)}
+        aria-invalid={Boolean(touched.categories && errors.categories)}
         placeholder="Select categories..."
         values={values.categories}
         onChangeValues={(val) => setFieldValue("categories", val)}
@@ -100,6 +112,37 @@ const CreatePost: NextPageWithLayout = () => {
           touched.categories &&
           typeof errors.categories === "string" &&
           errors.categories
+        }
+        loadOptions={async (value) => {
+          const p = new Promise<{ name: string; value: string }[]>((res) => {
+            if (!value) {
+              return res([]);
+            }
+            setTimeout(() => {
+              res([{ name: value.toUpperCase(), value }]);
+            }, 500);
+          });
+          const result = await p;
+          return result;
+        }}
+        required
+      />
+      <Select
+        classes={{ root: className.control }}
+        id={tagsId}
+        title="Post tags"
+        name="tags"
+        aria-label="Post tags"
+        aria-invalid={Boolean(touched.tags && errors.tags)}
+        placeholder="Select tags..."
+        values={values.tags}
+        onChangeValues={(val) => setFieldValue("tags", val)}
+        onBlur={() => {
+          if (!touched.tags) setFieldTouched("tags", true);
+        }}
+        valid={!(touched.tags && errors.tags)}
+        errorText={
+          touched.tags && typeof errors.tags === "string" && errors.tags
         }
         loadOptions={async (value) => {
           const p = new Promise<{ name: string; value: string }[]>((res) => {

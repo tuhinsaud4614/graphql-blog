@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { forwardRef, ReactNode } from "react";
 import { UnSelectedItem } from "./SelectItem";
 
@@ -21,9 +22,16 @@ const SelectItems = forwardRef<HTMLDivElement, Props>(
       loadedItems = <UnSelectedItem>No options</UnSelectedItem>;
     }
     return (
-      <section className={className.root} ref={ref}>
+      <motion.section
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 10, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className={className.root}
+        ref={ref}
+      >
         <ul className={className.items}>{loadedItems}</ul>
-      </section>
+      </motion.section>
     );
   }
 );

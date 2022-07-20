@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { BiX } from "react-icons/bi";
 
@@ -14,7 +15,14 @@ interface Props {
 
 export default function SelectedItem({ children, onClose }: Props) {
   return (
-    <span className={className.root}>
+    <motion.span
+      className={className.root}
+      layout
+      initial={{ width: 0, opacity: 0 }}
+      exit={{ width: 0, opacity: 0 }}
+      animate={{ width: "auto", opacity: 1 }}
+      transition={{ duration: 0.2 }}
+    >
       <span className={className.text}>{children}</span>
       <button
         aria-label="Close"
@@ -24,6 +32,6 @@ export default function SelectedItem({ children, onClose }: Props) {
       >
         <BiX size={14} />
       </button>
-    </span>
+    </motion.span>
   );
 }
