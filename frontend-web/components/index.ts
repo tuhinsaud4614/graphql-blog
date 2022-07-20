@@ -16,6 +16,7 @@ export { default as ProgressBar } from "./ProgressBar";
 export { default as ReactorModal } from "./ReactorModal";
 export { default as ReactorModalItem } from "./ReactorModal/ReactorItem";
 export { default as SearchBox } from "./SearchBox";
+export { default as Select } from "./select";
 export { default as SidebarSearch } from "./SidebarSearch";
 export { default as TabBox } from "./TabBox";
 export { default as Tabs } from "./Tabs";

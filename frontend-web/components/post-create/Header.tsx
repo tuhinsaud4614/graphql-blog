@@ -27,7 +27,6 @@ export default function Header() {
         <UserAvatarBtn
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         />
-        {/* <Avatar /> */}
       </nav>
     </header>
   );
