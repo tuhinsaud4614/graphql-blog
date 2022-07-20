@@ -5,6 +5,7 @@ import { Fragment, ReactNode } from "react";
 import Container from "./Container";
 
 interface Props {
+  hideSidebar?: boolean;
   children: ReactNode;
 }
 
@@ -14,70 +15,72 @@ const className = {
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",
 };
 
-export default function UserLayout({ children }: Props) {
+export default function UserLayout({ hideSidebar = false, children }: Props) {
   return (
     <Container
       sidebar={
-        <Fragment>
-          {/* <Skeleton />
+        hideSidebar ? null : (
+          <Fragment>
+            {/* <Skeleton />
           <div className="pt-5" />
           <Skeleton /> */}
-          <SidebarContent
-            title="Categories"
-            moreLink="/categories"
-            moreText="See all the categories"
-          >
-            <SidebarCategory
-              title="New Category"
-              link={`/posts/categories/1`}
-            />
-            <SidebarCategory
-              title="New Category"
-              link={`/posts/categories/2`}
-            />
-            <SidebarCategory
-              title="New Category"
-              link={`/posts/categories/3`}
-            />
-            <SidebarCategory
-              title="New Category"
-              link={`/posts/categories/4`}
-            />
-          </SidebarContent>
-          <div className={className.divider} />
-          <SidebarContent
-            title="Recommended tags"
-            classes={{ items: className.items }}
-          >
-            <Tag href="/posts/tag/1234" className={className.link}>
-              New Tag
-            </Tag>
-            <Tag href="/posts/tag/1234" className={className.link}>
-              New Tag
-            </Tag>
-            <Tag href="/posts/tag/1234" className={className.link}>
-              New Tag
-            </Tag>
-            <Tag href="/posts/tag/1234" className={className.link}>
-              New Tag
-            </Tag>
-            <Tag href="/posts/tag/1234" className={className.link}>
-              New Tag
-            </Tag>
-          </SidebarContent>
-          <div className={className.divider} />
-          <SidebarContent
-            moreLink="/account/me/followings"
-            moreText="See more suggestions"
-            title="Who to follow"
-            classes={{ items: "pb-8" }}
-          >
-            <FollowItem />
-            <FollowItem />
-            <FollowItem />
-            <FollowItem />
-          </SidebarContent>
-        </Fragment>
+            <SidebarContent
+              title="Categories"
+              moreLink="/categories"
+              moreText="See all the categories"
+            >
+              <SidebarCategory
+                title="New Category"
+                link={`/posts/categories/1`}
+              />
+              <SidebarCategory
+                title="New Category"
+                link={`/posts/categories/2`}
+              />
+              <SidebarCategory
+                title="New Category"
+                link={`/posts/categories/3`}
+              />
+              <SidebarCategory
+                title="New Category"
+                link={`/posts/categories/4`}
+              />
+            </SidebarContent>
+            <div className={className.divider} />
+            <SidebarContent
+              title="Recommended tags"
+              classes={{ items: className.items }}
+            >
+              <Tag href="/posts/tag/1234" className={className.link}>
+                New Tag
+              </Tag>
+              <Tag href="/posts/tag/1234" className={className.link}>
+                New Tag
+              </Tag>
+              <Tag href="/posts/tag/1234" className={className.link}>
+                New Tag
+              </Tag>
+              <Tag href="/posts/tag/1234" className={className.link}>
+                New Tag
+              </Tag>
+              <Tag href="/posts/tag/1234" className={className.link}>
+                New Tag
+              </Tag>
+            </SidebarContent>
+            <div className={className.divider} />
+            <SidebarContent
+              moreLink="/account/me/followings"
+              moreText="See more suggestions"
+              title="Who to follow"
+              classes={{ items: "pb-8" }}
+            >
+              <FollowItem />
+              <FollowItem />
+              <FollowItem />
+              <FollowItem />
+            </SidebarContent>
+          </Fragment>
+        )
       }
     >
       {children}

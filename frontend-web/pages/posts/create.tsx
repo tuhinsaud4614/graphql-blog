@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "@types";
-import { UserLayout } from "components/Layout";
+import { PostCreateContainer, PostCreateHeader } from "components/post-create";
 import { Fragment, ReactElement } from "react";
 
 const CreatePost: NextPageWithLayout = () => {
@@ -7,6 +7,11 @@ const CreatePost: NextPageWithLayout = () => {
 };
 
 CreatePost.getLayout = (page: ReactElement) => {
-  return <UserLayout>{page}</UserLayout>;
+  return (
+    <Fragment>
+      <PostCreateHeader />
+      <PostCreateContainer>{page}</PostCreateContainer>
+    </Fragment>
+  );
 };
 export default CreatePost;

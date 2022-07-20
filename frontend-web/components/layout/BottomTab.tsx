@@ -158,6 +158,14 @@ function Avatar() {
         <hr className="my-2 border-b" />
         <ul className={className.avatarMenuItems}>
           <li>
+            <Link href={ROUTES.accountSettings} passHref>
+              <a aria-label="Settings" className={className.avatarMenuLink}>
+                <BsFillGearFill size={20} />
+                <span className="ml-2">Settings</span>
+              </a>
+            </Link>
+          </li>
+          <li>
             <button
               type="button"
               aria-label="Logout"
@@ -166,14 +174,6 @@ function Avatar() {
               <BiExit size={20} />
               <span className="ml-2">Logout</span>
             </button>
-          </li>
-          <li>
-            <Link href={ROUTES.accountSettings} passHref>
-              <a aria-label="Settings" className={className.avatarMenuLink}>
-                <BsFillGearFill size={20} />
-                <span className="ml-2">Settings</span>
-              </a>
-            </Link>
           </li>
         </ul>
       </Modal>
