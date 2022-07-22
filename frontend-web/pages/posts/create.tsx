@@ -1,4 +1,4 @@
-import { ImagePicker, Select } from "@component";
+import { ImagePicker, PostEditor, Select } from "@component";
 import { NextPageWithLayout } from "@types";
 import {
   FormControl,
@@ -7,6 +7,7 @@ import {
 } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
 import _ from "lodash";
+import Head from "next/head";
 import { Fragment, ReactElement, useId } from "react";
 import { maxFileSize } from "utils";
 import { IMAGE_MIMES } from "utils/constants";
@@ -57,7 +58,7 @@ const schema = yup.object().shape({
     )
     .test("fileSize", "Image size should be less than 5mb", (value) => {
       if (value === undefined) return true;
-      return !!value && value.size <= maxFileSize(5);
+      return !!value && value.size <= maxFileSize(2);
     }),
 });
 
@@ -100,6 +101,15 @@ const CreatePost: NextPageWithLayout = () => {
 
   return (
     <form>
+      <Head>
+        <title>New post – The RAT Diary</title>
+        <meta name="title" content="New post – The RAT Diary" />
+        <meta
+          name="description"
+          content="In its most basic form, a post on The RAT Diary consists of title, categories, tags, image & body"
+        />
+      </Head>
+
       <FormControl
         classes={{ root: className.control }}
         id={titleId}
@@ -193,6 +203,7 @@ const CreatePost: NextPageWithLayout = () => {
         errorText={touched.image && errors.image}
         required
       />
+      <PostEditor />
     </form>
   );
 };

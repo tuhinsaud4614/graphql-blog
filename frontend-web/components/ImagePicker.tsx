@@ -99,7 +99,24 @@ export default function ImagePicker({
         {rest.required && <sup className="text-xs text-error">*</sup>}
       </label>
       <div className={classNames(className.root, classes?.root)}>
-        {!valid && (
+        {value && value.type.startsWith("image/") ? (
+          <div className={classNames(className.preview, classes?.preview)}>
+            <button
+              aria-label="Close"
+              className={className.closeBtn}
+              type="button"
+              onClick={() => onFileChange(null)}
+            >
+              <BiX size={20} />
+            </button>
+            <Image
+              src={URL.createObjectURL(value)}
+              alt="Preview Image"
+              layout="fill"
+              className="rounded-md"
+            />
+          </div>
+        ) : (
           <Fragment>
             <input
               {...rest}
@@ -132,24 +149,6 @@ export default function ImagePicker({
               <span className="mt-2 text-center">Drop Image</span>
             </motion.button>
           </Fragment>
-        )}
-        {valid && value && (
-          <div className={classNames(className.preview, classes?.preview)}>
-            <button
-              aria-label="Close"
-              className={className.closeBtn}
-              type="button"
-              onClick={() => onFileChange(null)}
-            >
-              <BiX size={20} />
-            </button>
-            <Image
-              src={URL.createObjectURL(value)}
-              alt="Preview Image"
-              layout="fill"
-              className="rounded-md"
-            />
-          </div>
         )}
       </div>
       {!valid && errorText && (

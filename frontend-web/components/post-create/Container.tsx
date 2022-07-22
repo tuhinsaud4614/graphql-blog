@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 const className = {
-  root: "h-[calc(100vh-4rem-1px)] max-w-3xl p-5 mx-auto overflow-y-auto",
+  root: "mt-[calc(4rem+1px)] max-w-3xl p-5 mx-auto overflow-y-auto",
 };
 
 interface Props {

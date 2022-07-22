@@ -11,6 +11,7 @@ export { default as Modal } from "./Modal";
 export { default as ModalHeader } from "./ModalHeader";
 export { default as NotFoundMessage } from "./NotFoundMessage";
 export { default as Portal } from "./Portal";
+export { default as PostEditor } from "./PostEditor";
 export { default as PostItem } from "./PostItem";
 export { default as PostItemSkeleton } from "./PostItemSkeleton";
 export { default as ProgressBar } from "./ProgressBar";

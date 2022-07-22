@@ -133,3 +133,13 @@ export const commentSerialize = (node: any) => {
 };
 
 export const maxFileSize = (mb: number) => mb * 1000000;
+
+function gcd(width: number, height: number): number {
+  return height == 0 ? width : gcd(height, width % height);
+}
+
+export function aspectRatio(width: number, height: number) {
+  const result = gcd(width, height);
+
+  return { left: width / result, right: height / result } as const;
+}
