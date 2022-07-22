@@ -10,6 +10,7 @@ const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
 type FormatType =
   | "heading-one"
   | "heading-two"
+  | "block-quote"
   | "numbered-list"
   | "bulleted-list"
   | "left"

@@ -41,7 +41,7 @@ export default function PostEditor() {
     setValue(value);
   };
 
-  console.log(value);
+  //   console.log(value);
 
   return (
     <section className={className.root}>

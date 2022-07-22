@@ -1,23 +1,28 @@
+import { BaseText } from "slate";
 import { RenderLeafProps } from "slate-react";
 
+interface LeafProps extends BaseText {
+  [key: string]: string;
+}
+
 export default function Leaf({ attributes, children, leaf }: RenderLeafProps) {
-  // @ts-ignore
-  if (leaf.bold) {
+  console.log("leaft", leaf);
+
+  const newLeaf = leaf as LeafProps;
+
+  if (newLeaf.bold) {
     children = <strong {...attributes}>{children}</strong>;
   }
 
-  // @ts-ignore
-  if (leaf.italic) {
+  if (newLeaf.italic) {
     children = <em {...attributes}>{children}</em>;
   }
 
-  // @ts-ignore
-  if (leaf.underline) {
+  if (newLeaf.underline) {
     children = <u {...attributes}>{children}</u>;
   }
 
-  // @ts-ignore
-  if (leaf.code) {
+  if (newLeaf.code) {
     children = <code {...attributes}>{children}</code>;
   }
 

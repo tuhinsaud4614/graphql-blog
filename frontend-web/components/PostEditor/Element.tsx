@@ -5,23 +5,39 @@ export default function Element({
   children,
   element,
 }: RenderElementProps) {
-  // console.log(element);
-
   // @ts-ignore
   const style = { textAlign: element.align };
   // @ts-ignore
   switch (element.type) {
     case "block-quote":
       return (
-        <blockquote style={style} {...attributes}>
+        <blockquote
+          style={style}
+          className="border-l-2 pl-2.5 italic"
+          {...attributes}
+        >
           {children}
         </blockquote>
       );
     case "bulleted-list":
       return (
-        <ul style={style} {...attributes}>
+        <ul
+          style={style}
+          className="list-disc block pl-10 my-4"
+          {...attributes}
+        >
           {children}
         </ul>
+      );
+    case "numbered-list":
+      return (
+        <ol
+          style={style}
+          className="list-decimal block pl-10 my-4"
+          {...attributes}
+        >
+          {children}
+        </ol>
       );
     case "heading-one":
       return (
@@ -41,12 +57,7 @@ export default function Element({
           {children}
         </li>
       );
-    case "numbered-list":
-      return (
-        <ol style={style} {...attributes}>
-          {children}
-        </ol>
-      );
+
     default:
       return (
         <p style={style} {...attributes}>

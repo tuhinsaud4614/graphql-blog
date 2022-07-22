@@ -7,16 +7,6 @@ const className = {
     status ? "bg-green-50 text-green-500" : "text-neutral/60 hover:bg-zinc-100",
 };
 
-const HOTKEYS = {
-  "mod+b": "bold",
-  "mod+i": "italic",
-  "mod+u": "underline",
-  "mod+`": "code",
-} as const;
-
-type HotKeyType = keyof typeof HOTKEYS;
-type MarkType = typeof HOTKEYS[HotKeyType];
-
 interface Props extends ComponentPropsWithoutRef<"button"> {
   isActive: boolean;
 }
