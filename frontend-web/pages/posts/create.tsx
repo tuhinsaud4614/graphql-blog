@@ -1,4 +1,4 @@
-import { Select } from "@component";
+import { ImagePicker, Select } from "@component";
 import { NextPageWithLayout } from "@types";
 import {
   FormControl,
@@ -6,7 +6,10 @@ import {
   PostCreateHeader,
 } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
+import _ from "lodash";
 import { Fragment, ReactElement, useId } from "react";
+import { maxFileSize } from "utils";
+import { IMAGE_MIMES } from "utils/constants";
 import * as yup from "yup";
 
 const className = {
@@ -17,6 +20,7 @@ interface IValues {
   title: string;
   categories: { name: string; value: string }[];
   tags: { name: string; value: string }[];
+  image: File | null;
 }
 
 // validation
@@ -40,6 +44,21 @@ const schema = yup.object().shape({
       })
     )
     .min(1, "At least one tag required"),
+  image: yup
+    .mixed<File>()
+    .required("Image is required")
+    .test(
+      "fileFormat",
+      "File should be image (gif, svg, jpeg, jpg, png, webp)",
+      (value) => {
+        if (value === undefined) return true;
+        return !!value && _.has(IMAGE_MIMES, value.type);
+      }
+    )
+    .test("fileSize", "Image size should be less than 5mb", (value) => {
+      if (value === undefined) return true;
+      return !!value && value.size <= maxFileSize(5);
+    }),
 });
 
 const CreatePost: NextPageWithLayout = () => {
@@ -47,6 +66,7 @@ const CreatePost: NextPageWithLayout = () => {
     title: "",
     categories: [],
     tags: [],
+    image: null,
   };
 
   const titleId = useId();
@@ -76,7 +96,7 @@ const CreatePost: NextPageWithLayout = () => {
     validationSchema: schema,
   });
 
-  console.log(values);
+  // console.log(values);
 
   return (
     <form>
@@ -156,6 +176,20 @@ const CreatePost: NextPageWithLayout = () => {
           const result = await p;
           return result;
         }}
+        required
+      />
+      <ImagePicker
+        title="Post image"
+        name="image"
+        aria-label="Post image"
+        aria-invalid={Boolean(touched.categories && errors.categories)}
+        value={values.image}
+        onFileChange={(file) => setFieldValue("image", file)}
+        onTouched={() => {
+          if (!touched.image) setFieldTouched("image", true);
+        }}
+        valid={!(touched.image && errors.image)}
+        errorText={touched.image && errors.image}
         required
       />
     </form>

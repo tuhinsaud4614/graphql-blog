@@ -4,6 +4,7 @@ export { default as CommentBox } from "./CommentBox";
 export { default as CommentBoxCommenter } from "./CommentBox/Commenter";
 export { default as FollowItem } from "./FollowItem";
 export { default as Header } from "./home/Header";
+export { default as ImagePicker } from "./ImagePicker";
 export { default as LinkButton } from "./LinkButton";
 export { default as Menu } from "./Menu";
 export { default as Modal } from "./Modal";

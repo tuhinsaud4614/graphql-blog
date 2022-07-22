@@ -131,3 +131,5 @@ export const commentSerialize = (node: any) => {
   const children = node.children.map((n) => commentSerialize(n)).join("");
   return children;
 };
+
+export const maxFileSize = (mb: number) => mb * 1000000;
