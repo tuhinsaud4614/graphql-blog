@@ -35,6 +35,15 @@ interface Props
   onTouched?(): void;
   valid?: boolean;
   errorText?: ReactNode;
+  classes?: {
+    container?: string;
+    label?: string;
+    root?: string;
+    picker?: string;
+    preview?: string;
+    closeBtn?: string;
+    errTxt?: string;
+  };
 }
 
 export default function ImagePicker({
@@ -44,6 +53,7 @@ export default function ImagePicker({
   errorText,
   onTouched,
   valid = false,
+  classes,
   ...rest
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -77,12 +87,18 @@ export default function ImagePicker({
   };
 
   return (
-    <div className={className.container}>
-      <label className={classNames(className.label, !valid && "text-error")}>
+    <div className={classNames(className.container, classes?.container)}>
+      <label
+        className={classNames(
+          className.label,
+          classes?.label,
+          !valid && "text-error"
+        )}
+      >
         {title}
         {rest.required && <sup className="text-xs text-error">*</sup>}
       </label>
-      <div className={className.root}>
+      <div className={classNames(className.root, classes?.root)}>
         {!valid && (
           <Fragment>
             <input
@@ -97,7 +113,7 @@ export default function ImagePicker({
               aria-label="Image picker"
               type="button"
               animate={animation}
-              className={className.picker}
+              className={classNames(className.picker, classes?.picker)}
               onDragEnter={(e) => handleDrag(e, true)}
               onDragOver={(e) => handleDrag(e, true)}
               onDragLeave={(e) => handleDrag(e, false)}
@@ -118,7 +134,7 @@ export default function ImagePicker({
           </Fragment>
         )}
         {valid && value && (
-          <div className={className.preview}>
+          <div className={classNames(className.preview, classes?.preview)}>
             <button
               aria-label="Close"
               className={className.closeBtn}
@@ -137,7 +153,10 @@ export default function ImagePicker({
         )}
       </div>
       {!valid && errorText && (
-        <p className={className.errTxt} role="alert">
+        <p
+          className={classNames(className.errTxt, classes?.errTxt)}
+          role="alert"
+        >
           {errorText}
         </p>
       )}

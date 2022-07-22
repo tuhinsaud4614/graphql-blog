@@ -182,7 +182,8 @@ const CreatePost: NextPageWithLayout = () => {
         title="Post image"
         name="image"
         aria-label="Post image"
-        aria-invalid={Boolean(touched.categories && errors.categories)}
+        aria-invalid={Boolean(touched.image && errors.image)}
+        classes={{ container: className.control }}
         value={values.image}
         onFileChange={(file) => setFieldValue("image", file)}
         onTouched={() => {
