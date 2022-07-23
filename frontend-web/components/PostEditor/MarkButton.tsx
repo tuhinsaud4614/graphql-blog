@@ -1,33 +1,16 @@
 import { useEventListener, useTooltip } from "@hooks";
 import isHotkey from "is-hotkey";
-import { ComponentPropsWithoutRef } from "react";
-import { BaseEditor, Editor, Transforms } from "slate";
+import { Editor, Transforms } from "slate";
 import { useSlate } from "slate-react";
 import Button from "./Button";
+import { isMarkActive, MarkButtonProps } from "./utils";
 
-const isMarkActive = (editor: BaseEditor, format: string) => {
-  const marks = Editor.marks(editor);
-  //   @ts-ignore
-  return marks ? marks[format] === true : false;
-};
-
-const HOTKEYS = {
-  "mod+b": "bold",
-  "mod+i": "italic",
-  "mod+u": "underline",
-  "mod+`": "code",
-} as const;
-
-type HotKeyType = keyof typeof HOTKEYS;
-type MarkType = typeof HOTKEYS[HotKeyType];
-
-interface Props extends ComponentPropsWithoutRef<"button"> {
-  mark: MarkType;
-  hotKey: HotKeyType;
-  tip: string;
-}
-
-export default function MarkButton({ hotKey, mark, tip, ...rest }: Props) {
+export default function MarkButton({
+  hotKey,
+  mark,
+  tip,
+  ...rest
+}: MarkButtonProps) {
   const editor = useSlate();
   const { onHoverEnd, onHoverStart } = useTooltip();
   const isActive = isMarkActive(editor, mark);
@@ -39,12 +22,15 @@ export default function MarkButton({ hotKey, mark, tip, ...rest }: Props) {
         // @ts-ignore
         match: (n) => n.type === "code-block",
       });
+
       // Toggle the block type depending on whether there's already a match.
+
       Transforms.setNodes(
         editor,
         {
           // @ts-ignore
-          type: match ? "paragraph" : "code-block",
+          type:
+            match || isMarkActive(editor, "code") ? "paragraph" : "code-block",
         },
         { match: (n) => Editor.isBlock(editor, n) }
       );

@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import Prism from "prismjs";
 import "prismjs/components/prism-java";
-import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-jsx";
 import "prismjs/components/prism-php";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-sql";
+import "prismjs/components/prism-tsx";
 import "prismjs/components/prism-typescript";
 import { BaseText, Node, NodeEntry, Path, Text } from "slate";
 import { RenderLeafProps } from "slate-react";
-// word-spacing leading-normal whitespace-pre break-normal word-wrap
 
 const className = {
   root: "text-[#f8f8f2] tab-2 hyphens-none",
@@ -26,15 +26,11 @@ export default function Code({
   const newLeaf = leaf as LeafProps;
 
   return (
-    <code
+    <span
       {...attributes}
       className={classNames(
         className.root,
-        (newLeaf.comment ||
-          newLeaf.prolog ||
-          newLeaf.doctype ||
-          newLeaf.cdata) &&
-          "text-[#6272a4]",
+        newLeaf.comment && "!text-[#6272a4]",
         (newLeaf.operator ||
           newLeaf.url ||
           newLeaf.entity ||
@@ -62,12 +58,17 @@ export default function Code({
           newLeaf.function ||
           newLeaf["class-name"]) &&
           "text-[#f1fa8c]",
+        (newLeaf.comment ||
+          newLeaf.prolog ||
+          newLeaf.doctype ||
+          newLeaf.cdata) &&
+          "text-[#6272a4]",
         newLeaf.important && "font-bold",
         newLeaf.entity && "cursor-help"
       )}
     >
       {children}
-    </code>
+    </span>
   );
 }
 
@@ -133,11 +134,6 @@ Prism.languages.insertBefore("python", "prolog", {
 });
 Prism.languages.javascript = Prism.languages.extend("javascript", {});
 Prism.languages.insertBefore("javascript", "prolog", {
-  comment: { pattern: /\/\/[^\n]*/, alias: "comment" },
-});
-
-Prism.languages.typescript = Prism.languages.extend("typescript", {});
-Prism.languages.insertBefore("typescript", "prolog", {
   comment: { pattern: /\/\/[^\n]*/, alias: "comment" },
 });
 Prism.languages.html = Prism.languages.extend("html", {});

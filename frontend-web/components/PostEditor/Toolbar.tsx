@@ -14,6 +14,7 @@ import {
   MdFormatAlignRight,
 } from "react-icons/md";
 import BlockButton from "./BlockButton";
+import CodeButton from "./CodeButton";
 import MarkButton from "./MarkButton";
 
 const className = {
@@ -48,14 +49,9 @@ export default function Toolbar() {
         >
           <BiUnderline size={18} />
         </MarkButton>
-        <MarkButton
-          aria-label="Mark code"
-          hotKey="mod+`"
-          mark="code"
-          tip="Code (⌘`)"
-        >
+        <CodeButton aria-label="Mark code" tip="Code (⌘`)">
           <BiCode size={18} />
-        </MarkButton>
+        </CodeButton>
         <BlockButton
           aria-label="Block heading 1"
           format="heading-one"

@@ -61,15 +61,13 @@ export default function Element({
 
     case "code-block":
       return (
-        <pre
+        <code
           style={style}
-          className={
-            "font-[monospace] bg-[#282a36] p-[0.1875rem] shadow-[0_1px_rgba(0,_0,_0,_0.3)] w-full whitespace-pre-wrap"
-          }
+          className="block text-base font-[monospace] bg-[#282a36] p-[0.1875rem] shadow-[0_1px_rgba(0,_0,_0,_0.3)] w-full whitespace-pre-wrap"
           {...attributes}
         >
           {children}
-        </pre>
+        </code>
       );
 
     default:
