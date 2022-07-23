@@ -1,13 +1,12 @@
 import { BaseText } from "slate";
 import { RenderLeafProps } from "slate-react";
+import Code from "./CodeHighlight";
 
 interface LeafProps extends BaseText {
   [key: string]: string;
 }
 
 export default function Leaf({ attributes, children, leaf }: RenderLeafProps) {
-  console.log("leaft", leaf);
-
   const newLeaf = leaf as LeafProps;
 
   if (newLeaf.bold) {
@@ -23,7 +22,11 @@ export default function Leaf({ attributes, children, leaf }: RenderLeafProps) {
   }
 
   if (newLeaf.code) {
-    children = <code {...attributes}>{children}</code>;
+    children = (
+      <Code attributes={attributes} leaf={leaf}>
+        {children}
+      </Code>
+    );
   }
 
   return <span {...attributes}>{children}</span>;

@@ -71,4 +71,25 @@
   .shadow-mine-b {
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 4px;
   }
+
+  .tab-2 {
+    -moz-tab-size: 2;
+    -o-tab-size: 2;
+    tab-size: 2;
+  }
+
+  .hyphens-none {
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .word-wrap {
+    word-wrap: normal;
+  }
+
+  .word-spacing {
+    word-spacing: normal;
+  }
 }

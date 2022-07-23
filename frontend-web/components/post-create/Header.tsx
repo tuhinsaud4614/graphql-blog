@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ROUTES } from "utils/constants";
 
 const className = {
-  root: "bg-base-200 border-b fixed top-0 left-0 right-0",
+  root: "bg-base-200 border-b fixed top-0 left-0 right-0 z-50",
   nav: "max-w-5xl mx-auto h-16 px-5 flex items-center justify-between",
   homeLink: "flex items-center justify-center h-[3.125rem] w-[3.125rem]",
 };

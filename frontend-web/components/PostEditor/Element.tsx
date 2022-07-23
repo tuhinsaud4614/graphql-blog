@@ -7,13 +7,14 @@ export default function Element({
 }: RenderElementProps) {
   // @ts-ignore
   const style = { textAlign: element.align };
+
   // @ts-ignore
   switch (element.type) {
     case "block-quote":
       return (
         <blockquote
           style={style}
-          className="border-l-2 pl-2.5 italic"
+          className="border-l-2 pl-2.5 italic text-[#aaa]"
           {...attributes}
         >
           {children}
@@ -58,11 +59,24 @@ export default function Element({
         </li>
       );
 
+    case "code-block":
+      return (
+        <pre
+          style={style}
+          className={
+            "font-[monospace] bg-[#282a36] p-[0.1875rem] shadow-[0_1px_rgba(0,_0,_0,_0.3)] w-full whitespace-pre-wrap"
+          }
+          {...attributes}
+        >
+          {children}
+        </pre>
+      );
+
     default:
       return (
-        <p style={style} {...attributes}>
+        <div style={style} {...attributes}>
           {children}
-        </p>
+        </div>
       );
   }
 }

@@ -49,10 +49,10 @@ export default function Toolbar() {
           <BiUnderline size={18} />
         </MarkButton>
         <MarkButton
-          aria-label="Mark underline"
+          aria-label="Mark code"
           hotKey="mod+`"
           mark="code"
-          tip="Underline (⌘`)"
+          tip="Code (⌘`)"
         >
           <BiCode size={18} />
         </MarkButton>

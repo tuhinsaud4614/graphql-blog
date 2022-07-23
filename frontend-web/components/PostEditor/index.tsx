@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { createEditor, Descendant } from "slate";
+import { createEditor, Descendant, Node, NodeEntry } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
@@ -9,11 +9,12 @@ import {
   Slate,
   withReact,
 } from "slate-react";
+import { decorateCode } from "./CodeHighlight";
 import Element from "./Element";
 import Leaf from "./Leaf";
 import Toolbar from "./Toolbar";
 
-const className = { root: "border" };
+const className = { root: "border rounded-md" };
 
 const initialValue: Descendant[] = [
   {
@@ -22,6 +23,7 @@ const initialValue: Descendant[] = [
 ];
 
 export default function PostEditor() {
+  const [language, setLanguage] = useState("html");
   const [value, setValue] = useState(initialValue);
   const [editor] = useState(() =>
     withHistory(withReact(createEditor() as ReactEditor))
@@ -37,6 +39,11 @@ export default function PostEditor() {
     []
   );
 
+  const decorate = useCallback(
+    (entry: NodeEntry<Node>) => decorateCode(entry, language),
+    [language]
+  );
+
   const onChange = (value: Descendant[]) => {
     setValue(value);
   };
@@ -47,11 +54,13 @@ export default function PostEditor() {
     <section className={className.root}>
       <Slate editor={editor} value={value} onChange={onChange}>
         <Toolbar />
-        <section className="px-4 py-2">
+        <section className="px-4 py-2 overflow-x-auto">
           <Editable
+            decorate={decorate}
             placeholder="Post body"
             renderLeaf={renderLeaf}
             renderElement={renderElement}
+            className="w-full"
           />
         </section>
       </Slate>
