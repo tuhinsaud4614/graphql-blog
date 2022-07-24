@@ -28,3 +28,6 @@ export const IMAGE_MIMES = {
   "image/png": "png",
   "image/webp": "webp",
 };
+
+export const IMAGE_URL_REGEX =
+  /(https?:\/\/.*\.(?:png|jpg|svg|jpeg|webp|gif))/i;

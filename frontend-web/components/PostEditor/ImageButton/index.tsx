@@ -1,24 +1,24 @@
 import { useTooltip } from "@hooks";
-import dynamic from "next/dynamic";
+import classNames from "classnames";
+import { Menu } from "components";
 import { Fragment, useState } from "react";
 import { BiImage } from "react-icons/bi";
 import { useSlateStatic } from "slate-react";
 import Button from "../Button";
 import { Upload } from "./Upload";
-
-const Menu = dynamic(() => import("../../Menu"), { ssr: false });
+import { Url } from "./Url";
 
 const className = {
   content: "bg-base-100 w-56 p-2",
-  imgUpload: "flex flex-col items-center justify-between",
-  chooseBtn:
-    "outline-none border border-dashed rounded-md w-full h-full bg-gray-50 text-gray-500",
-  imgContainer: "relative w-full pb-[56.25%]",
-  uploadBtn: "",
+  tabs: "flex items-center justify-center mb-3",
+  tab: "flex-1 px-3 py-1 text-center relative text-neutral hover:text-info",
+  tabActive:
+    "text-info after:content-[''] after:absolute after:z-10 after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-0.5 after:bg-info after:w-3/4",
 };
 
 export default function ImageButton() {
   const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
+  const [currentTab, setCurrentTab] = useState(0);
   const editor = useSlateStatic();
   const { onHoverEnd, onHoverStart } = useTooltip();
 
@@ -48,12 +48,46 @@ export default function ImageButton() {
         hideArrow
       >
         <div className={className.content}>
-          <Upload
-            onAdd={(image) => {
-              console.log(image);
-              setAnchorEle(null);
-            }}
-          />
+          <section className={className.tabs}>
+            <button
+              aria-label="Tab upload"
+              type="button"
+              className={classNames(
+                className.tab,
+                currentTab === 0 && className.tabActive
+              )}
+              onClick={() => setCurrentTab(0)}
+            >
+              UPLOAD
+            </button>
+            <button
+              aria-label="Tab url"
+              type="button"
+              className={classNames(
+                className.tab,
+                currentTab === 1 && className.tabActive
+              )}
+              onClick={() => setCurrentTab(1)}
+            >
+              URL
+            </button>
+          </section>
+          {currentTab === 0 && (
+            <Upload
+              onAdd={(url) => {
+                console.log(url);
+                setAnchorEle(null);
+              }}
+            />
+          )}
+          {currentTab === 1 && (
+            <Url
+              onAdd={(url) => {
+                console.log(url);
+                setAnchorEle(null);
+              }}
+            />
+          )}
         </div>
       </Menu>
     </Fragment>
