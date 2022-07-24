@@ -3,6 +3,7 @@ import { ComponentPropsWithoutRef } from "react";
 import { BaseEditor, Editor, Element as SlateElement, Transforms } from "slate";
 import { useSlate } from "slate-react";
 import Button from "./Button";
+import { isBlockActive } from "./utils";
 
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
@@ -85,25 +86,3 @@ const toggleBlock = (editor: BaseEditor, format: FormatType) => {
     Transforms.wrapNodes(editor, block);
   }
 };
-
-function isBlockActive(
-  editor: BaseEditor,
-  format: FormatType,
-  blockType = "type"
-) {
-  const { selection } = editor;
-  if (!selection) return false;
-
-  const [match] = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.unhangRange(editor, selection),
-      match: (n) =>
-        !Editor.isEditor(n) &&
-        SlateElement.isElement(n) &&
-        // @ts-ignore
-        n[blockType] === format,
-    })
-  );
-
-  return !!match;
-}

@@ -3,7 +3,7 @@ import isHotkey from "is-hotkey";
 import { Editor, Transforms } from "slate";
 import { useSlate } from "slate-react";
 import Button from "./Button";
-import { isMarkActive, MarkButtonProps } from "./utils";
+import { isBlockActive, isMarkActive, MarkButtonProps } from "./utils";
 
 export default function MarkButton({
   hotKey,
@@ -16,26 +16,23 @@ export default function MarkButton({
   const isActive = isMarkActive(editor, mark);
 
   const handler = () => {
-    if (mark === "code") {
-      // @ts-ignore
-      const [match] = Editor.nodes(editor, {
-        // @ts-ignore
-        match: (n) => n.type === "code-block",
-      });
-
-      // Toggle the block type depending on whether there's already a match.
-
-      Transforms.setNodes(
-        editor,
-        {
-          // @ts-ignore
-          type:
-            match || isMarkActive(editor, "code") ? "paragraph" : "code-block",
-        },
-        { match: (n) => Editor.isBlock(editor, n) }
-      );
+    if (mark !== "code") {
+      return editor.addMark(mark, !isActive);
     }
-    editor.addMark(mark, !isActive);
+
+    // @ts-ignore
+    const [match] = Editor.nodes(editor, {
+      // @ts-ignore
+      match: (n) => n.type === "code",
+    });
+    Transforms.setNodes(
+      editor,
+      {
+        // @ts-ignore
+        type: match ? "paragraph" : "code",
+      },
+      { match: (n) => Editor.isBlock(editor, n) }
+    );
   };
 
   useEventListener("keydown", (e) => {
@@ -58,7 +55,7 @@ export default function MarkButton({
       onMouseLeave={() => {
         onHoverEnd();
       }}
-      isActive={isActive}
+      isActive={isActive || (mark === "code" && isBlockActive(editor, mark))}
     >
       {rest.children}
     </Button>

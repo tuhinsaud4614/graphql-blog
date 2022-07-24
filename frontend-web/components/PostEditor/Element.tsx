@@ -59,15 +59,15 @@ export default function Element({
         </li>
       );
 
-    case "code-block":
+    case "code":
       return (
-        <code
-          style={style}
-          className="block text-base font-[monospace] bg-[#282a36] p-[0.1875rem] shadow-[0_1px_rgba(0,_0,_0,_0.3)] w-full whitespace-pre-wrap"
+        <pre
           {...attributes}
+          style={style}
+          className="block text-base font-[monospace] bg-[#f2f2f2] text-[#292929] p-[0.1875rem] w-full whitespace-pre-wrap"
         >
-          {children}
-        </code>
+          <code className="text-[#292929]">{children}</code>
+        </pre>
       );
 
     default:

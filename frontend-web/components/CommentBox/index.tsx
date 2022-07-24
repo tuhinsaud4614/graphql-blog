@@ -15,7 +15,7 @@ import {
 import FormatButton from "./FormatButton";
 
 const className = {
-  root: "shadow-mine-2 mx-4 mb-5 bg-base-100 rounded",
+  root: "shadow-mine mx-4 mb-5 bg-base-100 rounded",
   editorBox: "min-h-[6.25rem]",
   editorContainer: "p-3.5",
   controlBox: "flex items-center justify-between px-3.5",

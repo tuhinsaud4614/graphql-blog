@@ -1,6 +1,5 @@
 import { BaseText } from "slate";
 import { RenderLeafProps } from "slate-react";
-import Code from "./CodeHighlight";
 
 interface LeafProps extends BaseText {
   [key: string]: string;
@@ -19,14 +18,6 @@ export default function Leaf({ attributes, children, leaf }: RenderLeafProps) {
 
   if (newLeaf.underline) {
     children = <u {...attributes}>{children}</u>;
-  }
-
-  if (newLeaf.code) {
-    children = (
-      <Code attributes={attributes} leaf={leaf}>
-        {children}
-      </Code>
-    );
   }
 
   return <span {...attributes}>{children}</span>;

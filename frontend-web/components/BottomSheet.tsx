@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 const className = {
   containerCommon:
-    "fixed z-[911] bg-white shadow-mine-2 overflow-hidden right-0 bottom-0",
+    "fixed z-[911] bg-white shadow-mine overflow-hidden right-0 bottom-0",
   containerNotMatched:
     "h-[calc(100vh-2rem)] w-screen rounded-tl-[1.25rem] rounded-tr-[1.25rem]",
   containerMatched: "w-[25.875rem] h-screen",

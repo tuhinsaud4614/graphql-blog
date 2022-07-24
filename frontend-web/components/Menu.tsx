@@ -34,9 +34,8 @@ const arrowVariants: Variants = {
 
 const className = {
   backdrop: "fixed z-[950] inset-0",
-  root: "fixed z-[951] bg-base-100 shadow-mine-2 rounded",
-  arrow:
-    "fixed block bg-base-100 transform rotate-45 shadow-mine-2 w-3.5 h-3.5",
+  root: "fixed z-[951] bg-base-100 shadow-mine rounded",
+  arrow: "fixed block bg-base-100 transform rotate-45 shadow-mine w-3.5 h-3.5",
   container: "relative z-10 w-full h-full bg-base-100 rounded overflow-hidden",
 };
 

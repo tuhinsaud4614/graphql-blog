@@ -1,25 +1,33 @@
 import { ComponentPropsWithoutRef } from "react";
-import { BaseEditor, Editor } from "slate";
-
-export const CODE_LANGUAGES = [
-  "js",
-  "typescript",
-  "python",
-  "html",
-  "php",
-  "sql",
-  "css",
-  "java",
-  "bash",
-] as const;
-
-export type CodeLanguageType = typeof CODE_LANGUAGES[number] | null;
+import { BaseEditor, Editor, Element as SlateElement } from "slate";
 
 export const isMarkActive = (editor: BaseEditor, format: string) => {
   const marks = Editor.marks(editor);
   //   @ts-ignore
   return marks ? marks[format] === true : false;
 };
+
+export function isBlockActive(
+  editor: BaseEditor,
+  format: string,
+  blockType = "type"
+) {
+  const { selection } = editor;
+  if (!selection) return false;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: (n) =>
+        !Editor.isEditor(n) &&
+        SlateElement.isElement(n) &&
+        // @ts-ignore
+        n[blockType] === format,
+    })
+  );
+
+  return !!match;
+}
 
 export const HOTKEYS = {
   "mod+b": "bold",

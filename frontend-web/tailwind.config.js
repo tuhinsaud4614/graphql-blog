@@ -8,6 +8,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        mine: "rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px",
+        top: "0 0 10px rgb(0 0 0 / 10%), 0 0 10px rgb(0 0 0 / 10%)",
+        mui: "rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px",
+        "mui-hover":
+          "rgb(0 0 0 / 20%) 0px 2px 4px -1px, rgb(0 0 0 / 14%) 0px 4px 5px 0px, rgb(0 0 0 / 12%) 0px 1px 10px 0px",
+        "mui-active":
+          "rgb(0 0 0 / 20%) 0px 5px 5px -3px, rgb(0 0 0 / 14%) 0px 8px 10px 1px, rgb(0 0 0 / 12%) 0px 3px 14px 2px",
+      },
       fontFamily: {
         sans: [
           ...defaultTheme.fontFamily.sans,
@@ -34,16 +43,22 @@ module.exports = {
         "base-200": "#F2F2F2",
         "base-300": "#E5E6E6",
         "base-content": "#1F2937",
-        info: "#3ABFF8",
-        "info-content": "#002B3D",
-        success: "#36D399",
-        "success-focus": "#19c887",
-        "success-content": "#003320",
-        warning: "#FBBD23",
-        "warning-content": "#382800",
-        error: "#F87272",
-        "error-focus": "#f83636",
-        "error-content": "#470000",
+        info: "#1976d2",
+        "info-focus": "#1565c0",
+        "info-content": "#2196f3",
+        "info-disabled": "#e3f2fd",
+        success: "#388e3c",
+        "success-focus": "#2e7d32",
+        "success-content": "#4caf50",
+        "success-disabled": "#e8f5e9",
+        warning: "#f57c00",
+        "warning-focus": "#ef6c00",
+        "warning-content": "#ff9800",
+        "warning-disabled": "#fff3e0",
+        error: "#d32f2f",
+        "error-focus": "#c62828",
+        "error-content": "#f44336",
+        "error-disabled": "#ffebee",
       },
       screens: {
         md1: "901px",
