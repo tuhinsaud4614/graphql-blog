@@ -2,20 +2,17 @@ import classNames from "classnames";
 import _ from "lodash";
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { maxFileSize } from "utils";
 import { IMAGE_MIMES } from "utils/constants";
 import InsertButton from "./InsertButton";
+import Loader from "./Loader";
 
 const className = {
   imgUpload: "flex flex-col items-center justify-between",
   chooseBtn:
-    "outline-none border border-dashed rounded-md w-full h-full bg-gray-50 text-gray-500 relative",
+    "outline-none border border-dashed rounded-md w-full min-h-[7.75rem] bg-gray-50 text-gray-500 relative p-2",
   imgContainer: "relative w-full pb-[56.25%]",
   errTxt: "mt-1 text-error-content text-xs",
-  btnLoader:
-    "absolute z-20 inset-0 flex items-center justify-center bg-black/10 rounded-md border border-dashed",
-  btnSpin: "animate-spin ml-2 text-sm text-warning-content",
 };
 
 const promise = (file: File) =>
@@ -73,13 +70,9 @@ export function Upload({ onAdd }: Props) {
         aria-label="Image Picker"
         type="button"
         onClick={() => inputRef.current?.click()}
-        className={classNames(className.chooseBtn, image ? "p-2" : "p-3")}
+        className={classNames(className.chooseBtn)}
       >
-        {loading && (
-          <span className={className.btnLoader}>
-            <ImSpinner2 size={24} className={className.btnSpin} />
-          </span>
-        )}
+        {loading && <Loader />}
         {!image ? (
           "Click top upload"
         ) : (

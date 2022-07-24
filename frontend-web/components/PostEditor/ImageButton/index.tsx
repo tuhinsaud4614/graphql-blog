@@ -9,7 +9,7 @@ import { Upload } from "./Upload";
 import { Url } from "./Url";
 
 const className = {
-  content: "bg-base-100 w-56 p-2",
+  content: "bg-base-100 w-56 p-2 min-h-[15rem] flex flex-col",
   tabs: "flex items-center justify-center mb-3",
   tab: "flex-1 px-3 py-1 text-center relative text-neutral hover:text-info",
   tabActive:
