@@ -58,7 +58,7 @@ const schema = yup.object().shape({
     )
     .test("fileSize", "Image size should be less than 5mb", (value) => {
       if (value === undefined) return true;
-      return !!value && value.size <= maxFileSize(2);
+      return !!value && value.size <= maxFileSize(5);
     }),
 });
 

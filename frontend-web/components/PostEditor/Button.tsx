@@ -8,10 +8,10 @@ const className = {
 };
 
 interface Props extends ComponentPropsWithoutRef<"button"> {
-  isActive: boolean;
+  isActive?: boolean;
 }
 
-export default function Button({ isActive, ...props }: Props) {
+export default function Button({ isActive = false, ...props }: Props) {
   return (
     <button
       {...props}

@@ -34,8 +34,8 @@ const arrowVariants: Variants = {
 
 const className = {
   backdrop: "fixed z-[950] inset-0",
-  root: "fixed z-[951] bg-base-100 shadow-mine rounded",
-  arrow: "fixed block bg-base-100 transform rotate-45 shadow-mine w-3.5 h-3.5",
+  root: "fixed z-[951] bg-base-100 shadow-mui rounded",
+  arrow: "fixed block bg-base-100 transform rotate-45 shadow-mui w-3.5 h-3.5",
   container: "relative z-10 w-full h-full bg-base-100 rounded overflow-hidden",
 };
 
@@ -55,7 +55,7 @@ interface Props {
   };
 }
 
-const MenuComponent = ({
+const Menu = ({
   open = false,
   anchorEle,
   onClose,
@@ -86,11 +86,16 @@ const MenuComponent = ({
     };
   }, [anchorEle]);
 
-  React.useEffect(() => {
-    if (open && ref.current) {
-      setSelfRect(ref.current.getBoundingClientRect());
+  useIsomorphicLayoutEffect(() => {
+    const ele = ref.current;
+    if (open && ele) {
+      const rect = ele.getBoundingClientRect();
+      if (selfRect?.width !== rect.width || selfRect?.height !== rect.height) {
+        setSelfRect(ele.getBoundingClientRect());
+      }
     }
-  }, [open]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, anchorRect]);
 
   if (!open) {
     return null;
@@ -144,6 +149,4 @@ const MenuComponent = ({
     </Portal>
   );
 };
-// const Menu = React.memo(MenuComponent, (prev, next) => prev.open === next.open);
-const Menu = MenuComponent;
 export default Menu;

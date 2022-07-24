@@ -17,7 +17,8 @@ const className = {
   label: "mb-3 text-sm text-neutral",
   root: "flex items-center justify-center relative w-full pb-[56.25%] max-w-lg mx-auto",
   picker:
-    "absolute inset-0 z-10 border border-dotted outline-none rounded-md flex flex-col items-center justify-center text-primary",
+    "absolute inset-0 z-10 border-2 bg-gray-50 border-dashed outline-none rounded-md flex flex-col items-center justify-center",
+  pickerTxt: "text-gray-500 dark:text-gray-400",
   preview: "absolute inset-0 z-10 border border-success rounded-md",
   closeBtn:
     "absolute top-0 right-0 z-10 -translate-y-1/2 translate-x-1/2 rounded-full text-base-100 bg-error hover:bg-error-focus active:scale-95",
@@ -64,10 +65,10 @@ export default function ImagePicker({
     e.stopPropagation();
 
     if (status) {
-      return animation.set({ borderColor: "red", background: "#f1f5f9" });
+      return animation.set({ borderColor: "red", background: "#f3f4f6" });
     }
 
-    animation.set({ borderColor: "#e5e7eb", background: "#ffffff" });
+    animation.set({ borderColor: "#e5e7eb", background: "#f9fafb" });
   };
 
   const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
@@ -145,8 +146,14 @@ export default function ImagePicker({
                 }
               }}
             >
-              <FiUpload size={26} />
-              <span className="mt-2 text-center">Drop Image</span>
+              <FiUpload size={40} className="text-gray-400" />
+              <p className={classNames("my-2 text-sm", className.pickerTxt)}>
+                <span className="font-semibold">Click to upload</span> or drag
+                and drop
+              </p>
+              <p className={classNames("text-xs", className.pickerTxt)}>
+                SVG, PNG, JPG, JPEG, WEBP or GIF (MAX. SIZE 5MB)
+              </p>
             </motion.button>
           </Fragment>
         )}

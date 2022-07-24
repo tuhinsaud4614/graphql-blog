@@ -14,6 +14,7 @@ import {
   MdFormatAlignRight,
 } from "react-icons/md";
 import BlockButton from "./BlockButton";
+import ImageButton from "./ImageButton";
 import MarkButton from "./MarkButton";
 
 const className = {
@@ -104,6 +105,7 @@ export default function Toolbar() {
         <BlockButton aria-label="Align left" format="right" tip="Align right">
           <MdFormatAlignRight size={18} />
         </BlockButton>
+        <ImageButton />
       </div>
     </header>
   );
