@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -34,10 +35,10 @@ module.exports = {
         "primary-focus": "#4506CB",
         secondary: "#F000B8",
         "secondary-focus": "#C20095",
-        accent: "#37CDBE",
-        "accent-focus": "#2AA79B",
+        accent: "#66cc8a",
+        "accent-focus": "#3db868",
         "accent-content": "#153734",
-        neutral: "#3D4451",
+        neutral: "#333c4d",
         "neutral-focus": "#303640",
         "base-100": "#FFFFFF",
         "base-200": "#F2F2F2",
@@ -70,8 +71,20 @@ module.exports = {
         tooltipBottomArrow: "tooltipBottomArrow .15s ease-out",
         tooltipTopArrow: "tooltipTopArrow .15s ease-out",
         "progress-bar": "progress-bar 2s linear infinite",
+        "check-mark": "check-mark 0.2s ease-in-out",
       },
       keyframes: {
+        "check-mark": {
+          "0%": {
+            "background-position-y": "5px",
+          },
+          "50%": {
+            "background-position-y": "-2px",
+          },
+          "100%": {
+            "background-position-y": "0",
+          },
+        },
         "progress-bar": {
           "0%": {
             "background-position": "100%",
@@ -121,6 +134,35 @@ module.exports = {
           },
         },
       },
+      backgroundImage: ({ theme }) => ({
+        "check-primary": `linear-gradient(-45deg, transparent 65%, ${theme(
+          "colors.primary"
+        )} 65.99%), linear-gradient(45deg, transparent 75%, ${theme(
+          "colors.primary"
+        )} 75.99%), linear-gradient(-45deg, ${theme(
+          "colors.primary"
+        )} 40%, transparent 40.99%), linear-gradient(45deg, ${theme(
+          "colors.primary"
+        )} 30%, ${theme("colors.base-100")} 30.99%, ${theme(
+          "colors.base-100"
+        )} 40%, transparent 40.99%), linear-gradient(-45deg, ${theme(
+          "colors.base-100"
+        )} 50%, ${theme("colors.primary")} 50.99%)`,
+        progress:
+          "linear-gradient(90deg, #ffd33d, #ea4aaa 17%, #b34bff 34%, #01feff 51%, #ffd33d 68%, #ea4aaa 85%, #b34bff)",
+        "base-left": `linear-gradient(90deg, ${theme(
+          "colors.base-100"
+        )} 0px, ${theme("colors.base-100")} 50%)`,
+        "base-right": `linear-gradient(270deg, ${theme(
+          "colors.base-100"
+        )} 0px, ${theme("colors.base-100")} 50%)`,
+        "base-top": `linear-gradient(
+            ${theme("colors.base-100")} 0%,
+            ${theme("colors.base-100")} 5%,
+            rgba(255, 255, 255, 0.6) 5%,
+            ${theme("colors.base-100")} 65%
+          )`,
+      }),
     },
   },
   plugins: [

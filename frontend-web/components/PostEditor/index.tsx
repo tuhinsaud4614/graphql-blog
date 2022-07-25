@@ -23,8 +23,12 @@ const initialValue: Descendant[] = [
   },
 ];
 
-export default function PostEditor() {
-  const [value, setValue] = useState(initialValue);
+interface Props {
+  value: Descendant[];
+  onChange(value: Descendant[]): void;
+}
+
+export default function PostEditor({ onChange, value }: Props) {
   const [editor] = useState(() =>
     withEmbeds(
       withImages(withHistory(withReact(createEditor() as ReactEditor)))
@@ -41,12 +45,6 @@ export default function PostEditor() {
     []
   );
 
-  const onChange = (value: Descendant[]) => {
-    setValue(value);
-  };
-
-  console.log(value);
-
   return (
     <section className={className.root}>
       <Slate editor={editor} value={value} onChange={onChange}>
@@ -54,6 +52,7 @@ export default function PostEditor() {
         <section className="px-4 py-2 overflow-x-auto">
           <Editable
             placeholder="Post body"
+            aria-label="Post body"
             renderLeaf={renderLeaf}
             renderElement={renderElement}
             autoFocus

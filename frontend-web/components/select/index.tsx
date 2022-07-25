@@ -148,7 +148,6 @@ export default function Select({
             }}
             className={classNames(className.input, classes?.input, cls)}
             id={id}
-            required={required}
           />
         </section>
         <AnimatePresence>

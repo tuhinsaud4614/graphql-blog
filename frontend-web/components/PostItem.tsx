@@ -9,9 +9,11 @@ const className = {
   root: "flex items-center",
   left: "flex flex-col flex-1 min-w-0 pr-5",
   title:
-    "line-clamp-2 md1:text-[1.375rem]  font-bold leading-5 md1:leading-7 pt-2 text-neutral text-ellipsis",
+    "line-clamp-2 md1:text-[1.375rem] font-bold leading-5 md1:leading-7 pt-2 text-neutral text-ellipsis",
   body: "pt-1 text-neutral/50 hidden md:line-clamp-2 text-ellipsis",
-  imgContainer: "w-14 md:w-28 bg-neutral/5 flex items-center justify-center",
+  imgContainer:
+    "w-14 h-[calc(3.5rem/16*9)] md:w-28 md:h-[calc(7rem/16*9)] bg-neutral/5 relative",
+  img: "absolute z-10 inset-0 w-full h-full",
   tags: "flex-1 overflow-hidden flex items-center space-x-2",
   tag: "py-0.5 px-2 text-sm text-neutral/75 bg-neutral/5 active:scale-95 capitalize rounded-full whitespace-nowrap",
   timeBox: "pt-8 flex items-center text-xs text-neutral/70",
@@ -83,10 +85,9 @@ export default function PostItem({ classes }: Props) {
         className={classNames(className.imgContainer, classes?.imgContainer)}
       >
         <Image
-          className={"w-[inherit] h-[inherit]"}
           src="/demo.png"
           alt="Post"
-          width={200}
+          width={(148 / 9) * 16}
           height={148}
           objectFit="cover"
         />

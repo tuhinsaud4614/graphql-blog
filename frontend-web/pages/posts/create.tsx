@@ -1,4 +1,4 @@
-import { ImagePicker, PostEditor, Select } from "@component";
+import { CheckInput, ImagePicker, PostEditor, Select } from "@component";
 import { NextPageWithLayout } from "@types";
 import {
   FormButton,
@@ -10,6 +10,7 @@ import { FormikHelpers, useFormik } from "formik";
 import _ from "lodash";
 import Head from "next/head";
 import { Fragment, ReactElement, useId } from "react";
+import { Descendant } from "slate";
 import { maxFileSize } from "utils";
 import { IMAGE_MIMES } from "utils/constants";
 import * as yup from "yup";
@@ -23,7 +24,15 @@ interface IValues {
   categories: { name: string; value: string }[];
   tags: { name: string; value: string }[];
   image: File | null;
+  body: Descendant[];
+  published: boolean;
 }
+
+const initialBodyValue: Descendant[] = [
+  {
+    children: [{ text: "" }],
+  },
+];
 
 // validation
 const schema = yup.object().shape({
@@ -61,6 +70,7 @@ const schema = yup.object().shape({
       if (value === undefined) return true;
       return !!value && value.size <= maxFileSize(5);
     }),
+  published: yup.boolean(),
 });
 
 const CreatePost: NextPageWithLayout = () => {
@@ -69,11 +79,14 @@ const CreatePost: NextPageWithLayout = () => {
     categories: [],
     tags: [],
     image: null,
+    body: initialBodyValue,
+    published: false,
   };
 
   const titleId = useId();
   const categoriesId = useId();
   const tagsId = useId();
+  const publishedId = useId();
 
   const onSubmit = async (
     values: IValues,
@@ -98,10 +111,10 @@ const CreatePost: NextPageWithLayout = () => {
     validationSchema: schema,
   });
 
-  // console.log(values);
+  console.log(values);
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <Head>
         <title>New post – The RAT Diary</title>
         <meta name="title" content="New post – The RAT Diary" />
@@ -204,8 +217,21 @@ const CreatePost: NextPageWithLayout = () => {
         errorText={touched.image && errors.image}
         required
       />
-      <PostEditor />
-
+      <PostEditor
+        value={values.body}
+        onChange={(value) => setFieldValue("body", value)}
+      />
+      <div className="w-52 mt-3">
+        <CheckInput
+          label="Published"
+          id={publishedId}
+          name="published"
+          aria-label="Post published"
+          aria-checked={values.published}
+          checked={values.published}
+          onChange={(e) => setFieldValue("published", e.target.checked)}
+        />
+      </div>
       <FormButton
         classes={{ root: "mt-3" }}
         type="submit"
