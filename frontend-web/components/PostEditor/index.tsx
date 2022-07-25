@@ -13,7 +13,7 @@ import {
 import Element from "./Element";
 import Leaf from "./Leaf";
 import Toolbar from "./Toolbar";
-import { withImages } from "./utils";
+import { withEmbeds, withImages } from "./utils";
 
 const className = { root: "border rounded-md" };
 
@@ -26,7 +26,9 @@ const initialValue: Descendant[] = [
 export default function PostEditor() {
   const [value, setValue] = useState(initialValue);
   const [editor] = useState(() =>
-    withImages(withHistory(withReact(createEditor() as ReactEditor)))
+    withEmbeds(
+      withImages(withHistory(withReact(createEditor() as ReactEditor)))
+    )
   );
 
   const renderLeaf = useCallback(
@@ -43,7 +45,7 @@ export default function PostEditor() {
     setValue(value);
   };
 
-  //   console.log(value);
+  console.log(value);
 
   return (
     <section className={className.root}>
@@ -54,6 +56,7 @@ export default function PostEditor() {
             placeholder="Post body"
             renderLeaf={renderLeaf}
             renderElement={renderElement}
+            autoFocus
           />
         </section>
       </Slate>

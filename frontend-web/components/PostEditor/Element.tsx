@@ -1,4 +1,5 @@
 import { RenderElementProps } from "slate-react";
+import Embed from "./Embed";
 import Image from "./Image";
 
 export default function Element({
@@ -77,6 +78,12 @@ export default function Element({
         <Image attributes={attributes} element={element}>
           {children}
         </Image>
+      );
+    case "video":
+      return (
+        <Embed attributes={attributes} element={element}>
+          {children}
+        </Embed>
       );
 
     default:

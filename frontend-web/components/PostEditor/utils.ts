@@ -10,6 +10,9 @@ export const HOTKEYS = {
   "mod+`": "code",
 } as const;
 
+export type EmptyText = {
+  text: string;
+};
 export type HotKeyType = keyof typeof HOTKEYS;
 export type MarkType = typeof HOTKEYS[HotKeyType];
 
@@ -76,5 +79,19 @@ export const withImages = (editor: ReactEditor) => {
     }
   };
 
+  return editor;
+};
+
+export type VideoElement = {
+  type: "video";
+  url: string;
+  children: EmptyText[];
+};
+
+export const withEmbeds = (editor: ReactEditor) => {
+  const { isVoid } = editor;
+  editor.isVoid = (element) =>
+    // @ts-ignore
+    element.type === "video" ? true : isVoid(element);
   return editor;
 };

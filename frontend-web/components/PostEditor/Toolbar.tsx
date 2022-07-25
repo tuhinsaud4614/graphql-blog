@@ -1,7 +1,7 @@
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import {
   BiBold,
-  BiCode,
+  BiCodeCurly,
   BiHeading,
   BiItalic,
   BiUnderline,
@@ -14,6 +14,7 @@ import {
   MdFormatAlignRight,
 } from "react-icons/md";
 import BlockButton from "./BlockButton";
+import EmbedButton from "./EmbedButton";
 import ImageButton from "./ImageButton";
 import MarkButton from "./MarkButton";
 
@@ -55,7 +56,7 @@ export default function Toolbar() {
           mark="code"
           tip="Code (⌘U)"
         >
-          <BiCode size={18} />
+          <BiCodeCurly size={18} />
         </MarkButton>
         <BlockButton
           aria-label="Block heading 1"
@@ -106,6 +107,7 @@ export default function Toolbar() {
           <MdFormatAlignRight size={18} />
         </BlockButton>
         <ImageButton />
+        <EmbedButton />
       </div>
     </header>
   );
