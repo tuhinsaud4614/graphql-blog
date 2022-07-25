@@ -1,4 +1,5 @@
 import { RenderElementProps } from "slate-react";
+import Image from "./Image";
 
 export default function Element({
   attributes,
@@ -68,6 +69,14 @@ export default function Element({
         >
           <code className="text-[#292929]">{children}</code>
         </pre>
+      );
+
+    case "image":
+      return (
+        // eslint-disable-next-line jsx-a11y/alt-text
+        <Image attributes={attributes} element={element}>
+          {children}
+        </Image>
       );
 
     default:

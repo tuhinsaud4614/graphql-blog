@@ -1,5 +1,23 @@
 import { ComponentPropsWithoutRef } from "react";
-import { BaseEditor, Editor, Element as SlateElement } from "slate";
+import { BaseEditor, Editor, Element as SlateElement, Transforms } from "slate";
+import { ReactEditor } from "slate-react";
+import { IMAGE_URL_REGEX } from "utils/constants";
+
+export const HOTKEYS = {
+  "mod+b": "bold",
+  "mod+i": "italic",
+  "mod+u": "underline",
+  "mod+`": "code",
+} as const;
+
+export type HotKeyType = keyof typeof HOTKEYS;
+export type MarkType = typeof HOTKEYS[HotKeyType];
+
+export interface MarkButtonProps extends ComponentPropsWithoutRef<"button"> {
+  mark: MarkType;
+  hotKey: HotKeyType;
+  tip: string;
+}
 
 export const isMarkActive = (editor: BaseEditor, format: string) => {
   const marks = Editor.marks(editor);
@@ -29,18 +47,34 @@ export function isBlockActive(
   return !!match;
 }
 
-export const HOTKEYS = {
-  "mod+b": "bold",
-  "mod+i": "italic",
-  "mod+u": "underline",
-  "mod+`": "code",
-} as const;
+export const isImageUrl = (url: string) => {
+  if (!url) return false;
+  if (url.match(IMAGE_URL_REGEX) === null) return false;
+  return true;
+};
 
-export type HotKeyType = keyof typeof HOTKEYS;
-export type MarkType = typeof HOTKEYS[HotKeyType];
+export const insertImage = (editor: ReactEditor, url: string) => {
+  const text = { text: "" };
+  const image = { type: "image", url, children: [text] };
+  Transforms.insertNodes(editor, image);
+};
 
-export interface MarkButtonProps extends ComponentPropsWithoutRef<"button"> {
-  mark: MarkType;
-  hotKey: HotKeyType;
-  tip: string;
-}
+export const withImages = (editor: ReactEditor) => {
+  const { isVoid, insertData } = editor;
+
+  editor.isVoid = (element) => {
+    // @ts-ignore
+    return element.type === "image" ? true : isVoid(element);
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData("text/plain");
+    if (isImageUrl(text)) {
+      insertImage(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
+
+  return editor;
+};

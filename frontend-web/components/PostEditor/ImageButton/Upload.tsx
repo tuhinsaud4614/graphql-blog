@@ -74,7 +74,7 @@ export function Upload({ onAdd }: Props) {
       >
         {loading && <Loader />}
         {!image ? (
-          "Click top upload"
+          "Click to upload"
         ) : (
           <div className={className.imgContainer}>
             <div className="absolute inset-0 z-10">

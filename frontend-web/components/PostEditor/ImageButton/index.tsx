@@ -3,8 +3,9 @@ import classNames from "classnames";
 import { Menu } from "components";
 import { Fragment, useState } from "react";
 import { BiImage } from "react-icons/bi";
-import { useSlateStatic } from "slate-react";
+import { ReactEditor, useSlateStatic } from "slate-react";
 import Button from "../Button";
+import { insertImage } from "../utils";
 import { Upload } from "./Upload";
 import { Url } from "./Url";
 
@@ -75,7 +76,7 @@ export default function ImageButton() {
           {currentTab === 0 && (
             <Upload
               onAdd={(url) => {
-                console.log(url);
+                insertImage(editor as ReactEditor, url);
                 setAnchorEle(null);
               }}
             />
@@ -83,7 +84,7 @@ export default function ImageButton() {
           {currentTab === 1 && (
             <Url
               onAdd={(url) => {
-                console.log(url);
+                insertImage(editor as ReactEditor, url);
                 setAnchorEle(null);
               }}
             />
