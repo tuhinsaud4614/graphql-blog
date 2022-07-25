@@ -1,6 +1,7 @@
 import { ImagePicker, PostEditor, Select } from "@component";
 import { NextPageWithLayout } from "@types";
 import {
+  FormButton,
   FormControl,
   PostCreateContainer,
   PostCreateHeader,
@@ -204,6 +205,16 @@ const CreatePost: NextPageWithLayout = () => {
         required
       />
       <PostEditor />
+
+      <FormButton
+        classes={{ root: "mt-3" }}
+        type="submit"
+        aria-label="Register"
+        loader={isSubmitting}
+        disabled={!(isValid && dirty) || isSubmitting}
+      >
+        Save
+      </FormButton>
     </form>
   );
 };

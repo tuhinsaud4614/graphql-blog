@@ -11,14 +11,27 @@ const className = {
 
 interface Props extends ComponentPropsWithRef<"button"> {
   loader?: boolean;
+  classes?: {
+    root?: string;
+    btn?: string;
+  };
 }
 
-export default function FormButton({ loader, children, ...rest }: Props) {
+export default function FormButton({
+  loader,
+  classes,
+  children,
+  ...rest
+}: Props) {
   return (
-    <div className={className.btnContainer}>
+    <div className={classNames(className.btnContainer, classes?.root)}>
       <button
         {...rest}
-        className={classNames(className.btn, loader && className.btnLoader)}
+        className={classNames(
+          className.btn,
+          classes?.btn,
+          loader && className.btnLoader
+        )}
       >
         {children}
         {loader && <ImSpinner2 className={className.btnSpin} />}
