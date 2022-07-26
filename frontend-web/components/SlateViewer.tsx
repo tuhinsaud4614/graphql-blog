@@ -9,16 +9,13 @@ import {
   Slate,
   withReact,
 } from "slate-react";
-import { withEmbeds, withImages } from "utils";
 
 interface Props {
   value: Descendant[];
 }
 
 export default function SlateViewer({ value }: Props) {
-  const [editor] = useState(() =>
-    withEmbeds(withImages(withReact(createEditor() as ReactEditor)))
-  );
+  const [editor] = useState(() => withReact(createEditor() as ReactEditor));
 
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <SlateLeaf {...props} />,

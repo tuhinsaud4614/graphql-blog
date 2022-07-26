@@ -1,6 +1,7 @@
 import { RenderElementProps } from "slate-react";
 import SlateEmbed from "./SlateEmbed";
 import SlateImage from "./SlateImage";
+import SlateLink from "./SlateLink";
 
 export default function SlateElement({
   attributes,
@@ -60,7 +61,6 @@ export default function SlateElement({
           {children}
         </li>
       );
-
     case "code":
       return (
         <pre
@@ -71,7 +71,6 @@ export default function SlateElement({
           <code className="text-[#292929]">{children}</code>
         </pre>
       );
-
     case "image":
       return (
         <SlateImage attributes={attributes} element={element}>
@@ -83,6 +82,12 @@ export default function SlateElement({
         <SlateEmbed attributes={attributes} element={element}>
           {children}
         </SlateEmbed>
+      );
+    case "link":
+      return (
+        <SlateLink attributes={attributes} element={element}>
+          {children}
+        </SlateLink>
       );
 
     default:

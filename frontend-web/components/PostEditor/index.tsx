@@ -1,4 +1,5 @@
 import { SlateElement, SlateLeaf } from "@component";
+import pipe from "lodash/fp/pipe";
 import { useCallback, useState } from "react";
 import { createEditor, Descendant } from "slate";
 import { withHistory } from "slate-history";
@@ -10,7 +11,7 @@ import {
   Slate,
   withReact,
 } from "slate-react";
-import { withEmbeds, withImages } from "utils";
+import { withEmbeds, withImages, withLinks } from "utils";
 
 import Toolbar from "./Toolbar";
 
@@ -27,12 +28,16 @@ interface Props {
   onChange(value: Descendant[]): void;
 }
 
+const withPlugins = pipe([
+  withReact,
+  withHistory,
+  withEmbeds,
+  withImages,
+  withLinks,
+]);
+
 export default function PostEditor({ onChange, value }: Props) {
-  const [editor] = useState(() =>
-    withEmbeds(
-      withImages(withHistory(withReact(createEditor() as ReactEditor)))
-    )
-  );
+  const [editor] = useState(() => withPlugins(createEditor() as ReactEditor));
 
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <SlateLeaf {...props} />,
@@ -54,7 +59,6 @@ export default function PostEditor({ onChange, value }: Props) {
             aria-label="Post body"
             renderLeaf={renderLeaf}
             renderElement={renderElement}
-            autoFocus
           />
         </section>
       </Slate>

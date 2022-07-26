@@ -25,6 +25,7 @@ export { default as SlateElement } from "./SlateElement";
 export { default as SlateEmbed } from "./SlateEmbed";
 export { default as SlateImage } from "./SlateImage";
 export { default as SlateLeaf } from "./SlateLeaf";
+export { default as SlateLink } from "./SlateLink";
 export { default as SlateViewer } from "./SlateViewer";
 export { default as TabBox } from "./TabBox";
 export { default as Tabs } from "./Tabs";

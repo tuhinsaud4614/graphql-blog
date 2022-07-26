@@ -1,4 +1,5 @@
 import { EmptyText } from "components/PostEditor/utils";
+import { Descendant } from "slate";
 
 export interface IAnchorOrigin {
   horizontal?: "center" | "right" | "left";
@@ -10,3 +11,9 @@ export interface SlateVideoElement {
   url: string;
   children: EmptyText[];
 }
+
+export type SlateLinkElement = {
+  type: "link";
+  url: string;
+  children: Descendant[];
+};

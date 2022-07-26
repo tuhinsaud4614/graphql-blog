@@ -1,8 +1,8 @@
 import escapeHtml from "escape-html";
-import { Text, Transforms } from "slate";
+import { BaseEditor, Editor, Element, Range, Text, Transforms } from "slate";
 import { ReactEditor } from "slate-react";
-import { IMAGE_URL_REGEX } from "./constants";
-import { IAnchorOrigin } from "./interfaces";
+import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
+import { IAnchorOrigin, SlateLinkElement } from "./interfaces";
 
 const ARROW_SIZE = 14;
 export const getPositions = (
@@ -186,6 +186,78 @@ export const withImages = (editor: ReactEditor) => {
 
   return editor;
 };
+
+export const isLinkActive = (editor: BaseEditor) => {
+  // @ts-ignore
+  const [link] = Editor.nodes(editor, {
+    match: (n) =>
+      // @ts-ignore
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "link",
+  });
+  return !!link;
+};
+
+export const unwrapLink = (editor: BaseEditor) => {
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      // @ts-ignore
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "link",
+  });
+};
+
+export const wrapLink = (editor: BaseEditor, url: string) => {
+  if (isLinkActive(editor)) {
+    unwrapLink(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link: SlateLinkElement = {
+    type: "link",
+    url,
+    children: isCollapsed ? [{ text: url }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+  } else {
+    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.collapse(editor, { edge: "end" });
+  }
+};
+
+export const insertLink = (editor: BaseEditor, url: string) => {
+  if (editor.selection) {
+    wrapLink(editor, url);
+  }
+};
+
+export function withLinks(editor: ReactEditor) {
+  const { insertData, insertText, isInline } = editor;
+  editor.isInline = (element) =>
+    // @ts-ignore
+    element.type === "link" || isInline(element);
+
+  editor.insertText = (text: string) => {
+    if (text && URL_REGEX.test(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData("text/plain");
+
+    if (text && URL_REGEX.test(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
+
+  return editor;
+}
 // Start slate utils End
 
 export function queryChecking<T extends { [key: string]: any }>(

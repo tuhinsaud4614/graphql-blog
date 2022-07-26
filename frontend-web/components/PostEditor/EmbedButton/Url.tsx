@@ -4,6 +4,7 @@ import { URL_REGEX } from "utils/constants";
 import InsertButton from "../ImageButton/InsertButton";
 
 interface Props {
+  title?: string;
   onAdd(url: string): void;
 }
 
@@ -11,7 +12,7 @@ const className = {
   root: "flex flex-col items-center justify-between",
 };
 
-export function Url({ onAdd }: Props) {
+export function Url({ onAdd, title = "Embeds url" }: Props) {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
 
@@ -32,7 +33,7 @@ export function Url({ onAdd }: Props) {
         classes={{ label: "mb-0" }}
         placeholder="https://xyz.com/video"
         id={id}
-        title="Video url"
+        title={title}
         name="url"
         aria-label="Video url"
         aria-invalid={!!error}

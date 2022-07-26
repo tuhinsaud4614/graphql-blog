@@ -1,10 +1,11 @@
-import OtherAboutTab from "./OtherAboutTab";
+import AddAbout from "./AddAbout";
+import OtherAboutTab from "./OtherAbout";
 
-const isTrue = false;
+const isTrue = true;
 
 export default function AboutTab() {
   if (isTrue) {
-    return <div></div>;
+    return <AddAbout />;
   }
 
   return <OtherAboutTab />;

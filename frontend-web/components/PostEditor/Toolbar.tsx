@@ -16,7 +16,9 @@ import {
 import BlockButton from "./BlockButton";
 import EmbedButton from "./EmbedButton";
 import ImageButton from "./ImageButton";
+import LinkButton from "./LinkButton";
 import MarkButton from "./MarkButton";
+import UnLinkButton from "./UnLinkButton";
 
 const className = {
   root: "border-b px-2 py-1",
@@ -106,6 +108,8 @@ export default function Toolbar() {
         <BlockButton aria-label="Align left" format="right" tip="Align right">
           <MdFormatAlignRight size={18} />
         </BlockButton>
+        <LinkButton />
+        <UnLinkButton />
         <ImageButton />
         <EmbedButton />
       </div>

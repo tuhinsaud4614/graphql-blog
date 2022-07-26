@@ -18,6 +18,13 @@ const initialValue = [
   { type: "paragraph", children: [{ bold: false, text: "" }] },
   { type: "paragraph", children: [{ bold: false, text: "" }] },
   {
+    type: "link",
+    url: "https://miro.medium.com/max/1400/0*iTuEmxLD1IOJ5Xf1.png",
+    children: [{ text: "tuhin hhhhhh" }],
+  },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  {
     type: "image",
     url: "https://miro.medium.com/max/1400/0*iTuEmxLD1IOJ5Xf1.png",
     children: [{ text: "" }],
