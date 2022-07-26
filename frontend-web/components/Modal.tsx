@@ -1,6 +1,7 @@
 import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
 import { AnimatePresence, motion, Variants } from "framer-motion";
+import { useRouter } from "next/router";
 import * as React from "react";
 import Backdrop from "./Backdrop";
 import Portal from "./Portal";
@@ -40,16 +41,19 @@ const containerVariants: Variants = {
     x: "-50%",
     scale: 1.2,
     opacity: 0,
+    transition: { duration: 0.1 },
   },
   visible: {
     y: "-50%",
     x: "-50%",
     opacity: 1,
     scale: 1,
+    transition: { duration: 0.1 },
   },
   exit: {
     scale: 1.2,
     opacity: 0,
+    transition: { duration: 0.1 },
   },
 };
 
@@ -66,6 +70,15 @@ interface Props {
 
 function Modal({ onHide, open, staticBack, classes, children }: Props) {
   const matches = useMediaQuery("(min-width: 640px)");
+  const { events } = useRouter();
+
+  React.useEffect(() => {
+    events.on("routeChangeStart", onHide);
+    return () => {
+      events.off("routeChangeStart", onHide);
+    };
+  }, [onHide, events]);
+
   return (
     <Portal>
       <AnimatePresence>

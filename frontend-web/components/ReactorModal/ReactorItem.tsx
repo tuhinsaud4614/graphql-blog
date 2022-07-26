@@ -14,7 +14,7 @@ const className = {
   followBtn:
     "outline-none px-3.5 py-1.5 rounded-full text-sm text-center inline-block active:scale-95",
   followBtnBlock:
-    "border-0 bg-accent hover:bg-accent-focus text-base-200 hover:text-base-100",
+    "border-0 bg-accent hover:bg-accent-focus text-neutral shadow-mui hover:shadow-mui-hover active:shadow-mui-active",
   followBtnOutline:
     "border border-accent hover:border-accent-focus text-accent hover:text-accent-focus",
 };

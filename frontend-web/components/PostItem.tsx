@@ -36,7 +36,7 @@ export default function PostItem({ classes }: Props) {
   return (
     <li className={classNames(className.root, classes?.root)}>
       <div className={classNames(className.left, classes?.left)}>
-        <UserLink href="/account/profile" src="/favicon.ico">
+        <UserLink href={ROUTES.authorProfile("1")} src="/favicon.ico">
           Blake Lemoine
         </UserLink>
         <Link href={ROUTES.post("1")} passHref>

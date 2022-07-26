@@ -150,18 +150,21 @@ module.exports = {
         )} 50%, ${theme("colors.primary")} 50.99%)`,
         progress:
           "linear-gradient(90deg, #ffd33d, #ea4aaa 17%, #b34bff 34%, #01feff 51%, #ffd33d 68%, #ea4aaa 85%, #b34bff)",
-        "base-left": `linear-gradient(90deg, ${theme(
+        "base-left": `linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, ${theme(
           "colors.base-100"
-        )} 0px, ${theme("colors.base-100")} 50%)`,
-        "base-right": `linear-gradient(270deg, ${theme(
+        )} 50%)`,
+        "base-right": `linear-gradient(270deg, rgba(255, 255, 255, 0) 0px, ${theme(
           "colors.base-100"
-        )} 0px, ${theme("colors.base-100")} 50%)`,
+        )} 50%)`,
         "base-top": `linear-gradient(
             ${theme("colors.base-100")} 0%,
             ${theme("colors.base-100")} 5%,
             rgba(255, 255, 255, 0.6) 5%,
             ${theme("colors.base-100")} 65%
           )`,
+        scrollbar: `linear-gradient(180deg, transparent, ${theme(
+          "colors.accent"
+        )})`,
       }),
     },
   },

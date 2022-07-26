@@ -2,7 +2,7 @@ import { Modal, ModalHeader } from "components";
 import { ReactNode } from "react";
 
 const className = {
-  modalBody: "overflow-y-auto px-10 pb-10",
+  modalBody: "overflow-y-auto scrollbar px-10 pb-10",
   modalBodyTitle: "text-xl text-neutral font-medium text-center mb-6",
   modalBodyItems: "list-none m-0 flex flex-col space-y-4",
   moreBtn:

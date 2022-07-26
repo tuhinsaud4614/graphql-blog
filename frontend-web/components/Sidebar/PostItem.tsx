@@ -1,5 +1,6 @@
 import { UserLink } from "components";
 import Link from "next/link";
+import { ROUTES } from "utils/constants";
 
 const className = {
   root: "flex flex-col",
@@ -11,7 +12,7 @@ const className = {
 export default function PostItem() {
   return (
     <li className={className.root}>
-      <UserLink href="/account/profile" src="/favicon.ico">
+      <UserLink href={ROUTES.authorProfile("1")} src="/favicon.ico">
         Blake Lemoine
       </UserLink>
       <div className={className.content}>

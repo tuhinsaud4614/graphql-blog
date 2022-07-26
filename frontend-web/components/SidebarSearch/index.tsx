@@ -2,7 +2,7 @@ import { useLocalStorage, useMediaQuery } from "@hooks";
 import { Menu, SearchBox } from "components";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, KeyboardEvent, useRef, useState } from "react";
-import { RECENT_SEARCHES } from "utils/constants";
+import { RECENT_SEARCHES, ROUTES } from "utils/constants";
 import Result from "./Result";
 import ResultItem from "./ResultItem";
 
@@ -65,37 +65,33 @@ export default function Search() {
         >
           <section className={className.result}>
             <Result title="People">
-              <ResultItem link="/account/profile" src="/favicon.ico">
-                Blake Lemoine
-              </ResultItem>
-              <ResultItem link="/account/profile" src="/favicon.ico">
-                Blake Lemoine
-              </ResultItem>
-              <ResultItem link="/account/profile" src="/favicon.ico">
-                Blake Lemoine
-              </ResultItem>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <ResultItem
+                  key={index}
+                  link={ROUTES.authorProfile((index + 1).toString())}
+                  src="/favicon.ico"
+                >
+                  Blake Lemoine
+                </ResultItem>
+              ))}
             </Result>
             <span className="h-3 block" />
             <Result title="Posts">
-              <ResultItem link="/account/profile" src="/logo.svg">
-                Blake Lemoine
-              </ResultItem>
-              <ResultItem link="/account/profile" src="/logo.svg">
-                Blake Lemoine
-              </ResultItem>
-              <ResultItem link="/account/profile" src="/logo.svg">
-                Blake Lemoine
-              </ResultItem>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <ResultItem key={index} link="/my-home" src="/logo.svg">
+                  Blake Lemoine
+                </ResultItem>
+              ))}
             </Result>
             <span className="h-3 block" />
             <Result title="tags">
-              <ResultItem link="/account/profile" src="/tag.svg">
+              <ResultItem link="/my-home" src="/tag.svg">
                 Blake Lemoine
               </ResultItem>
-              <ResultItem link="/account/profile" src="/tag.svg">
+              <ResultItem link="/my-home" src="/tag.svg">
                 Blake Lemoine
               </ResultItem>
-              <ResultItem link="/account/profile" src="/tag.svg">
+              <ResultItem link="/my-home" src="/tag.svg">
                 Blake Lemoine
               </ResultItem>
             </Result>

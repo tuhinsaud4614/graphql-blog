@@ -1,5 +1,6 @@
 import UserLink from "components/UserLink";
 import Link from "next/link";
+import { ROUTES } from "utils/constants";
 
 const className = {
   root: "basis-full md:basis-1/2 md1:basis-1/3 px-3 md:px-4",
@@ -20,7 +21,7 @@ export default function TrendingItem({ index }: Props) {
       <section className={className.container}>
         <span className={className.index}>0{index}</span>
         <div className={className.content}>
-          <UserLink href="/account/profile" src="/favicon.ico">
+          <UserLink href={ROUTES.authorProfile("1")} src="/favicon.ico">
             Blake Lemoine
           </UserLink>
           <Link href="/post/123" passHref>

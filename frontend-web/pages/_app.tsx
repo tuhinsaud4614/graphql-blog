@@ -1,7 +1,7 @@
 import { ProgressBar } from "@component";
 import type { AppPropsWithLayout } from "@types";
 import Head from "next/head";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import * as React from "react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -10,16 +10,33 @@ import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
+  const { events } = useRouter();
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  Router.events.on("routeChangeStart", () => {
-    setProgress(true);
-  });
+  React.useEffect(() => {
+    const handleStart = () => {
+      setProgress(true);
+    };
+    const handleComplete = () => {
+      setProgress(false);
+    };
+    events.on("routeChangeStart", handleStart);
+    events.on("routeChangeComplete", handleComplete);
 
-  Router.events.on("routeChangeComplete", () => {
-    setProgress(false);
-  });
+    return () => {
+      events.off("routeChangeStart", handleStart);
+      events.off("routeChangeComplete", handleComplete);
+    };
+  }, [events]);
+
+  // Router.events.on("routeChangeStart", () => {
+  //   setProgress(true);
+  // });
+
+  // Router.events.on("routeChangeComplete", () => {
+  //   setProgress(false);
+  // });
 
   return getLayout(
     <React.Fragment>

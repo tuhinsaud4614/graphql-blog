@@ -1,6 +1,7 @@
 import { FollowItem, Tag } from "components";
 import { SidebarCategory, SidebarContent } from "components/Sidebar";
 import { Fragment, ReactNode } from "react";
+import { ROUTES } from "utils/constants";
 
 import Container from "./Container";
 
@@ -69,7 +70,7 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
             </SidebarContent>
             <div className={className.divider} />
             <SidebarContent
-              moreLink="/account/me/followings"
+              moreLink={ROUTES.mySuggestions}
               moreText="See more suggestions"
               title="Who to follow"
               classes={{ items: "pb-8" }}

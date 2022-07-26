@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-scrollbar rounded-md;
+  }
+}
