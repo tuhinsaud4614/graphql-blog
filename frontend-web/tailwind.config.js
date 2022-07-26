@@ -32,31 +32,48 @@ module.exports = {
       },
       colors: {
         primary: "#570DF8",
+        "primary-dark": "#783df9",
         "primary-focus": "#4506CB",
+        "primary-content": "#6829f1",
+        "primary-disabled": "#4506cb59",
         secondary: "#F000B8",
+        "secondary-dark": "#f333c6",
         "secondary-focus": "#C20095",
+        "secondary-content": "#ec1ebc",
+        "secondary-disabled": "#f000b859",
         accent: "#66cc8a",
+        "accent-dark": "#84d6a1",
         "accent-focus": "#3db868",
-        "accent-content": "#153734",
+        "accent-content": "#9cdeb3",
+        "accent-disabled": "#66cc8a80",
         neutral: "#333c4d",
+        "neutral-dark": "#f3f6f9",
         "neutral-focus": "#303640",
+        "neutral-dark-focus": "#ffffff",
         "base-100": "#FFFFFF",
+        "base-dark-100": "#0a1929",
         "base-200": "#F2F2F2",
+        "base-dark-200": "#001e3c",
         "base-300": "#E5E6E6",
+        "base-dark-300": "#007efc",
         "base-content": "#1F2937",
         info: "#1976d2",
+        "info-dark": "#42a5f5",
         "info-focus": "#1565c0",
         "info-content": "#2196f3",
         "info-disabled": "#e3f2fd",
         success: "#388e3c",
+        "success-dark": "#66bb6a",
         "success-focus": "#2e7d32",
         "success-content": "#4caf50",
         "success-disabled": "#e8f5e9",
         warning: "#f57c00",
+        "warning-dark": "#ffa726",
         "warning-focus": "#ef6c00",
         "warning-content": "#ff9800",
         "warning-disabled": "#fff3e0",
         error: "#d32f2f",
+        "error-dark": "#ef5350",
         "error-focus": "#c62828",
         "error-content": "#f44336",
         "error-disabled": "#ffebee",
@@ -153,14 +170,26 @@ module.exports = {
         "base-left": `linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, ${theme(
           "colors.base-100"
         )} 50%)`,
+        "base-dark-left": `linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, ${theme(
+          "colors.base-dark-100"
+        )} 50%)`,
         "base-right": `linear-gradient(270deg, rgba(255, 255, 255, 0) 0px, ${theme(
           "colors.base-100"
+        )} 50%)`,
+        "base-dark-right": `linear-gradient(270deg, rgba(255, 255, 255, 0) 0px, ${theme(
+          "colors.base-dark-100"
         )} 50%)`,
         "base-top": `linear-gradient(
             ${theme("colors.base-100")} 0%,
             ${theme("colors.base-100")} 5%,
             rgba(255, 255, 255, 0.6) 5%,
             ${theme("colors.base-100")} 65%
+          )`,
+        "base-dark-top": `linear-gradient(
+            ${theme("colors.base-dark-100")} 0%,
+            ${theme("colors.base-dark-100")} 5%,
+            rgba(10, 25, 41, 0.6) 5%,
+            ${theme("colors.base-dark-100")} 65%
           )`,
         scrollbar: `linear-gradient(180deg, transparent, ${theme(
           "colors.accent"

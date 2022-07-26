@@ -4,9 +4,9 @@ import { Fragment, ReactNode, useEffect, useRef, useState } from "react";
 import TabPanel from "./TabPanel";
 
 const className = {
-  list: "flex border-b space-x-4 relative overflow-x-auto scrollbar-hide",
+  list: "flex border-b dark:border-base-dark-300 space-x-4 relative overflow-x-auto scrollbar-hide",
   tabItem:
-    "text-neutral hover:text-accent-focus border-none outline-none py-3 shrink-0 capitalize",
+    "text-neutral dark:text-neutral-dark hover:text-accent-focus dark:hover:text-accent-dark border-none outline-none py-3 shrink-0 capitalize",
   slider: "h-0.5 rounded-tr-lg rounded-tl-lg mx-1 absolute bottom-0 bg-accent",
 };
 
@@ -57,7 +57,7 @@ export default function Tabs({
           <button
             className={classNames(
               className.tabItem,
-              index === selectedTab && "text-accent"
+              index === selectedTab && "!text-accent !dark:text-accent-content"
             )}
             key={index}
             onClick={() => {
@@ -72,7 +72,7 @@ export default function Tabs({
         {slider.hasValue && (
           <motion.span
             transition={{ bounceDamping: 3 }}
-            className="border-b border-[1.5px] border-neutral absolute bottom-0 !m-0"
+            className="border-b border-[1.5px] border-neutral dark:border-neutral-dark absolute bottom-0 !m-0"
             style={{ left: slider.left, width: slider.width }}
           />
         )}

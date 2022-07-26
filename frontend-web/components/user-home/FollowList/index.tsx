@@ -19,7 +19,7 @@ const PrevButton = (props: ComponentPropsWithoutRef<"button">) => {
       onClick={() => swiper.slidePrev()}
       className={classNames(
         className.navBtn,
-        "left-0 bg-base-right pr-5",
+        "left-0 bg-base-right dark:bg-base-dark-right pr-5",
         props.className
       )}
     >
@@ -36,7 +36,7 @@ const NextButton = (props: ComponentPropsWithoutRef<"button">) => {
       onClick={() => swiper.slideNext()}
       className={classNames(
         className.navBtn,
-        "right-0 bg-base-left pl-5",
+        "right-0 bg-base-left dark:bg-base-dark-left pl-5",
         props.className
       )}
     >

@@ -7,7 +7,7 @@ const className = {
     "shrink-0 h-6 w-6 cursor-pointer appearance-none border rounded-lg border-primary",
   inputCheck:
     "checked:animate-check-mark checked:bg-check-primary checked:bg-no-repeat checked:bg-primary",
-  text: "ml-3 text-sm text-neutral",
+  text: "ml-3 text-sm text-neutral dark:text-neutral-dark",
 };
 
 interface Props extends Omit<ComponentPropsWithRef<"input">, "type"> {

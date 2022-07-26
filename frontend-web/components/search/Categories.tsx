@@ -4,7 +4,7 @@ import { BiChevronDown } from "react-icons/bi";
 const className = {
   items: "flex flex-wrap space-x-3 space-y-3 -ml-3",
   item: "!rounded-full first:ml-3 first:mt-3 !border-none bg-accent !text-base-100 hover:bg-accent-focus hover:!text-base-200",
-  more: "flex items-center justify-center w-full bg-base-top",
+  more: "flex items-center justify-center w-full bg-base-top dark:bg-base-dark-top",
   moreBtn:
     "flex items-center justify-center px-3 py-1 text-accent hover:text-accent-focus active:scale-95",
 };

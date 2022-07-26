@@ -16,7 +16,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head />
-        <body>
+        <body className="bg-base-100 dark:bg-base-dark-100">
           <Main />
           <div id="presentational" role="presentation" />
           <div id="tooltip" role="tooltip" aria-label="tooltip" />

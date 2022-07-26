@@ -14,9 +14,9 @@ import { BsPlusLg } from "react-icons/bs";
 import { queryChecking } from "utils";
 
 const className = {
-  top: "flex items-center text-neutral-focus my-6",
+  top: "flex items-center text-neutral-focus dark:text-neutral-dark-focus my-6",
   topIcon:
-    "w-9 h-9 flex items-center justify-center rounded-full bg-base-300 mr-2",
+    "w-9 h-9 flex items-center justify-center rounded-full bg-base-300 dark:bg-base-dark-300 mr-2",
 };
 
 const tabs = ["following", "recommended"];

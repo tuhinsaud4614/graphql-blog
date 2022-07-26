@@ -1,5 +1,6 @@
 export { default as Backdrop } from "./Backdrop";
 export { default as BottomSheet } from "./BottomSheet";
+export { default as Button } from "./Button";
 export { default as CheckInput } from "./CheckInput";
 export { default as CommentBox } from "./CommentBox";
 export { default as CommentBoxCommenter } from "./CommentBox/Commenter";

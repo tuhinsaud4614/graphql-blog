@@ -13,7 +13,7 @@ import { HiHome, HiOutlineHome } from "react-icons/hi";
 import { ROUTES } from "utils/constants";
 
 const className = {
-  root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 px-4 shadow-top",
+  root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 dark:bg-base-dark-200 px-4 shadow-top",
   items: " flex items-center h-full",
   item: "flex-1",
   link: "w-full h-full flex items-center justify-center text-neutral outline-none border-0 active:scale-95",
