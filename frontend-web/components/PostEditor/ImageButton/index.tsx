@@ -4,8 +4,8 @@ import { Menu } from "components";
 import { Fragment, useState } from "react";
 import { BiImage } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
+import { insertImage } from "utils";
 import Button from "../Button";
-import { insertImage } from "../utils";
 import { Upload } from "./Upload";
 import { Url } from "./Url";
 

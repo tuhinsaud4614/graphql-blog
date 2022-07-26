@@ -1,5 +1,7 @@
 import escapeHtml from "escape-html";
-import { Text } from "slate";
+import { Text, Transforms } from "slate";
+import { ReactEditor } from "slate-react";
+import { IMAGE_URL_REGEX } from "./constants";
 import { IAnchorOrigin } from "./interfaces";
 
 const ARROW_SIZE = 14;
@@ -142,4 +144,59 @@ export function aspectRatio(width: number, height: number) {
   const result = gcd(width, height);
 
   return { left: width / result, right: height / result } as const;
+}
+
+// Start slate utils Start
+export const isImageUrl = (url: string) => {
+  if (!url) return false;
+  if (url.match(IMAGE_URL_REGEX) === null) return false;
+  return true;
+};
+
+export const insertImage = (editor: ReactEditor, url: string) => {
+  const text = { text: "" };
+  const image = { type: "image", url, children: [text] };
+  Transforms.insertNodes(editor, image);
+};
+
+export const withEmbeds = (editor: ReactEditor) => {
+  const { isVoid } = editor;
+  editor.isVoid = (element) =>
+    // @ts-ignore
+    element.type === "video" ? true : isVoid(element);
+  return editor;
+};
+
+export const withImages = (editor: ReactEditor) => {
+  const { isVoid, insertData } = editor;
+
+  editor.isVoid = (element) => {
+    // @ts-ignore
+    return element.type === "image" ? true : isVoid(element);
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData("text/plain");
+    if (isImageUrl(text)) {
+      insertImage(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
+
+  return editor;
+};
+// Start slate utils End
+
+export function queryChecking<T extends { [key: string]: any }>(
+  query: T,
+  tabs: string[],
+  queryName: keyof T,
+  defaultReturn = 0
+) {
+  if (query && queryName in query && query[queryName]) {
+    const tab = tabs.findIndex((t) => t === query[queryName]);
+    return tab === -1 ? defaultReturn : tab;
+  }
+  return defaultReturn;
 }

@@ -1,8 +1,8 @@
 import { RenderElementProps } from "slate-react";
-import Embed from "./Embed";
-import Image from "./Image";
+import SlateEmbed from "./SlateEmbed";
+import SlateImage from "./SlateImage";
 
-export default function Element({
+export default function SlateElement({
   attributes,
   children,
   element,
@@ -74,16 +74,15 @@ export default function Element({
 
     case "image":
       return (
-        // eslint-disable-next-line jsx-a11y/alt-text
-        <Image attributes={attributes} element={element}>
+        <SlateImage attributes={attributes} element={element}>
           {children}
-        </Image>
+        </SlateImage>
       );
     case "video":
       return (
-        <Embed attributes={attributes} element={element}>
+        <SlateEmbed attributes={attributes} element={element}>
           {children}
-        </Embed>
+        </SlateEmbed>
       );
 
     default:

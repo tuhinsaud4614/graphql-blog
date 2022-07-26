@@ -3,7 +3,8 @@ import { ReactNode } from "react";
 
 const className = {
   modalBody: "overflow-y-auto scrollbar px-10 pb-10",
-  modalBodyTitle: "text-xl text-neutral font-medium text-center mb-6",
+  modalBodyTitle:
+    "text-xl text-neutral font-medium text-center mb-6 capitalize",
   modalBodyItems: "list-none m-0 flex flex-col space-y-4",
   moreBtn:
     "outline-none px-3.5 py-1.5 rounded-full text-sm text-center inline-block bg-transparent active:scale-95 border border-neutral/60 text-neutral/60 hover:text-neutral hover:border-neutral",

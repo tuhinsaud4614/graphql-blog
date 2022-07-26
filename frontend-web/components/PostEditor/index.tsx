@@ -1,3 +1,4 @@
+import { SlateElement, SlateLeaf } from "@component";
 import { useCallback, useState } from "react";
 import { createEditor, Descendant } from "slate";
 import { withHistory } from "slate-history";
@@ -9,11 +10,9 @@ import {
   Slate,
   withReact,
 } from "slate-react";
+import { withEmbeds, withImages } from "utils";
 
-import Element from "./Element";
-import Leaf from "./Leaf";
 import Toolbar from "./Toolbar";
-import { withEmbeds, withImages } from "./utils";
 
 const className = { root: "border rounded-md" };
 
@@ -36,12 +35,12 @@ export default function PostEditor({ onChange, value }: Props) {
   );
 
   const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <Leaf {...props} />,
+    (props: RenderLeafProps) => <SlateLeaf {...props} />,
     []
   );
 
   const renderElement = useCallback(
-    (props: RenderElementProps) => <Element {...props} />,
+    (props: RenderElementProps) => <SlateElement {...props} />,
     []
   );
 

@@ -5,7 +5,11 @@ interface LeafProps extends BaseText {
   [key: string]: string;
 }
 
-export default function Leaf({ attributes, children, leaf }: RenderLeafProps) {
+export default function SlateLeaf({
+  attributes,
+  children,
+  leaf,
+}: RenderLeafProps) {
   const newLeaf = leaf as LeafProps;
 
   if (newLeaf.bold) {

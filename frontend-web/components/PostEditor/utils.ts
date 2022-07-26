@@ -1,7 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import { BaseEditor, Editor, Element as SlateElement, Transforms } from "slate";
-import { ReactEditor } from "slate-react";
-import { IMAGE_URL_REGEX } from "utils/constants";
+import { BaseEditor, Editor, Element as SlateElement } from "slate";
 
 export const HOTKEYS = {
   "mod+b": "bold",
@@ -49,49 +47,3 @@ export function isBlockActive(
 
   return !!match;
 }
-
-export const isImageUrl = (url: string) => {
-  if (!url) return false;
-  if (url.match(IMAGE_URL_REGEX) === null) return false;
-  return true;
-};
-
-export const insertImage = (editor: ReactEditor, url: string) => {
-  const text = { text: "" };
-  const image = { type: "image", url, children: [text] };
-  Transforms.insertNodes(editor, image);
-};
-
-export const withImages = (editor: ReactEditor) => {
-  const { isVoid, insertData } = editor;
-
-  editor.isVoid = (element) => {
-    // @ts-ignore
-    return element.type === "image" ? true : isVoid(element);
-  };
-
-  editor.insertData = (data) => {
-    const text = data.getData("text/plain");
-    if (isImageUrl(text)) {
-      insertImage(editor, text);
-    } else {
-      insertData(data);
-    }
-  };
-
-  return editor;
-};
-
-export type VideoElement = {
-  type: "video";
-  url: string;
-  children: EmptyText[];
-};
-
-export const withEmbeds = (editor: ReactEditor) => {
-  const { isVoid } = editor;
-  editor.isVoid = (element) =>
-    // @ts-ignore
-    element.type === "video" ? true : isVoid(element);
-  return editor;
-};

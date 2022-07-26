@@ -6,6 +6,7 @@ import {
   ReactEditor,
   RenderElementProps,
   useFocused,
+  useReadOnly,
   useSelected,
   useSlateStatic,
 } from "slate-react";
@@ -16,7 +17,7 @@ const className = {
   btn: "absolute z-20 top-[0.5em] left-[0.5em] text-base-100 bg-error hover:bg-error-focus shadow-mui hover:shadow-mui-hover active:shadow-mui-active active:scale-95 flex items-center justify-center p-1 rounded-full",
 };
 
-export default function Image({
+export default function SlateImage({
   attributes,
   children,
   element,
@@ -26,6 +27,7 @@ export default function Image({
 
   const selected = useSelected();
   const focused = useFocused();
+  const isReadOnly = useReadOnly();
   return (
     <div {...attributes}>
       {children}
@@ -33,7 +35,7 @@ export default function Image({
         <div
           className={classNames(
             className.imgWrapper,
-            selected && focused && "shadow-mui"
+            !isReadOnly && selected && focused && "shadow-mui"
           )}
         >
           <NextImage
@@ -44,18 +46,21 @@ export default function Image({
             unoptimized={true}
             alt="Inserted image"
             layout="fill"
+            priority
           />
         </div>
-        <button
-          aria-label="Remove image"
-          onClick={() => Transforms.removeNodes(editor, { at: path })}
-          className={classNames(
-            className.btn,
-            selected && focused ? "inline" : "none"
-          )}
-        >
-          <BiTrash size={20} />
-        </button>
+        {!isReadOnly && (
+          <button
+            aria-label="Remove image"
+            onClick={() => Transforms.removeNodes(editor, { at: path })}
+            className={classNames(
+              className.btn,
+              selected && focused ? "inline" : "none"
+            )}
+          >
+            <BiTrash size={20} />
+          </button>
+        )}
       </div>
     </div>
   );

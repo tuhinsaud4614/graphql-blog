@@ -6,10 +6,12 @@ import {
   UserHomeTabFollowing,
   UserHomeTabRecommended,
 } from "components/user-home";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, ReactElement, useEffect, useState } from "react";
+import { Fragment, ReactElement, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
+import { queryChecking } from "utils";
 
 const className = {
   top: "flex items-center text-neutral-focus my-6",
@@ -19,17 +21,15 @@ const className = {
 
 const tabs = ["following", "recommended"];
 
-const MyHome: NextPageWithLayout = () => {
-  const { replace, query } = useRouter();
-  const [currentTab, setCurrentTab] = useState(1);
+interface Props {
+  query: { [key: string]: any };
+}
 
-  useEffect(() => {
-    if (query && "tab" in query && query.tab === "following") {
-      setCurrentTab(0);
-    } else {
-      setCurrentTab(1);
-    }
-  }, [query]);
+const MyHome: NextPageWithLayout<Props> = ({ query }) => {
+  const [currentTab, setCurrentTab] = useState(() =>
+    queryChecking(query, tabs, "tab", 1)
+  );
+  const { replace } = useRouter();
 
   return (
     <Fragment>
@@ -46,6 +46,7 @@ const MyHome: NextPageWithLayout = () => {
       <Tabs
         tabs={tabs}
         onTab={(index) => {
+          setCurrentTab(index);
           replace(index === 0 ? "/my-home?tab=following" : "/my-home");
         }}
         selectedTab={currentTab}
@@ -59,6 +60,10 @@ const MyHome: NextPageWithLayout = () => {
 
 MyHome.getLayout = (page: ReactElement) => {
   return <UserLayout>{page}</UserLayout>;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  return { props: { query } };
 };
 
 export default MyHome;

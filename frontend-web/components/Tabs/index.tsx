@@ -4,9 +4,9 @@ import { Fragment, ReactNode, useEffect, useRef, useState } from "react";
 import TabPanel from "./TabPanel";
 
 const className = {
-  list: "flex border-b space-x-4 space-y-4 relative overflow-x-auto scrollbar-hide",
+  list: "flex border-b space-x-4 relative overflow-x-auto scrollbar-hide",
   tabItem:
-    "text-neutral hover:text-accent-focus border-none outline-none py-3 first:mt-4 shrink-0 capitalize",
+    "text-neutral hover:text-accent-focus border-none outline-none py-3 shrink-0 capitalize",
   slider: "h-0.5 rounded-tr-lg rounded-tl-lg mx-1 absolute bottom-0 bg-accent",
 };
 
