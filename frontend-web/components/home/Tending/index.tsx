@@ -5,8 +5,8 @@ import TrendingItems from "./Items";
 const className = {
   root: "border-b",
   header: "flex items-center mb-4",
-  icon: "text-neutral-focus mr-2.5",
-  title: "text-sm font-bold uppercase text-neutral",
+  icon: "text-neutral-focus dark:text-neutral-dark-focus mr-2.5",
+  title: "text-sm font-bold uppercase text-neutral dark:text-neutral-dark",
 };
 
 export default function Tending() {

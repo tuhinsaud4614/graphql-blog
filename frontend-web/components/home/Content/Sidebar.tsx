@@ -5,7 +5,7 @@ const className = {
   root: "border-b md1:border-0 md1:max-w-[18rem] relative px-4 md1:px-0",
   container: "md1:sticky md1:left-0 md1:right-0 md1:top-[6.6875rem]",
   content: "pb-6 pt-6 md1:pt-0",
-  title: "text-xs font-bold text-neutral mb-4 uppercase",
+  title: "text-xs font-bold text-neutral dark:text-neutral-dark mb-4 uppercase",
   items: "flex flex-wrap space-x-2 space-y-2 -mt-2 -ml-2",
 };
 

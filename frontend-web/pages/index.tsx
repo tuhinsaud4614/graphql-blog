@@ -3,7 +3,7 @@ import { NextPageWithLayout } from "@types";
 import * as React from "react";
 
 const className = {
-  main: "bg-base-100",
+  main: "bg-base-100 dark:bg-base-dark-100",
 };
 
 const Home: NextPageWithLayout = () => {

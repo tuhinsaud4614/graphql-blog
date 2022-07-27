@@ -1,10 +1,11 @@
+import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
 const className = {
-  root: "fixed top-0 left-0 right-0 border-b border-secondary h-16 z-50",
+  root: "fixed top-0 left-0 right-0 border-b border-secondary dark:border-secondary-dark h-16 z-50",
   main: "px-4 sm:mx-auto max-w-5xl flex items-center justify-between h-full",
   homeLink: "flex items-center justify-center h-[3.75rem] w-[3.75rem]",
   items: "list-none m-0 flex items-center",
@@ -13,15 +14,16 @@ const className = {
 
 export default function Header() {
   const { scrollY } = useViewportScroll();
+  const matches = useMediaQuery("(prefers-color-scheme: dark)");
   const rootBG = useTransform(
     scrollY,
     [0, 250, 280],
-    ["#570DF8", "#570DF8", "#F2F2F2"]
+    ["#570DF8", "#570DF8", matches ? "#001e3c" : "#F2F2F2"]
   );
   const linkColor = useTransform(
     scrollY,
     [0, 250, 280],
-    ["#FFFFFF", "#FFFFFF", "#37CDBE"]
+    ["#FFFFFF", "#FFFFFF", matches ? "#84d6a1" : "#37CDBE"]
   );
 
   return (
