@@ -1,26 +1,27 @@
 import { useIsomorphicLayoutEffect, useLocalStorage } from "@hooks";
 import classNames from "classnames";
+import { SearchLayout } from "components/Layout";
 import { useRouter } from "next/router";
 import { Fragment, useRef } from "react";
 import { BiX } from "react-icons/bi";
-import { RECENT_SEARCHES } from "utils/constants";
+import { RECENT_SEARCHES_KEY } from "utils/constants";
 
 const className = {
   root: "",
   title:
-    "my-6 text-neutral-focus font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
+    "my-6 text-neutral-focus dark:text-neutral-dark-focus font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
   items: "list-none m-0 flex flex-col",
-  divider: "block w-full border-b mt-2 mb-3",
-  item: "flex justify-between items-center text-neutral",
+  divider: "block w-full border-b dark:border-base-dark-300 mt-2 mb-3",
+  item: "flex justify-between items-center text-neutral dark:text-neutral-dark",
   btn: "outline-none border-none active:scale-95",
-  clear: "text-error",
+  clear: "text-error dark:text-error-dark",
 };
 
 export default function RecentSearch() {
   const { replace } = useRouter();
   const isRender = useRef(false);
   const [recentSearches, setRecentSearches] = useLocalStorage<string[] | null>(
-    RECENT_SEARCHES,
+    RECENT_SEARCHES_KEY,
     null
   );
   let result;
@@ -34,7 +35,11 @@ export default function RecentSearch() {
   }
 
   if (recentSearches === null || recentSearches.length === 0) {
-    result = <p className="text-neutral">You have no recent searches</p>;
+    result = (
+      <p className="text-neutral dark:text-neutral-dark">
+        You have no recent searches
+      </p>
+    );
   } else {
     result = (
       <ul className={className.items}>
@@ -75,9 +80,9 @@ export default function RecentSearch() {
     );
   }
   return (
-    <div>
+    <SearchLayout sidebar={<Fragment />}>
       <h1 className={className.title}>Recent searches</h1>
       {result}
-    </div>
+    </SearchLayout>
   );
 }

@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import TabContainer from "./TabContainer";
 
 const className = {
-  item: "border-b last:border-none py-5 last:pb-0",
+  item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",
   avatar: "md:!h-16 md:!w-16",
   mid: "md:!pl-6 md:!pr-12",
 };

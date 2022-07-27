@@ -11,7 +11,7 @@ const className = {
 };
 
 interface Props {
-  tabs: string[];
+  tabs: string[] | Readonly<string[]>;
   children?: ReactNode;
   onTab?(index: number, key: string): void;
   selectedTab?: number;

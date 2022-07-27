@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import TabContainer from "./TabContainer";
 
 const className = {
-  item: "border-b last:border-none py-5 last:pb-0",
+  item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",
 };
 
 interface Props {

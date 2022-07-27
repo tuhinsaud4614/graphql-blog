@@ -1,5 +1,5 @@
 // Local Storage key
-export const RECENT_SEARCHES = "recent-searches";
+export const RECENT_SEARCHES_KEY = "recent-searches";
 
 // TABS
 export const SEARCH_TABS = ["posts", "author", "categories", "tags"] as const;
@@ -10,6 +10,7 @@ export const ROUTES = {
   myHome: "/my-home",
   search: "/search",
   post: (id: string) => `/posts/${id}`,
+  postsByCategory: (id: string) => `/posts/categories/${id}`,
   createPost: "/posts/create",
   editPost: (id: string) => `/posts/${id}/edit`,
   authorProfile: (authorId: string) => `/account/${authorId}`,

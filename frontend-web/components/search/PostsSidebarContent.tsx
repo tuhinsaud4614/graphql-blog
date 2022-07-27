@@ -8,8 +8,8 @@ import {
 import { Fragment } from "react";
 
 const className = {
-  divider: "bg-neutral w-full border-b my-4",
-  link: "first:mt-3 first:ml-3 !rounded-full text-neutral/75 bg-neutral/5 active:scale-95",
+  divider: "bg-neutral dark:bg-base-dark-300 w-full border-b my-4",
+  link: "first:mt-3 first:ml-3 !rounded-full text-neutral/75 dark:text-neutral-dark/75 bg-neutral/5 dark:bg-neutral-dark/5 active:scale-95",
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",
 };
 

@@ -5,8 +5,9 @@ import { ROUTES } from "utils/constants";
 const className = {
   root: "flex flex-col",
   content: "mt-2",
-  title: "font-bold text-neutral",
-  timeBox: "pt-2 flex items-center text-xs text-neutral/70",
+  title: "font-bold text-neutral dark:text-neutral-dark",
+  timeBox:
+    "pt-2 flex items-center text-xs text-neutral/70 dark:text-neutral-dark/70",
 };
 
 export default function PostItem() {

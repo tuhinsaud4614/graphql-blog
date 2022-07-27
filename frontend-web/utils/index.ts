@@ -262,7 +262,7 @@ export function withLinks(editor: ReactEditor) {
 
 export function queryChecking<T extends { [key: string]: any }>(
   query: T,
-  tabs: string[],
+  tabs: string[] | Readonly<string[]>,
   queryName: keyof T,
   defaultReturn = 0
 ) {

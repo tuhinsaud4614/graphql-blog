@@ -2,7 +2,7 @@ import { useLocalStorage, useMediaQuery } from "@hooks";
 import { Menu, SearchBox } from "components";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, KeyboardEvent, useRef, useState } from "react";
-import { RECENT_SEARCHES, ROUTES } from "utils/constants";
+import { RECENT_SEARCHES_KEY, ROUTES } from "utils/constants";
 import Result from "./Result";
 import ResultItem from "./ResultItem";
 
@@ -14,7 +14,7 @@ const className = {
 export default function Search() {
   const [anchorEle, setAnchorEle] = useState<null | HTMLDivElement>(null);
   const [_, setRecentSearches] = useLocalStorage<string[] | null>(
-    RECENT_SEARCHES,
+    RECENT_SEARCHES_KEY,
     null
   );
   const searchRef = useRef<null | HTMLDivElement>(null);
