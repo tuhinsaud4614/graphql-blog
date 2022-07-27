@@ -1,7 +1,12 @@
-import { CheckInput, ImagePicker, PostEditor, Select } from "@component";
+import {
+  Button,
+  CheckInput,
+  ImagePicker,
+  PostEditor,
+  Select,
+} from "@component";
 import { NextPageWithLayout } from "@types";
 import {
-  FormButton,
   FormControl,
   PostCreateContainer,
   PostCreateHeader,
@@ -232,15 +237,17 @@ const CreatePost: NextPageWithLayout = () => {
           onChange={(e) => setFieldValue("published", e.target.checked)}
         />
       </div>
-      <FormButton
-        classes={{ root: "mt-3" }}
-        type="submit"
-        aria-label="Register"
-        loader={isSubmitting}
-        disabled={!(isValid && dirty) || isSubmitting}
-      >
-        Save
-      </FormButton>
+      <div className="flex justify-center pt-5 pb-3">
+        <Button
+          className="w-[14.125rem] px-5 !py-2 "
+          type="submit"
+          aria-label="Save"
+          loading={isSubmitting}
+          disabled={!(isValid && dirty) || isSubmitting}
+        >
+          Save
+        </Button>
+      </div>
     </form>
   );
 };

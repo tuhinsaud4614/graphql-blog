@@ -3,8 +3,9 @@ import { ComponentPropsWithoutRef, Fragment } from "react";
 
 const className = {
   form: "mt-8 w-full",
-  linkText: "my-3 flex items-center justify-center text-neutral",
-  link: "ml-2 text-success hover:text-success-content active:scale-95",
+  linkText:
+    "my-3 flex items-center justify-center text-neutral dark:text-neutral-dark",
+  link: "ml-2 text-success dark:text-success-dark hover:text-success-focus dark:hover:text-success active:scale-95",
 };
 
 interface Props extends ComponentPropsWithoutRef<"form"> {

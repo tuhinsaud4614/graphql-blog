@@ -1,10 +1,6 @@
+import { Button } from "@component";
 import type { NextPageWithLayout } from "@types";
-import {
-  Form,
-  FormButton,
-  FormContainer,
-  FormControl,
-} from "components/account";
+import { Form, FormContainer, FormControl } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
 import Head from "next/head";
 import { ReactElement, useId } from "react";
@@ -40,7 +36,14 @@ const Login: NextPageWithLayout = () => {
   const onSubmit = async (
     values: IValues,
     formikHelpers: FormikHelpers<IValues>
-  ) => {};
+  ) => {
+    await new Promise((res) => {
+      setTimeout(() => {
+        res(undefined);
+      }, 1000);
+    });
+    console.log(values);
+  };
 
   const {
     handleSubmit,
@@ -98,14 +101,17 @@ const Login: NextPageWithLayout = () => {
         onBlur={handleBlur}
         required
       />
-      <FormButton
-        type="submit"
-        aria-label="Login"
-        loader={isSubmitting}
-        disabled={!(isValid && dirty) || isSubmitting}
-      >
-        Login
-      </FormButton>
+      <div className="flex justify-center py-3">
+        <Button
+          className="w-[14.125rem] px-5 !py-2 "
+          type="submit"
+          aria-label="Login"
+          loading={isSubmitting}
+          disabled={!(isValid && dirty) || isSubmitting}
+        >
+          Login
+        </Button>
+      </div>
     </Form>
   );
 };

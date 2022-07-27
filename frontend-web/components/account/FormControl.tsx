@@ -5,12 +5,12 @@ import { BsInfoCircle } from "react-icons/bs";
 const className = {
   formControl: "flex flex-col items-center justify-center w-full",
   formLabel: "mb-3 text-sm",
-  requiredText: "text-xs text-error",
+  requiredText: "text-xs text-error dark:text-error-dark",
   formInputBox: "relative border-b flex items-center w-[inherit]",
   formInput:
-    "text-neutral leading-6 min-w-0 basis-full bg-transparent outline-none border-0 text-center",
-  errIcon: "text-error ml-2",
-  error: "mt-2 text-sm text-error",
+    "text-neutral dark:text-neutral-dark leading-6 min-w-0 basis-full bg-transparent outline-none border-0 text-center",
+  errIcon: "text-error dark:text-error-dark ml-2",
+  error: "mt-2 text-sm text-error dark:text-error-dark",
 };
 
 interface Props extends ComponentPropsWithRef<"input"> {
@@ -44,7 +44,9 @@ export default function FormControl({
         className={classNames(
           className.formLabel,
           classes?.label,
-          valid ? "text-neutral" : "text-error"
+          valid
+            ? "text-neutral dark:text-neutral-dark"
+            : "text-error dark:text-error-dark"
         )}
       >
         {title}
@@ -54,7 +56,9 @@ export default function FormControl({
         className={classNames(
           className.formInputBox,
           classes?.box,
-          valid ? "border-neutral" : "border-error"
+          valid
+            ? "border-neutral dark:border-neutral-dark"
+            : "border-error dark:border-error-dark"
         )}
       >
         <input
