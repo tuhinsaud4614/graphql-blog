@@ -4,10 +4,10 @@ import { BiSearch } from "react-icons/bi";
 
 const className = {
   root: "relative",
-  container: "flex items-center rounded-full border",
-  icon: "p-2 flex items-center justify-center text-neutral",
+  container: "flex items-center rounded-full border dark:border-base-dark-300",
+  icon: "p-2 flex items-center justify-center text-neutral dark:text-neutral-dark",
   input:
-    "bg-transparent border-none outline-none mr-5 text-sm text-neutral w-full",
+    "bg-transparent border-none outline-none mr-5 text-sm text-neutral dark:text-neutral-dark w-full",
 };
 
 interface Props extends HTMLAttributes<HTMLInputElement> {

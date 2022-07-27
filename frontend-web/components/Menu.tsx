@@ -34,9 +34,11 @@ const arrowVariants: Variants = {
 
 const className = {
   backdrop: "fixed z-[950] inset-0",
-  root: "fixed z-[951] bg-base-100 shadow-mui rounded",
-  arrow: "fixed block bg-base-100 transform rotate-45 shadow-mui w-3.5 h-3.5",
-  container: "relative z-10 w-full h-full bg-base-100 rounded overflow-hidden",
+  root: "fixed z-[951] bg-base-100 dark:bg-base-dark-300 shadow-mui rounded",
+  arrow:
+    "fixed block bg-base-100 dark:bg-base-dark-300 transform rotate-45 shadow-mui w-3.5 h-3.5",
+  container:
+    "relative z-10 w-full h-full bg-base-100 dark:bg-base-dark-300 rounded overflow-hidden",
 };
 
 interface Props {

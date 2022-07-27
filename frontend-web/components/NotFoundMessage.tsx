@@ -2,7 +2,8 @@ import { LinkButton } from "components";
 
 const className = {
   root: "py-[1.875rem] flex flex-col items-center",
-  title: "text-neutral text-sm font-normal text-center mb-6",
+  title:
+    "text-neutral dark:text-neutral-dark text-sm font-normal text-center mb-6",
 };
 
 interface Props {

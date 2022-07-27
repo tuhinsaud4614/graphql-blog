@@ -1,14 +1,17 @@
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
+import Button from "./Button";
 
 const className = {
   root: "space-y-3 flex items-center",
   avatar: "h-8 w-8 min-w-0 rounded-full overflow-hidden inline-block",
   mid: "flex flex-col ml-2 mr-4 flex-1",
-  title: "font-bold text-neutral line-clamp-2 text-ellipsis",
-  subtitle: "mt-1 text-sm text-[#757575] line-clamp-2 text-ellipsis",
-  btn: "outline-none rounded-full border border-accent hover:border-accent-focus text-accent hover:text-accent-focus text-sm py-1 px-3 active:scale-95",
+  title:
+    "font-bold text-neutral dark:text-neutral-dark line-clamp-2 text-ellipsis",
+  subtitle:
+    "mt-1 text-sm text-neutral/60 dark:text-neutral-dark/60 line-clamp-2 text-ellipsis",
+  btn: "text-sm py-1 px-3",
 };
 
 interface Props {
@@ -55,13 +58,14 @@ export default function FollowItem({ classes }: Props) {
           </p>
         </a>
       </Link>
-      <button
+      <Button
         type="button"
         aria-label="Follow"
         className={classNames(className.btn, classes?.btn)}
+        outline
       >
-        Follow
-      </button>
+        Following
+      </Button>
     </li>
   );
 }

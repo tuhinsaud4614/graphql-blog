@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const className = {
   root: "w-full mb-3 text-sm",
-  link: "block text-neutral hover:text-accent active:scale-95",
+  link: "block text-neutral dark:text-neutral-dark hover:text-accent dark:hover:text-accent-dark active:scale-95",
 };
 
 interface Props {

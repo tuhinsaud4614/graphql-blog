@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@hooks";
+import { useLockBody, useMediaQuery } from "@hooks";
 import classNames from "classnames";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useRouter } from "next/router";
@@ -8,7 +8,7 @@ import Portal from "./Portal";
 
 const className = {
   container:
-    "fixed z-[911] top-1/2 left-1/2 max-h-[calc(100vh-32px)] w-[calc(100%-32px)] sm:max-w-[calc(640px-32px)] flex flex-col bg-white shadow-md rounded-2xl overflow-hidden",
+    "fixed z-[911] top-1/2 left-1/2 max-h-[calc(100vh-32px)] w-[calc(100%-32px)] sm:max-w-[calc(640px-32px)] flex flex-col bg-base-100 dark:bg-base-dark-100 shadow-mui rounded-2xl overflow-hidden",
 };
 
 const smallContainerVariants = {
@@ -64,13 +64,23 @@ interface Props {
   };
   onHide(): void;
   open: boolean;
+  locked?: boolean;
   staticBack?: boolean;
   children?: React.ReactNode;
 }
 
-function Modal({ onHide, open, staticBack, classes, children }: Props) {
+function Modal({
+  onHide,
+  open = false,
+  locked = false,
+  staticBack,
+  classes,
+  children,
+}: Props) {
   const matches = useMediaQuery("(min-width: 640px)");
   const { events } = useRouter();
+
+  useLockBody(open && locked);
 
   React.useEffect(() => {
     events.on("routeChangeStart", onHide);

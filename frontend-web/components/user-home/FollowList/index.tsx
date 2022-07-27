@@ -7,7 +7,7 @@ import FollowItem from "./Item";
 
 const className = {
   navBtn:
-    "h-full absolute top-2/4 -translate-y-1/2 z-10 flex items-center justify-center text-neutral",
+    "h-full absolute top-2/4 -translate-y-1/2 z-10 flex items-center justify-center text-neutral dark:text-neutral-dark",
 };
 
 const PrevButton = (props: ComponentPropsWithoutRef<"button">) => {

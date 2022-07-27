@@ -7,16 +7,20 @@ import { BsFillGearFill } from "react-icons/bs";
 import { ROUTES } from "utils/constants";
 import { IAnchorOrigin } from "utils/interfaces";
 import Menu from "./Menu";
+import NavAvatar from "./NavAvatar";
 
 const className = {
-  avatar: "w-9 h-9 rounded-full overflow-hidden active:scale-95",
   avatarMenu: "w-60 py-2",
   avatarMenuItems: "list-none m-0 flex flex-col",
   avatarMenuLink:
-    "w-full outline-none border-none flex items-center px-4 py-2 text-sm hover:bg-base-200 text-neutral hover:text-accent active:scale-95",
-  avatarInfo: "flex px-4 hover:bg-base-200 py-2 group",
-  avatarInfoImg: "w-8 h-8 inline-block rounded-full overflow-hidden mr-3",
+    "w-full outline-none border-none flex items-center px-4 py-2 text-sm hover:bg-base-200 dark:hover:bg-base-dark-200 text-neutral dark:text-neutral-dark hover:text-accent dark:hover:text-accent-dark",
+  avatarInfo:
+    "flex px-4 hover:bg-base-200 dark:hover:bg-base-dark-200 py-2 group",
+  avatarInfoImg:
+    "w-8 h-8 inline-block rounded-full overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
   avatarInfoDetail: "flex flex-col",
+  name: "pb-1 text-sm line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark dark:group-hover:text-accent-dark",
+  bio: "text-xs line-clamp-1 text-ellipsis text-neutral/60 dark:text-neutral-dark/60 group-hover:text-accent dark:group-hover:text-accent-dark",
 };
 
 interface Props {
@@ -40,22 +44,16 @@ export default function UserAvatarBtn({
 
   return (
     <Fragment>
-      <button
+      <NavAvatar
         aria-label="About me"
-        className={className.avatar}
         type="button"
         onClick={(e) => setAnchorEle(e.currentTarget)}
-      >
-        <Image
-          src="/demo.png"
-          alt="Avatar"
-          width={32}
-          height={32}
-          objectFit="cover"
-          layout="responsive"
-          className="rounded-full"
-        />
-      </button>
+        src="/demo.png"
+        alt="Avatar"
+        size={36}
+        className="w-9 h-9"
+      />
+
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}
@@ -97,12 +95,8 @@ export default function UserAvatarBtn({
                 />
               </span>
               <div className={className.avatarInfoDetail}>
-                <p className="pb-1 text-sm line-clamp-1 text-ellipsis text-neutral group-hover:text-accent">
-                  Nothing name
-                </p>
-                <span className="text-xs line-clamp-1 text-ellipsis text-neutral/60 group-hover:text-accent">
-                  Nothing name
-                </span>
+                <p className={className.name}>Nothing name</p>
+                <span className={className.bio}>Nothing name</span>
               </div>
             </a>
           </Link>

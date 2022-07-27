@@ -55,7 +55,7 @@ module.exports = {
         "base-200": "#F2F2F2",
         "base-dark-200": "#001e3c",
         "base-300": "#E5E6E6",
-        "base-dark-300": "#007efc",
+        "base-dark-300": "#132f4c",
         "base-content": "#1F2937",
         info: "#1976d2",
         "info-dark": "#42a5f5",
@@ -193,6 +193,9 @@ module.exports = {
           )`,
         scrollbar: `linear-gradient(180deg, transparent, ${theme(
           "colors.accent"
+        )})`,
+        "scrollbar-dark": `linear-gradient(180deg, transparent, ${theme(
+          "colors.accent-dark"
         )})`,
       }),
     },

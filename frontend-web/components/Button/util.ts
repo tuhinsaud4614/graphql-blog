@@ -1,16 +1,16 @@
 import { ColorVariantType } from "@types";
 import classNames from "classnames";
-import { ComponentPropsWithRef } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
-const className = {
-  root: "px-4 py-1.5 rounded-full select-none enabled:active:scale-95",
-  fill: "outline-none border-0 enabled:shadow-mui enabled:hover:shadow-mui-hover enabled:active:shadow-mui-active",
+export const buttonClassName = {
+  root: "px-4 py-1.5 rounded-full select-none",
+  fill: "outline-none border-0",
+  fillEnabled:
+    "shadow-mui hover:shadow-mui-hover active:shadow-mui-active active:scale-95",
   loading: "flex items-center justify-center",
-  spin: "text-white animate-spin ml-2 text-sm",
+  spin: "text-inherit animate-spin ml-2 text-sm",
   disabled(outline = false) {
     return classNames(
-      "disabled:text-black/[26%] dark:disabled:text-white/[3%] disabled:cursor-not-allowed disabled:pointer-events-none",
+      "disabled:text-black/[26%] dark:disabled:text-white/[26%] disabled:cursor-not-allowed disabled:pointer-events-none",
       outline
         ? "disabled:border-black/[12%] dark:disabled:border-white/[12%]"
         : "disabled:bg-black/[12%] dark:disabled:bg-white/[12%]"
@@ -42,7 +42,7 @@ const className = {
         if (outline) {
           return "border-warning/50 text-warning hover:border-warning hover:bg-warning/5 dark:text-warning-content dark:border-warning-content/50 dark:hover:bg-warning-content/[8%] dark:hover:border-warning-content";
         }
-        return "bg-warning hover:bg-warning-focus text-base-100 dark:bg-warning-dark dark:hover:bg-warning dark:text-black/[87%]";
+        return "bg-warning hover:bg-warning-focus text-neutral dark:bg-warning-dark dark:hover:bg-warning dark:text-black/[87%]";
       case "info":
         if (outline) {
           return "border-info/50 text-info hover:border-info hover:bg-info/5 dark:text-info-content dark:border-info-content/50 dark:hover:bg-info-content/[8%] dark:hover:border-info-content";
@@ -56,35 +56,3 @@ const className = {
     }
   },
 };
-
-interface Props extends ComponentPropsWithRef<"button"> {
-  outline?: boolean;
-  variant?: ColorVariantType;
-  loading?: boolean;
-}
-
-export default function Button({
-  variant = "accent",
-  outline = false,
-  loading = false,
-  children,
-  ...rest
-}: Props) {
-  return (
-    <button
-      {...rest}
-      className={classNames(
-        className.root,
-        rest.disabled
-          ? className.disabled(outline)
-          : className.dynamic(variant, outline),
-        outline ? "border" : className.fill,
-        loading && className.loading,
-        rest.className
-      )}
-    >
-      {children}
-      {loading && <ImSpinner2 className={className.spin} />}
-    </button>
-  );
-}

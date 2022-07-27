@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 
 const className = {
-  title: "text-neutral mb-[1.375rem] font-medium",
+  title: "text-neutral dark:text-neutral-dark mb-[1.375rem] font-medium",
   items: "list-none m-0",
   more: "flex items-center text-xs w-full mt-3",
-  moreLink: "text-success hover:text-success-focus active:scale-95",
+  moreLink:
+    "text-success dark:text-success-dark hover:text-success-focus dark:hover:text-success active:scale-95",
 };
 
 interface Props {
