@@ -5,9 +5,9 @@ import FollowingItem from "./FollowingItem";
 
 const className = {
   root: "flex flex-col",
-  title: "text-base font-medium text-neutral",
-  items: "list-none my-4 flex flex-col",
-  more: "text-sm text-accent hover:text-neutral active:scale-95 self-start",
+  title: "text-base font-medium text-neutral dark:text-neutral-dark",
+  items: "list-none my-4 flex flex-col space-y-1",
+  more: "text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95 self-start",
 };
 
 export default function FollowingList() {

@@ -4,8 +4,8 @@ import PostItem from "./PostItem";
 
 const className = {
   root: "!py-16 flex items-end justify-center",
-  notFound: "text-neutral",
-  item: "border-b last:border-none py-5",
+  notFound: "text-neutral dark:text-neutral-dark",
+  item: "border-b dark:border-base-dark-300 last:border-none py-5",
 };
 
 const isTrue = false;

@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
@@ -14,15 +15,16 @@ import { FiUpload } from "react-icons/fi";
 
 const className = {
   container: "flex flex-col items-center",
-  label: "mb-3 text-sm text-neutral",
+  label: "mb-3 text-sm text-neutral dark:text-neutral-dark",
   root: "flex items-center justify-center relative w-full pb-[56.25%] max-w-lg mx-auto",
   picker:
-    "absolute inset-0 z-10 border-2 bg-gray-50 border-dashed outline-none rounded-md flex flex-col items-center justify-center",
+    "absolute inset-0 z-10 border-2 border-dashed dark:border-base-dark-300 bg-gray-50 dark:bg-base-dark-200 outline-none rounded-md flex flex-col items-center justify-center",
   pickerTxt: "text-gray-500 dark:text-gray-400",
-  preview: "absolute inset-0 z-10 border border-success rounded-md",
+  preview:
+    "absolute inset-0 z-10 border border-success dark:border-success-dark rounded-md",
   closeBtn:
     "absolute top-0 right-0 z-10 -translate-y-1/2 translate-x-1/2 rounded-full text-base-100 bg-error hover:bg-error-focus active:scale-95",
-  errTxt: "mt-2 text-sm text-error",
+  errTxt: "mt-2 text-sm text-error dark:text-error-dark",
 };
 
 interface Props
@@ -57,6 +59,7 @@ export default function ImagePicker({
   classes,
   ...rest
 }: Props) {
+  const matches = useMediaQuery("(prefers-color-scheme: dark)");
   const inputRef = useRef<HTMLInputElement | null>(null);
   const animation = useAnimation();
 
@@ -65,10 +68,16 @@ export default function ImagePicker({
     e.stopPropagation();
 
     if (status) {
-      return animation.set({ borderColor: "red", background: "#f3f4f6" });
+      return animation.set({
+        borderColor: "red",
+        background: matches ? "#001e3c" : "#f3f4f6",
+      });
     }
 
-    animation.set({ borderColor: "#e5e7eb", background: "#f9fafb" });
+    animation.set({
+      borderColor: "#e5e7eb",
+      background: matches ? "#001e3c" : "#f9fafb",
+    });
   };
 
   const handleDrop = (e: DragEvent<HTMLButtonElement>) => {

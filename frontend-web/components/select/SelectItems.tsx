@@ -3,7 +3,7 @@ import { forwardRef, ReactNode } from "react";
 import { UnSelectedItem } from "./SelectItem";
 
 const className = {
-  root: "absolute z-10 top-full left-0 right-0 shadow-mine !ml-0 !mt-2 rounded overflow-y-auto bg-base-100",
+  root: "absolute z-10 top-full left-0 right-0 shadow-mine !ml-0 !mt-2 rounded overflow-y-auto bg-base-100 dark:bg-base-dark-200",
   items: "list-none m-0 flex-col max-h-48 py-1",
 };
 

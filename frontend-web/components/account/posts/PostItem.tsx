@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Menu, Modal, ModalHeader } from "components";
+import { Button, Menu, Modal, ModalHeader } from "components";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
@@ -8,16 +8,19 @@ import { ROUTES } from "utils/constants";
 
 const className = {
   root: "flex flex-col",
-  title: "font-bold line-clamp-2 text-ellipsis text-neutral inline-block",
-  body: "line-clamp-2 leading-5 text-ellipsis text-neutral/60 inline-block mt-1",
-  other: "flex items-center pt-2 text-sm text-neutral/60",
+  title:
+    "font-bold line-clamp-2 text-ellipsis text-neutral dark:text-neutral-dark inline-block",
+  body: "line-clamp-2 leading-5 text-ellipsis text-neutral/50 dark:text-neutral-dark/50 inline-block mt-1",
+  other:
+    "flex items-center pt-2 text-sm text-neutral/70 dark:text-neutral-dark/70",
   moreBtn: "ml-2 border-none outline-none active:scale-95 hover:text-accent",
   actions: "w-32 flex flex-col py-2",
   actionsBtn: "outline-none border-none px-5 py-2 text-sm active:scale-95",
   modalBody: "px-14 pb-11 flex flex-col justify-center items-center",
   modalBodyTitle:
-    "font-medium text-[1.375rem] md:text-[1.875rem] leading-7 md:leading-9 text-neutral",
-  modalBodyText: "pt-1.5 pb-9 text-sm md:text-base text-neutral/60 text-center",
+    "font-medium text-[1.375rem] md:text-[1.875rem] leading-7 md:leading-9 text-neutral dark:text-neutral-dark",
+  modalBodyText:
+    "pt-1.5 pb-9 text-sm md:text-base text-neutral/60 dark:text-neutral-dark/60 text-center",
   modalBodyBtn: "outline-none px-4 py-1.5 rounded-full active:scale-95 text-sm",
 };
 
@@ -74,7 +77,7 @@ export default function PostItem({ classes }: Props) {
             type="button"
             className={classNames(
               className.actionsBtn,
-              "text-neutral hover:text-neutral-focus"
+              "text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus"
             )}
             onClick={() => {
               push(ROUTES.editPost("1"));
@@ -87,7 +90,7 @@ export default function PostItem({ classes }: Props) {
             type="button"
             className={classNames(
               className.actionsBtn,
-              "text-error hover:text-error-focus"
+              "text-error dark:text-error-dark hover:text-error-focus dark:hover:text-error"
             )}
             onClick={() => {
               setAnchorEle(null);
@@ -114,28 +117,25 @@ export default function PostItem({ classes }: Props) {
             Are you sure you want to delete this story?
           </p>
           <div className="flex items-center">
-            <button
+            <Button
               aria-label="Cancel"
               type="button"
-              className={classNames(
-                className.modalBodyBtn,
-                "border border-neutral text-neutral hover:text-neutral-focus mr-2"
-              )}
               onClick={() => setOpenModel(false)}
+              className="!px-4 !py-1.5 text-sm mr-2"
+              variant="neutral"
+              outline
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               aria-label="Delete"
               type="button"
-              className={classNames(
-                className.modalBodyBtn,
-                "border border-error hover:border-error-focus text-base-100 bg-error hover:bg-error-focus"
-              )}
               onClick={() => {}}
+              className="!px-4 !py-1.5 text-sm"
+              variant="error"
             >
-              Delete
-            </button>
+              Cancel
+            </Button>
           </div>
         </div>
       </Modal>

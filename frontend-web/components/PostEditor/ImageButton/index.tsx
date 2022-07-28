@@ -10,11 +10,11 @@ import { Upload } from "./Upload";
 import { Url } from "./Url";
 
 const className = {
-  content: "bg-base-100 w-56 p-2 min-h-[15rem] flex flex-col",
+  content: "w-56 p-2 min-h-[15rem] flex flex-col",
   tabs: "flex items-center justify-center mb-3",
-  tab: "flex-1 px-3 py-1 text-center relative text-neutral hover:text-info",
+  tab: "flex-1 px-3 py-1 text-center relative text-neutral dark:text-neutral-dark hover:text-info dark:hover:text-info-dark",
   tabActive:
-    "text-info after:content-[''] after:absolute after:z-10 after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-0.5 after:bg-info after:w-3/4",
+    "text-info dark:text-info-dark after:content-[''] after:absolute after:z-10 after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-0.5 after:bg-info dark:after:bg-info-dark after:w-3/4",
 };
 
 export default function ImageButton() {

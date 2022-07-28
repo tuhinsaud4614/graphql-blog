@@ -14,7 +14,7 @@ import {
 import { withLinks } from "utils";
 
 const className = {
-  root: "mt-10 pb-10 border-b",
+  root: "mt-10 pb-10 border-b dark:border-base-dark-300",
   actions: "flex items-center justify-end px-3",
 };
 

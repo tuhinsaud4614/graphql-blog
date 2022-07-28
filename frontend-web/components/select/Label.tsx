@@ -17,12 +17,16 @@ export default function Label({
       {...rest}
       className={classNames(
         "mb-3 text-sm",
-        valid ? "text-neutral" : "text-error",
+        valid
+          ? "text-neutral dark:text-neutral-dark"
+          : "text-error dark:text-error-dark",
         rest.className
       )}
     >
       {children}
-      {required && <sup className="text-xs text-error">*</sup>}
+      {required && (
+        <sup className="text-xs text-error dark:text-error-dark">*</sup>
+      )}
     </label>
   );
 }

@@ -8,7 +8,7 @@ import Button from "./Button";
 import { Url } from "./EmbedButton/Url";
 
 const className = {
-  content: "bg-base-100 w-56 p-2",
+  content: "w-56 p-2",
 };
 
 export default function LinkButton() {
@@ -48,7 +48,7 @@ export default function LinkButton() {
         hideArrow
       >
         <div className={className.content}>
-          <h3 className="text-base text-neutral text-center mb-3 font-medium">
+          <h3 className="text-base text-neutral dark:text-neutral-dark text-center mb-3 font-medium">
             INSERT LINK
           </h3>
           <Url onAdd={onAdd} title="Url" />

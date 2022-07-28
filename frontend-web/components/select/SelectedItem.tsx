@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 import { BiX } from "react-icons/bi";
 
 const className = {
-  root: "rounded-sm flex items-center bg-base-200 first:ml-1 first:mt-1",
-  text: "py-[0.1875rem] px-1.5 text-sm line-clamp-1 text-ellipsis",
-  btn: "px-1 border-none outline-none text-error hover:text-error-focus active:scale-95",
+  root: "rounded-sm flex items-center bg-base-200 dark:bg-base-dark-300 first:ml-1 first:mt-1",
+  text: "py-[0.1875rem] px-1.5 text-sm text-neutral dark:text-base-dark-100 line-clamp-1 text-ellipsis",
+  btn: "px-1 border-none outline-none text-error dark:text-error-dark hover:text-error-focus dark:hover:text-error active:scale-95",
 };
 
 interface Props {
@@ -30,7 +30,7 @@ export default function SelectedItem({ children, onClose }: Props) {
         className={className.btn}
         onClick={onClose}
       >
-        <BiX size={14} />
+        <BiX size={18} />
       </button>
     </motion.span>
   );

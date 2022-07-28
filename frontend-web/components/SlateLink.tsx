@@ -13,8 +13,9 @@ const className = {
   popup:
     "absolute z-10 left-0 flex items-center py-1.5 px-2.5 border rounded-md",
   popupLink:
-    "flex items-center text-primary hover:text-primary-focus text-sm border-r pr-2.5 cursor-pointer select-none",
-  unlink: "select-none ml-2.5 text-neutral hover:text-accent active:scale-95",
+    "flex items-center text-primary dark:text-primary-dark hover:text-primary-focus dark:hover:text-primary text-sm border-r pr-2.5 cursor-pointer select-none",
+  unlink:
+    "select-none ml-2.5 text-neutral dark:text-neutral-dark hover:text-accent dark:hover:text-accent-dark active:scale-95",
 };
 
 const InlineChromiumBugfix = () => (
@@ -39,7 +40,7 @@ export default function SlateLink({
         {...attributes}
         //   @ts-ignore
         href={element.url}
-        className="underline"
+        className="underline text-neutral dark:text-neutral-dark"
         {...extra}
       >
         <InlineChromiumBugfix />

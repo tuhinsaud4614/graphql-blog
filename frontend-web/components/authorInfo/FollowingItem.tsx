@@ -1,4 +1,4 @@
-import { Menu } from "components";
+import { Button, Menu } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useState } from "react";
@@ -8,20 +8,20 @@ import { ROUTES } from "utils/constants";
 const className = {
   root: "flex items-center justify-between",
   link: "flex items-center min-w-0 flex-1 group",
-  img: "rounded-full w-5 h-5 overflow-hidden",
-  text: "ml-3 text-sm line-clamp-1 text-ellipsis text-neutral group-hover:text-accent capitalize",
+  img: "rounded-full w-5 h-5 overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark",
+  text: "ml-3 text-sm line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark group-hover:text-accent dark:group-hover:text-accent-dark capitalize",
   actions:
-    "h-8 w-8 outline-none border-none scale-95 flex items-center justify-center text-neutral hover:bg-accent active:bg-accent-focus rounded-full",
+    "h-8 w-8 outline-none border-none scale-95 flex items-center justify-center text-neutral dark:text-neutral-dark dark:hover:text-neutral hover:bg-accent dark:hover:bg-accent-dark active:bg-accent-focus dark:active:bg-accent active:scale-95 rounded-full",
   menuContainer: "w-[18.75rem] p-4 flex flex-col",
   menuHead: "flex items-center group",
-  menuHeadImg: "rounded-full w-8 h-8 overflow-hidden",
+  menuHeadImg:
+    "rounded-full w-8 h-8 overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark",
   menuHeadText:
-    "ml-3 text-xl font-medium line-clamp-1 text-ellipsis text-neutral group-hover:text-accent capitalize",
-  menuBody: "py-3 text-sm text-neutral",
-  menuBottom: "border-t pt-2.5 flex justify-between items-center",
-  menuBottomLeft: "text-neutral-focus/50 text-sm",
-  menuBottomRight:
-    "outline-none border-none text-base-100 text-sm px-2 py-0.5 rounded-full bg-success hover:bg-success-focus shadow-mui hover:shadow-mui-hover active:shadow-mui-active active:scale-95",
+    "ml-3 text-xl font-medium line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark group-hover:text-accent dark:group-hover:text-accent-dark capitalize",
+  menuBody: "py-3 text-sm text-neutral dark:text-neutral-dark",
+  menuBottom:
+    "border-t dark:border-base-dark-300 pt-2.5 flex justify-between items-center",
+  menuBottomLeft: "text-neutral/60 dark:text-neutral-dark/60 text-sm",
 };
 
 export default function FollowingItem() {
@@ -89,14 +89,14 @@ function More() {
             <span className={className.menuBottomLeft}>
               101 Follower{"101".length > 1 ? "s" : ""}
             </span>
-            <button
+            <Button
               type="button"
               aria-label="Follow"
-              className={className.menuBottomRight}
+              className="text-sm !px-2 !py-0.5"
               onClick={() => setAnchorEle(null)}
             >
               Follow
-            </button>
+            </Button>
           </div>
         </div>
       </Menu>

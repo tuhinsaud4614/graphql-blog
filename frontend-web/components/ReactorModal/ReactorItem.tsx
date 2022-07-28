@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { Button } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "utils/constants";
@@ -7,16 +7,11 @@ const className = {
   userTile: "flex items-center justify-between",
   userTileLeft: "flex items-start min-w-0 flex-1",
   userTileAuthorName:
-    "font-medium text-sm text-neutral hover:text-neutral active:scale-95 line-clamp-1 text-ellipsis",
+    "font-medium text-sm text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 line-clamp-1 text-ellipsis",
   userTileAuthorAbout:
-    "text-xs text-neutral/60 line-clamp-1 text-ellipsis mt-1",
-  userTileImg: "w-10 h-10 inline-block rounded-full overflow-hidden mr-5",
-  followBtn:
-    "outline-none px-3.5 py-1.5 rounded-full text-sm text-center inline-block active:scale-95",
-  followBtnBlock:
-    "border-0 bg-accent hover:bg-accent-focus text-neutral shadow-mui hover:shadow-mui-hover active:shadow-mui-active",
-  followBtnOutline:
-    "border border-accent hover:border-accent-focus text-accent hover:text-accent-focus",
+    "text-xs text-neutral/60 dark:text-neutral-dark/60 line-clamp-1 text-ellipsis mt-1",
+  userTileImg:
+    "w-10 h-10 inline-block rounded-full overflow-hidden mr-5 dark:ring-1 dark:ring-secondary-dark",
 };
 
 export default function ReactorItem() {
@@ -50,7 +45,14 @@ export default function ReactorItem() {
           </p>
         </span>
       </div>
-      <button
+      <Button
+        aria-label="Follow"
+        type="button"
+        className="px-3.5 py-1.5 text-sm"
+      >
+        Follow
+      </Button>
+      {/* <button
         aria-label="Follow"
         type="button"
         className={classNames(
@@ -59,7 +61,7 @@ export default function ReactorItem() {
         )}
       >
         Follow
-      </button>
+      </button> */}
     </li>
   );
 }

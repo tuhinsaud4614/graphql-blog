@@ -6,7 +6,7 @@ const className = {
   root: "flex flex-col",
   content: "my-10",
   bottom: "flex items-center border-t pt-4",
-  btn: "text-accent hover:text-neutral active:scale-95",
+  btn: "text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95",
 };
 
 const initialValue = [
@@ -26,7 +26,7 @@ const initialValue = [
   { type: "paragraph", children: [{ bold: false, text: "" }] },
   {
     type: "image",
-    url: "https://miro.medium.com/max/1400/0*iTuEmxLD1IOJ5Xf1.png",
+    url: "/demo.png",
     children: [{ text: "" }],
   },
   { type: "paragraph", children: [{ bold: false, text: "" }] },
@@ -70,7 +70,7 @@ function Bottom() {
         >
           321 Followers
         </button>
-        <span className="mx-3 text-neutral">·</span>
+        <span className="mx-3 text-neutral dark:text-neutral-dark">·</span>
         <button
           type="button"
           aria-label="Following"

@@ -5,27 +5,27 @@ import {
   AccountPostsTabPublished,
 } from "components/account";
 import { UserLayout } from "components/Layout";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { Fragment, ReactElement, useEffect, useState } from "react";
+import { Fragment, ReactElement, useState } from "react";
+import { queryChecking } from "utils";
 import { MY_POSTS_TABS, ROUTES } from "utils/constants";
 
 const className = {
   rootBar: "flex items-center justify-between",
   title:
-    "my-6 text-neutral font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
+    "my-6 text-neutral dark:text-neutral-dark font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
 };
 
-const MyPostsPage: NextPageWithLayout = () => {
-  const { replace, query } = useRouter();
-  const [currentTab, setCurrentTab] = useState(0);
+interface Props {
+  query: { [key: string]: any };
+}
 
-  useEffect(() => {
-    if (query && "tab" in query && query.tab === "published") {
-      setCurrentTab(1);
-    } else {
-      setCurrentTab(0);
-    }
-  }, [query]);
+const MyPostsPage: NextPageWithLayout<Props> = ({ query }) => {
+  const [currentTab, setCurrentTab] = useState(() =>
+    queryChecking(query, MY_POSTS_TABS, "tab", 0)
+  );
+  const { replace } = useRouter();
 
   return (
     <Fragment>
@@ -34,8 +34,9 @@ const MyPostsPage: NextPageWithLayout = () => {
         <LinkButton href={ROUTES.createPost}>Write a post</LinkButton>
       </div>
       <Tabs
-        tabs={[...MY_POSTS_TABS]}
+        tabs={MY_POSTS_TABS}
         onTab={(index, key) => {
+          setCurrentTab(index);
           replace(index === 0 ? ROUTES.myPosts : ROUTES.myPostsQuery(key));
         }}
         selectedTab={currentTab}
@@ -45,6 +46,10 @@ const MyPostsPage: NextPageWithLayout = () => {
       </Tabs>
     </Fragment>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  return { props: { query } };
 };
 
 MyPostsPage.getLayout = (page: ReactElement) => {

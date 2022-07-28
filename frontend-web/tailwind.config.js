@@ -55,7 +55,7 @@ module.exports = {
         "base-200": "#F2F2F2",
         "base-dark-200": "#001e3c",
         "base-300": "#E5E6E6",
-        "base-dark-300": "#132f4c",
+        "base-dark-300": "#5090d3",
         "base-content": "#1F2937",
         info: "#1976d2",
         "info-dark": "#42a5f5",

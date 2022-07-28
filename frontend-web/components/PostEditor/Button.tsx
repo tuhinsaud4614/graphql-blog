@@ -4,7 +4,9 @@ import { ComponentPropsWithoutRef } from "react";
 const className = {
   root: "p-1.5 first:ml-2 first:mt-2 rounded flex items-center justify-center",
   rootState: (status: boolean) =>
-    status ? "bg-green-50 text-green-500" : "text-neutral/60 hover:bg-zinc-100",
+    status
+      ? "bg-green-50 dark:bg-success-dark text-green-500 dark:text-neutral-dark"
+      : "text-neutral/60 dark:text-neutral-dark hover:bg-zinc-100 dark:hover:bg-success-dark",
 };
 
 interface Props extends ComponentPropsWithoutRef<"button"> {

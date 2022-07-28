@@ -13,16 +13,32 @@ export default function SlateLeaf({
   const newLeaf = leaf as LeafProps;
 
   if (newLeaf.bold) {
-    children = <strong {...attributes}>{children}</strong>;
+    children = (
+      <strong {...attributes} className="text-neutral dark:text-neutral-dark">
+        {children}
+      </strong>
+    );
   }
 
   if (newLeaf.italic) {
-    children = <em {...attributes}>{children}</em>;
+    children = (
+      <em {...attributes} className="text-neutral dark:text-neutral-dark">
+        {children}
+      </em>
+    );
   }
 
   if (newLeaf.underline) {
-    children = <u {...attributes}>{children}</u>;
+    children = (
+      <u {...attributes} className="text-neutral dark:text-neutral-dark">
+        {children}
+      </u>
+    );
   }
 
-  return <span {...attributes}>{children}</span>;
+  return (
+    <span {...attributes} className="text-neutral dark:text-neutral-dark">
+      {children}
+    </span>
+  );
 }

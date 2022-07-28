@@ -3,6 +3,8 @@ import classNames from "classnames";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { ROUTES } from "utils/constants";
 
 const className = {
   root: "fixed top-0 left-0 right-0 border-b border-secondary dark:border-secondary-dark h-16 z-50",
@@ -13,6 +15,7 @@ const className = {
 };
 
 export default function Header() {
+  const router = useRouter();
   const { scrollY } = useViewportScroll();
   const matches = useMediaQuery("(prefers-color-scheme: dark)");
   const rootBG = useTransform(
@@ -45,13 +48,22 @@ export default function Header() {
         </Link>
         <ul className={className.items}>
           <li>
-            <Link href="/account/login" passHref>
+            <Link
+              href={
+                router.pathname === ROUTES.login
+                  ? ROUTES.register
+                  : ROUTES.login
+              }
+              passHref
+            >
               <motion.a
                 style={{ color: linkColor }}
                 className={className.loginLink}
-                aria-label="Sign In"
+                aria-label={
+                  router.pathname === ROUTES.login ? "Sign Up" : "Sign In"
+                }
               >
-                Sign In
+                {router.pathname === ROUTES.login ? "Sign Up" : "Sign In"}
               </motion.a>
             </Link>
           </li>

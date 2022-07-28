@@ -15,7 +15,7 @@ import { withEmbeds, withImages, withLinks } from "utils";
 
 import Toolbar from "./Toolbar";
 
-const className = { root: "border rounded-md" };
+const className = { root: "border dark:border-base-dark-300 rounded-md" };
 
 const initialValue: Descendant[] = [
   {

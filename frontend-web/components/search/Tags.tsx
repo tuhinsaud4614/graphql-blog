@@ -1,12 +1,13 @@
 import { NotFoundMessage, TabBox, Tag } from "components";
 import { BiChevronDown } from "react-icons/bi";
+import { ROUTES } from "utils/constants";
 
 const className = {
   items: "flex flex-wrap space-x-3 space-y-3 -ml-3",
   item: "!rounded-full first:ml-3 first:mt-3",
   more: "flex items-center justify-center w-full bg-base-top dark:bg-base-dark-top",
   moreBtn:
-    "flex items-center justify-center px-3 py-1 text-accent hover:text-accent-focus active:scale-95",
+    "flex items-center justify-center px-3 py-1 text-accent hover:text-accent-focus dark:text-accent-dark dark:hover:text-accent active:scale-95",
 };
 
 let isTrue = false;
@@ -34,7 +35,7 @@ export default function Tags({ link, linkText }: Props) {
         <Tag
           className={className.item}
           key={index}
-          href={`/posts/tags/${index + 1}`}
+          href={ROUTES.postsByTag((index + 1).toString())}
         >
           Tag - {index + 1}
         </Tag>

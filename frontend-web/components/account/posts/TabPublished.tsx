@@ -4,7 +4,7 @@ import PostItem from "./PostItem";
 
 const className = {
   root: "!py-16 flex items-end justify-center",
-  notFound: "text-neutral",
+  notFound: "text-neutral dark:border-base-dark-300",
   item: "border-b last:border-none py-5",
 };
 

@@ -17,7 +17,7 @@ export default function SlateElement({
       return (
         <blockquote
           style={style}
-          className="border-l-2 pl-2.5 italic text-[#aaa]"
+          className="border-l-2 dark:border-base-dark-300 pl-2.5 italic text-neutral/60 dark:text-neutral-dark/60"
           {...attributes}
         >
           {children}
@@ -45,19 +45,31 @@ export default function SlateElement({
       );
     case "heading-one":
       return (
-        <h1 style={style} className="text-3xl font-bold" {...attributes}>
+        <h1
+          style={style}
+          className="text-3xl font-bold text-neutral dark:text-neutral-dark"
+          {...attributes}
+        >
           {children}
         </h1>
       );
     case "heading-two":
       return (
-        <h2 style={style} className="text-2xl font-bold" {...attributes}>
+        <h2
+          style={style}
+          className="text-2xl font-bold text-neutral dark:text-neutral-dark"
+          {...attributes}
+        >
           {children}
         </h2>
       );
     case "list-item":
       return (
-        <li style={style} {...attributes}>
+        <li
+          style={style}
+          className="text-neutral dark:text-neutral-dark"
+          {...attributes}
+        >
           {children}
         </li>
       );
@@ -92,7 +104,11 @@ export default function SlateElement({
 
     default:
       return (
-        <div style={style} {...attributes}>
+        <div
+          {...attributes}
+          style={style}
+          className="text-neutral dark:text-neutral-dark"
+        >
           {children}
         </div>
       );

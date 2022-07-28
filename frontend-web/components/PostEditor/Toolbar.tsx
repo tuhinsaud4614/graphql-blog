@@ -21,7 +21,7 @@ import MarkButton from "./MarkButton";
 import UnLinkButton from "./UnLinkButton";
 
 const className = {
-  root: "border-b px-2 py-1",
+  root: "border-b dark:border-base-dark-300 px-2 py-1",
 };
 
 export default function Toolbar() {

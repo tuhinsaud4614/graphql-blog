@@ -1,7 +1,7 @@
+import { Button } from "components";
 import { FormControl } from "components/account";
 import { ChangeEvent, useId, useState } from "react";
 import { URL_REGEX } from "utils/constants";
-import InsertButton from "../ImageButton/InsertButton";
 
 interface Props {
   title?: string;
@@ -44,12 +44,18 @@ export function Url({ onAdd, title = "Embeds url" }: Props) {
         onChange={onChange}
         required
       />
-      <InsertButton
+      <Button
+        aria-label="Insert image"
+        type="button"
+        className="mx-3 my-3 !px-2 !py-1.5 text-sm !rounded-md"
+        variant="success"
         disabled={!!error || !url}
         onClick={() => {
           onAdd(url);
         }}
-      />
+      >
+        Insert image
+      </Button>
     </div>
   );
 }

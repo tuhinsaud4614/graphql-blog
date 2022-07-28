@@ -1,7 +1,8 @@
 const className = {
   root: "block",
-  btn: "block w-full px-3 py-1.5 text-sm text-neutral hover:text-accent hover:bg-base-200/50 text-start",
-  unSelected: "block w-full px-3 py-1.5 text-sm text-neutral/60 text-center",
+  btn: "block w-full px-3 py-1.5 text-sm text-neutral dark:text-neutral-dark hover:text-accent dark:hover:text-base-dark-100 hover:bg-base-200/50 dark:hover:bg-base-dark-300 text-start",
+  unSelected:
+    "block w-full px-3 py-1.5 text-sm text-neutral/60 dark:text-neutral-dark/60 text-center",
 };
 
 interface Props {

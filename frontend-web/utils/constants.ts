@@ -7,10 +7,13 @@ export const MY_POSTS_TABS = ["drafts", "published"] as const;
 
 export const ROUTES = {
   home: "/",
+  login: "/account/login",
+  register: "/account/register",
   myHome: "/my-home",
   search: "/search",
   post: (id: string) => `/posts/${id}`,
   postsByCategory: (id: string) => `/posts/categories/${id}`,
+  postsByTag: (id: string) => `/posts/tags/${id}`,
   createPost: "/posts/create",
   editPost: (id: string) => `/posts/${id}/edit`,
   authorProfile: (authorId: string) => `/account/${authorId}`,

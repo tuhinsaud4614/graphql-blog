@@ -1,18 +1,18 @@
 import classNames from "classnames";
+import { Button } from "components";
 import _ from "lodash";
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
 import { maxFileSize } from "utils";
 import { IMAGE_MIMES } from "utils/constants";
-import InsertButton from "./InsertButton";
 import Loader from "./Loader";
 
 const className = {
   imgUpload: "flex flex-col items-center justify-between",
   chooseBtn:
-    "outline-none border border-dashed rounded-md w-full min-h-[7.75rem] bg-gray-50 text-gray-500 relative p-2",
+    "outline-none border dark:border-base-dark-300 border-dashed rounded-md w-full min-h-[7.75rem] bg-gray-50 dark:bg-base-dark-100 text-gray-500 relative p-2",
   imgContainer: "relative w-full pb-[56.25%]",
-  errTxt: "mt-1 text-error-content text-xs",
+  errTxt: "mt-1 text-error-content dark:text-error-dark text-xs",
 };
 
 const promise = (file: File) =>
@@ -89,12 +89,18 @@ export function Upload({ onAdd }: Props) {
         )}
       </button>
       {error && <p className={className.errTxt}>{error}</p>}
-      <InsertButton
+      <Button
+        aria-label="Insert image"
+        type="button"
+        className="mx-3 my-3 !px-2 !py-1.5 text-sm !rounded-md"
+        variant="success"
         disabled={!image || loading}
         onClick={() => {
           image && onAdd(image);
         }}
-      />
+      >
+        Insert image
+      </Button>
     </div>
   );
 }

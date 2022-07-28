@@ -32,7 +32,7 @@ export const buttonClassName = {
         if (outline) {
           return "border-error/50 text-error hover:border-error hover:bg-error/5 dark:text-error-content dark:border-error-content/50 dark:hover:bg-error-content/[8%] dark:hover:border-error-content";
         }
-        return "bg-error hover:bg-error-focus text-base-100 dark:bg-error-dark dark:hover:bg-error dark:text-black/[87%]";
+        return "bg-error hover:bg-error-focus text-base-100 dark:bg-error-dark dark:hover:bg-error dark:text-base-100/[87%]";
       case "success":
         if (outline) {
           return "border-success/50 text-success hover:border-success hover:bg-success/5 dark:text-success-content dark:border-success-content/50 dark:hover:bg-success-content/[8%] dark:hover:border-success-content";
@@ -48,6 +48,11 @@ export const buttonClassName = {
           return "border-info/50 text-info hover:border-info hover:bg-info/5 dark:text-info-content dark:border-info-content/50 dark:hover:bg-info-content/[8%] dark:hover:border-info-content";
         }
         return "bg-info hover:bg-info-focus text-base-100 dark:bg-info-dark dark:hover:bg-info dark:text-black/[87%]";
+      case "neutral":
+        if (outline) {
+          return "border-neutral/50 text-neutral hover:border-neutral hover:bg-neutral/5 dark:text-neutral-dark dark:border-neutral-dark/50 dark:hover:bg-neutral-dark/[8%] dark:hover:border-neutral-dark";
+        }
+        return "bg-neutral hover:bg-neutral-focus text-base-100 dark:bg-neutral-dark dark:hover:bg-neutral-dark-focus dark:text-black/[87%]";
       default:
         if (outline) {
           return "border-accent/50 text-accent hover:border-accent hover:bg-accent/5 dark:text-accent-content dark:border-accent-content/50 dark:hover:bg-accent-content/[8%] dark:hover:border-accent-content";

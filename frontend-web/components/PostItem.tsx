@@ -78,7 +78,7 @@ export default function PostItem({ classes }: Props) {
             {true ? (
               <AiFillHeart
                 size={20}
-                className="text-secondary hover:text-secondary-focus"
+                className="text-secondary hover:text-secondary-focus dark:text-secondary-dark dark:hover:text-secondary"
               />
             ) : (
               <AiOutlineHeart size={20} />

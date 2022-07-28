@@ -8,7 +8,7 @@ import Button from "../Button";
 import { Url } from "./Url";
 
 const className = {
-  content: "bg-base-100 w-56 p-2",
+  content: "w-56 p-2",
 };
 
 export default function EmbedButton() {
@@ -62,7 +62,7 @@ export default function EmbedButton() {
         hideArrow
       >
         <div className={className.content}>
-          <h3 className="text-base text-neutral text-center mb-3 font-medium">
+          <h3 className="text-base text-neutral dark:text-neutral-dark text-center mb-3 font-medium">
             EMBEDS URL
           </h3>
           <Url onAdd={onAdd} />

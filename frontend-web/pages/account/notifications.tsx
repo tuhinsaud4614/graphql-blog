@@ -4,7 +4,7 @@ import { Fragment, ReactElement } from "react";
 
 const className = {
   title:
-    "my-6 text-neutral font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
+    "my-6 text-neutral dark:text-neutral-dark font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
 };
 
 const NotificationsPage: NextPageWithLayout = () => {

@@ -17,13 +17,13 @@ import SelectItems from "./SelectItems";
 
 const className = {
   control: "flex flex-col items-center justify-center w-full",
-  box: "relative border-b w-[inherit] pb-1 flex items-center",
+  box: "relative border-b dark:border-base-dark-300 w-[inherit] pb-1 flex items-center",
   boxInner: "flex-1 flex items-center flex-wrap",
   input:
-    "text-neutral leading-6 min-w-0 bg-transparent outline-none mr-1 flex-auto",
+    "text-neutral dark:text-neutral-dark leading-6 min-w-0 bg-transparent outline-none mr-1 flex-auto",
   clearIcon:
-    "border-none outline-none p-2 text-error hover:text-error-focus active:scale-95",
-  error: "mt-2 text-sm text-error",
+    "border-none outline-none p-2 text-error dark:text-error-dark hover:text-error-focus dark:hover:text-error active:scale-95",
+  error: "mt-2 text-sm text-error dark:text-error-dark",
 };
 
 interface IOption {
@@ -105,7 +105,9 @@ export default function Select({
         className={classNames(
           className.box,
           classes?.box,
-          valid ? "border-neutral" : "border-error"
+          valid
+            ? "border-neutral dark:text-neutral-dark"
+            : "border-error dark:border-neutral-dark"
         )}
       >
         <section

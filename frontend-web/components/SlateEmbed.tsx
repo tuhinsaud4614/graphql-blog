@@ -14,7 +14,7 @@ import { SlateVideoElement } from "utils/interfaces";
 const className = {
   container: "pt-[75%] relative",
   inFrame: "absolute z-10 inset-0 block w-full h-full",
-  btn: "absolute z-20 top-[0.5em] left-[0.5em] text-base-100 bg-error hover:bg-error-focus shadow-mui hover:shadow-mui-hover active:shadow-mui-active active:scale-95 flex items-center justify-center p-1 rounded-full",
+  btn: "absolute z-20 top-[0.5em] left-[0.5em] text-base-100 bg-error dark:bg-error-dark hover:bg-error-focus dark:hover:bg-error shadow-mui hover:shadow-mui-hover active:shadow-mui-active active:scale-95 flex items-center justify-center p-1 rounded-full",
 };
 
 export default function SlateEmbed({

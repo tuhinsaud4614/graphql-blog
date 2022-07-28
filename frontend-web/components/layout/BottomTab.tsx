@@ -14,7 +14,7 @@ import { HiHome, HiOutlineHome } from "react-icons/hi";
 import { ROUTES } from "utils/constants";
 
 const className = {
-  root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 dark:bg-base-dark-200 px-4 shadow-top",
+  root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:bg-base-dark-200 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-dark-200/50 backdrop-blur-sm px-4 shadow-top",
   items: "flex items-center h-full",
   item: "flex-1",
   link: "w-full h-full flex items-center justify-center text-neutral dark:text-neutral-dark outline-none border-0 active:scale-95",
@@ -25,7 +25,7 @@ const className = {
   avatarInfoDetail: "flex flex-col",
   avatarMenuItems: "list-none m-0 flex flex-col",
   avatarMenuLink:
-    "w-full outline-none border-none flex items-center px-4 py-2 hover:bg-base-200 dark:hover:bg-base-dark-300 text-neutral dark:text-neutral-dark hover:text-accent dark:hover:text-accent-dark",
+    "w-full outline-none border-none flex items-center px-4 py-2 hover:bg-base-200 dark:hover:bg-base-dark-200 text-neutral dark:text-neutral-dark hover:text-accent dark:hover:text-base-dark-300",
   name: "pb-1 line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark dark:group-hover:text-accent-dark",
   bio: "text-sm line-clamp-1 text-ellipsis text-neutral/60 dark:text-neutral-dark/60 group-hover:text-accent dark:group-hover:text-accent-dark",
 };

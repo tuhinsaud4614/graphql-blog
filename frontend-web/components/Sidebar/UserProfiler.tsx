@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ReactorModal, ReactorModalItem } from "components";
+import { Button, ReactorModal, ReactorModalItem } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useState } from "react";
@@ -8,17 +8,15 @@ import { ROUTES } from "utils/constants";
 const className = {
   root: "flex flex-col items-start",
   img: "w-[5.5rem] h-[5.5rem] inline-block rounded-full overflow-hidden",
-  name: "text-neutral hover:text-neutral-focus font-medium mt-4 active:scale-95",
-  editLink: "mt-6 text-sm text-accent hover:text-neutral active:scale-95",
+  name: "text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus font-medium mt-4 active:scale-95",
+  editLink:
+    "mt-6 text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark-focus active:scale-95",
   countBtn:
-    "border-none outline-none text-neutral/60 text-neutral-focus active:scale-95 min-w-min mt-1",
-  about: "mt-3 text-sm text-neutral/60 line-clamp-1 text-ellipsis",
+    "border-none outline-none text-neutral/60 dark:text-neutral-dark/60 hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 min-w-min mt-1",
+  about:
+    "mt-3 text-sm text-neutral/50 dark:text-neutral-dark/50 line-clamp-1 text-ellipsis",
   followBtn:
     "outline-none px-3.5 py-1.5 rounded-full text-sm text-center inline-block active:scale-95",
-  followBtnBlock:
-    "border-0 bg-accent hover:bg-accent-focus text-base-200 hover:text-base-100",
-  followBtnOutline:
-    "border border-accent hover:border-accent-focus text-accent hover:text-accent-focus",
 };
 
 interface Props {
@@ -75,17 +73,14 @@ function Other() {
       <p className={className.about}>
         All you need to know about Nodejs 18 A Quick Intro Node.js is a cross-
       </p>
-      <button
-        aria-label="Follow"
+      <Button
+        aria-label="Following"
         type="button"
-        className={classNames(
-          className.followBtn,
-          "mt-3",
-          className[false ? "followBtnBlock" : "followBtnOutline"]
-        )}
+        className="mt-3 text-sm"
+        outline
       >
-        Follow
-      </button>
+        Following
+      </Button>
       <ReactorModal
         title="100 followers"
         open={open}
