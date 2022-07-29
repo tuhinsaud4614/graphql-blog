@@ -147,6 +147,34 @@ export function aspectRatio(width: number, height: number) {
 }
 
 // Start slate utils Start
+export const isMarkActive = (editor: BaseEditor, format: string) => {
+  const marks = Editor.marks(editor);
+  //   @ts-ignore
+  return marks ? marks[format] === true : false;
+};
+
+export function isBlockActive(
+  editor: BaseEditor,
+  format: string,
+  blockType = "type"
+) {
+  const { selection } = editor;
+  if (!selection) return false;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: (n) =>
+        !Editor.isEditor(n) &&
+        Element.isElement(n) &&
+        // @ts-ignore
+        n[blockType] === format,
+    })
+  );
+
+  return !!match;
+}
+
 export const isImageUrl = (url: string) => {
   if (!url) return false;
   if (url.match(IMAGE_URL_REGEX) === null) return false;

@@ -1,11 +1,10 @@
 import { useTooltip } from "@hooks";
 import classNames from "classnames";
-import { Menu } from "components";
+import { Menu, SlateButton } from "components";
 import { Fragment, useState } from "react";
 import { BiImage } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
 import { insertImage } from "utils";
-import Button from "../Button";
 import { Upload } from "./Upload";
 import { Url } from "./Url";
 
@@ -25,7 +24,7 @@ export default function ImageButton() {
 
   return (
     <Fragment>
-      <Button
+      <SlateButton
         aria-label="Insert image"
         onClick={(e) => setAnchorEle(e.currentTarget)}
         onMouseEnter={(e) => {
@@ -40,7 +39,7 @@ export default function ImageButton() {
         }}
       >
         <BiImage size={18} />
-      </Button>
+      </SlateButton>
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}

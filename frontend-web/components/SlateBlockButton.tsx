@@ -1,9 +1,9 @@
+import { SlateButton } from "@component";
 import { useTooltip } from "@hooks";
 import { ComponentPropsWithoutRef } from "react";
 import { BaseEditor, Editor, Element as SlateElement, Transforms } from "slate";
 import { useSlate } from "slate-react";
-import Button from "./Button";
-import { isBlockActive } from "./utils";
+import { isBlockActive } from "utils";
 
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
@@ -21,7 +21,7 @@ type FormatType =
 
 interface Props extends ComponentPropsWithoutRef<"button"> {
   format: FormatType;
-  tip: string;
+  tip?: string;
 }
 
 export default function BlockButton({ format, tip, ...rest }: Props) {
@@ -29,21 +29,22 @@ export default function BlockButton({ format, tip, ...rest }: Props) {
   const { onHoverEnd, onHoverStart } = useTooltip();
 
   return (
-    <Button
+    <SlateButton
       {...rest}
       onMouseDown={(event) => {
         event.preventDefault();
         toggleBlock(editor, format);
       }}
       onMouseEnter={(e) => {
-        onHoverStart(e, {
-          text: tip,
-          anchorOrigin: { vertical: "top", horizontal: "center" },
-          className: "px-2 py-1.5",
-        });
+        tip &&
+          onHoverStart(e, {
+            text: tip,
+            anchorOrigin: { vertical: "top", horizontal: "center" },
+            className: "px-2 py-1.5",
+          });
       }}
       onMouseLeave={() => {
-        onHoverEnd();
+        tip && onHoverEnd();
       }}
       isActive={isBlockActive(editor, format)}
     />

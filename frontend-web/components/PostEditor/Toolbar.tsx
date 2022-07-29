@@ -1,3 +1,4 @@
+import { SlateBlockButton, SlateMarkButton } from "@component";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import {
   BiBold,
@@ -13,11 +14,9 @@ import {
   MdFormatAlignLeft,
   MdFormatAlignRight,
 } from "react-icons/md";
-import BlockButton from "./BlockButton";
 import EmbedButton from "./EmbedButton";
 import ImageButton from "./ImageButton";
 import LinkButton from "./LinkButton";
-import MarkButton from "./MarkButton";
 import UnLinkButton from "./UnLinkButton";
 
 const className = {
@@ -28,86 +27,94 @@ export default function Toolbar() {
   return (
     <header className={className.root}>
       <div className="flex items-center flex-wrap space-x-2 space-y-2 -ml-2 -mt-2">
-        <MarkButton
+        <SlateMarkButton
           aria-label="Mark bold"
           hotKey="mod+b"
           mark="bold"
           tip="Bold (⌘B)"
         >
           <BiBold size={18} />
-        </MarkButton>
-        <MarkButton
+        </SlateMarkButton>
+        <SlateMarkButton
           aria-label="Mark italic"
           hotKey="mod+i"
           mark="italic"
           tip="Italic (⌘I)"
         >
           <BiItalic size={18} />
-        </MarkButton>
-        <MarkButton
+        </SlateMarkButton>
+        <SlateMarkButton
           aria-label="Mark underline"
           hotKey="mod+u"
           mark="underline"
           tip="Underline (⌘U)"
         >
           <BiUnderline size={18} />
-        </MarkButton>
-        <MarkButton
+        </SlateMarkButton>
+        <SlateMarkButton
           aria-label="Mark code"
           hotKey="mod+`"
           mark="code"
           tip="Code (⌘U)"
         >
           <BiCodeCurly size={18} />
-        </MarkButton>
-        <BlockButton
+        </SlateMarkButton>
+        <SlateBlockButton
           aria-label="Block heading 1"
           format="heading-one"
           tip="Heading h1"
         >
           <BiHeading size={18} />
-        </BlockButton>
-        <BlockButton
-          aria-label="Block heading 1"
+        </SlateBlockButton>
+        <SlateBlockButton
+          aria-label="Block heading 2"
           format="heading-two"
           tip="Heading h2"
         >
           <CgFormatHeading size={18} />
-        </BlockButton>
-        <BlockButton
+        </SlateBlockButton>
+        <SlateBlockButton
           aria-label="Block quote"
           format="block-quote"
           tip="Block quote"
         >
           <ImQuotesLeft size={18} />
-        </BlockButton>
-        <BlockButton
+        </SlateBlockButton>
+        <SlateBlockButton
           aria-label="Numbered list"
           format="numbered-list"
           tip="Numbered list"
         >
           <AiOutlineOrderedList size={18} />
-        </BlockButton>
-        <BlockButton
+        </SlateBlockButton>
+        <SlateBlockButton
           aria-label="Bulleted list"
           format="bulleted-list"
           tip="Bulleted list"
         >
           <AiOutlineUnorderedList size={18} />
-        </BlockButton>
-        <BlockButton aria-label="Align left" format="left" tip="Align left">
+        </SlateBlockButton>
+        <SlateBlockButton
+          aria-label="Align left"
+          format="left"
+          tip="Align left"
+        >
           <MdFormatAlignLeft size={18} />
-        </BlockButton>
-        <BlockButton
+        </SlateBlockButton>
+        <SlateBlockButton
           aria-label="Align center"
           format="center"
           tip="Align center"
         >
           <MdFormatAlignCenter size={18} />
-        </BlockButton>
-        <BlockButton aria-label="Align left" format="right" tip="Align right">
+        </SlateBlockButton>
+        <SlateBlockButton
+          aria-label="Align left"
+          format="right"
+          tip="Align right"
+        >
           <MdFormatAlignRight size={18} />
-        </BlockButton>
+        </SlateBlockButton>
         <LinkButton />
         <UnLinkButton />
         <ImageButton />

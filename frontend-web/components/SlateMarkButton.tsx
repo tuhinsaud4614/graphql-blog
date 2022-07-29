@@ -2,10 +2,11 @@ import { useEventListener, useTooltip } from "@hooks";
 import isHotkey from "is-hotkey";
 import { Editor, Transforms } from "slate";
 import { useSlate } from "slate-react";
-import Button from "./Button";
-import { isBlockActive, isMarkActive, MarkButtonProps } from "./utils";
+import { isBlockActive, isMarkActive } from "utils";
+import { MarkButtonProps } from "./PostEditor/utils";
+import SlateButton from "./SlateButton";
 
-export default function MarkButton({
+export default function SlateMarkButton({
   hotKey,
   mark,
   tip,
@@ -42,22 +43,23 @@ export default function MarkButton({
   });
 
   return (
-    <Button
+    <SlateButton
       {...rest}
       onClick={handler}
       onMouseEnter={(e) => {
-        onHoverStart(e, {
-          text: tip,
-          anchorOrigin: { vertical: "top", horizontal: "center" },
-          className: "px-2 py-1.5",
-        });
+        tip &&
+          onHoverStart(e, {
+            text: tip,
+            anchorOrigin: { vertical: "top", horizontal: "center" },
+            className: "px-2 py-1.5",
+          });
       }}
       onMouseLeave={() => {
-        onHoverEnd();
+        tip && onHoverEnd();
       }}
       isActive={isActive || (mark === "code" && isBlockActive(editor, mark))}
     >
       {rest.children}
-    </Button>
+    </SlateButton>
   );
 }

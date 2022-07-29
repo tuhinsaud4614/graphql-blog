@@ -1,10 +1,9 @@
 import { useTooltip } from "@hooks";
-import { Menu } from "components";
+import { Menu, SlateButton } from "components";
 import { Fragment, useState } from "react";
 import { BiLink } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
 import { insertLink, isLinkActive } from "utils";
-import Button from "./Button";
 import { Url } from "./EmbedButton/Url";
 
 const className = {
@@ -23,7 +22,7 @@ export default function LinkButton() {
 
   return (
     <Fragment>
-      <Button
+      <SlateButton
         aria-label="Insert link"
         onClick={(e) => setAnchorEle(e.currentTarget)}
         onMouseEnter={(e) => {
@@ -39,7 +38,7 @@ export default function LinkButton() {
         isActive={isLinkActive(editor)}
       >
         <BiLink size={18} />
-      </Button>
+      </SlateButton>
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}

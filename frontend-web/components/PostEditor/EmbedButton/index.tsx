@@ -1,10 +1,9 @@
 import { useTooltip } from "@hooks";
-import { Menu } from "components";
+import { Menu, SlateButton } from "components";
 import { Fragment, useState } from "react";
 import { ImEmbed } from "react-icons/im";
 import { Transforms } from "slate";
 import { ReactEditor, useSlateStatic } from "slate-react";
-import Button from "../Button";
 import { Url } from "./Url";
 
 const className = {
@@ -38,7 +37,7 @@ export default function EmbedButton() {
 
   return (
     <Fragment>
-      <Button
+      <SlateButton
         aria-label="Insert embeds"
         onClick={(e) => setAnchorEle(e.currentTarget)}
         onMouseEnter={(e) => {
@@ -53,7 +52,7 @@ export default function EmbedButton() {
         }}
       >
         <ImEmbed size={18} />
-      </Button>
+      </SlateButton>
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}

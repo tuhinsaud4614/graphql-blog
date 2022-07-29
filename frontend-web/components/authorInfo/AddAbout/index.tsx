@@ -1,5 +1,6 @@
 import { Button, SlateElement, SlateLeaf } from "components";
 import pipe from "lodash/fp/pipe";
+import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
 import { createEditor, Descendant } from "slate";
 import { withHistory } from "slate-history";
@@ -12,6 +13,10 @@ import {
   withReact,
 } from "slate-react";
 import { withLinks } from "utils";
+
+const HoveringToolbar = dynamic(() => import("./HoveringToolbar"), {
+  ssr: false,
+});
 
 const className = {
   root: "mt-10 pb-10 border-b dark:border-base-dark-300",
@@ -47,14 +52,23 @@ export default function AddAbout() {
           aria-label="Cancel"
           type="button"
           onClick={() => {}}
+          variant="neutral"
+          className="min-w-[5rem]"
           outline
-          disabled
-          loading
         >
           Cancel
         </Button>
+        <Button
+          aria-label="Save"
+          type="button"
+          onClick={() => {}}
+          className="ml-3 min-w-[5rem]"
+        >
+          Save
+        </Button>
       </div>
       <Slate editor={editor} value={value} onChange={(v) => setValue(v)}>
+        <HoveringToolbar />
         <section className="px-4 py-2 overflow-x-auto">
           <Editable
             placeholder="Add bio"

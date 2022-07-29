@@ -1,8 +1,8 @@
 import { useTooltip } from "@hooks";
+import { SlateButton } from "components";
 import { BiUnlink } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
 import { isLinkActive, unwrapLink } from "utils";
-import Button from "./Button";
 
 const className = {
   content: "bg-base-100 w-56 p-2",
@@ -19,7 +19,7 @@ export default function UnLinkButton() {
   };
 
   return (
-    <Button
+    <SlateButton
       aria-label="Remove link"
       onClick={onClick}
       onMouseEnter={(e) => {
@@ -35,6 +35,6 @@ export default function UnLinkButton() {
       isActive={isLinkActive(editor)}
     >
       <BiUnlink size={18} />
-    </Button>
+    </SlateButton>
   );
 }
