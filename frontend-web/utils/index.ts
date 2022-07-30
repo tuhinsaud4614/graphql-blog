@@ -295,8 +295,11 @@ export function queryChecking<T extends { [key: string]: any }>(
   defaultReturn = 0
 ) {
   if (query && queryName in query && query[queryName]) {
-    const tab = tabs.findIndex((t) => t === query[queryName]);
+    const tab = tabs.findIndex((t) => t === decodeURI(query[queryName]));
     return tab === -1 ? defaultReturn : tab;
   }
   return defaultReturn;
 }
+
+export const removeAllSpacesFromText = (value: string) =>
+  value.replace(/\s+/g, "");

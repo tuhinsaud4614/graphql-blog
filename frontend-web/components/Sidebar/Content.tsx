@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import Link from "next/link";
+import { LinkTextButton } from "components";
 import { Fragment, ReactNode } from "react";
 
 const className = {
@@ -37,14 +37,13 @@ export default function Content({
         {children}
         {moreLink && moreText && (
           <li className={classNames(className.more, classes?.more)}>
-            <Link href={moreLink} passHref>
-              <a
-                aria-label={moreText}
-                className={classNames(className.moreLink, classes?.moreLink)}
-              >
-                {moreText}
-              </a>
-            </Link>
+            <LinkTextButton
+              href={moreLink}
+              aria-label={moreText}
+              className={classes?.moreLink}
+            >
+              {moreText}
+            </LinkTextButton>
           </li>
         )}
       </ul>

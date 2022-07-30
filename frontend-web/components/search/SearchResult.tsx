@@ -2,7 +2,7 @@ import { useLocalStorage } from "@hooks";
 import { SearchBox, Tabs } from "components";
 import { SearchLayout } from "components/Layout";
 import { useRouter } from "next/router";
-import { Fragment, KeyboardEvent, useRef, useState } from "react";
+import { Fragment, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { queryChecking } from "utils";
 import { RECENT_SEARCHES_KEY, SEARCH_TABS } from "utils/constants";
 import {
@@ -55,6 +55,10 @@ export default function SearchResult({ query }: Props) {
       );
     }
   };
+
+  useEffect(() => {
+    setCurrentTab(queryChecking(query, SEARCH_TABS, "t"));
+  }, [query]);
   return (
     <SearchLayout
       sidebar={
@@ -79,7 +83,6 @@ export default function SearchResult({ query }: Props) {
       <Tabs
         tabs={SEARCH_TABS}
         onTab={(index, key) => {
-          setCurrentTab(index);
           replace(
             index !== 0
               ? `/search?q=${query["q"]}&t=${key}`
