@@ -30,13 +30,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     };
   }, [events]);
 
-  // Router.events.on("routeChangeStart", () => {
-  //   setProgress(true);
-  // });
-
-  // Router.events.on("routeChangeComplete", () => {
-  //   setProgress(false);
-  // });
+  // console.log(isDarkMode);
 
   return getLayout(
     <React.Fragment>
