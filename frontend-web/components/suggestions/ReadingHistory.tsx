@@ -15,22 +15,34 @@ const className = {
     "font-medium text-[1.375rem] md:text-[1.875rem] leading-7 md:leading-9 text-neutral dark:text-neutral-dark",
   modalBodyText:
     "pt-1.5 pb-9 text-sm md:text-base text-neutral/60 dark:text-neutral-dark/60 text-center",
+  notFound: "flex flex-col justify-center items-center",
+  notFoundTitle: "font-medium text-neutral dark:text-neutral-dark mt-8 mb-4",
+  notFoundSubtitle:
+    "text-neutral/60 dark:text-neutral-dark/60 text-sm text-center",
 };
+
+const isTrue = true;
 
 export default function ReadingHistory() {
   return (
     <div className={className.root}>
-      <ClearCard />
-      <ul className={className.items}>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <HistoryPost
-            key={index}
-            classes={{
-              root: className.item,
-            }}
-          />
-        ))}
-      </ul>
+      {isTrue ? (
+        <Fragment>
+          <ClearCard />
+          <ul className={className.items}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <HistoryPost
+                key={index}
+                classes={{
+                  root: className.item,
+                }}
+              />
+            ))}
+          </ul>
+        </Fragment>
+      ) : (
+        <NotFound />
+      )}
     </div>
   );
 }
@@ -93,5 +105,18 @@ function ClearCard() {
         </div>
       </Modal>
     </Fragment>
+  );
+}
+
+function NotFound() {
+  return (
+    <div className={className.notFound}>
+      <h2 className={className.notFoundTitle}>
+        You haven’t read any stories yet
+      </h2>
+      <p className={className.notFoundSubtitle}>
+        Stories you’ve read on Medium will appear here.
+      </p>
+    </div>
   );
 }
