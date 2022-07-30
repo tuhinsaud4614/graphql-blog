@@ -21,7 +21,9 @@ export default function Following() {
     <div className={className.root}>
       {isTrue ? (
         <Fragment>
-          <h2>{`2 Author${count > 1 ? "s" : ""}`}</h2>
+          <h2 className={className.title}>{`2 Author${
+            count > 1 ? "s" : ""
+          }`}</h2>
           <ul className={className.items}>
             {Array.from({ length: 5 }).map((_, index) => (
               <FollowItem key={index} />

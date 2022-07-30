@@ -77,7 +77,7 @@ function Other() {
         aria-label="Following"
         type="button"
         className="mt-3 text-sm"
-        outline
+        mode="outline"
       >
         Following
       </Button>

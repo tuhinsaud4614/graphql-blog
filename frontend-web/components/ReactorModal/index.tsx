@@ -31,7 +31,7 @@ export default function ReactorModal({ open, onHide, children, title }: Props) {
               aria-label="More"
               className="px-3.5 py-1 text-sm"
               variant="neutral"
-              outline
+              mode="outline"
             >
               More
             </Button>

@@ -54,7 +54,7 @@ export default function AddAbout() {
           onClick={() => {}}
           variant="neutral"
           className="min-w-[5rem]"
-          outline
+          mode="outline"
         >
           Cancel
         </Button>

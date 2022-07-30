@@ -12,6 +12,8 @@ export type ColorVariantType =
   | "info"
   | "neutral";
 
+export type ButtonModeType = "outline" | "fill" | "text";
+
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
 };

@@ -21,7 +21,6 @@ const className = {
     "font-medium text-[1.375rem] md:text-[1.875rem] leading-7 md:leading-9 text-neutral dark:text-neutral-dark",
   modalBodyText:
     "pt-1.5 pb-9 text-sm md:text-base text-neutral/60 dark:text-neutral-dark/60 text-center",
-  modalBodyBtn: "outline-none px-4 py-1.5 rounded-full active:scale-95 text-sm",
 };
 
 interface Props {
@@ -123,7 +122,7 @@ export default function PostItem({ classes }: Props) {
               onClick={() => setOpenModel(false)}
               className="!px-4 !py-1.5 text-sm mr-2"
               variant="neutral"
-              outline
+              mode="outline"
             >
               Cancel
             </Button>
@@ -134,7 +133,7 @@ export default function PostItem({ classes }: Props) {
               className="!px-4 !py-1.5 text-sm"
               variant="error"
             >
-              Cancel
+              Delete
             </Button>
           </div>
         </div>

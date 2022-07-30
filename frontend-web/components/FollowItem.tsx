@@ -62,7 +62,7 @@ export default function FollowItem({ classes }: Props) {
         type="button"
         aria-label="Follow"
         className={classNames(className.btn, classes?.btn)}
-        outline
+        mode="outline"
       >
         Following
       </Button>

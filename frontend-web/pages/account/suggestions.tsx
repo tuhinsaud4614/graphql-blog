@@ -4,6 +4,7 @@ import { SidebarContent } from "components/Sidebar";
 import {
   SuggestionsFollowingTab,
   SuggestionsReadingHistoryTab,
+  SuggestionsTab,
 } from "components/suggestions";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
@@ -72,7 +73,7 @@ const MySuggestionsPage: NextPage<Props> = ({ query }) => {
       >
         {currentTab === 0 ? <SuggestionsFollowingTab /> : <Fragment />}
         {currentTab === 1 ? <SuggestionsReadingHistoryTab /> : <Fragment />}
-        {currentTab === 2 ? <>Suggestions</> : <Fragment />}
+        {currentTab === 2 ? <SuggestionsTab /> : <Fragment />}
       </Tabs>
     </LayoutContainer>
   );
