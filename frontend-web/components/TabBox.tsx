@@ -4,7 +4,6 @@ import { Fragment, ReactNode } from "react";
 const className = {
   root: "pt-3",
   items: "list-none m-0 pt-3",
-  item: "border-b last:border-none py-5",
 };
 
 interface Props {

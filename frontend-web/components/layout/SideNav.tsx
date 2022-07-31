@@ -125,13 +125,13 @@ export default function SideNav() {
               </a>
             </Link>
           </li>
-          {matches && (
-            <li>
+          <li>
+            {matches && (
               <Theme
                 anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
               />
-            </li>
-          )}
+            )}
+          </li>
         </ul>
         <UserAvatarBtn
           anchorOrigin={{ horizontal: "left", vertical: "top" }}

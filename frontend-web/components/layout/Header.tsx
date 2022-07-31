@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@hooks";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +21,7 @@ const className = {
 
 export default function Header() {
   const { pathname } = useRouter();
+  const matches = useMediaQuery("(min-width: 1024px)");
   return (
     <header className={className.root}>
       <nav className={className.nav}>
@@ -43,10 +45,12 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Theme
-              anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-              classes={{ menuRoot: "mt-6" }}
-            />
+            {!matches && (
+              <Theme
+                anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+                classes={{ menuRoot: "mt-6" }}
+              />
+            )}
           </li>
           <li>
             <Link href={ROUTES.notifications} passHref>
