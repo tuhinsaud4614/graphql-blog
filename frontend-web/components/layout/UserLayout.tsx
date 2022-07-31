@@ -30,43 +30,28 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
               moreLink="/categories"
               moreText="See all the categories"
             >
-              <SidebarCategory
-                title="New Category"
-                link={`/posts/categories/1`}
-              />
-              <SidebarCategory
-                title="New Category"
-                link={`/posts/categories/2`}
-              />
-              <SidebarCategory
-                title="New Category"
-                link={`/posts/categories/3`}
-              />
-              <SidebarCategory
-                title="New Category"
-                link={`/posts/categories/4`}
-              />
+              {Array.from({ length: 4 }).map((_, index) => (
+                <SidebarCategory
+                  key={index}
+                  title={"New Category -" + (index + 1)}
+                  link={ROUTES.postsByCategory("New Category" + (index + 1))}
+                />
+              ))}
             </SidebarContent>
             <div className={className.divider} />
             <SidebarContent
               title="Recommended tags"
               classes={{ items: className.items }}
             >
-              <Tag href="/posts/tag/1234" className={className.link}>
-                New Tag
-              </Tag>
-              <Tag href="/posts/tag/1234" className={className.link}>
-                New Tag
-              </Tag>
-              <Tag href="/posts/tag/1234" className={className.link}>
-                New Tag
-              </Tag>
-              <Tag href="/posts/tag/1234" className={className.link}>
-                New Tag
-              </Tag>
-              <Tag href="/posts/tag/1234" className={className.link}>
-                New Tag
-              </Tag>
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Tag
+                  key={index}
+                  href={ROUTES.postsByTag("New Tag" + (index + 1))}
+                  className={className.link}
+                >
+                  New Tag - {index + 1}
+                </Tag>
+              ))}
             </SidebarContent>
             <div className={className.divider} />
             <SidebarContent

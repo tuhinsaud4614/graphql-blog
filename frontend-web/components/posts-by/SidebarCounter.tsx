@@ -6,7 +6,7 @@ const className = {
   topItem: "flex flex-col flex-grow shrink-0 basis-auto",
   topTotal: "text-[1.375rem] font-bold text-neutral dark:text-neutral-dark",
   topType: "mt-2.5 text-neutral dark:text-neutral-dark",
-  bottom: "w-[27rem] max-w-full mt-4 overflow-hidden",
+  bottom: "w-[27rem] max-w-full mt-4 overflow-hidden p-0.5",
   avatars: "list-none grid grid-cols-[repeat(12,_7.69%)] p-2 -ml-2",
   avatar:
     "shrink-0 h-9 w-9 ring-2 ring-base-300 dark:ring-base-dark-300 rounded-full relative",
