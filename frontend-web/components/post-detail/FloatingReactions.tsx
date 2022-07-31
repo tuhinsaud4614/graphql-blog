@@ -9,9 +9,10 @@ import LikeButton from "./LikeButton";
 const className = {
   root: "sticky bottom-[4.5rem] lg:bottom-4 left-0 z-40 flex items-center justify-center",
   reactBar:
-    "shadow-mine bg-base-100 px-3.5 py-2 rounded-full flex items-stretch",
+    "shadow-mui bg-base-100 dark:bg-base-dark-200 px-3.5 py-2 rounded-full flex items-stretch",
 
-  divide: "inline-block w-0.5 bg-neutral/60 mx-4 rounded-sm",
+  divide:
+    "inline-block w-0.5 bg-neutral/60 dark:bg-neutral-dark/60 mx-4 rounded-sm",
 };
 
 interface Props {

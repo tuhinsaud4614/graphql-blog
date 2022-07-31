@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { ComponentPropsWithoutRef } from "react";
 
 const className = {
-  root: "p-1.5 first:ml-2 first:mt-2 rounded flex items-center justify-center",
+  root: "p-1.5 rounded flex items-center justify-center",
   rootState: (status: boolean) =>
     status
       ? "bg-green-50 dark:bg-success-dark text-green-500 dark:text-neutral-dark"

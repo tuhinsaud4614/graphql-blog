@@ -1,30 +1,25 @@
 import classNames from "classnames";
+import { Button, SlateElement, SlateLeaf, SlateMarkButton } from "components";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useCallback, useState } from "react";
 import { BiBold, BiItalic } from "react-icons/bi";
-import { ImSpinner2 } from "react-icons/im";
 import { createEditor, Descendant, Editor, Transforms } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
   ReactEditor,
+  RenderElementProps,
   RenderLeafProps,
   Slate,
   withReact,
 } from "slate-react";
-import FormatButton from "./FormatButton";
 
 const className = {
-  root: "shadow-mine mx-4 mb-5 bg-base-100 rounded",
+  root: "shadow-mine mx-4 mb-5 bg-base-100 dark:bg-base-dark-200 rounded",
   editorBox: "min-h-[6.25rem]",
   editorContainer: "p-3.5",
   controlBox: "flex items-center justify-between px-3.5",
   controlBoxContent: "flex items-center",
-  cancelBtn: "outline-none border-none px-3 py-1.5 text-neutral text-sm",
-  respondBtn:
-    "outline-none border-0 px-3 py-1.5 rounded-full inline-block text-sm bg-accent hover:bg-accent-focus text-base-200 hover:text-base-100 enabled:active:scale-95 disabled:bg-accent/30 disabled:text-neutral/50 disabled:cursor-not-allowed",
-  respondBtnLoader: "flex items-center justify-center",
-  respondBtnSpin: "text-white animate-spin ml-2 text-sm",
 };
 
 const initialValue: Descendant[] = [
@@ -75,20 +70,13 @@ export default function CommentBox({
     withHistory(withReact(createEditor() as ReactEditor))
   );
 
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => <SlateLeaf {...props} />,
+    []
+  );
+
   const renderElement = useCallback(
-    ({ attributes, children, leaf }: RenderLeafProps) => {
-      // @ts-ignore
-      if (leaf.bold) {
-        children = <strong {...attributes}>{children}</strong>;
-      }
-
-      // @ts-ignore
-      if (leaf.italic) {
-        children = <em {...attributes}>{children}</em>;
-      }
-
-      return <span {...attributes}>{children}</span>;
-    },
+    (props: RenderElementProps) => <SlateElement {...props} />,
     []
   );
 
@@ -129,7 +117,11 @@ export default function CommentBox({
             )}
             onClick={() => setExpand(true)}
           >
-            <Editable placeholder={placeholder} renderLeaf={renderElement} />
+            <Editable
+              placeholder={placeholder}
+              renderLeaf={renderLeaf}
+              renderElement={renderElement}
+            />
           </div>
         </section>
         <AnimatePresence>
@@ -150,22 +142,22 @@ export default function CommentBox({
                   classes?.controlBoxContent
                 )}
               >
-                <FormatButton
-                  aria-label="Format bold"
+                <SlateMarkButton
+                  aria-label="Mark bold"
                   hotKey="mod+b"
                   mark="bold"
                   tip="Bold (⌘B)"
                 >
-                  <BiBold size={21} />
-                </FormatButton>
-                <FormatButton
-                  aria-label="Format italic"
+                  <BiBold size={18} />
+                </SlateMarkButton>
+                <SlateMarkButton
+                  aria-label="Mark italic"
                   hotKey="mod+i"
                   mark="italic"
                   tip="Italic (⌘I)"
                 >
-                  <BiItalic size={21} />
-                </FormatButton>
+                  <BiItalic size={18} />
+                </SlateMarkButton>
               </div>
               <div
                 className={classNames(
@@ -173,13 +165,10 @@ export default function CommentBox({
                   classes?.controlBoxContent
                 )}
               >
-                <button
+                <Button
                   type="button"
                   aria-label="Cancel"
-                  className={classNames(
-                    className.cancelBtn,
-                    classes?.cancelBtn
-                  )}
+                  className="!px-3 text-sm mr-1 !rounded-full"
                   onClick={() => {
                     if (onCancel) {
                       return onCancel();
@@ -193,25 +182,21 @@ export default function CommentBox({
                       },
                     });
                   }}
+                  mode="text"
+                  variant="neutral"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   aria-label={submitBtnText}
+                  className="!px-3 text-sm"
                   onClick={onSubmit}
-                  className={classNames(
-                    className.respondBtn,
-                    loader && className.respondBtnLoader,
-                    classes?.respondBtn
-                  )}
+                  loading={loader}
                   disabled={disabled}
                 >
                   {submitBtnText}
-                  {loader && (
-                    <ImSpinner2 className={className.respondBtnSpin} />
-                  )}
-                </button>
+                </Button>
               </div>
             </motion.div>
           )}

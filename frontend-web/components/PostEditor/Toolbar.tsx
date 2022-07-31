@@ -32,6 +32,7 @@ export default function Toolbar() {
           hotKey="mod+b"
           mark="bold"
           tip="Bold (⌘B)"
+          className="first:ml-2 first:mt-2"
         >
           <BiBold size={18} />
         </SlateMarkButton>

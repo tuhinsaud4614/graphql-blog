@@ -78,7 +78,7 @@ export default function SlateElement({
         <pre
           {...attributes}
           style={style}
-          className="block text-base font-[monospace] bg-[#f2f2f2] text-[#292929] p-[0.1875rem] w-full whitespace-pre-wrap"
+          className="block text-base font-[monospace] bg-base-200 dark:bg-base-dark-300 text-[#292929] p-[0.1875rem] w-full whitespace-pre-wrap"
         >
           <code className="text-[#292929]">{children}</code>
         </pre>

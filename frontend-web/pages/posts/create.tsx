@@ -116,7 +116,7 @@ const CreatePost: NextPageWithLayout = () => {
     validationSchema: schema,
   });
 
-  // console.log(JSON.stringify(values));
+  console.log(JSON.stringify(values.body));
 
   return (
     <form onSubmit={handleSubmit}>

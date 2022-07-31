@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { Fragment, ReactNode, useState } from "react";
+import { Descendant } from "slate";
 
 import Body from "./Body";
 import { EditProvider, useEditState } from "./context";
@@ -11,7 +12,7 @@ import ReplyEditor from "./ReplyEditor";
 const className = {
   root: "mx-4",
   container: "py-6 pb-4 min-w-[9.375rem]",
-  replyContainer: "ml-3 mb-6 border-l-[3px]",
+  replyContainer: "ml-3 mb-6 border-l-[3px] dark:border-base-dark-300",
 };
 
 type ClassesType = {
@@ -23,7 +24,7 @@ type ClassesType = {
 };
 
 interface Props {
-  body: string;
+  body: Descendant[];
   classes?: ClassesType;
   children?: ReactNode;
 }

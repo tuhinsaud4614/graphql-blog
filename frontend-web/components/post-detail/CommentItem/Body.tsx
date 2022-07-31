@@ -1,20 +1,22 @@
+import { SlateViewer } from "@component";
 import classNames from "classnames";
 import { ReactNode } from "react";
 import { BsChat } from "react-icons/bs";
+import { Descendant } from "slate";
 
 const className = {
-  body: "mt-1.5 text-neutral",
+  body: "mt-1.5",
   moreBtn:
-    "my-1.5 text-success hover:text-success-focus text-sm active:scale-95",
+    "my-1.5 text-success dark:text-success-dark hover:text-success-focus dark:hover:text-success text-sm active:scale-95",
   actionsBar: "flex items-center mt-3.5",
   actionsContainer: "flex items-center",
   actionBtn:
-    "border-none outline-none text-neutral text-sm hover:text-accent active:scale-95 flex items-center underline",
+    "border-none outline-none text-neutral dark:text-neutral-dark text-sm hover:text-accent dark:hover:text-accent-dark active:scale-95 flex items-center underline",
 };
 
 interface Props {
   className?: string;
-  body: string;
+  body: Descendant[];
   children?: ReactNode;
   showReplies: boolean;
   toggleReplies?(): void;
@@ -31,10 +33,9 @@ export default function Body({
 }: Props) {
   return (
     <section className={cls}>
-      <div
-        className={className.body}
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
+      <div className={className.body}>
+        <SlateViewer value={body} />
+      </div>
 
       {/* More Button Start */}
       {false && (

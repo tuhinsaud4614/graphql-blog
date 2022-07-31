@@ -4,9 +4,10 @@ import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 
 const className = {
   like: "flex items-center",
-  likeBtn: "outline-none border-none active:scale-95",
+  likeBtn:
+    "outline-none border-none text-neutral dark:text-neutral-dark active:scale-95",
   textBtn:
-    "flex items-center outline-none border-none text-neutral/60 hover:text-neutral active:scale-95",
+    "flex items-center outline-none border-none text-neutral/60 dark:text-neutral-dark/60 hover:text-neutral dark:hover:text-neutral-dark active:scale-95",
 };
 
 interface Props {
@@ -46,10 +47,13 @@ export default function LikeButton({
         {false ? (
           <AiFillLike
             size={24}
-            className="text-secondary hover:text-secondary-focus"
+            className="text-secondary dark:text-secondary-dark hover:text-secondary-focus dark:hover:text-secondary"
           />
         ) : (
-          <AiOutlineLike className="hover:text-secondary" size={24} />
+          <AiOutlineLike
+            className="hover:text-secondary dark:hover:text-secondary-dark"
+            size={24}
+          />
         )}
       </button>
       <button

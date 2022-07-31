@@ -1,3 +1,4 @@
+import { SlateViewer } from "@component";
 import { LayoutContainer } from "components/Layout";
 import {
   PostDetailAuthorInfo,
@@ -13,6 +14,42 @@ import {
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { Fragment, useRef } from "react";
+
+const initialValue = [
+  { children: [{ text: "shshjhjsdhs", bold: true }], type: "heading-one" },
+  { type: "heading-two", children: [{ bold: true, text: "kjdshdhjshjds" }] },
+  { children: [{ bold: true, text: "mndsmndsbmnbmds" }] },
+  { children: [{ text: "dsmnbmdsbmdsbnm", bold: false }], type: "code" },
+  { type: "block-quote", children: [{ bold: false, text: "dshjsdhjjsdhjd" }] },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  {
+    type: "link",
+    url: "https://miro.medium.com/max/1400/0*iTuEmxLD1IOJ5Xf1.png",
+    children: [{ text: "tuhin hhhhhh" }],
+  },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  {
+    type: "image",
+    url: "/demo.png",
+    children: [{ text: "" }],
+  },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  {
+    type: "video",
+    url: "https://player.vimeo.com/video/26689853",
+    children: [{ text: "" }],
+  },
+  { type: "paragraph", children: [{ bold: false, text: "" }] },
+  {
+    type: "numbered-list",
+    children: [
+      { type: "list-item", children: [{ bold: false, text: "dnsdhjdhjs" }] },
+    ],
+  },
+];
 
 interface IParams extends ParsedUrlQuery {
   postId: string;
@@ -55,7 +92,8 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
         <article ref={contentRef}>
           <PostDetailAuthorInfo />
           <PostDetailImage />
-          <div>
+          <SlateViewer value={initialValue} />
+          {/* <div>
             content-{postId}
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit
             obcaecati, provident vitae repudiandae recusandae fugiat commodi
@@ -174,7 +212,7 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
             aspernatur culpa eum! Dolor quo vel fuga. Nesciunt esse, illum
             recusandae libero, voluptatem explicabo nobis, cum officia ab a
             nulla fugiat deserunt quasi distinctio dolorum!
-          </div>
+          </div> */}
         </article>
         <PostDetailFloatingReactions siblingRef={contentRef} />
         <PostDetailReactions />

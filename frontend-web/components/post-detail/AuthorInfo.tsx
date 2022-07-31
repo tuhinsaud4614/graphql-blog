@@ -6,8 +6,8 @@ const className = {
   root: "my-8 flex items-center",
   img: "w-12 h-12 inline-block rounded-full overflow-hidden mr-4",
   content: "flex flex-col justify-center flex-1 min-w-0",
-  title: "text-neutral line-clamp-1 text-ellipsis",
-  timeBox: "text-neutral/60 text-sm",
+  title: "text-neutral dark:text-neutral-dark line-clamp-1 text-ellipsis",
+  timeBox: "text-neutral/60 dark:text-neutral-dark/60 text-sm",
 };
 
 export default function AuthorInfo() {

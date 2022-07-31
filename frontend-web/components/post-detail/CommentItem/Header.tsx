@@ -10,8 +10,9 @@ const className = {
   headerImg: "w-8 h-8 inline-block rounded-full overflow-hidden mr-3",
   headerInfo: "flex flex-col justify-center min-w-0 flex-1",
   headerName:
-    "text-neutral text-sm hover:text-neutral active:scale-95 line-clamp-1 text-ellipsis",
-  headerTime: "text-neutral/60 text-sm line-clamp-1 text-ellipsis",
+    "text-neutral dark:text-neutral-dark text-sm hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 line-clamp-1 text-ellipsis",
+  headerTime:
+    "text-neutral/60 dark:text-neutral-dark/60 text-sm line-clamp-1 text-ellipsis",
 };
 
 interface Props {

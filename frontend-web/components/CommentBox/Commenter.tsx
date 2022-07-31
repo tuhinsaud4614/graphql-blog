@@ -4,7 +4,7 @@ import Image from "next/image";
 const className = {
   header: "px-3.5 mb-1.5 flex items-center",
   img: "w-8 h-8 inline-block rounded-full overflow-hidden mr-3",
-  name: "text-neutral text-sm",
+  name: "text-neutral dark:text-neutral-dark text-sm",
 };
 
 export default function Commenter() {

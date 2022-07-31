@@ -5,14 +5,26 @@ import CommentEditor from "./CommentEditor";
 import CommentItem from "./CommentItem";
 
 const className = {
-  bottomHeader: "border-none",
+  bottomHeader: "border-none text-neutral dark:text-neutral-dark",
   bottomBody: "pb-6 pt-2",
   noComment:
-    "my-12 flex flex-col items-center justify-center text-neutral/60 font-extralight italic",
+    "my-12 flex flex-col items-center justify-center text-neutral/60 dark:text-neutral-dark/60 font-extralight italic",
 };
 
-const body =
-  "hgsxfhgashfg<strong> hdjgdgjjghd </strong><em><strong>djhggjdshgjds </strong></em><em>hgddg</em>";
+const body = [
+  {
+    children: [
+      { text: "Lorem ", bold: true },
+      { bold: false, text: "ipsum" },
+      { bold: true, text: ", " },
+      { bold: true, text: "dolor", italic: true },
+      { bold: true, text: " " },
+      { bold: false, text: "sit amet " },
+      { bold: true, text: "consectetur" },
+      { bold: false, text: " adipisicing elit." },
+    ],
+  },
+];
 
 const comments = [
   {
@@ -91,7 +103,7 @@ export default function FloatingComments({ onClose, open }: Props) {
           body={c.text}
           classes={{
             root: classNames(
-              "border-b last:border-none",
+              "border-b last:border-none dark:border-base-dark-300",
               count > 0 && "max-w-[20rem]"
             ),
             replyContainer:
