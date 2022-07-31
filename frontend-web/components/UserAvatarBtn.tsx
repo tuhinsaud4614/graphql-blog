@@ -51,9 +51,8 @@ export default function UserAvatarBtn({
         src="/demo.png"
         alt="Avatar"
         size={36}
-        className="w-9 h-9"
+        className="w-9 h-9 shrink-0"
       />
-
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}

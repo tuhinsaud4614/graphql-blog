@@ -1,16 +1,19 @@
 import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ROUTES } from "utils/constants";
 
+const Theme = dynamic(() => import("components/Theme"), { ssr: false });
+
 const className = {
   root: "fixed top-0 left-0 right-0 border-b border-secondary dark:border-secondary-dark h-16 z-50",
   main: "px-4 sm:mx-auto max-w-5xl flex items-center justify-between h-full",
   homeLink: "flex items-center justify-center h-[3.75rem] w-[3.75rem]",
-  items: "list-none m-0 flex items-center",
+  items: "list-none m-0 flex items-center space-x-3",
   loginLink: "inline-block cursor-pointer select-none active:scale-95",
 };
 
@@ -66,6 +69,9 @@ export default function Header() {
                 {router.pathname === ROUTES.login ? "Sign Up" : "Sign In"}
               </motion.a>
             </Link>
+          </li>
+          <li>
+            <Theme anchorOrigin={{ horizontal: "right", vertical: "bottom" }} />
           </li>
         </ul>
       </nav>

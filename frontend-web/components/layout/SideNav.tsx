@@ -1,5 +1,7 @@
+import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
 import { UserAvatarBtn } from "components";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -10,17 +12,21 @@ import { FaBell } from "react-icons/fa";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
 import { ROUTES } from "utils/constants";
 
+const Theme = dynamic(() => import("components/Theme"), { ssr: false });
+
 const className = {
-  root: "hidden lg:block min-h-screen w-20 border-r dark:border-base-dark-300 relative",
-  nav: "h-screen sticky inset-0 z-10 flex flex-col justify-between items-center py-4",
+  root: "hidden shrink-0 lg:block min-h-screen w-20 border-r dark:border-base-dark-300 relative",
+  nav: "h-screen sticky inset-0 z-10 flex flex-col justify-between items-center py-4 overflow-y-auto scrollbar-hide",
   homeLink: "flex items-center justify-center h-[3.125rem] w-[3.125rem]",
-  items: "w-full flex flex-col justify-center items-center",
+  items: "w-full flex flex-col justify-center items-center py-3",
   item: "w-full pb-8",
   link: "w-full flex items-center justify-center text-neutral dark:text-neutral-dark active:scale-95",
 };
 
 export default function SideNav() {
   const { pathname } = useRouter();
+
+  const matches = useMediaQuery("(min-width: 1024px)");
 
   return (
     <aside className={className.root}>
@@ -119,8 +125,14 @@ export default function SideNav() {
               </a>
             </Link>
           </li>
+          {matches && (
+            <li>
+              <Theme
+                anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+              />
+            </li>
+          )}
         </ul>
-        {/* <Avatar /> */}
         <UserAvatarBtn
           anchorOrigin={{ horizontal: "left", vertical: "top" }}
           hideOnSmallDevice

@@ -30,8 +30,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     };
   }, [events]);
 
-  // console.log(isDarkMode);
-
   return getLayout(
     <React.Fragment>
       <Head>
