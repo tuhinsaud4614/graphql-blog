@@ -1,6 +1,11 @@
 import { PostItem } from "@component";
 import { SearchLayout } from "components/Layout";
-import { PostByCounter, PostByHeader, PostByItems } from "components/posts-by";
+import {
+  PostByCounter,
+  PostByHeader,
+  PostByItems,
+  PostBySidebarCounter,
+} from "components/posts-by";
 import { GetServerSideProps, NextPage } from "next";
 import { Fragment } from "react";
 
@@ -14,7 +19,13 @@ interface Props {
 
 const PostsByTagPage: NextPage<Props> = ({ query }) => {
   return (
-    <SearchLayout sidebar={<Fragment />}>
+    <SearchLayout
+      sidebar={
+        <Fragment>
+          <PostBySidebarCounter />
+        </Fragment>
+      }
+    >
       <PostByHeader title={query["tagName"]} />
       <PostByCounter />
       <PostByItems>
