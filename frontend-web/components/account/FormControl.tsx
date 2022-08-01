@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ComponentPropsWithRef, ReactNode } from "react";
+import { ComponentPropsWithoutRef, forwardRef, ReactNode } from "react";
 import { BsInfoCircle } from "react-icons/bs";
 
 const className = {
@@ -13,7 +13,7 @@ const className = {
   error: "mt-2 text-sm text-error dark:text-error-dark",
 };
 
-interface Props extends ComponentPropsWithRef<"input"> {
+interface Props extends ComponentPropsWithoutRef<"input"> {
   title: string;
   valid?: boolean;
   errorText?: ReactNode;
@@ -27,61 +27,70 @@ interface Props extends ComponentPropsWithRef<"input"> {
   };
 }
 
-export default function FormControl({
-  title,
-  id,
-  className: cls,
-  classes,
-  valid = true,
-  errorText,
-  required,
-  ...rest
-}: Props) {
-  return (
-    <div className={classNames(className.formControl, classes?.root)}>
-      <label
-        htmlFor={id}
-        className={classNames(
-          className.formLabel,
-          classes?.label,
-          valid
-            ? "text-neutral dark:text-neutral-dark"
-            : "text-error dark:text-error-dark"
-        )}
-      >
-        {title}
-        {required && <sup className={className.requiredText}>*</sup>}
-      </label>
-      <div
-        className={classNames(
-          className.formInputBox,
-          classes?.box,
-          valid
-            ? "border-neutral dark:border-neutral-dark"
-            : "border-error dark:border-error-dark"
-        )}
-      >
-        <input
-          {...rest}
-          className={classNames(className.formInput, classes?.input, cls)}
-          id={id}
-          required={required}
-        />
-        {!valid && (
-          <BsInfoCircle
-            size={16}
-            className={classNames(className.errIcon, classes?.errIcon)}
+const FormControl = forwardRef<HTMLInputElement, Props>(
+  (
+    {
+      title,
+      id,
+      className: cls,
+      classes,
+      valid = true,
+      errorText,
+      required,
+      ...rest
+    },
+    ref
+  ) => {
+    return (
+      <div className={classNames(className.formControl, classes?.root)}>
+        <label
+          htmlFor={id}
+          className={classNames(
+            className.formLabel,
+            classes?.label,
+            valid
+              ? "text-neutral dark:text-neutral-dark"
+              : "text-error dark:text-error-dark"
+          )}
+        >
+          {title}
+          {required && <sup className={className.requiredText}>*</sup>}
+        </label>
+        <div
+          className={classNames(
+            className.formInputBox,
+            classes?.box,
+            valid
+              ? "border-neutral dark:border-neutral-dark"
+              : "border-error dark:border-error-dark"
+          )}
+        >
+          <input
+            {...rest}
+            ref={ref}
+            className={classNames(className.formInput, classes?.input, cls)}
+            id={id}
+            required={required}
           />
+          {!valid && (
+            <BsInfoCircle
+              size={16}
+              className={classNames(className.errIcon, classes?.errIcon)}
+            />
+          )}
+        </div>
+        {!valid && errorText && (
+          <p
+            className={classNames(className.error, classes?.errText)}
+            role="alert"
+          >
+            {errorText}
+          </p>
         )}
       </div>
-      {!valid && errorText && (
-        <p
-          className={classNames(className.error, classes?.errText)}
-          role="alert"
-        >
-          {errorText}
-        </p>
-      )}
-    </div>
-  );
-}
+    );
+  }
+);
+
+FormControl.displayName = "FormControl";
+export default FormControl;
