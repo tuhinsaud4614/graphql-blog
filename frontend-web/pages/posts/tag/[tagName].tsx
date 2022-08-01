@@ -10,6 +10,7 @@ import {
 import { SidebarContent } from "components/Sidebar";
 import { GetServerSideProps, NextPage } from "next";
 import { Fragment } from "react";
+import { AiFillTag } from "react-icons/ai";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -48,7 +49,7 @@ const PostsByTagPage: NextPage<Props> = ({ query }) => {
         </Fragment>
       }
     >
-      <PostByHeader title={query["tagName"]} />
+      <PostByHeader title={query["tagName"]} icon={<AiFillTag size={21} />} />
       <PostByCounter />
       <PostByItems>
         {Array.from({ length: 10 }).map((_, index) => (
