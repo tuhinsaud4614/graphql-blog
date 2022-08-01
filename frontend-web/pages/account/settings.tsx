@@ -1,5 +1,5 @@
-import { UserLayout } from "components/Layout";
-import { SettingsNameEdit } from "components/settings";
+import { LayoutContainer } from "components/Layout";
+import { SettingsAvatarEdit, SettingsNameEdit } from "components/settings";
 import { NextPage } from "next";
 
 const className = {
@@ -10,12 +10,13 @@ const className = {
 
 const SettingsPage: NextPage = () => {
   return (
-    <UserLayout>
+    <LayoutContainer>
       <h1 className={className.title}>About you</h1>
       <ul className={className.items}>
         <SettingsNameEdit />
+        <SettingsAvatarEdit />
       </ul>
-    </UserLayout>
+    </LayoutContainer>
   );
 };
 

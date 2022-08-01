@@ -8,7 +8,7 @@ const className = {
   item: "py-8 flex flex-wrap sm:flex-nowrap items-center justify-between space-y-3",
   itemLeft: "flex-auto flex flex-col max-w-md pr-3",
   info: "text-neutral/60 dark:text-neutral-dark/60 text-sm mt-2",
-  itemRight: "flex self-center shrink-0",
+  itemRight: "flex self-start shrink-0",
 };
 
 export default function NameEdit() {
@@ -19,7 +19,7 @@ export default function NameEdit() {
   useEffect(() => {
     const inputEle = inputRef.current;
     if (nameEdit && inputEle) {
-      inputEle?.focus();
+      inputEle.focus();
       inputEle.selectionStart = inputEle.value.length;
       inputEle.selectionEnd = inputEle.value.length;
     }
@@ -32,7 +32,7 @@ export default function NameEdit() {
           ref={inputRef}
           classes={{
             label: "text-left self-start font-bold !text-xl",
-            input: "!text-left",
+            input: "!text-left pb-2",
           }}
           id={nameId}
           title="Name"
