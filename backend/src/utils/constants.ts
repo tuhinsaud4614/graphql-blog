@@ -74,3 +74,5 @@ export const SUBSCRIPTION_FOLLOWING = (toId: string) => `FOLLOWING_${toId}`;
 export const SUBSCRIPTION_REACTIONS = (toId: string) => `REACTIONS_${toId}`;
 
 // SUBSCRIPTION END
+
+export const VALID_MOBILE_REGEX = /^(\+\d{1,3}[- ]?)?\d{11}$/;
