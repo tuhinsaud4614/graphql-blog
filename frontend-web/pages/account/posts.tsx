@@ -6,6 +6,7 @@ import {
 } from "components/account";
 import { UserLayout } from "components/Layout";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useState } from "react";
 import { queryChecking } from "utils";
@@ -29,6 +30,9 @@ const MyPostsPage: NextPageWithLayout<Props> = ({ query }) => {
 
   return (
     <Fragment>
+      <Head>
+        <title>The RAT Diary | Your posts</title>
+      </Head>
       <div className={className.rootBar}>
         <h1 className={className.title}>Your posts</h1>
         <LinkButton href={ROUTES.createPost}>Write a post</LinkButton>

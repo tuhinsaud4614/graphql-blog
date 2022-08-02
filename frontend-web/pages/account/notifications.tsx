@@ -1,5 +1,6 @@
 import { NextPageWithLayout } from "@types";
 import { UserLayout } from "components/Layout";
+import Head from "next/head";
 import { Fragment, ReactElement } from "react";
 
 const className = {
@@ -10,6 +11,9 @@ const className = {
 const NotificationsPage: NextPageWithLayout = () => {
   return (
     <Fragment>
+      <Head>
+        <title>The RAT Diary | Notifications</title>
+      </Head>
       <h1 className={className.title}>Notifications</h1>
     </Fragment>
   );

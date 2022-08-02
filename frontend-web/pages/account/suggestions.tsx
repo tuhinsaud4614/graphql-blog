@@ -7,6 +7,7 @@ import {
   SuggestionsTab,
 } from "components/suggestions";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { queryChecking } from "utils";
@@ -55,6 +56,9 @@ const MySuggestionsPage: NextPage<Props> = ({ query }) => {
         </Fragment>
       }
     >
+      <Head>
+        <title>The RAT Diary | Your recommendations</title>
+      </Head>
       <h1 className={className.title}>Refine recommendations</h1>
       <p className={className.subtitle}>
         Adjust recommendations by updating what you’re following, your reading

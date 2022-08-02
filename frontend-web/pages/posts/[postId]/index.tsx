@@ -12,6 +12,7 @@ import {
   SidebarUserProfiler,
 } from "components/Sidebar";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
 import { Fragment, useRef } from "react";
 
@@ -72,28 +73,30 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <Fragment>
-      <LayoutContainer
-        sidebar={
-          <Fragment>
-            <SidebarUserProfiler classes={{ root: "mb-10" }} />
-            <SidebarContent
-              title="More from The RAT Diary"
-              classes={{ items: "space-y-4 pb-8" }}
-            >
-              <SidebarPostItem />
-              <SidebarPostItem />
-              <SidebarPostItem />
-              <SidebarPostItem />
-            </SidebarContent>
-          </Fragment>
-        }
-      >
-        <article ref={contentRef}>
-          <PostDetailAuthorInfo />
-          <PostDetailImage />
-          <SlateViewer value={initialValue} />
-          {/* <div>
+    <LayoutContainer
+      sidebar={
+        <Fragment>
+          <SidebarUserProfiler classes={{ root: "mb-10" }} />
+          <SidebarContent
+            title="More from The RAT Diary"
+            classes={{ items: "space-y-4 pb-8" }}
+          >
+            <SidebarPostItem />
+            <SidebarPostItem />
+            <SidebarPostItem />
+            <SidebarPostItem />
+          </SidebarContent>
+        </Fragment>
+      }
+    >
+      <Head>
+        <title>Author title… | by Author Name | The RAT Diary</title>
+      </Head>
+      <article ref={contentRef}>
+        <PostDetailAuthorInfo />
+        <PostDetailImage />
+        <SlateViewer value={initialValue} />
+        {/* <div>
             content-{postId}
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit
             obcaecati, provident vitae repudiandae recusandae fugiat commodi
@@ -213,11 +216,10 @@ const PostPage: NextPage<IParams> = ({ postId }) => {
             recusandae libero, voluptatem explicabo nobis, cum officia ab a
             nulla fugiat deserunt quasi distinctio dolorum!
           </div> */}
-        </article>
-        <PostDetailFloatingReactions siblingRef={contentRef} />
-        <PostDetailReactions />
-      </LayoutContainer>
-    </Fragment>
+      </article>
+      <PostDetailFloatingReactions siblingRef={contentRef} />
+      <PostDetailReactions />
+    </LayoutContainer>
   );
 };
 

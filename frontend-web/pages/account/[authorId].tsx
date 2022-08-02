@@ -8,6 +8,7 @@ import {
 import { LayoutContainer } from "components/Layout";
 import { SidebarUserProfiler } from "components/Sidebar";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
@@ -48,6 +49,9 @@ const AboutPage: NextPage<Props> = ({ query }) => {
         </Fragment>
       }
     >
+      <Head>
+        <title>The RAT Diary | Author name</title>
+      </Head>
       <div className={className.title}>
         <span className={className.titleImg}>
           <Image

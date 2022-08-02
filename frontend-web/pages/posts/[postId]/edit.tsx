@@ -78,7 +78,7 @@ const schema = yup.object().shape({
   published: yup.boolean(),
 });
 
-const CreatePost: NextPageWithLayout = () => {
+const EditPost: NextPageWithLayout = () => {
   const initialValues: IValues = {
     title: "",
     categories: [],
@@ -121,14 +121,8 @@ const CreatePost: NextPageWithLayout = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Head>
-        <title>New post – The RAT Diary</title>
-        <meta name="title" content="New post – The RAT Diary" />
-        <meta
-          name="description"
-          content="In its most basic form, a post on The RAT Diary consists of title, categories, tags, image & body"
-        />
+        <title>Editing new – The RAT Diary</title>
       </Head>
-
       <FormControl
         classes={{ root: className.control }}
         id={titleId}
@@ -252,7 +246,7 @@ const CreatePost: NextPageWithLayout = () => {
   );
 };
 
-CreatePost.getLayout = (page: ReactElement) => {
+EditPost.getLayout = (page: ReactElement) => {
   return (
     <Fragment>
       <PostCreateHeader />
@@ -260,4 +254,4 @@ CreatePost.getLayout = (page: ReactElement) => {
     </Fragment>
   );
 };
-export default CreatePost;
+export default EditPost;

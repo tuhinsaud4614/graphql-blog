@@ -1,6 +1,7 @@
 import { LinkButton } from "@component";
 import { NextPageWithLayout } from "@types";
 import { LayoutContainer } from "components/Layout";
+import Head from "next/head";
 import { Fragment } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { ROUTES } from "utils/constants";
@@ -18,6 +19,9 @@ const className = {
 const Categories: NextPageWithLayout = () => {
   return (
     <LayoutContainer sidebar={<Fragment></Fragment>}>
+      <Head>
+        <title>The RAT Diary | Categories</title>
+      </Head>
       <h1 className={className.title}>Categories</h1>
       <ul className={className.items}>
         {Array.from({ length: 20 }).map((_, index) => (

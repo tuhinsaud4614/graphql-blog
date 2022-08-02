@@ -5,6 +5,7 @@ import {
   SettingsPasswordChange,
 } from "components/settings";
 import { NextPage } from "next";
+import Head from "next/head";
 
 const className = {
   title:
@@ -15,6 +16,9 @@ const className = {
 const SettingsPage: NextPage = () => {
   return (
     <LayoutContainer>
+      <Head>
+        <title>The RAT Diary | Your settings</title>
+      </Head>
       <h1 className={className.title}>About you</h1>
       <ul className={className.items}>
         <SettingsNameEdit />

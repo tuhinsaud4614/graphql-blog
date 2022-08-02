@@ -9,6 +9,7 @@ import {
 } from "components/posts-by";
 import { SidebarCategory, SidebarContent } from "components/Sidebar";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import { Fragment } from "react";
 import { BiCategoryAlt } from "react-icons/bi";
 import { ROUTES } from "utils/constants";
@@ -47,6 +48,12 @@ const PostsByCategoryPage: NextPage<Props> = ({ query }) => {
         </Fragment>
       }
     >
+      <Head>
+        <title>
+          The most insightful posts about ${query["categoryName"]} - The RAT
+          Diary
+        </title>
+      </Head>
       <PostByHeader
         title={query["categoryName"]}
         icon={<BiCategoryAlt size={21} />}

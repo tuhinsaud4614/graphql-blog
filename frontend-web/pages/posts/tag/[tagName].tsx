@@ -9,6 +9,7 @@ import {
 } from "components/posts-by";
 import { SidebarContent } from "components/Sidebar";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import { Fragment } from "react";
 import { AiFillTag } from "react-icons/ai";
 import { ROUTES } from "utils/constants";
@@ -49,6 +50,11 @@ const PostsByTagPage: NextPage<Props> = ({ query }) => {
         </Fragment>
       }
     >
+      <Head>
+        <title>
+          The most insightful posts about ${query["tagName"]} - The RAT Diary
+        </title>
+      </Head>
       <PostByHeader title={query["tagName"]} icon={<AiFillTag size={21} />} />
       <PostByCounter />
       <PostByItems>
