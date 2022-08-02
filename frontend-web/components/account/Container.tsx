@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 const className = {
   root: "h-screen w-screen pt-16 flex items-center justify-center bg-base-200 dark:bg-base-dark-200",
   container:
-    "w-[18.875rem] p-4 shadow-mui-hover rounded-2xl bg-base-100 dark:bg-base-dark-100 overflow-y-auto max-h-[calc(100vh-6rem)]",
+    "w-[90%] max-w-sm p-4 shadow-mui-hover rounded-2xl bg-base-100 dark:bg-base-dark-100 overflow-y-auto max-h-[calc(100vh-6rem)]",
   main: "flex flex-col items-center justify-center",
   title:
     "tracking-[-0.03em] text-[1.5rem] leading-8 line-clamp-1 text-ellipsis text-secondary dark:text-secondary-dark",

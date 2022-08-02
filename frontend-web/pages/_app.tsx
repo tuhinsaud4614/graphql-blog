@@ -1,3 +1,4 @@
+import { ApolloProvider } from "@apollo/client";
 import { ProgressBar } from "@component";
 import { useDarkMode } from "@hooks";
 import type { AppPropsWithLayout } from "@types";
@@ -7,6 +8,7 @@ import * as React from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import gplClient from "utils/graphql-client";
 import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -48,7 +50,9 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
       {progress && <ProgressBar className="fixed z-50 top-0 left-0 right-0" />}
-      <Component {...pageProps} />
+      <ApolloProvider client={gplClient}>
+        <Component {...pageProps} />
+      </ApolloProvider>
     </React.Fragment>
   );
 }

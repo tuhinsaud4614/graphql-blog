@@ -1,10 +1,11 @@
 import classNames from "classnames";
+import { useRouter } from "next/router";
 import * as React from "react";
 import { BiX } from "react-icons/bi";
 
 const className = {
-  root: "flex items-center justify-between px-4 py-2.5 border-b rounded-tl-2xl rounded-tr-2xl",
-  btn: "text-error hover:text-error-focus dark:text-error-dark dark:hover:text-error active:scale-95 flex items-center justify-center p-1 rounded-full",
+  root: "flex items-center justify-between px-4 py-2.5 border-b dark:border-base-dark-300 rounded-tl-2xl rounded-tr-2xl",
+  btn: "shrink-0 text-error hover:text-error-focus dark:text-error-dark dark:hover:text-error active:scale-95 flex items-center justify-center p-1 rounded-full",
 };
 
 interface Props extends React.ComponentPropsWithRef<"header"> {
@@ -18,6 +19,16 @@ export default function ModalHeader({
   children,
   ...rest
 }: Props) {
+  const { events } = useRouter();
+  React.useEffect(() => {
+    if (onClose) {
+      events.on("routeChangeStart", onClose);
+      return () => {
+        events.off("routeChangeStart", onClose);
+      };
+    }
+  }, [onClose, events]);
+
   return (
     <header
       {...rest}

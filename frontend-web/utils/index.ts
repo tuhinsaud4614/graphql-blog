@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import escapeHtml from "escape-html";
 import { BaseEditor, Editor, Element, Range, Text, Transforms } from "slate";
 import { ReactEditor } from "slate-react";
@@ -303,3 +304,22 @@ export function queryChecking<T extends { [key: string]: any }>(
 
 export const removeAllSpacesFromText = (value: string) =>
   value.replace(/\s+/g, "");
+
+export const gplErrorHandler = (error: ApolloError | undefined) => {
+  if (!error) {
+    return;
+  }
+  const extensions = error.graphQLErrors[0].extensions;
+  if ("fields" in extensions && Array.isArray(extensions.fields)) {
+    const results: string[] = [];
+
+    extensions.fields.forEach((err) => {
+      if ("message" in err && typeof err.message === "string") {
+        results.push(err.message);
+      }
+    });
+
+    return results.length ? results : error.message;
+  }
+  return error.message;
+};

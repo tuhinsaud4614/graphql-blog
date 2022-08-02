@@ -62,10 +62,9 @@ interface Props {
     backdrop?: string;
     container?: string;
   };
-  onHide(): void;
+  onHide?(): void;
   open: boolean;
   locked?: boolean;
-  staticBack?: boolean;
   children?: React.ReactNode;
 }
 
@@ -73,7 +72,6 @@ function Modal({
   onHide,
   open = false,
   locked = false,
-  staticBack,
   classes,
   children,
 }: Props) {
@@ -83,10 +81,12 @@ function Modal({
   useLockBody(open && locked);
 
   React.useEffect(() => {
-    events.on("routeChangeStart", onHide);
-    return () => {
-      events.off("routeChangeStart", onHide);
-    };
+    if (onHide) {
+      events.on("routeChangeStart", onHide);
+      return () => {
+        events.off("routeChangeStart", onHide);
+      };
+    }
   }, [onHide, events]);
 
   return (
@@ -94,10 +94,10 @@ function Modal({
       <AnimatePresence>
         {open && (
           <Backdrop
-            onClick={!staticBack ? onHide : undefined}
+            onClick={onHide}
             className={classNames(
               "z-[910]",
-              !staticBack && "cursor-pointer",
+              onHide && "cursor-pointer",
               classes?.backdrop
             )}
           />
