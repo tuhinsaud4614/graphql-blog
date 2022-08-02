@@ -57,7 +57,12 @@ export default function SlateLink({
         hideArrow
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
-        <div className="flex items-center py-1.5 px-2.5">
+        <div
+          className="flex items-center py-1.5 px-2.5"
+          onMouseDown={(e) => {
+            e.preventDefault();
+          }}
+        >
           <a
             rel="noreferrer"
             target="_blank"

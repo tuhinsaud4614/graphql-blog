@@ -1,4 +1,5 @@
 import { ProgressBar } from "@component";
+import { useDarkMode } from "@hooks";
 import type { AppPropsWithLayout } from "@types";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -11,6 +12,8 @@ import "../styles/globals.css";
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
   const { events } = useRouter();
+
+  useDarkMode();
 
   const getLayout = Component.getLayout ?? ((page) => page);
 

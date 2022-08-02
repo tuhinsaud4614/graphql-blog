@@ -1,6 +1,7 @@
 import { Tabs } from "@component";
 import {
   AuthorInfoAboutTab,
+  AuthorInfoFollowerList,
   AuthorInfoFollowingList,
   AuthorInfoHomeTab,
 } from "components/authorInfo";
@@ -43,6 +44,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
             classes={{ root: "mb-10" }}
           />
           <AuthorInfoFollowingList />
+          <AuthorInfoFollowerList />
         </Fragment>
       }
     >

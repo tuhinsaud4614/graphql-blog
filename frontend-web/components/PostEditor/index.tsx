@@ -53,7 +53,7 @@ export default function PostEditor({ onChange, value }: Props) {
     <section className={className.root}>
       <Slate editor={editor} value={value} onChange={onChange}>
         <Toolbar />
-        <section className="px-4 py-2 overflow-x-auto">
+        <section className="px-4 py-2 overflow-x-auto min-h-[12rem]">
           <Editable
             placeholder="Post body"
             aria-label="Post body"

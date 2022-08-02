@@ -72,7 +72,7 @@ export default function Tabs({
         {slider.hasValue && (
           <motion.span
             transition={{ bounceDamping: 3 }}
-            className="border-b border-[1.5px] border-neutral dark:border-neutral-dark absolute bottom-0 !m-0"
+            className="border-b border-[1.5px] border-neutral dark:border-base-dark-300 absolute bottom-0 !m-0"
             style={{ left: slider.left, width: slider.width }}
           />
         )}
