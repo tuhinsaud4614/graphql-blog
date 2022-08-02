@@ -1,5 +1,9 @@
 import { LayoutContainer } from "components/Layout";
-import { SettingsAvatarEdit, SettingsNameEdit } from "components/settings";
+import {
+  SettingsAvatarEdit,
+  SettingsNameEdit,
+  SettingsPasswordChange,
+} from "components/settings";
 import { NextPage } from "next";
 
 const className = {
@@ -15,6 +19,7 @@ const SettingsPage: NextPage = () => {
       <ul className={className.items}>
         <SettingsNameEdit />
         <SettingsAvatarEdit />
+        <SettingsPasswordChange />
       </ul>
     </LayoutContainer>
   );

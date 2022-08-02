@@ -13,7 +13,7 @@ const className = {
   itemRight: "flex self-start shrink-0",
 };
 
-export default function NameEdit() {
+export default function AvatarEdit() {
   const [editable, setEditable] = useState(false);
   const [image, setImage] = useState<File | null>(null);
 
@@ -24,14 +24,13 @@ export default function NameEdit() {
         <div className={className.leftBottom}>
           <div>
             <p className={className.info}>
-              Your name appears on your{" "}
+              Your avatar appears on your{" "}
               <Link href={ROUTES.authorProfile("2")} passHref>
                 <a aria-label="Profile" className="underline">
                   Profile
                 </a>
               </Link>{" "}
-              page, as your byline, and in your responses. It is a required
-              field.
+              page and with your posts across Apps.
             </p>
             <br />
             <p className={className.info}>
