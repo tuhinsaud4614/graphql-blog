@@ -32,14 +32,15 @@ export default function Categories({ link, linkText }: Props) {
       classes={{ items: className.items }}
     >
       {Array.from({ length: 20 }).map((_, index) => (
-        <LinkButton
-          key={index}
-          href={ROUTES.postsByCategory((index + 1).toString())}
-          className={className.item}
-          passHref
-        >
-          category - {index + 1}
-        </LinkButton>
+        <li key={index} className={className.item}>
+          <LinkButton
+            className="block"
+            href={ROUTES.postsByCategory((index + 1).toString())}
+            passHref
+          >
+            category - {index + 1}
+          </LinkButton>
+        </li>
       ))}
       <li className={className.more}>
         <button
