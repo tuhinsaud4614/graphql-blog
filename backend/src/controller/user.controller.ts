@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLYogaError, PubSub } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { unlink } from "fs";
@@ -13,6 +13,7 @@ import {
   getUserByIdWithInfo,
   sendUserVerificationCode,
   unfollowTo,
+  verifyAuthorStatus,
 } from "../services/user.service";
 import {
   AsyncImageSize,
@@ -33,14 +34,22 @@ import {
   INVALID_CREDENTIAL,
   NOT_EXIST_ERR_MSG,
   NOT_IMG_ERR_MSG,
+  SUBSCRIPTION_USER_VERIFICATION,
   TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
   USER_FOLLOWED_ERR_MSG,
+  USER_VERIFICATION_KEY_NAME,
 } from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
+import redisClient from "../utils/redis";
 import { CustomError, getGraphqlYogaError } from "../validations";
-import { loginSchema, registerSchema } from "../validations/user.validation";
+import {
+  loginSchema,
+  registerSchema,
+  resendActivationSchema,
+  verifyUserSchema,
+} from "../validations/user.validation";
 
 async function generateTokens(user: IUserPayload) {
   const accessToken = await generateToken(
@@ -106,13 +115,13 @@ export async function resendActivationCtrl(
   host: string
 ) {
   try {
+    await resendActivationSchema.validate({ userId }, { abortEarly: false });
     const isUserExist = await getUserById(prisma, userId);
-
     if (!isUserExist) {
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
     }
 
-    if (isUserExist && isUserExist.authorStatus === EAuthorStatus.Verified) {
+    if (isUserExist.authorStatus === EAuthorStatus.Verified) {
       return new GraphQLYogaError("User already verified");
     }
 
@@ -121,6 +130,48 @@ export async function resendActivationCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, "Resend activation failed");
+  }
+}
+export async function verifyUserCtrl(
+  prisma: PrismaClient,
+  // @ts-ignore
+  pubSub: PubSub<PubSubPublishArgsByKey>,
+  userId: string,
+  code: string
+) {
+  try {
+    await verifyUserSchema.validate({ userId, code }, { abortEarly: false });
+    const isUserExist = await getUserById(prisma, userId);
+
+    if (!isUserExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+    }
+
+    if (isUserExist.authorStatus === EAuthorStatus.Verified) {
+      return new GraphQLYogaError("User already verified");
+    }
+
+    const VRKey = USER_VERIFICATION_KEY_NAME(userId);
+
+    const redisCode = await redisClient.get(VRKey);
+
+    if (code !== redisCode) {
+      return new GraphQLYogaError("User verification failed");
+    }
+
+    await redisClient.del(VRKey);
+    await verifyAuthorStatus(prisma, userId);
+
+    pubSub.publish(SUBSCRIPTION_USER_VERIFICATION(userId), {
+      userVerify: {
+        userId,
+        mutation: EAuthorStatus.Verified,
+      },
+    });
+    return userId;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, "User verification failed");
   }
 }
 

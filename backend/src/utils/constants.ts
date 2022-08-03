@@ -67,6 +67,8 @@ export const IMAGE_MIMES = {
 
 // SUBSCRIPTION START
 // error msg start
+export const SUBSCRIPTION_USER_VERIFICATION_ERR_MSG =
+  "Subscription user verification failed";
 export const SUBSCRIPTION_FOLLOWING_ERR_MSG = "Subscription following failed";
 export const SUBSCRIPTION_UN_FOLLOWING_ERR_MSG = "Subscription unfollow failed";
 export const SUBSCRIPTION_REACTIONS_ERR_MSG = "Subscription reactions failed";
@@ -74,6 +76,8 @@ export const SUBSCRIPTION_REACTIONS_ERR_MSG = "Subscription reactions failed";
 
 export const SUBSCRIPTION_FOLLOWING = (toId: string) => `FOLLOWING_${toId}`;
 export const SUBSCRIPTION_REACTIONS = (toId: string) => `REACTIONS_${toId}`;
+export const SUBSCRIPTION_USER_VERIFICATION = (userId: string) =>
+  `USER_VERIFICATION-${userId}`;
 
 // SUBSCRIPTION END
 

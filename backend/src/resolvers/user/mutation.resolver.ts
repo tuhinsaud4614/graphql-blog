@@ -8,6 +8,7 @@ import {
   tokenCtrl,
   unfollowRequestCtrl,
   uploadAvatar,
+  verifyUserCtrl,
 } from "../../controller/user.controller";
 import {
   FOLLOW_OWN_ERR_MSG,
@@ -45,6 +46,16 @@ export const Mutation = {
       userId,
       req.headers.origin || "http://localhost:4000"
     );
+    return result;
+  },
+
+  async verifyUser(
+    _: any,
+    { userId, code }: { userId: string; code: string },
+    { prisma, pubSub }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    const result = await verifyUserCtrl(prisma, pubSub, userId, code);
     return result;
   },
 

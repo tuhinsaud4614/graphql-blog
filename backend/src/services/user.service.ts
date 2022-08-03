@@ -64,6 +64,13 @@ export function getUserByEmailOrMobileWithInfo(
   });
 }
 
+export function verifyAuthorStatus(prisma: PrismaClient, userId: string) {
+  return prisma.user.update({
+    data: { authorStatus: EAuthorStatus.Verified },
+    where: { id: userId },
+  });
+}
+
 export function getUserFollowerList(
   prisma: PrismaClient,
   id: string,

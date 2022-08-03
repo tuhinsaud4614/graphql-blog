@@ -35,6 +35,15 @@ export const registerSchema = yup.object().shape({
     .oneOf([EUserRole.Author], EITHER_ERR_MSG("Role", "AUTHOR")),
 });
 
+export const resendActivationSchema = yup.object().shape({
+  userId: yup.string().required(REQUIRED_ERR_MSG("User id")),
+});
+
+export const verifyUserSchema = yup.object().shape({
+  userId: yup.string().required(REQUIRED_ERR_MSG("User id")),
+  code: yup.string().required(REQUIRED_ERR_MSG("Verification code")),
+});
+
 export const loginSchema = yup.object().shape({
   emailOrMobile: yup.string().required(REQUIRED_ERR_MSG("Email/Mobile")),
   password: yup.string().required(REQUIRED_ERR_MSG("password")),
