@@ -73,7 +73,7 @@ export async function registerCtrl(
       if (isUserExist.authorStatus === EAuthorStatus.Verified) {
         return new GraphQLYogaError(EXIST_ERR_MSG("User"));
       }
-      await sendUserVerificationCode(isUserExist.id, email, host);
+      await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
       return isUserExist.id;
     }
 
@@ -97,6 +97,30 @@ export async function registerCtrl(
       CREATION_ERR_MSG("User"),
       "Register input"
     );
+  }
+}
+
+export async function resendActivationCtrl(
+  prisma: PrismaClient,
+  userId: string,
+  host: string
+) {
+  try {
+    const isUserExist = await getUserById(prisma, userId);
+
+    if (!isUserExist) {
+      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+    }
+
+    if (isUserExist && isUserExist.authorStatus === EAuthorStatus.Verified) {
+      return new GraphQLYogaError("User already verified");
+    }
+
+    await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
+    return userId;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, "Resend activation failed");
   }
 }
 

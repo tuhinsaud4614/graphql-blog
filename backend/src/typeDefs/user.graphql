@@ -64,6 +64,7 @@ type Query {
 
 type Mutation {
   register(data: RegisterInput): ID!
+  resendActivation(userId: ID!): ID!
   login(data: LoginInput): Tokens!
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!

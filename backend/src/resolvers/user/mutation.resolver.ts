@@ -4,6 +4,7 @@ import {
   followRequestCtrl,
   loginCtrl,
   registerCtrl,
+  resendActivationCtrl,
   tokenCtrl,
   unfollowRequestCtrl,
   uploadAvatar,
@@ -28,6 +29,20 @@ export const Mutation = {
     const result = await registerCtrl(
       prisma,
       data,
+      req.headers.origin || "http://localhost:4000"
+    );
+    return result;
+  },
+
+  async resendActivation(
+    _: any,
+    { userId }: { userId: string },
+    { prisma, req }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    const result = await resendActivationCtrl(
+      prisma,
+      userId,
       req.headers.origin || "http://localhost:4000"
     );
     return result;
