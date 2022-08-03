@@ -22,10 +22,14 @@ export const Mutation = {
   async register(
     _: any,
     { data }: { data: IRegisterInput },
-    { prisma }: YogaContextReturnType,
+    { prisma, req }: YogaContextReturnType,
     __: GraphQLResolveInfo
   ) {
-    const result = await registerCtrl(prisma, data);
+    const result = await registerCtrl(
+      prisma,
+      data,
+      req.headers.origin || "http://localhost:4000"
+    );
     return result;
   },
 

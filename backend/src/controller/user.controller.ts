@@ -11,6 +11,7 @@ import {
   getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWithInfo,
+  sendUserVerificationCode,
   unfollowTo,
 } from "../services/user.service";
 import {
@@ -36,7 +37,7 @@ import {
   UN_AUTH_ERR_MSG,
   USER_FOLLOWED_ERR_MSG,
 } from "../utils/constants";
-import { EUserRole } from "../utils/enums";
+import { EAuthorStatus, EUserRole } from "../utils/enums";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
 import { CustomError, getGraphqlYogaError } from "../validations";
 import { loginSchema, registerSchema } from "../validations/user.validation";
@@ -58,14 +59,22 @@ async function generateTokens(user: IUserPayload) {
   return { accessToken, refreshToken } as const;
 }
 
-export async function registerCtrl(prisma: PrismaClient, args: IRegisterInput) {
+export async function registerCtrl(
+  prisma: PrismaClient,
+  args: IRegisterInput,
+  host: string
+) {
   try {
     const { email, password, mobile, role, name } = args;
     await registerSchema.validate(args, { abortEarly: false });
     const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
 
     if (isUserExist) {
-      return new GraphQLYogaError(EXIST_ERR_MSG("User"));
+      if (isUserExist.authorStatus === EAuthorStatus.Verified) {
+        return new GraphQLYogaError(EXIST_ERR_MSG("User"));
+      }
+      await sendUserVerificationCode(isUserExist.id, email, host);
+      return isUserExist.id;
     }
 
     const hashPassword = await hash(password);
@@ -77,6 +86,8 @@ export async function registerCtrl(prisma: PrismaClient, args: IRegisterInput) {
       name,
       password: hashPassword,
     });
+
+    await sendUserVerificationCode(user.id, email, host);
 
     return user.id;
   } catch (error) {

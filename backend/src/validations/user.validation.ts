@@ -32,10 +32,7 @@ export const registerSchema = yup.object().shape({
   role: yup
     .string()
     .required(REQUIRED_ERR_MSG("Role"))
-    .oneOf(
-      [EUserRole.Author, EUserRole.User],
-      EITHER_ERR_MSG("Role", "USER/AUTHOR")
-    ),
+    .oneOf([EUserRole.Author], EITHER_ERR_MSG("Role", "AUTHOR")),
 });
 
 export const loginSchema = yup.object().shape({
