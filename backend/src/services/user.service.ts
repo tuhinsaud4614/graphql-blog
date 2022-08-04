@@ -148,7 +148,7 @@ export const userVerificationMessage = (
     <b>Verification Code:</b> ${code}
     <br/>
     <br/>
-    <a href="${href}" style="color:#ffffff;text-decoration:none;display:inline-block;height:38px;line-height:38px;padding-top:0;padding-right:24px;padding-bottom:0;padding-left:24px;border:0;outline:0;background-color:#1a8917;font-size:14px;font-style:normal;font-weight:400;text-align:center;white-space:nowrap;border-radius:99em" target="_blank">Verify email</a>
+    <a href="${href}" style="color:#ffffff;text-decoration:none;display:inline-block;height:38px;line-height:38px;padding-top:0;padding-right:24px;padding-bottom:0;padding-left:24px;border:0;outline:0;background-color:#1a8917;font-size:14px;font-style:normal;font-weight:400;text-align:center;white-space:nowrap;border-radius:99em" target="_blank">Verify user</a>
     <br/>
     <br/>
     <small>Or verify using this link:</small>
