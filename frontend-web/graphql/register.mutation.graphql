@@ -1,0 +1,26 @@
+mutation Register(
+  $name: String!
+  $email: String!
+  $password: String!
+  $confirmPassword: String!
+  $mobile: String!
+) {
+  register(
+    data: {
+      name: $name
+      email: $email
+      role: "AUTHOR"
+      password: $password
+      confirmPassword: $confirmPassword
+      mobile: $mobile
+    }
+  )
+}
+
+mutation UserVerification($userId: ID!, $code: String!) {
+  verifyUser(userId: $userId, code: $code)
+}
+
+mutation ResendActivationLink($userId: ID!) {
+  resendActivation(userId: $userId)
+}

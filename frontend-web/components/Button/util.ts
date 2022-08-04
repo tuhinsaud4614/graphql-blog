@@ -59,7 +59,7 @@ const className = {
         if (mode === "text") {
           return "text-warning hover:bg-warning/5 dark:text-warning-content dark:hover:bg-warning-content/[8%]";
         }
-        return "bg-warning hover:bg-warning-focus text-neutral dark:bg-warning-dark dark:hover:bg-warning dark:text-black/[87%]";
+        return "bg-warning hover:bg-warning-focus text-base-100 dark:bg-warning-dark dark:hover:bg-warning dark:text-black/[87%]";
       case "info":
         if (mode === "outline") {
           return "border-info/50 text-info hover:border-info hover:bg-info/5 dark:text-info-content dark:border-info-content/50 dark:hover:bg-info-content/[8%] dark:hover:border-info-content";

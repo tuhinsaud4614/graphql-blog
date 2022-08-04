@@ -309,8 +309,13 @@ export const gplErrorHandler = (error: ApolloError | undefined) => {
   if (!error) {
     return;
   }
-  const extensions = error.graphQLErrors[0].extensions;
-  if ("fields" in extensions && Array.isArray(extensions.fields)) {
+  const extensions = error.graphQLErrors[0]?.extensions;
+
+  if (
+    extensions &&
+    "fields" in extensions &&
+    Array.isArray(extensions.fields)
+  ) {
     const results: string[] = [];
 
     extensions.fields.forEach((err) => {

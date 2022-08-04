@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen": "graphql-codegen --require dotenv/config"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -15,12 +16,14 @@
     "formik": "^2.2.9",
     "framer-motion": "^6.3.16",
     "graphql": "^16.5.0",
+    "graphql-ws": "^5.9.1",
     "is-hotkey": "^0.2.0",
     "nanoid": "^4.0.0",
     "next": "12.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
+    "react-toastify": "^9.0.7",
     "slate": "^0.81.1",
     "slate-history": "^0.66.0",
     "slate-react": "^0.81.0",
@@ -28,6 +31,11 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.11.3",
+    "@graphql-codegen/introspection": "2.2.0",
+    "@graphql-codegen/typescript": "2.7.2",
+    "@graphql-codegen/typescript-operations": "2.5.2",
+    "@graphql-codegen/typescript-react-apollo": "3.3.2",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/escape-html": "^1.0.2",
     "@types/node": "18.0.1",

@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { ReactNode } from "react";
 
 const className = {
@@ -6,8 +7,9 @@ const className = {
 
 interface Props {
   children: ReactNode;
+  className?: string;
 }
 
-export default function Container({ children }: Props) {
-  return <main className={className.root}>{children}</main>;
+export default function Container({ children, className: cls }: Props) {
+  return <main className={classNames(className.root, cls)}>{children}</main>;
 }

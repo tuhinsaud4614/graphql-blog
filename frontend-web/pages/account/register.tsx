@@ -1,10 +1,12 @@
-import { gql, useMutation } from "@apollo/client";
-import { Button, ErrorModal } from "@component";
+import { Button, ErrorModal, ToastContainerWithTheme } from "@component";
 import { Form, FormContainer, FormControl } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
+import { useRegisterMutation } from "graphql/generated/schema";
 import { NextPage } from "next";
 import Head from "next/head";
-import { Fragment, useId } from "react";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useId } from "react";
+import { toast } from "react-toastify";
 import { gplErrorHandler } from "utils";
 import { ROUTES, VALID_MOBILE_REGEX } from "utils/constants";
 import * as yup from "yup";
@@ -12,27 +14,6 @@ import * as yup from "yup";
 const className = {
   control: "mb-4",
 };
-
-const REGISTER_AUTHOR = gql`
-  mutation Register(
-    $name: String!
-    $email: String!
-    $password: String!
-    $confirmPassword: String!
-    $mobile: String!
-  ) {
-    register(
-      data: {
-        name: $name
-        email: $email
-        role: "AUTHOR"
-        password: $password
-        confirmPassword: $confirmPassword
-        mobile: $mobile
-      }
-    )
-  }
-`;
 
 interface IValues {
   name: string;
@@ -63,10 +44,11 @@ const schema = yup.object().shape({
 });
 
 const Register: NextPage = () => {
-  const [registerAuthor, { loading, data, error, reset }] = useMutation(
-    REGISTER_AUTHOR,
-    { errorPolicy: "all" }
+  const [registerAuthor, { loading, data, error, reset }] = useRegisterMutation(
+    { errorPolicy: "all", fetchPolicy: "network-only" }
   );
+  const { replace } = useRouter();
+
   const initialValues: IValues = {
     name: "",
     mobile: "",
@@ -105,12 +87,18 @@ const Register: NextPage = () => {
     validationSchema: schema,
   });
 
-  console.log("data", data);
-  console.log("loading", loading);
-  console.log(
-    "errors",
-    JSON.stringify(error?.graphQLErrors[0].extensions.fields, null, 2)
-  );
+  useEffect(() => {
+    if (!loading && !error && data) {
+      toast.success(<SuccessMsg />);
+      const timer = window.setTimeout(() => {
+        replace(ROUTES.login);
+      }, 3000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, loading, error]);
 
   return (
     <Fragment>
@@ -216,7 +204,26 @@ const Register: NextPage = () => {
         title="Registration Errors"
         errors={gplErrorHandler(error)}
       />
+      <ToastContainerWithTheme
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+      />
     </Fragment>
   );
 };
+
+function SuccessMsg() {
+  return (
+    <div className="flex flex-col space-y-2 text-success dark:text-success-dark">
+      <p>User register successfully!</p>
+      <p>Verify user through email.</p>
+    </div>
+  );
+}
+
 export default Register;

@@ -5,15 +5,18 @@ import type { AppPropsWithLayout } from "@types";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import * as React from "react";
+import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import gplClient from "utils/graphql-client";
+import { useApolloClient } from "utils/graphql-client";
 import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
   const { events } = useRouter();
+
+  const client = useApolloClient();
 
   useDarkMode();
 
@@ -49,8 +52,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         />
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
-      {progress && <ProgressBar className="fixed z-50 top-0 left-0 right-0" />}
-      <ApolloProvider client={gplClient}>
+      {progress && (
+        <ProgressBar className="fixed z-[999] top-0 left-0 right-0" />
+      )}
+      <ApolloProvider client={client}>
         <Component {...pageProps} />
       </ApolloProvider>
     </React.Fragment>
