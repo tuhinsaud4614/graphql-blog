@@ -6,6 +6,7 @@ export { default as LinkTextButton } from "./Button/LinkTextButton";
 export { default as CheckInput } from "./CheckInput";
 export { default as CommentBox } from "./CommentBox";
 export { default as CommentBoxCommenter } from "./CommentBox/Commenter";
+export { default as DemoAvatar } from "./DemoAvatar";
 export { default as ErrorModal } from "./ErrorModal";
 export { default as FollowItem } from "./FollowItem";
 export { default as Header } from "./home/Header";

@@ -12,6 +12,7 @@
     "Formik",
     "Loadbar",
     "prismjs",
+    "reduxjs",
     "semibold",
     "Swiper",
     "tailwindcss",

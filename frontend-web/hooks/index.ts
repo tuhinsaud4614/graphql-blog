@@ -6,6 +6,7 @@ export { default as useIsFirstRender } from "./useIsFirstRender";
 export { default as useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLockBody } from "./useLockBody";
+export { default as useLogout } from "./useLogout";
 export { default as useMediaQuery } from "./useMediaQuery";
 export { default as useOnClickOutside } from "./useOnClickOutside";
 export { default as useReadLocalStorage } from "./useReadLocalStorage";

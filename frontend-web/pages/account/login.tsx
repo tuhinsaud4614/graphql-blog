@@ -1,10 +1,16 @@
-import { Button } from "@component";
+import { useApolloClient } from "@apollo/client";
+import { Button, ErrorModal } from "@component";
 import { Form, FormContainer, FormControl } from "components/account";
-import { FormikHelpers, useFormik } from "formik";
-import { NextPage } from "next";
+import { getCookie, setCookie } from "cookies-next";
+import { Formik, FormikHelpers } from "formik";
+import { useLoginMutation } from "graphql/generated/schema";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useId } from "react";
-import { ROUTES } from "utils/constants";
+import { useRouter } from "next/router";
+import { Fragment, useId } from "react";
+import { useAuthStateChange } from "store";
+import { getAuthUser, gplErrorHandler } from "utils";
+import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "utils/constants";
 import * as yup from "yup";
 
 const className = {
@@ -20,103 +26,151 @@ interface IValues {
 const schema = yup.object().shape({
   emailMobile: yup
     .string()
-    .required("Email address is required.")
-    .email("Must be a valid email address."),
+    .required("Email address or mobile number is required.")
+    .test(
+      "validMobile",
+      "Must be valid a mobile number or email address.",
+      (value) => {
+        return (
+          !!value &&
+          (VALID_MOBILE_REGEX.test(value) || VALID_EMAIL_REGEX.test(value))
+        );
+      }
+    ),
   password: yup.string().required("Password is required."),
 });
 
-const Login: NextPage = () => {
-  const initialValues: IValues = {
-    emailMobile: "",
-    password: "",
-  };
+const initialValues: IValues = {
+  emailMobile: "",
+  password: "",
+};
 
+const Login: NextPage = () => {
   const emailId = useId();
   const passwordId = useId();
+  const { replace } = useRouter();
+  const [login, { loading, error, reset }] = useLoginMutation({
+    errorPolicy: "all",
+  });
+  const client = useApolloClient();
+  const setUser = useAuthStateChange();
 
   const onSubmit = async (
-    values: IValues,
-    formikHelpers: FormikHelpers<IValues>
+    { emailMobile, password }: IValues,
+    { resetForm }: FormikHelpers<IValues>
   ) => {
-    await new Promise((res) => {
-      setTimeout(() => {
-        res(undefined);
-      }, 1000);
-    });
-    console.log(values);
+    try {
+      await client.resetStore();
+      const { data } = await login({
+        variables: { password, emailOrMobile: emailMobile },
+      });
+      if (data && data.login) {
+        const { accessToken, refreshToken } = data.login;
+        const user = getAuthUser(accessToken);
+        const user1 = getAuthUser(refreshToken);
+        setCookie("accessToken", accessToken, { maxAge: user?.exp });
+        setCookie("refreshToken", refreshToken, { maxAge: user1?.exp });
+        setUser(user);
+        replace(ROUTES.myHome);
+      }
+    } catch (error) {
+      resetForm();
+    }
   };
 
-  const {
-    handleSubmit,
-    touched,
-    handleChange,
-    handleBlur,
-    errors,
-    isValid,
-    dirty,
-    values,
-    isSubmitting,
-  } = useFormik({
-    initialValues,
-    onSubmit,
-    validationSchema: schema,
-  });
-
   return (
-    <FormContainer title="Sign in with email or mobile">
-      <Form
-        changeLink={ROUTES.register}
-        changeLinkText="Create one"
-        changeText="No account?"
-        onSubmit={handleSubmit}
-      >
-        <Head>
-          <title>The RAT Diary | Login</title>
-        </Head>
-        <FormControl
-          classes={{ root: className.control }}
-          id={emailId}
-          title="Your email or mobile"
-          name="emailMobile"
-          aria-label="email"
-          aria-invalid={Boolean(touched.emailMobile && errors.emailMobile)}
-          type="text"
-          valid={!(touched.emailMobile && errors.emailMobile)}
-          errorText={touched.emailMobile && errors.emailMobile}
-          value={values.emailMobile}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-        />
-        <FormControl
-          classes={{ root: className.control }}
-          id={passwordId}
-          title="Your password"
-          name="password"
-          aria-label="password"
-          aria-invalid={Boolean(touched.password && errors.password)}
-          type="password"
-          valid={!(touched.password && errors.password)}
-          errorText={touched.password && errors.password}
-          value={values.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-        />
-        <div className="flex justify-center py-3">
-          <Button
-            className="w-[14.125rem] px-5 !py-2 "
-            type="submit"
-            aria-label="Login"
-            loading={isSubmitting}
-            disabled={!(isValid && dirty) || isSubmitting}
-          >
-            Login
-          </Button>
-        </div>
-      </Form>
-    </FormContainer>
+    <Fragment>
+      <FormContainer title="Sign in with email or mobile">
+        <Formik
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          validationSchema={schema}
+        >
+          {({
+            touched,
+            errors,
+            values,
+            handleChange,
+            handleBlur,
+            isSubmitting,
+            isValid,
+            dirty,
+            handleSubmit,
+          }) => (
+            <Form
+              changeLink={ROUTES.register}
+              changeLinkText="Create one"
+              changeText="No account?"
+              onSubmit={handleSubmit}
+            >
+              <Head>
+                <title>The RAT Diary | Login</title>
+              </Head>
+              <FormControl
+                classes={{ root: className.control }}
+                id={emailId}
+                title="Your email or mobile"
+                name="emailMobile"
+                aria-label="email"
+                aria-invalid={Boolean(
+                  touched.emailMobile && errors.emailMobile
+                )}
+                type="text"
+                valid={!(touched.emailMobile && errors.emailMobile)}
+                errorText={touched.emailMobile && errors.emailMobile}
+                value={values.emailMobile}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                required
+              />
+              <FormControl
+                classes={{ root: className.control }}
+                id={passwordId}
+                title="Your password"
+                name="password"
+                aria-label="password"
+                aria-invalid={Boolean(touched.password && errors.password)}
+                type="password"
+                valid={!(touched.password && errors.password)}
+                errorText={touched.password && errors.password}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                required
+              />
+              <div className="flex justify-center py-3">
+                <Button
+                  className="w-[14.125rem] px-5 !py-2 "
+                  type="submit"
+                  aria-label="Login"
+                  loading={isSubmitting || loading}
+                  disabled={!(isValid && dirty) || isSubmitting}
+                >
+                  Login
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </FormContainer>
+      <ErrorModal
+        onClose={() => reset()}
+        title="Login Errors"
+        errors={gplErrorHandler(error)}
+      />
+    </Fragment>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie("accessToken", { req, res });
+  if (token) {
+    return {
+      redirect: { destination: ROUTES.myHome, permanent: false },
+      props: {},
+    };
+  }
+  return { props: {} };
 };
 
 export default Login;

@@ -1,12 +1,14 @@
-import { Banner, HomeContent, HomeHeader, Tending } from "@component/home";
-import { NextPageWithLayout } from "@types";
+import { Banner, HomeContent, HomeHeader, Tending } from "components/home";
+import { getCookie } from "cookies-next";
+import { GetServerSideProps, NextPage } from "next";
 import * as React from "react";
+import { ROUTES } from "utils/constants";
 
 const className = {
   main: "bg-base-100 dark:bg-base-dark-100",
 };
 
-const Home: NextPageWithLayout = () => {
+const Home: NextPage = () => {
   return (
     <React.Fragment>
       <HomeHeader />
@@ -17,6 +19,17 @@ const Home: NextPageWithLayout = () => {
       </main>
     </React.Fragment>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie("accessToken", { req, res });
+  if (token) {
+    return {
+      redirect: { destination: ROUTES.myHome, permanent: false },
+      props: {},
+    };
+  }
+  return { props: {} };
 };
 
 export default Home;

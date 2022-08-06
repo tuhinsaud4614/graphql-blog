@@ -25,7 +25,6 @@ const className = {
 
 export default function SideNav() {
   const { pathname } = useRouter();
-
   const matches = useMediaQuery("(min-width: 1024px)");
 
   return (

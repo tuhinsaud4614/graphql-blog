@@ -1,11 +1,16 @@
-import { useMediaQuery } from "@hooks";
+import { useLogout, useMediaQuery } from "@hooks";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
+import Router from "next/router";
+import { Fragment, MouseEvent, useEffect, useState } from "react";
 import { BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
+import { useAuth } from "store";
+import { getUserName, gplErrorHandler, isServer } from "utils";
 import { ROUTES } from "utils/constants";
 import { IAnchorOrigin } from "utils/interfaces";
+import DemoAvatar from "./DemoAvatar";
+import ErrorModal from "./ErrorModal";
 import Menu from "./Menu";
 import NavAvatar from "./NavAvatar";
 
@@ -32,8 +37,8 @@ export default function UserAvatarBtn({
   hideOnSmallDevice = false,
   anchorOrigin,
 }: Props) {
+  const user = useAuth();
   const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
-
   const matches = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
@@ -42,17 +47,42 @@ export default function UserAvatarBtn({
     }
   }, [matches, hideOnSmallDevice]);
 
+  if (!user) {
+    return (
+      <DemoAvatar
+        as="button"
+        aria-label="Demo avatar"
+        type="button"
+        className="w-9 h-9"
+        onClick={() => Router.push(ROUTES.login)}
+      />
+    );
+  }
+
   return (
     <Fragment>
-      <NavAvatar
-        aria-label="About me"
-        type="button"
-        onClick={(e) => setAnchorEle(e.currentTarget)}
-        src="/demo.png"
-        alt="Avatar"
-        size={36}
-        className="w-9 h-9 shrink-0"
-      />
+      {user.avatar ? (
+        <NavAvatar
+          aria-label="About me"
+          type="button"
+          onClick={(e) => setAnchorEle(e.currentTarget)}
+          src="/demo.png"
+          alt="Avatar"
+          size={36}
+          className="w-9 h-9 shrink-0"
+        />
+      ) : (
+        <DemoAvatar
+          as="button"
+          aria-label="Demo avatar"
+          type="button"
+          className="w-9 h-9"
+          onClick={(e: MouseEvent<HTMLButtonElement>) =>
+            setAnchorEle(e.currentTarget)
+          }
+        />
+      )}
+
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}
@@ -61,16 +91,7 @@ export default function UserAvatarBtn({
       >
         <div className={className.avatarMenu}>
           <ul className={className.avatarMenuItems}>
-            <li>
-              <button
-                type="button"
-                aria-label="Logout"
-                className={className.avatarMenuLink}
-              >
-                <BiExit size={18} />
-                <span className="ml-2">Logout</span>
-              </button>
-            </li>
+            <li>{!isServer() && <Logout />}</li>
             <li>
               <Link href={ROUTES.accountSettings} passHref>
                 <a aria-label="Settings" className={className.avatarMenuLink}>
@@ -81,26 +102,53 @@ export default function UserAvatarBtn({
             </li>
           </ul>
           <hr className="border-t my-2" />
-          <Link href={ROUTES.authorProfile("1")} passHref>
+          <Link href={ROUTES.authorProfile(user.id)} passHref>
             <a className={className.avatarInfo}>
-              <span aria-label="Avatar" className={className.avatarInfoImg}>
-                <Image
-                  src="/demo.png"
-                  alt="Avatar"
-                  width={32}
-                  height={32}
-                  layout="responsive"
-                  objectFit="cover"
-                />
-              </span>
+              {user.avatar ? (
+                <span aria-label="Avatar" className={className.avatarInfoImg}>
+                  <Image
+                    src="/demo.png"
+                    alt="Avatar"
+                    width={32}
+                    height={32}
+                    layout="responsive"
+                    objectFit="cover"
+                  />
+                </span>
+              ) : (
+                <DemoAvatar className="h-8 w-8 mr-3" size={32 / 1.8} />
+              )}
               <div className={className.avatarInfoDetail}>
-                <p className={className.name}>Nothing name</p>
-                <span className={className.bio}>Nothing name</span>
+                <p className={className.name}>{getUserName(user)}</p>
+                <span className={className.bio}>{user.email}</span>
               </div>
             </a>
           </Link>
         </div>
       </Menu>
+    </Fragment>
+  );
+}
+
+function Logout() {
+  const { error, loading, logoutHandler, reset } = useLogout();
+  return (
+    <Fragment>
+      <button
+        type="button"
+        aria-label="Logout"
+        className={className.avatarMenuLink}
+        disabled={loading}
+        onClick={logoutHandler}
+      >
+        <BiExit size={18} />
+        <span className="ml-2">Logout</span>
+      </button>
+      <ErrorModal
+        onClose={() => reset()}
+        title="Logout Errors"
+        errors={gplErrorHandler(error)}
+      />
     </Fragment>
   );
 }

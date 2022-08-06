@@ -1,9 +1,9 @@
-import { useMediaQuery } from "@hooks";
+import { useLogout, useMediaQuery } from "@hooks";
 import classNames from "classnames";
-import { Modal, NavAvatar } from "components";
+import { DemoAvatar, ErrorModal, Modal, NavAvatar } from "components";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiExit } from "react-icons/bi";
@@ -11,6 +11,8 @@ import { BsFillGearFill } from "react-icons/bs";
 import { CgLoadbarDoc } from "react-icons/cg";
 import { FiSearch } from "react-icons/fi";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
+import { useAuth } from "store";
+import { getUserName, gplErrorHandler, isServer } from "utils";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -88,8 +90,8 @@ export default function BottomTab() {
 
 function Avatar() {
   const [open, setOpen] = useState(false);
-
   const matches = useMediaQuery("(min-width: 1024px)");
+  const user = useAuth();
 
   useEffect(() => {
     if (matches) {
@@ -97,16 +99,40 @@ function Avatar() {
     }
   }, [matches]);
 
+  if (!user) {
+    return (
+      <DemoAvatar
+        as="button"
+        aria-label="Demo avatar"
+        type="button"
+        className="w-7 h-7"
+        size={28 / 1.8}
+        onClick={() => Router.push(ROUTES.login)}
+      />
+    );
+  }
+
   return (
     <Fragment>
-      <NavAvatar
-        aria-label="About me"
-        onClick={() => setOpen((prev) => !prev)}
-        src="/demo.png"
-        alt="Avatar"
-        size={28}
-        className={className.avatar}
-      />
+      {user.avatar ? (
+        <NavAvatar
+          aria-label="About me"
+          onClick={() => setOpen((prev) => !prev)}
+          src="/demo.png"
+          alt="Avatar"
+          size={28}
+          className={className.avatar}
+        />
+      ) : (
+        <DemoAvatar
+          as="button"
+          aria-label="Demo avatar"
+          type="button"
+          className="w-7 h-7"
+          size={28 / 1.8}
+          onClick={() => setOpen((prev) => !prev)}
+        />
+      )}
       <Modal
         open={open}
         onHide={() => setOpen(false)}
@@ -115,19 +141,23 @@ function Avatar() {
       >
         <Link href={ROUTES.authorProfile("1")} passHref>
           <a className={className.avatarInfo}>
-            <span aria-label="Avatar" className={className.avatarInfoImg}>
-              <Image
-                src="/demo.png"
-                alt="Avatar"
-                width={32}
-                height={32}
-                layout="responsive"
-                objectFit="cover"
-              />
-            </span>
+            {user.avatar ? (
+              <span aria-label="Avatar" className={className.avatarInfoImg}>
+                <Image
+                  src="/demo.png"
+                  alt="Avatar"
+                  width={32}
+                  height={32}
+                  layout="responsive"
+                  objectFit="cover"
+                />
+              </span>
+            ) : (
+              <DemoAvatar className="h-8 w-8 mr-3" size={32 / 1.8} />
+            )}
             <div className={className.avatarInfoDetail}>
-              <p className={className.name}>Nothing name</p>
-              <span className={className.bio}>Nothing name</span>
+              <p className={className.name}>{getUserName(user)}</p>
+              <span className={className.bio}>{user.email}</span>
             </div>
           </a>
         </Link>
@@ -163,18 +193,37 @@ function Avatar() {
               </a>
             </Link>
           </li>
-          <li>
-            <button
-              type="button"
-              aria-label="Logout"
-              className={className.avatarMenuLink}
-            >
-              <BiExit size={20} />
-              <span className="ml-2">Logout</span>
-            </button>
-          </li>
+          {!isServer() && <Logout onClose={() => setOpen(false)} />}
         </ul>
       </Modal>
+    </Fragment>
+  );
+}
+
+function Logout({ onClose }: { onClose(): void }) {
+  const { error, loading, logoutHandler, reset } = useLogout();
+  return (
+    <Fragment>
+      <li>
+        <button
+          type="button"
+          aria-label="Logout"
+          className={className.avatarMenuLink}
+          disabled={loading}
+          onClick={async () => {
+            await logoutHandler();
+            onClose();
+          }}
+        >
+          <BiExit size={20} />
+          <span className="ml-2">Logout</span>
+        </button>
+      </li>
+      <ErrorModal
+        onClose={() => reset()}
+        title="Logout Errors"
+        errors={gplErrorHandler(error)}
+      />
     </Fragment>
   );
 }

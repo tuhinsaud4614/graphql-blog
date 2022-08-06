@@ -19,12 +19,13 @@
       "@component": ["components"],
       "@component/home": ["components/home"],
       "@types": ["utils/types"],
+      "@lib": ["lib"],
       "@hooks": ["hooks"]
       // "@component/about-us": ["components/about-us"],
       // "@component/icons": ["components/icons"],
       // "@locale": ["locales"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/withApollo.tss"],
   "exclude": ["node_modules"]
 }

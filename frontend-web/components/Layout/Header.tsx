@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { BiBell } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
+import { useAuth } from "store";
+import { isServer } from "utils";
 import { ROUTES } from "utils/constants";
 
 const Theme = dynamic(() => import("components/Theme"), { ssr: false });
@@ -20,7 +22,8 @@ const className = {
 };
 
 export default function Header() {
-  const { pathname } = useRouter();
+  const user = useAuth();
+  // const { pathname } = useRouter();
   const matches = useMediaQuery("(min-width: 1024px)");
   return (
     <header className={className.root}>
@@ -37,13 +40,15 @@ export default function Header() {
           </a>
         </Link>
         <ul className={className.items}>
-          <li>
-            <Link href={ROUTES.login} passHref>
-              <a className={className.link} aria-label={"Sign In"}>
-                Sign In
-              </a>
-            </Link>
-          </li>
+          {/* {!isServer() && !user && (
+            <li>
+              <Link href={ROUTES.login} passHref>
+                <a className={className.link} aria-label={"Sign In"}>
+                  Sign In
+                </a>
+              </Link>
+            </li>
+          )} */}
           <li>
             {!matches && (
               <Theme
@@ -52,19 +57,29 @@ export default function Header() {
               />
             )}
           </li>
-          <li>
-            <Link href={ROUTES.notifications} passHref>
-              <a className={className.notifications} aria-label="Notifications">
-                {pathname === ROUTES.notifications ? (
-                  <FaBell size={20} />
-                ) : (
-                  <BiBell size={20} />
-                )}
-              </a>
-            </Link>
-          </li>
+          <Bell show={!isServer() && !!user} />
         </ul>
       </nav>
     </header>
+  );
+}
+
+function Bell({ show }: { show: boolean }) {
+  const { pathname } = useRouter();
+  if (!show) {
+    return <li></li>;
+  }
+  return (
+    <li>
+      <Link href={ROUTES.notifications} passHref>
+        <a className={className.notifications} aria-label="Notifications">
+          {pathname === ROUTES.notifications ? (
+            <FaBell size={20} />
+          ) : (
+            <BiBell size={20} />
+          )}
+        </a>
+      </Link>
+    </li>
   );
 }

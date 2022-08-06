@@ -1,4 +1,3 @@
-import { NextPageWithLayout } from "@types";
 import { Tabs } from "components";
 import { UserLayout } from "components/Layout";
 import {
@@ -6,10 +5,10 @@ import {
   UserHomeTabFollowing,
   UserHomeTabRecommended,
 } from "components/user-home";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, ReactElement, useState } from "react";
+import { Fragment, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { queryChecking } from "utils";
 
@@ -25,14 +24,14 @@ interface Props {
   query: { [key: string]: any };
 }
 
-const MyHome: NextPageWithLayout<Props> = ({ query }) => {
+const MyHome: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
     queryChecking(query, tabs, "tab", 1)
   );
   const { replace } = useRouter();
 
   return (
-    <Fragment>
+    <UserLayout>
       <Link href="/account/me/following?tab=suggestions">
         <a aria-label="Suggestions" className={className.top}>
           <span className={className.topIcon}>
@@ -54,12 +53,8 @@ const MyHome: NextPageWithLayout<Props> = ({ query }) => {
         {currentTab === 0 ? <UserHomeTabFollowing /> : <Fragment />}
         {currentTab === 1 ? <UserHomeTabRecommended /> : <Fragment />}
       </Tabs>
-    </Fragment>
+    </UserLayout>
   );
-};
-
-MyHome.getLayout = (page: ReactElement) => {
-  return <UserLayout>{page}</UserLayout>;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {

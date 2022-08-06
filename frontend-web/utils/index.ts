@@ -1,9 +1,13 @@
 import { ApolloError } from "@apollo/client";
+import { Value } from "@types";
+import { getCookie } from "cookies-next";
 import escapeHtml from "escape-html";
+import jwtDecode from "jwt-decode";
+import _ from "lodash";
 import { BaseEditor, Editor, Element, Range, Text, Transforms } from "slate";
 import { ReactEditor } from "slate-react";
 import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
-import { IAnchorOrigin, SlateLinkElement } from "./interfaces";
+import { IAnchorOrigin, IUser, SlateLinkElement } from "./interfaces";
 
 const ARROW_SIZE = 14;
 export const getPositions = (
@@ -98,8 +102,25 @@ export const getPositions = (
   } as const;
 };
 
+// Read local storage value
+export const readLocalStorageValue = <T>(key: string): Value<T> => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const item = window.localStorage.getItem(key);
+    return item ? (JSON.parse(item) as T) : null;
+  } catch (error) {
+    process.env.NODE_ENV === "development" &&
+      console.warn(`Error reading localStorage key “${key}”:`, error);
+
+    return null;
+  }
+};
+
 // Set to local storage
-export const setLocalStorage = <T>(key: string, value: T) => {
+export const setLocalStorageValue = <T>(key: string, value: T) => {
   if (typeof window === "undefined") {
     return;
   }
@@ -107,7 +128,8 @@ export const setLocalStorage = <T>(key: string, value: T) => {
   try {
     const item = window.localStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
-    console.warn(`Error writing localStorage “${key}”:`, error);
+    process.env.NODE_ENV === "development" &&
+      console.warn(`Error writing localStorage “${key}”:`, error);
   }
 };
 
@@ -328,3 +350,19 @@ export const gplErrorHandler = (error: ApolloError | undefined) => {
   }
   return error.message;
 };
+
+export const getAuthUser = (accessToken?: string) => {
+  const token = accessToken || (getCookie("accessToken") as string);
+  if (!token) {
+    return null;
+  }
+  const decoded = jwtDecode<any>(token);
+  const user = _.omit(decoded, ["followers", "followings"]) as IUser;
+  return user;
+};
+
+export const isServer = () => typeof window === "undefined";
+
+export function getUserName(user: Pick<IUser, "email" | "name">) {
+  return user.name ? user.name.trim() : user.email.split("@")[0];
+}
