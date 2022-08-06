@@ -67,6 +67,7 @@ type Mutation {
   resendActivation(userId: ID!): ID!
   verifyUser(userId: ID!, code: String!): ID!
   login(data: LoginInput): Tokens!
+  logout: ID!
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!
   followRequest(toId: ID!): UserFollow!

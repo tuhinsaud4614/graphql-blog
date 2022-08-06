@@ -4,10 +4,12 @@ import {
   EITHER_ERR_MSG,
   INVALID_EMAIL,
   INVALID_MOBILE,
+  INVALID_MOBILE_OR_EMAIL_ERR_MSG,
   MATCHED_ERR_MSG,
   PASSWORD_NOT_LONG_ENOUGH,
   PASSWORD_TOO_LONG,
   REQUIRED_ERR_MSG,
+  VALID_EMAIL_REGEX,
   VALID_MOBILE_REGEX,
 } from "../utils/constants";
 import { EUserRole } from "../utils/enums";
@@ -45,6 +47,18 @@ export const verifyUserSchema = yup.object().shape({
 });
 
 export const loginSchema = yup.object().shape({
-  emailOrMobile: yup.string().required(REQUIRED_ERR_MSG("Email/Mobile")),
+  emailOrMobile: yup
+    .string()
+    .required(REQUIRED_ERR_MSG("Email/Mobile"))
+    .test(
+      "validMobile",
+      INVALID_MOBILE_OR_EMAIL_ERR_MSG("Email/Mobile"),
+      (value) => {
+        return (
+          !!value &&
+          (VALID_MOBILE_REGEX.test(value) || VALID_EMAIL_REGEX.test(value))
+        );
+      }
+    ),
   password: yup.string().required(REQUIRED_ERR_MSG("password")),
 });

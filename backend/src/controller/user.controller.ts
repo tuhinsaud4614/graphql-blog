@@ -34,6 +34,7 @@ import {
   INVALID_CREDENTIAL,
   NOT_EXIST_ERR_MSG,
   NOT_IMG_ERR_MSG,
+  REFRESH_TOKEN_KEY_NAME,
   SUBSCRIPTION_USER_VERIFICATION,
   TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
@@ -217,6 +218,16 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, AUTH_FAIL_ERR_MSG, "Login input");
+  }
+}
+
+export async function logoutCtrl(user: IUserPayload) {
+  try {
+    await redisClient.del(REFRESH_TOKEN_KEY_NAME(user.id));
+    return user.id;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
   }
 }
 

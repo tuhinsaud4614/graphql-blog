@@ -3,6 +3,7 @@ import { GraphQLResolveInfo } from "graphql";
 import {
   followRequestCtrl,
   loginCtrl,
+  logoutCtrl,
   registerCtrl,
   resendActivationCtrl,
   tokenCtrl,
@@ -66,6 +67,19 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     const result = await loginCtrl(prisma, data);
+    return result;
+  },
+
+  async logout(
+    _: any,
+    __: any,
+    { user }: YogaContextReturnType,
+    ___: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+    const result = await logoutCtrl(user);
     return result;
   },
 

@@ -15,7 +15,7 @@ require("dotenv").config({
 const app = express();
 
 const server = createServer({
-  cors: { origin: "*" },
+  cors: { origin: [process.env.CLIENT_ENDPOINT!] },
   schema: {
     typeDefs,
     resolvers,
