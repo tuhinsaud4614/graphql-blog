@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { BiBell } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
 import { useAuth } from "store";
@@ -23,7 +24,7 @@ const className = {
 
 export default function Header() {
   const user = useAuth();
-  // const { pathname } = useRouter();
+  const { pathname } = useRouter();
   const matches = useMediaQuery("(min-width: 1024px)");
   return (
     <header className={className.root}>
@@ -40,15 +41,15 @@ export default function Header() {
           </a>
         </Link>
         <ul className={className.items}>
-          {/* {!isServer() && !user && (
+          {!isServer() && !Boolean(user) && (
             <li>
               <Link href={ROUTES.login} passHref>
-                <a className={className.link} aria-label={"Sign In"}>
+                <a className={className.link} aria-label="Sign In">
                   Sign In
                 </a>
               </Link>
             </li>
-          )} */}
+          )}
           <li>
             {!matches && (
               <Theme
@@ -57,17 +58,37 @@ export default function Header() {
               />
             )}
           </li>
-          <Bell show={!isServer() && !!user} />
+          {!isServer() && user !== null && <Bell />}
+          {/* {!isServer() && user !== null && (
+            <li>
+              <Link href={ROUTES.notifications} passHref>
+                <a
+                  className={className.notifications}
+                  aria-label="Notifications"
+                >
+                  {pathname === ROUTES.notifications ? (
+                    <FaBell size={20} />
+                  ) : (
+                    <BiBell size={20} />
+                  )}
+                </a>
+              </Link>
+            </li>
+          )} */}
         </ul>
       </nav>
     </header>
   );
 }
 
-function Bell({ show }: { show: boolean }) {
+function Bell() {
   const { pathname } = useRouter();
-  if (!show) {
-    return <li></li>;
+  const [state, setState] = useState(false);
+  useEffect(() => {
+    setState(true);
+  }, []);
+  if (!state) {
+    return null;
   }
   return (
     <li>
