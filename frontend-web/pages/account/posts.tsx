@@ -1,14 +1,13 @@
 import { LinkButton, Tabs } from "@component";
-import { NextPageWithLayout } from "@types";
 import {
   AccountPostsTabDrafts,
   AccountPostsTabPublished,
 } from "components/account";
 import { UserLayout } from "components/Layout";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, ReactElement, useState } from "react";
+import { Fragment, useState } from "react";
 import { queryChecking } from "utils";
 import { MY_POSTS_TABS, ROUTES } from "utils/constants";
 
@@ -22,14 +21,14 @@ interface Props {
   query: { [key: string]: any };
 }
 
-const MyPostsPage: NextPageWithLayout<Props> = ({ query }) => {
+const MyPostsPage: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
     queryChecking(query, MY_POSTS_TABS, "tab", 0)
   );
   const { replace } = useRouter();
 
   return (
-    <Fragment>
+    <UserLayout>
       <Head>
         <title>The RAT Diary | Your posts</title>
       </Head>
@@ -48,15 +47,11 @@ const MyPostsPage: NextPageWithLayout<Props> = ({ query }) => {
         {currentTab === 0 ? <AccountPostsTabDrafts /> : <Fragment />}
         {currentTab === 1 ? <AccountPostsTabPublished /> : <Fragment />}
       </Tabs>
-    </Fragment>
+    </UserLayout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return { props: { query } };
-};
-
-MyPostsPage.getLayout = (page: ReactElement) => {
-  return <UserLayout>{page}</UserLayout>;
 };
 export default MyPostsPage;

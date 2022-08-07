@@ -1,9 +1,12 @@
+import { selectUser } from "@features";
 import classNames from "classnames";
 import { Button, ReactorModal, ReactorModalItem } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useState } from "react";
+import { useAppSelector } from "store";
 import { ROUTES } from "utils/constants";
+import { IUser } from "utils/interfaces";
 
 const className = {
   root: "flex flex-col items-start",
@@ -24,10 +27,11 @@ interface Props {
     root?: string;
     img?: string;
   };
-  own?: boolean;
+  user?: IUser | null;
 }
 
-export default function UserProfiler({ classes, own = false }: Props) {
+export default function UserProfiler({ classes, user }: Props) {
+  const rdxUser = useAppSelector(selectUser);
   return (
     <div className={classNames(className.root, classes?.root)}>
       <span className={classNames(className.img, classes?.img)}>
@@ -45,7 +49,7 @@ export default function UserProfiler({ classes, own = false }: Props) {
           Nothing
         </a>
       </Link>
-      {own ? (
+      {user && rdxUser && user.id === rdxUser.id ? (
         <Link href={ROUTES.accountSettings}>
           <a aria-label="Settings" className={className.editLink}>
             Edit profile

@@ -161,8 +161,10 @@ const refreshLink = new TokenRefreshLink({
   },
   handleError: (error) => {
     if (
-      !navigator.onLine ||
-      (error instanceof TypeError && error.message === "Network request failed")
+      !isServer() &&
+      (!navigator.onLine ||
+        (error instanceof TypeError &&
+          error.message === "Network request failed"))
     ) {
       process.env.NODE_ENV === "development" &&
         console.log("Offline -> do nothing 🍵");

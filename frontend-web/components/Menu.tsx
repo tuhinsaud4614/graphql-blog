@@ -1,6 +1,7 @@
 import { useIsomorphicLayoutEffect } from "@hooks";
 import classNames from "classnames";
 import { motion, Variants } from "framer-motion";
+import { useRouter } from "next/router";
 import * as React from "react";
 import { getPositions } from "utils";
 import { IAnchorOrigin } from "utils/interfaces";
@@ -70,6 +71,7 @@ const Menu = ({
   const [anchorRect, setAnchorRect] = React.useState<DOMRect | null>(null);
   const [selfRect, setSelfRect] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement | null>(null);
+  const { events } = useRouter();
 
   useIsomorphicLayoutEffect(() => {
     const handler = () => {
@@ -98,6 +100,15 @@ const Menu = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, anchorRect]);
+
+  React.useEffect(() => {
+    if (onClose) {
+      events.on("routeChangeStart", onClose);
+      return () => {
+        events.off("routeChangeStart", onClose);
+      };
+    }
+  }, [onClose, events]);
 
   if (!open) {
     return null;
