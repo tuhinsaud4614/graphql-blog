@@ -2,7 +2,7 @@ import { GraphQLYogaError, PubSub } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { unlink } from "fs";
-import { has, pick } from "lodash";
+import { pick } from "lodash";
 import path from "path";
 import {
   createUser,
@@ -16,10 +16,8 @@ import {
   verifyAuthorStatus,
 } from "../services/user.service";
 import {
-  AsyncImageSize,
-  fileUpload,
   generateToken,
-  maxFileSize,
+  imageUpload,
   nanoid,
   verifyRefreshToken,
 } from "../utils";
@@ -30,13 +28,10 @@ import {
   CREATION_ERR_MSG,
   EXIST_ERR_MSG,
   FOLLOW_ERR_MSG,
-  IMAGE_MIMES,
   INVALID_CREDENTIAL,
   NOT_EXIST_ERR_MSG,
-  NOT_IMG_ERR_MSG,
   REFRESH_TOKEN_KEY_NAME,
   SUBSCRIPTION_USER_VERIFICATION,
-  TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
   USER_FOLLOWED_ERR_MSG,
   USER_VERIFICATION_KEY_NAME,
@@ -44,7 +39,7 @@ import {
 import { EAuthorStatus, EUserRole } from "../utils/enums";
 import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
 import redisClient from "../utils/redis";
-import { CustomError, getGraphqlYogaError } from "../validations";
+import { getGraphqlYogaError } from "../validations";
 import {
   loginSchema,
   registerSchema,
@@ -264,24 +259,7 @@ export async function uploadAvatar(
     const uId = nanoid();
     const dest = path.join(process.cwd(), "images");
 
-    const { name, filePath } = await fileUpload(avatar, {
-      dest,
-      name: uId,
-      filterFunction(newFile, cb) {
-        const { type, size } = newFile;
-        if (!has(IMAGE_MIMES, type)) {
-          return cb(new CustomError(NOT_IMG_ERR_MSG));
-        }
-
-        if (size > maxFileSize(5)) {
-          return cb(new CustomError(TOO_LARGE_FILE_ERR_MSG("Image", "5 Mb")));
-        }
-
-        return cb(null, true);
-      },
-    });
-
-    const dimensions = await AsyncImageSize(filePath);
+    const { name, height, width } = await imageUpload(avatar, dest, uId);
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
@@ -290,13 +268,13 @@ export async function uploadAvatar(
           upsert: {
             create: {
               url: `images/${name}`,
-              width: dimensions?.width || 200,
-              height: dimensions?.height || 200,
+              width: width || 200,
+              height: height || 200,
             },
             update: {
               url: `images/${name}`,
-              width: dimensions?.width || 200,
-              height: dimensions?.height || 200,
+              width: width || 200,
+              height: height || 200,
             },
           },
         },
