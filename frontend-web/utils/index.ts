@@ -133,6 +133,20 @@ export const setLocalStorageValue = <T>(key: string, value: T) => {
   }
 };
 
+// Remove to local storage
+export const removeLocalStorageValue = (key: string) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    process.env.NODE_ENV === "development" &&
+      console.warn(`Error removing localStorage “${key}”:`, error);
+  }
+};
+
 // regex replace replace classes?: "min-w-[0]"; to classes?:string; -> \?:\s"(.*)"
 
 // Serialize comment form slate editor
@@ -351,13 +365,22 @@ export const gplErrorHandler = (error: ApolloError | undefined) => {
   return error.message;
 };
 
-export const getAuthUser = (accessToken?: string) => {
-  const token = accessToken || (getCookie("accessToken") as string);
-  if (!token) {
+export const getAuthUser = (
+  token?: string,
+  mode: "access" | "refresh" = "access"
+) => {
+  const newToken = token || getCookie(`${mode}Token`);
+
+  if (!newToken || typeof newToken !== "string") {
     return null;
   }
-  const decoded = jwtDecode<any>(token);
+
+  const decoded = jwtDecode<any>(newToken);
   const user = _.omit(decoded, ["followers", "followings"]) as IUser;
+  if (!_.has(user, "email")) {
+    return null;
+  }
+
   return user;
 };
 
@@ -365,4 +388,14 @@ export const isServer = () => typeof window === "undefined";
 
 export function getUserName(user: Pick<IUser, "email" | "name">) {
   return user.name ? user.name.trim() : user.email.split("@")[0];
+}
+
+export function generateFileUrl(fileUrl?: string) {
+  const serverEndpoint =
+    process.env.NEXT_PUBLIC_SERVER_ENDPOINT || "http://localhost:4000";
+
+  if (fileUrl && serverEndpoint) {
+    return serverEndpoint + "/" + fileUrl;
+  }
+  return undefined;
 }

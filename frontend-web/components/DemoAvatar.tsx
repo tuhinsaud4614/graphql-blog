@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { FaUserAlt } from "react-icons/fa";
 
 const className = {
-  root: "shrink-0 outline-none flex items-center justify-center border rounded-full text-secondary dark:text-secondary-dark bg-base-100 dark:bg-base-dark-100 dark:border-none dark:ring-2 dark:ring-secondary-content",
+  root: "shrink-0 outline-none flex items-center justify-center border rounded-full text-secondary dark:text-secondary-dark bg-transparent dark:border-none dark:ring-2 dark:ring-secondary-content",
 };
 
 type Props<T extends React.ElementType> = PolymorphicPropsWithRef<

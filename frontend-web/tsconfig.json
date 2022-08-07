@@ -20,7 +20,8 @@
       "@component/home": ["components/home"],
       "@types": ["utils/types"],
       "@lib": ["lib"],
-      "@hooks": ["hooks"]
+      "@hooks": ["hooks"],
+      "@features": ["features"]
       // "@component/about-us": ["components/about-us"],
       // "@component/icons": ["components/icons"],
       // "@locale": ["locales"]

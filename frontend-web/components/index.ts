@@ -4,6 +4,7 @@ export { default as Button } from "./Button";
 export { default as LinkButton } from "./Button/LinkButton";
 export { default as LinkTextButton } from "./Button/LinkTextButton";
 export { default as CheckInput } from "./CheckInput";
+export { default as ClientOnly } from "./ClientOnly";
 export { default as CommentBox } from "./CommentBox";
 export { default as CommentBoxCommenter } from "./CommentBox/Commenter";
 export { default as DemoAvatar } from "./DemoAvatar";

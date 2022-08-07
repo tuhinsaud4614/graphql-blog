@@ -1,5 +1,6 @@
 import { useApolloClient } from "@apollo/client";
 import { Button, ErrorModal } from "@component";
+import { setAuthUser } from "@features";
 import { Form, FormContainer, FormControl } from "components/account";
 import { getCookie, setCookie } from "cookies-next";
 import { Formik, FormikHelpers } from "formik";
@@ -8,7 +9,7 @@ import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useId } from "react";
-import { useAuthStateChange } from "store";
+import { useAppDispatch } from "store";
 import { getAuthUser, gplErrorHandler } from "utils";
 import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "utils/constants";
 import * as yup from "yup";
@@ -53,7 +54,7 @@ const Login: NextPage = () => {
     errorPolicy: "all",
   });
   const client = useApolloClient();
-  const setUser = useAuthStateChange();
+  const rdxDispatch = useAppDispatch();
 
   const onSubmit = async (
     { emailMobile, password }: IValues,
@@ -70,7 +71,7 @@ const Login: NextPage = () => {
         const user1 = getAuthUser(refreshToken);
         setCookie("accessToken", accessToken, { maxAge: user?.exp });
         setCookie("refreshToken", refreshToken, { maxAge: user1?.exp });
-        setUser(user);
+        rdxDispatch(setAuthUser(user));
         replace(ROUTES.myHome);
       }
     } catch (error) {
@@ -163,7 +164,7 @@ const Login: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("accessToken", { req, res });
+  const token = getCookie("refreshToken", { req, res });
   if (token) {
     return {
       redirect: { destination: ROUTES.myHome, permanent: false },

@@ -1,13 +1,13 @@
+import { selectUser } from "@features";
 import { useMediaQuery } from "@hooks";
+import { ClientOnly } from "components";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { BiBell } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
-import { useAuth } from "store";
-import { isServer } from "utils";
+import { useAppSelector } from "store";
 import { ROUTES } from "utils/constants";
 
 const Theme = dynamic(() => import("components/Theme"), { ssr: false });
@@ -23,7 +23,7 @@ const className = {
 };
 
 export default function Header() {
-  const user = useAuth();
+  const user = useAppSelector(selectUser);
   const { pathname } = useRouter();
   const matches = useMediaQuery("(min-width: 1024px)");
   return (
@@ -41,66 +41,45 @@ export default function Header() {
           </a>
         </Link>
         <ul className={className.items}>
-          {!isServer() && !Boolean(user) && (
-            <li>
-              <Link href={ROUTES.login} passHref>
-                <a className={className.link} aria-label="Sign In">
-                  Sign In
-                </a>
-              </Link>
-            </li>
+          {!user && (
+            <ClientOnly>
+              <li>
+                <Link href={ROUTES.login} passHref>
+                  <a className={className.link} aria-label="Sign In">
+                    Sign In
+                  </a>
+                </Link>
+              </li>
+            </ClientOnly>
           )}
           <li>
             {!matches && (
               <Theme
-                anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 classes={{ menuRoot: "mt-6" }}
               />
             )}
           </li>
-          {!isServer() && user !== null && <Bell />}
-          {/* {!isServer() && user !== null && (
-            <li>
-              <Link href={ROUTES.notifications} passHref>
-                <a
-                  className={className.notifications}
-                  aria-label="Notifications"
-                >
-                  {pathname === ROUTES.notifications ? (
-                    <FaBell size={20} />
-                  ) : (
-                    <BiBell size={20} />
-                  )}
-                </a>
-              </Link>
-            </li>
-          )} */}
+          {!!user && (
+            <ClientOnly>
+              <li>
+                <Link href={ROUTES.notifications} passHref>
+                  <a
+                    className={className.notifications}
+                    aria-label="Notifications"
+                  >
+                    {pathname === ROUTES.notifications ? (
+                      <FaBell size={20} />
+                    ) : (
+                      <BiBell size={20} />
+                    )}
+                  </a>
+                </Link>
+              </li>
+            </ClientOnly>
+          )}
         </ul>
       </nav>
     </header>
-  );
-}
-
-function Bell() {
-  const { pathname } = useRouter();
-  const [state, setState] = useState(false);
-  useEffect(() => {
-    setState(true);
-  }, []);
-  if (!state) {
-    return null;
-  }
-  return (
-    <li>
-      <Link href={ROUTES.notifications} passHref>
-        <a className={className.notifications} aria-label="Notifications">
-          {pathname === ROUTES.notifications ? (
-            <FaBell size={20} />
-          ) : (
-            <BiBell size={20} />
-          )}
-        </a>
-      </Link>
-    </li>
   );
 }

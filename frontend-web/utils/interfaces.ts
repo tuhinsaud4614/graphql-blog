@@ -19,10 +19,17 @@ export interface SlateLinkElement {
   children: Descendant[];
 }
 
+export interface IPicture {
+  id: string;
+  height: number;
+  width: number;
+  url: string;
+}
+
 export interface IUser {
   about: null | string;
   authorStatus: null | EAuthorStatus;
-  avatar: null | string;
+  avatar: null | IPicture;
   email: string;
   exp: number;
   iat: number;

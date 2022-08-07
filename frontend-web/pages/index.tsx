@@ -22,7 +22,7 @@ const Home: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("accessToken", { req, res });
+  const token = getCookie("refreshToken", { req, res });
   if (token) {
     return {
       redirect: { destination: ROUTES.myHome, permanent: false },

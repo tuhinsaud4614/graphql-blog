@@ -1,6 +1,13 @@
+import { selectUser } from "@features";
 import { useLogout, useMediaQuery } from "@hooks";
 import classNames from "classnames";
-import { DemoAvatar, ErrorModal, Modal, NavAvatar } from "components";
+import {
+  ClientOnly,
+  DemoAvatar,
+  ErrorModal,
+  Modal,
+  NavAvatar,
+} from "components";
 import Image from "next/image";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
@@ -11,8 +18,8 @@ import { BsFillGearFill } from "react-icons/bs";
 import { CgLoadbarDoc } from "react-icons/cg";
 import { FiSearch } from "react-icons/fi";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
-import { useAuth } from "store";
-import { getUserName, gplErrorHandler, isServer } from "utils";
+import { useAppSelector } from "store";
+import { generateFileUrl, getUserName, gplErrorHandler, isServer } from "utils";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -81,7 +88,9 @@ export default function BottomTab() {
           </Link>
         </li>
         <li className={classNames(className.item, className.link)}>
-          <Avatar />
+          <ClientOnly>
+            <Avatar />
+          </ClientOnly>
         </li>
       </ul>
     </nav>
@@ -91,7 +100,7 @@ export default function BottomTab() {
 function Avatar() {
   const [open, setOpen] = useState(false);
   const matches = useMediaQuery("(min-width: 1024px)");
-  const user = useAuth();
+  const user = useAppSelector(selectUser);
 
   useEffect(() => {
     if (matches) {
@@ -111,17 +120,25 @@ function Avatar() {
       />
     );
   }
-
+  const imgUrl = generateFileUrl(user.avatar?.url);
   return (
     <Fragment>
-      {user.avatar ? (
+      {imgUrl ? (
         <NavAvatar
-          aria-label="About me"
-          onClick={() => setOpen((prev) => !prev)}
-          src="/demo.png"
+          btnProps={{
+            type: "button",
+            "aria-label": "About me",
+            onClick() {
+              setOpen((prev) => !prev);
+            },
+            className: className.avatar,
+          }}
+          loader={({ src, width, quality }) =>
+            `${src}?w=${width}&q=${quality || 75}`
+          }
+          src={imgUrl}
           alt="Avatar"
           size={28}
-          className={className.avatar}
         />
       ) : (
         <DemoAvatar

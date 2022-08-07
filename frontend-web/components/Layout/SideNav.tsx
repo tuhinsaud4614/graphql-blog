@@ -1,6 +1,6 @@
 import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
-import { UserAvatarBtn } from "components";
+import { ClientOnly, UserAvatarBtn } from "components";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -132,10 +132,12 @@ export default function SideNav() {
             )}
           </li>
         </ul>
-        <UserAvatarBtn
-          anchorOrigin={{ horizontal: "left", vertical: "top" }}
-          hideOnSmallDevice
-        />
+        <ClientOnly>
+          <UserAvatarBtn
+            anchorOrigin={{ horizontal: "left", vertical: "top" }}
+            hideOnSmallDevice
+          />
+        </ClientOnly>
       </nav>
     </aside>
   );

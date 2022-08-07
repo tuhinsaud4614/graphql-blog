@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@hooks";
+import { useDarkMode } from "@hooks";
 import classNames from "classnames";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -20,16 +20,16 @@ const className = {
 export default function Header() {
   const router = useRouter();
   const { scrollY } = useViewportScroll();
-  const matches = useMediaQuery("(prefers-color-scheme: dark)");
+  const { isDarkMode } = useDarkMode();
   const rootBG = useTransform(
     scrollY,
     [0, 250, 280],
-    ["#570DF8", "#570DF8", matches ? "#001e3c" : "#F2F2F2"]
+    ["#570DF8", "#570DF8", isDarkMode ? "#001e3c" : "#F2F2F2"]
   );
   const linkColor = useTransform(
     scrollY,
     [0, 250, 280],
-    ["#FFFFFF", "#FFFFFF", matches ? "#84d6a1" : "#37CDBE"]
+    ["#FFFFFF", "#FFFFFF", isDarkMode ? "#84d6a1" : "#37CDBE"]
   );
 
   return (

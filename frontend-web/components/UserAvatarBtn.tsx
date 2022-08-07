@@ -1,3 +1,4 @@
+import { selectUser } from "@features";
 import { useLogout, useMediaQuery } from "@hooks";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,8 +6,8 @@ import Router from "next/router";
 import { Fragment, MouseEvent, useEffect, useState } from "react";
 import { BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
-import { useAuth } from "store";
-import { getUserName, gplErrorHandler, isServer } from "utils";
+import { useAppSelector } from "store";
+import { generateFileUrl, getUserName, gplErrorHandler, isServer } from "utils";
 import { ROUTES } from "utils/constants";
 import { IAnchorOrigin } from "utils/interfaces";
 import DemoAvatar from "./DemoAvatar";
@@ -37,7 +38,7 @@ export default function UserAvatarBtn({
   hideOnSmallDevice = false,
   anchorOrigin,
 }: Props) {
-  const user = useAuth();
+  const user = useAppSelector(selectUser);
   const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
   const matches = useMediaQuery("(min-width: 1024px)");
 
@@ -59,17 +60,27 @@ export default function UserAvatarBtn({
     );
   }
 
+  const imgUrl = generateFileUrl(user.avatar?.url);
   return (
     <Fragment>
-      {user.avatar ? (
+      {imgUrl ? (
         <NavAvatar
-          aria-label="About me"
-          type="button"
-          onClick={(e) => setAnchorEle(e.currentTarget)}
-          src="/demo.png"
+          btnProps={{
+            type: "button",
+            "aria-label": "About me",
+            onClick(e) {
+              setAnchorEle(e.currentTarget);
+            },
+            className: "w-9 h-9 shrink-0",
+          }}
+          loader={({ src, width, quality }) =>
+            `${src}?w=${width}&q=${quality || 75}`
+          }
+          src={imgUrl}
           alt="Avatar"
+          width={user.avatar?.width}
+          height={user.avatar?.width}
           size={36}
-          className="w-9 h-9 shrink-0"
         />
       ) : (
         <DemoAvatar

@@ -6,8 +6,9 @@ import { useApollo } from "lib/apollo";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import * as React from "react";
+import { Provider } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthProvider } from "store";
+import { store } from "store";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -54,11 +55,11 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       {progress && (
         <ProgressBar className="fixed z-[999] top-0 left-0 right-0" />
       )}
-      <AuthProvider>
+      <Provider store={store}>
         <ApolloProvider client={apolloClient}>
           <Component {...pageProps} />
         </ApolloProvider>
-      </AuthProvider>
+      </Provider>
     </React.Fragment>
   );
 }

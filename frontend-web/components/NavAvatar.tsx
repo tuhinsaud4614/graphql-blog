@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 import { ComponentPropsWithRef } from "react";
 
 const className = {
@@ -7,16 +7,25 @@ const className = {
     "rounded-full overflow-hidden dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark active:scale-95",
 };
 
-interface Props extends Omit<ComponentPropsWithRef<"button">, "children"> {
-  src: string;
-  alt: string;
+interface Props extends ImageProps {
   size: number;
+  btnProps?: Omit<ComponentPropsWithRef<"button">, "children">;
 }
 
-export default function NavAvatar({ alt, size, src, ...rest }: Props) {
+export default function NavAvatar({
+  alt,
+  size,
+  src,
+  btnProps,
+  ...rest
+}: Props) {
   return (
-    <button {...rest} className={classNames(className.avatar, rest.className)}>
+    <button
+      {...btnProps}
+      className={classNames(className.avatar, btnProps?.className)}
+    >
       <Image
+        {...rest}
         src={src}
         alt={alt}
         width={size}

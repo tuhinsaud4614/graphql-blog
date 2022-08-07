@@ -2,7 +2,6 @@ import {
   ApolloClient,
   ApolloLink,
   FetchResult,
-  HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
   Operation,
@@ -11,10 +10,11 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep, Observable } from "@apollo/client/utilities";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
+import { createUploadLink } from "apollo-upload-client";
 import { getCookie, setCookie } from "cookies-next";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
-import { getAuthUser } from "utils";
+import { getAuthUser, isServer } from "utils";
 
 type SSELinkOptions = EventSourceInit & { uri: string };
 
@@ -61,7 +61,7 @@ const sseLink = new SSELink({
   uri,
 });
 
-const httpLink = new HttpLink({
+const httpLink = createUploadLink({
   uri,
 });
 
@@ -180,7 +180,7 @@ let gqlClient: ApolloClient<NormalizedCacheObject>;
 export function createApolloClient() {
   return new ApolloClient({
     connectToDevTools: process.env.NODE_ENV === "development",
-    ssrMode: typeof window === "undefined",
+    ssrMode: isServer(),
     link: authLink.concat(refreshLink).concat(link),
     cache: new InMemoryCache(),
   });

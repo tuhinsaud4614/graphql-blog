@@ -4,8 +4,10 @@ import {
   SettingsNameEdit,
   SettingsPasswordChange,
 } from "components/settings";
-import { NextPage } from "next";
+import { getCookie } from "cookies-next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+import { ROUTES } from "utils/constants";
 
 const className = {
   title:
@@ -27,6 +29,17 @@ const SettingsPage: NextPage = () => {
       </ul>
     </LayoutContainer>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie("refreshToken", { req, res });
+  if (!token) {
+    return {
+      redirect: { destination: ROUTES.login, permanent: false },
+      props: {},
+    };
+  }
+  return { props: {} };
 };
 
 export default SettingsPage;

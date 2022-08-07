@@ -1,6 +1,18 @@
-import { Button } from "components";
+import _ from "lodash";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
+
+import { selectUser, updateUserAvatar } from "@features";
+import {
+  Button,
+  ClientOnly,
+  ErrorModal,
+  ToastContainerWithTheme,
+} from "components";
+import { useUploadAvatarMutation } from "graphql/generated/schema";
+import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "store";
+import { generateFileUrl, gplErrorHandler } from "utils";
 import { ROUTES } from "utils/constants";
 import AvatarPicker from "./AvatarPicker";
 
@@ -16,63 +28,111 @@ const className = {
 export default function AvatarEdit() {
   const [editable, setEditable] = useState(false);
   const [image, setImage] = useState<File | null>(null);
+  const user = useAppSelector(selectUser);
+  const rdxDispatch = useAppDispatch();
+  const [uploadMutation, { error, loading, reset }] = useUploadAvatarMutation({
+    errorPolicy: "all",
+    fetchPolicy: "network-only",
+  });
+
+  const saveHandler = async () => {
+    if (image) {
+      try {
+        const { data } = await uploadMutation({ variables: { avatar: image } });
+        if (data) {
+          toast.success("Upload avatar successfully.");
+          rdxDispatch(
+            updateUserAvatar(_.omit(data.uploadAvatar, ["__typename"]))
+          );
+          setEditable(false);
+        }
+      } catch (error) {
+        setImage(null);
+      }
+    }
+  };
 
   return (
-    <li className={className.item}>
-      <div className={className.itemLeft}>
-        <label className={className.label}>Photo</label>
-        <div className={className.leftBottom}>
-          <div>
-            <p className={className.info}>
-              Your avatar appears on your{" "}
-              <Link href={ROUTES.authorProfile("2")} passHref>
-                <a aria-label="Profile" className="underline">
-                  Profile
-                </a>
-              </Link>{" "}
-              page and with your posts across Apps.
-            </p>
-            <br />
-            <p className={className.info}>
-              Recommended file size: 5MB. File type: JPG, JPEG, PNG, SVG, WEBP
-              or GIF.
-            </p>
+    <Fragment>
+      <li className={className.item}>
+        <div className={className.itemLeft}>
+          <label className={className.label}>Photo</label>
+          <div className={className.leftBottom}>
+            <div>
+              <p className={className.info}>
+                Your avatar appears on your{" "}
+                <Link href={ROUTES.authorProfile("2")} passHref>
+                  <a aria-label="Profile" className="underline">
+                    Profile
+                  </a>
+                </Link>{" "}
+                page and with your posts across Apps.
+              </p>
+              <br />
+              <p className={className.info}>
+                Recommended file size: 5MB. File type: JPG, JPEG, PNG, SVG, WEBP
+                or GIF.
+              </p>
+            </div>
+            <ClientOnly>
+              <AvatarPicker
+                editable={editable}
+                image={
+                  image
+                    ? URL.createObjectURL(image)
+                    : generateFileUrl(user?.avatar?.url)
+                }
+                onImageChange={(file) => {
+                  setImage(file);
+                }}
+                onEdit={() => setEditable(true)}
+              />
+            </ClientOnly>
           </div>
-          <AvatarPicker
-            editable={editable}
-            image={image ? URL.createObjectURL(image) : "/demo.png"}
-            onImageChange={(file) => {
-              setImage(file);
-            }}
-            onEdit={() => setEditable(true)}
-          />
         </div>
-      </div>
-      <div className={className.itemRight}>
-        {editable && (
+        <div className={className.itemRight}>
+          {editable && (
+            <Button
+              className="mr-2 text-sm"
+              type="button"
+              aria-label="Save"
+              variant="success"
+              mode="outline"
+              onClick={saveHandler}
+              disabled={!image || loading}
+              loading={loading}
+            >
+              Save
+            </Button>
+          )}
           <Button
-            className="mr-2 text-sm"
+            className="text-sm"
             type="button"
-            aria-label="Save"
-            variant="success"
+            aria-label={editable ? "Cancel" : "Edit"}
+            variant="neutral"
             mode="outline"
-            onClick={() => {}}
-            disabled={!image}
+            onClick={() => {
+              setEditable((prev) => !prev);
+              setImage(null);
+            }}
           >
-            Save
+            {editable ? "Cancel" : "Edit"}
           </Button>
-        )}
-        <Button
-          className="text-sm"
-          type="button"
-          aria-label={editable ? "Cancel" : "Edit"}
-          variant="neutral"
-          mode="outline"
-          onClick={() => setEditable((prev) => !prev)}
-        >
-          {editable ? "Cancel" : "Edit"}
-        </Button>
-      </div>
-    </li>
+        </div>
+      </li>
+      <ErrorModal
+        onClose={() => reset()}
+        title="Avatar upload errors"
+        errors={gplErrorHandler(error)}
+      />
+      <ToastContainerWithTheme
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+      />
+    </Fragment>
   );
 }
