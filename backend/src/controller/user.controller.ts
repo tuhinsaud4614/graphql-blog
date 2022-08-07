@@ -13,6 +13,7 @@ import {
   getUserByIdWithInfo,
   sendUserVerificationCode,
   unfollowTo,
+  updateUserName,
   verifyAuthorStatus,
 } from "../services/user.service";
 import {
@@ -292,6 +293,26 @@ export async function uploadAvatar(
     }
 
     return pick(updatedUser.avatar, ["id", "url", "height", "width"]);
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+  }
+}
+
+export async function updateNameCtrl(
+  prisma: PrismaClient,
+  name: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getUserByIdWithInfo(prisma, user.id);
+
+    if (!isExist) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+
+    const updatedUser = await updateUserName(prisma, isExist.id, name);
+    return updatedUser.name;
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);

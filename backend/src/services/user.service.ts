@@ -113,6 +113,15 @@ export function createUser(
   });
 }
 
+export function updateUserName(prisma: PrismaClient, id: string, name: string) {
+  return prisma.user.update({
+    where: { id },
+    data: {
+      name,
+    },
+  });
+}
+
 export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
   return prisma.user.update({
     where: { id: toId },

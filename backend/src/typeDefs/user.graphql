@@ -70,6 +70,7 @@ type Mutation {
   logout: ID!
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!
+  updateName(name: String!): String!
   followRequest(toId: ID!): UserFollow!
   unFollowRequest(toId: ID!): ID!
 }
