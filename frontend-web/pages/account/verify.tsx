@@ -1,4 +1,4 @@
-import { Button, LinkButton, ToastContainerWithTheme } from "@component";
+import { Button, LinkButton } from "@component";
 import { PostCreateContainer, PostCreateHeader } from "components/account";
 import { LoaderIcon } from "components/svg";
 import {
@@ -127,7 +127,12 @@ function ResendButton({ userId }: { userId: string }) {
 
   useEffect(() => {
     if (data?.resendActivation) {
-      toast.success(data?.resendActivation);
+      toast.success(data?.resendActivation, {
+        position: "top-center",
+        autoClose: 500,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
       replace(ROUTES.login);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,15 +152,6 @@ function ResendButton({ userId }: { userId: string }) {
       >
         Resend verification link
       </Button>
-      <ToastContainerWithTheme
-        position="top-center"
-        autoClose={500}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-      />
     </Fragment>
   );
 }

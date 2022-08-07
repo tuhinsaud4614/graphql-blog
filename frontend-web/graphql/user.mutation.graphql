@@ -6,3 +6,7 @@ mutation UploadAvatar($avatar: File!) {
     width
   }
 }
+
+mutation UpdateName($name: String!) {
+  updateName(name: $name)
+}

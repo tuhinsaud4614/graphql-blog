@@ -1,4 +1,4 @@
-import { Button, ErrorModal, ToastContainerWithTheme } from "@component";
+import { Button, ErrorModal } from "@component";
 import { Form, FormContainer, FormControl } from "components/account";
 import { getCookie } from "cookies-next";
 import { Formik, FormikHelpers } from "formik";
@@ -74,7 +74,12 @@ const Register: NextPage = () => {
 
   useEffect(() => {
     if (!loading && !error && data) {
-      toast.success(<SuccessMsg />);
+      toast.success(<SuccessMsg />, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
       const timer = window.setTimeout(() => {
         replace(ROUTES.login);
       }, 3000);
@@ -206,15 +211,6 @@ const Register: NextPage = () => {
         onClose={() => reset()}
         title="Registration Errors"
         errors={gplErrorHandler(error)}
-      />
-      <ToastContainerWithTheme
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
       />
     </Fragment>
   );

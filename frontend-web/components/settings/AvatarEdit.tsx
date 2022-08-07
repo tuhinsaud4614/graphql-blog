@@ -3,12 +3,7 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 
 import { selectUser, updateUserAvatar } from "@features";
-import {
-  Button,
-  ClientOnly,
-  ErrorModal,
-  ToastContainerWithTheme,
-} from "components";
+import { Button, ClientOnly, ErrorModal } from "components";
 import { useUploadAvatarMutation } from "graphql/generated/schema";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "store";
@@ -40,7 +35,12 @@ export default function AvatarEdit() {
       try {
         const { data } = await uploadMutation({ variables: { avatar: image } });
         if (data) {
-          toast.success("Upload avatar successfully.");
+          toast.success("Upload avatar successfully.", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+          });
           rdxDispatch(
             updateUserAvatar(_.omit(data.uploadAvatar, ["__typename"]))
           );
@@ -124,14 +124,6 @@ export default function AvatarEdit() {
         onClose={() => reset()}
         title="Avatar upload errors"
         errors={gplErrorHandler(error)}
-      />
-      <ToastContainerWithTheme
-        position="top-center"
-        autoClose={1000}
-        hideProgressBar
-        newestOnTop
-        closeOnClick
-        rtl={false}
       />
     </Fragment>
   );

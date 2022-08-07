@@ -7,6 +7,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { store } from "store";
 import "swiper/css";
@@ -18,7 +19,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
   const { events } = useRouter();
   const apolloClient = useApollo(pageProps.initialApolloState);
-  useDarkMode();
+  const { isDarkMode, ternaryDarkMode } = useDarkMode();
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
@@ -60,6 +61,16 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <Component {...pageProps} />
         </ApolloProvider>
       </Provider>
+      <ToastContainer
+        theme={
+          ternaryDarkMode === "system"
+            ? isDarkMode
+              ? "dark"
+              : "light"
+            : ternaryDarkMode
+        }
+        newestOnTop
+      />
     </React.Fragment>
   );
 }
