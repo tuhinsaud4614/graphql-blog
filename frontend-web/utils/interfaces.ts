@@ -1,6 +1,6 @@
 import { EmptyText } from "components/PostEditor/utils";
+import { AuthorStatus, UserRole } from "graphql/generated/schema";
 import { Descendant } from "slate";
-import { EAuthorStatus, EUserRole } from "./enums";
 
 export interface IAnchorOrigin {
   horizontal?: "center" | "right" | "left";
@@ -28,13 +28,13 @@ export interface IPicture {
 
 export interface IUser {
   about: null | string;
-  authorStatus: null | EAuthorStatus;
+  authorStatus: AuthorStatus | null;
   avatar: null | IPicture;
   email: string;
   exp: number;
   iat: number;
   id: string;
   mobile: string;
-  name: string;
-  role: EUserRole;
+  name?: string | null;
+  role: UserRole;
 }

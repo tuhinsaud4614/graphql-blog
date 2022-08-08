@@ -18,7 +18,7 @@ import "../styles/globals.css";
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
   const { events } = useRouter();
-  const apolloClient = useApollo(pageProps.initialApolloState);
+  const apolloClient = useApollo(pageProps);
   const { isDarkMode, ternaryDarkMode } = useDarkMode();
 
   const getLayout = Component.getLayout ?? ((page) => page);

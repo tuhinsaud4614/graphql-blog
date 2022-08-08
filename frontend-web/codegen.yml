@@ -1,8 +1,8 @@
 overwrite: true
-schema: ${NEXT_PUBLIC_GRAPHQL_ENDPOINT}
+schema: "http://localhost:4000/graphql"
 documents: "**/*.{gpl,graphql}"
 generates:
-  graphql/generated/schema.ts:
+  graphql/generated/schema.tsx:
     plugins:
       - "typescript"
       - "typescript-operations"

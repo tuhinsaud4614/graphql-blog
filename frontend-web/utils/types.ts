@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { AppProps } from "next/app";
 import * as React from "react";
 
@@ -43,3 +43,6 @@ export type PolymorphicPropsWithRef<
 > = PolymorphicProps<T, Props> & { ref?: PolymorphicRef<T> };
 
 export type Value<T> = T | null;
+
+export type SSRRequestType = Pick<GetServerSidePropsContext, "req">["req"];
+export type SSRResponseType = Pick<GetServerSidePropsContext, "res">["res"];

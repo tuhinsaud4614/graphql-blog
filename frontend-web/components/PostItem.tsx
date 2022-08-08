@@ -1,8 +1,14 @@
+import { selectUser } from "@features";
 import classNames from "classnames";
+import { GetUserWithPostQuery } from "graphql/generated/schema";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useAppSelector } from "store";
+import { generateFileUrl, getUserName } from "utils";
 import { ROUTES } from "utils/constants";
+import ClientOnly from "./ClientOnly";
 import UserLink from "./UserLink";
 
 const className = {
@@ -15,7 +21,7 @@ const className = {
     "w-14 h-[calc(3.5rem/16*9)] md:w-28 md:h-[calc(7rem/16*9)] bg-neutral/5 relative",
   img: "absolute z-10 inset-0 w-full h-full",
   tags: "flex-1 overflow-hidden flex items-center space-x-2",
-  tag: "py-0.5 px-2 text-sm text-neutral/75 dark:text-neutral-dark/75 bg-neutral/5 dark:bg-neutral-dark/5 active:scale-95 capitalize rounded-full whitespace-nowrap",
+  tag: "py-0.5 px-2 text:xs md:text-sm text-neutral/75 dark:text-neutral-dark/75 bg-neutral/5 dark:bg-neutral-dark/5 active:scale-95 capitalize rounded-full whitespace-nowrap",
   timeBox:
     "pt-8 flex items-center text-xs text-neutral/70 dark:text-neutral-dark/70",
   favBtn: "ml-2 active:scale-95 hover:text-secondary-focus",
@@ -31,58 +37,77 @@ interface Props {
     tag?: string;
     imgContainer?: string;
   };
+  post: GetUserWithPostQuery["user"]["posts"][0];
 }
 
-export default function PostItem({ classes }: Props) {
+export default function PostItem({ classes, post }: Props) {
+  const rdxUser = useAppSelector(selectUser);
+  const userName = getUserName(post.author);
+
   return (
     <li className={classNames(className.root, classes?.root)}>
       <div className={classNames(className.left, classes?.left)}>
         <UserLink
-          href={ROUTES.authorProfile("1")}
-          src="/favicon.ico"
+          href={ROUTES.authorProfile(post.author.id)}
+          src={post.author.avatar?.url}
           classes={{ root: "dark:ml-0.5" }}
         >
-          Blake Lemoine
+          {userName}
         </UserLink>
-        <Link href={ROUTES.post("1")} passHref>
-          <a className={classNames(className.title, classes?.title)}>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
-            laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis
-            excepturi consequatur dolore enim autem perferendis repellat
-            exercitationem voluptate eaque, natus accusantium.
+        <Link href={ROUTES.post(post.id)} passHref>
+          <a
+            aria-label={post.title}
+            className={classNames(className.title, classes?.title)}
+          >
+            {post.title}
           </a>
         </Link>
         <Link href={ROUTES.post("1234")} passHref>
-          <a className={classNames(className.body, classes?.body)}>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
-            laborum ad eum distinctio. Placeat minus sunt dolorum reiciendis
-            excepturi consequatur dolore enim autem perferendis repellat
-            exercitationem voluptate eaque, natus accusantium.
+          <a
+            aria-label={post.title}
+            className={classNames(className.body, classes?.body)}
+          >
+            {post.content}
           </a>
         </Link>
         <div className={classNames(className.timeBox, classes?.timeBox)}>
-          <time>Jun 11</time>
+          <time>
+            {moment(+post.updatedAt)
+              .startOf("second")
+              .fromNow()}
+          </time>
           <span className="px-1.5">·</span>
           <div className={className.tags}>
-            <Link href="/post/tag/1234" passHref>
-              <a className={classNames(className.tag, classes?.tag)}>
-                Technology
-              </a>
-            </Link>
+            {post.tags.slice(0, 3).map((tag) => (
+              <Link key={tag.id} href={ROUTES.postsByTag(tag.id)} passHref>
+                <a
+                  aria-label={tag.title}
+                  className={classNames(className.tag, classes?.tag)}
+                >
+                  {tag.title}
+                </a>
+              </Link>
+            ))}
           </div>
           <button
             type="button"
             aria-label="Favorite"
             className={className.favBtn}
           >
-            {true ? (
-              <AiFillHeart
-                size={20}
-                className="text-secondary hover:text-secondary-focus dark:text-secondary-dark dark:hover:text-secondary"
-              />
-            ) : (
-              <AiOutlineHeart size={20} />
-            )}
+            <ClientOnly>
+              {rdxUser && (
+                <>
+                  {true ? (
+                    <AiFillHeart
+                      size={20}
+                      className="text-secondary hover:text-secondary-focus dark:text-secondary-dark dark:hover:text-secondary"
+                    />
+                  ) : (
+                    <AiOutlineHeart size={20} />
+                  )}
+                </>
+              )}
+            </ClientOnly>
           </button>
         </div>
       </div>
@@ -90,8 +115,11 @@ export default function PostItem({ classes }: Props) {
         className={classNames(className.imgContainer, classes?.imgContainer)}
       >
         <Image
-          src="/demo.png"
-          alt="Post"
+          loader={({ src, width, quality }) =>
+            `${src}?w=${width}&q=${quality || 75}`
+          }
+          src={generateFileUrl(post.image.url)!}
+          alt={post.title}
           width={(148 / 9) * 16}
           height={148}
           objectFit="cover"

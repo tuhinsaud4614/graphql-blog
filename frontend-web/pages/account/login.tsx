@@ -2,7 +2,7 @@ import { useApolloClient } from "@apollo/client";
 import { Button, ErrorModal } from "@component";
 import { setAuthUser } from "@features";
 import { Form, FormContainer, FormControl } from "components/account";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { Formik, FormikHelpers } from "formik";
 import { useLoginMutation } from "graphql/generated/schema";
 import { GetServerSideProps, NextPage } from "next";
@@ -10,7 +10,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useId } from "react";
 import { useAppDispatch } from "store";
-import { getAuthUser, gplErrorHandler } from "utils";
+import { gplErrorHandler, storeTokenToCookie } from "utils";
 import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "utils/constants";
 import * as yup from "yup";
 
@@ -67,10 +67,7 @@ const Login: NextPage = () => {
       });
       if (data && data.login) {
         const { accessToken, refreshToken } = data.login;
-        const user = getAuthUser(accessToken);
-        const user1 = getAuthUser(refreshToken);
-        setCookie("accessToken", accessToken, { maxAge: user?.exp });
-        setCookie("refreshToken", refreshToken, { maxAge: user1?.exp });
+        const user = storeTokenToCookie(accessToken, refreshToken);
         rdxDispatch(setAuthUser(user));
         replace(ROUTES.myHome);
       }

@@ -1,10 +1,17 @@
 import { selectUser } from "@features";
 import classNames from "classnames";
-import { Button, ReactorModal, ReactorModalItem } from "components";
+import {
+  Button,
+  ClientOnly,
+  DemoAvatar,
+  ReactorModal,
+  ReactorModalItem,
+} from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { useAppSelector } from "store";
+import { generateFileUrl, getUserName } from "utils";
 import { ROUTES } from "utils/constants";
 import { IUser } from "utils/interfaces";
 
@@ -27,43 +34,55 @@ interface Props {
     root?: string;
     img?: string;
   };
-  user?: IUser | null;
+  user: IUser;
 }
 
 export default function UserProfiler({ classes, user }: Props) {
   const rdxUser = useAppSelector(selectUser);
+  const userName = getUserName(user);
+  const imgUrl = generateFileUrl(user.avatar?.url);
   return (
     <div className={classNames(className.root, classes?.root)}>
-      <span className={classNames(className.img, classes?.img)}>
-        <Image
-          src="/demo.png"
-          alt="Avatar"
-          width={88}
-          height={88}
-          layout="responsive"
-          objectFit="cover"
-        />
-      </span>
-      <Link href={ROUTES.authorProfile("1")} passHref>
-        <a aria-label="Author Profile" className={className.name}>
-          Nothing
+      {imgUrl ? (
+        <span className={classNames(className.img, classes?.img)}>
+          <Image
+            loader={({ src, width, quality }) =>
+              `${src}?w=${width}&q=${quality || 75}`
+            }
+            src={imgUrl}
+            alt={userName}
+            width={88}
+            height={88}
+            layout="responsive"
+            objectFit="cover"
+          />
+        </span>
+      ) : (
+        <DemoAvatar className="w-[5.5rem] h-[5.5rem]" size={88 / 1.8} />
+      )}
+      <Link href={ROUTES.authorProfile(user.id)} passHref>
+        <a aria-label={userName} className={className.name}>
+          {userName}
         </a>
       </Link>
-      {user && rdxUser && user.id === rdxUser.id ? (
-        <Link href={ROUTES.accountSettings}>
-          <a aria-label="Settings" className={className.editLink}>
-            Edit profile
-          </a>
-        </Link>
-      ) : (
-        <Other />
-      )}
+      <ClientOnly>
+        {user && rdxUser && user.id === rdxUser.id ? (
+          <Link href={ROUTES.accountSettings}>
+            <a aria-label="Settings" className={className.editLink}>
+              Edit profile
+            </a>
+          </Link>
+        ) : (
+          <Other />
+        )}
+      </ClientOnly>
     </div>
   );
 }
 
 function Other() {
   const [open, setOpen] = useState(false);
+
   return (
     <Fragment>
       <button

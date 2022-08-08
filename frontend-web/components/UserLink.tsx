@@ -1,11 +1,13 @@
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
+import { generateFileUrl } from "utils";
+import DemoAvatar from "./DemoAvatar";
 
 interface Props {
   href: string;
-  src: string;
   children: string;
+  src?: string;
   classes?: {
     root?: string;
     img?: string;
@@ -20,22 +22,36 @@ const className = {
 };
 
 export default function UserLink({ href, src, classes, children }: Props) {
+  const imgUrl = generateFileUrl(src);
   return (
     <div className={classNames(className.root, classes?.root)}>
       <Link href={href} passHref>
-        <a
-          aria-label={children}
-          className={classNames(className.img, classes?.img)}
-        >
-          <Image
-            src={src}
-            width={20}
-            height={20}
-            alt={children}
-            objectFit="cover"
-            layout="responsive"
+        {imgUrl ? (
+          <a
+            aria-label={children}
+            className={classNames(className.img, classes?.img)}
+          >
+            <Image
+              loader={({ src, width, quality }) =>
+                `${src}?w=${width}&q=${quality || 75}`
+              }
+              src={imgUrl}
+              alt={children}
+              width={20}
+              height={20}
+              objectFit="cover"
+              layout="responsive"
+            />
+          </a>
+        ) : (
+          <DemoAvatar
+            as="a"
+            aria-label={children}
+            type="button"
+            className="w-5 h-5"
+            size={20 / 1.8}
           />
-        </a>
+        )}
       </Link>
       <Link href={href} passHref>
         <a

@@ -14,7 +14,9 @@ import { createUploadLink } from "apollo-upload-client";
 import { getCookie, setCookie } from "cookies-next";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
-import { getAuthUser, isServer } from "utils";
+import { fetchRefreshToken, getAuthUser, isServer } from "utils";
+
+export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
 type SSELinkOptions = EventSourceInit & { uri: string };
 
@@ -78,25 +80,13 @@ const link = split(
   httpLink
 );
 
-const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = getCookie("accessToken") as string;
-  // return the headers to the context so httpLink can read them
-  return {
-    headers: {
-      ...headers,
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-});
-
 const refreshLink = new TokenRefreshLink({
   accessTokenField: "accessToken",
   isTokenValidOrUndefined: () => {
     try {
       const token = getCookie("accessToken");
       if (typeof token !== "string") {
-        return false;
+        return true;
       }
       const user = getAuthUser(token);
       if (user && user.exp * 1000 > Date.now()) {
@@ -112,35 +102,10 @@ const refreshLink = new TokenRefreshLink({
     if (!token || typeof token !== "string") {
       return;
     }
-    const query = `
-      mutation Token($refreshToken: String!) {
-        token(refreshToken: $refreshToken) {
-          accessToken
-          refreshToken
-        }
-      }
-    `;
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-          variables: {
-            refreshToken: token,
-          },
-        }),
-      }
-    );
-    return response.json();
+    return fetchRefreshToken(token);
   },
   handleResponse: () => (response: any) => {
     if (!response) return { accessToken: null, refreshToken: null };
-
     const accessToken = response.data?.token?.accessToken;
     const refreshToken = response.data?.token?.refreshToken;
     if (accessToken && refreshToken) {
@@ -177,9 +142,20 @@ const refreshLink = new TokenRefreshLink({
   },
 });
 
-let gqlClient: ApolloClient<NormalizedCacheObject>;
+let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
-export function createApolloClient() {
+export function createApolloClient(serverAccessToken?: string) {
+  const authLink = setContext(async (_, { headers }) => {
+    // get the authentication token from local storage if it exists
+    const token = serverAccessToken || (getCookie("accessToken") as string);
+    // return the headers to the context so httpLink can read them
+    return {
+      headers: {
+        ...headers,
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    };
+  });
   return new ApolloClient({
     connectToDevTools: process.env.NODE_ENV === "development",
     ssrMode: isServer(),
@@ -188,9 +164,11 @@ export function createApolloClient() {
   });
 }
 
-export function initializeApollo(initialState = null) {
-  const _apolloClient = gqlClient ?? createApolloClient();
-
+export function initializeApollo(
+  initialState = null,
+  serverAccessToken?: string
+) {
+  const _apolloClient = apolloClient ?? createApolloClient(serverAccessToken);
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // get hydrated here
   if (initialState) {
@@ -206,13 +184,23 @@ export function initializeApollo(initialState = null) {
   // For SSG and SSR always create a new Apollo Client
   if (typeof window === "undefined") return _apolloClient;
   // Create the Apollo Client once in the client
-  if (!gqlClient) gqlClient = _apolloClient;
+  if (!apolloClient) apolloClient = _apolloClient;
 
   return _apolloClient;
 }
 
-export function useApollo(initialState: any) {
-  const store = useMemo(() => initializeApollo(initialState), [initialState]);
+export function addApolloState(
+  client: ApolloClient<NormalizedCacheObject>,
+  pageProps: { props: any }
+) {
+  pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
+
+  return pageProps;
+}
+
+export function useApollo(pageProps: any) {
+  const state = pageProps[APOLLO_STATE_PROP_NAME];
+  const store = useMemo(() => initializeApollo(state), [state]);
   return store;
 }
 export default useApollo;

@@ -127,7 +127,7 @@ function Avatar() {
         <NavAvatar
           btnProps={{
             type: "button",
-            "aria-label": "About me",
+            "aria-label": getUserName(user),
             onClick() {
               setOpen((prev) => !prev);
             },
@@ -143,7 +143,7 @@ function Avatar() {
       ) : (
         <DemoAvatar
           as="button"
-          aria-label="Demo avatar"
+          aria-label={getUserName(user)}
           type="button"
           className="w-7 h-7"
           size={28 / 1.8}
@@ -156,13 +156,19 @@ function Avatar() {
         locked
         classes={{ container: "py-4" }}
       >
-        <Link href={ROUTES.authorProfile("1")} passHref>
+        <Link href={ROUTES.authorProfile(user.id)} passHref>
           <a className={className.avatarInfo}>
-            {user.avatar ? (
-              <span aria-label="Avatar" className={className.avatarInfoImg}>
+            {imgUrl ? (
+              <span
+                aria-label={getUserName(user)}
+                className={className.avatarInfoImg}
+              >
                 <Image
-                  src="/demo.png"
-                  alt="Avatar"
+                  loader={({ src, width, quality }) =>
+                    `${src}?w=${width}&q=${quality || 75}`
+                  }
+                  src={imgUrl}
+                  alt={getUserName(user)}
                   width={32}
                   height={32}
                   layout="responsive"

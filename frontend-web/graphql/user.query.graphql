@@ -1,4 +1,4 @@
-query GetUser($id: ID!) {
+query GetUserWithPost($id: ID!) {
   user(id: $id) {
     id
     name
@@ -15,10 +15,62 @@ query GetUser($id: ID!) {
     }
     posts {
       id
+      author {
+        id
+        name
+        email
+        avatar {
+          id
+          url
+          height
+          width
+        }
+      }
       title
+      categories {
+        id
+        title
+      }
+      image {
+        id
+        url
+        height
+        width
+      }
+      published
+      publishedAt
+      content
+      tags {
+        id
+        title
+      }
+      createdAt
+      updatedAt
     }
     about
-    createdAt
-    updatedAt
+    followings {
+      id
+      name
+      email
+      mobile
+      avatar {
+        id
+        url
+        height
+        width
+      }
+    }
+    followers {
+      id
+      name
+      email
+      mobile
+      avatar {
+        id
+        url
+        height
+        width
+      }
+    }
   }
 }

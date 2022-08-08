@@ -1,5 +1,4 @@
-import { gql } from "@apollo/client";
-import { ClientOnly, Tabs } from "@component";
+import { ClientOnly, DemoAvatar, Tabs } from "@component";
 import {
   AuthorInfoAboutTab,
   AuthorInfoFollowerList,
@@ -8,13 +7,18 @@ import {
 } from "components/authorInfo";
 import { LayoutContainer } from "components/Layout";
 import { SidebarUserProfiler } from "components/Sidebar";
-import { initializeApollo } from "lib/apollo";
+import {
+  GetUserWithPostDocument,
+  useGetUserWithPostQuery,
+} from "graphql/generated/schema";
+import { addApolloState, initializeApollo } from "lib/apollo";
+import _ from "lodash";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
-import { getUserName, queryChecking } from "utils";
+import { generateFileUrl, getUserName, queryChecking } from "utils";
 import { ROUTES } from "utils/constants";
 import { IUser } from "utils/interfaces";
 
@@ -30,41 +34,66 @@ const tabs = ["home", "about"];
 
 interface Props {
   query: { [key: string]: any };
-  user: IUser | null;
+  // user: User;
 }
 
-const AboutPage: NextPage<Props> = ({ query, user }) => {
+const AboutPage: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
     queryChecking(query, tabs, "tab")
   );
   const { replace } = useRouter();
   const { authorId } = query;
 
+  const { data } = useGetUserWithPostQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { id: authorId },
+    fetchPolicy: "network-only",
+  });
+
+  if (!data?.user) {
+    return null;
+  }
+
+  const user = _.omit(data.user, [
+    "posts",
+    "__typename",
+    "password",
+    "followers",
+    "followings",
+  ]) as IUser;
+  const imgUrl = generateFileUrl(user.avatar?.url);
+  const userName = getUserName(user);
+
   return (
     <LayoutContainer
       sidebar={
         <Fragment>
-          <ClientOnly>
-            <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
-          </ClientOnly>
+          <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
           <AuthorInfoFollowingList />
           <AuthorInfoFollowerList />
         </Fragment>
       }
     >
-      <Head>{user && <title>The RAT Diary | {getUserName(user)}</title>}</Head>
+      <Head>{/* <title>The RAT Diary | {userName}</title> */}</Head>
       <div className={className.title}>
-        <span className={className.titleImg}>
-          <Image
-            src="/demo.png"
-            alt="Avatar"
-            width={32}
-            height={32}
-            layout="responsive"
-            objectFit="cover"
-          />
-        </span>
-        {user && <h1 className={className.titleText}>{getUserName(user)}</h1>}
+        {imgUrl ? (
+          <span className={className.titleImg}>
+            <Image
+              loader={({ src, width, quality }) =>
+                `${src}?w=${width}&q=${quality || 75}`
+              }
+              src={imgUrl}
+              alt={userName}
+              width={32}
+              height={32}
+              layout="responsive"
+              objectFit="cover"
+            />
+          </span>
+        ) : (
+          <DemoAvatar className="w-8 h-8 mr-5 md:hidden" size={32 / 1.8} />
+        )}
+        <h1 className={className.titleText}>{userName}</h1>
       </div>
       <Tabs
         tabs={tabs}
@@ -78,7 +107,11 @@ const AboutPage: NextPage<Props> = ({ query, user }) => {
         }}
         selectedTab={currentTab}
       >
-        {currentTab === 0 ? <AuthorInfoHomeTab /> : <Fragment />}
+        {currentTab === 0 ? (
+          <AuthorInfoHomeTab posts={data.user.posts} />
+        ) : (
+          <Fragment />
+        )}
         {currentTab === 1 ? (
           <ClientOnly>
             <AuthorInfoAboutTab user={user} />
@@ -91,44 +124,22 @@ const AboutPage: NextPage<Props> = ({ query, user }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  query,
+  // req,
+  // res,
+}) => {
   try {
+    // const tokens = await serverSideTokenRotation(req, res);
     const client = initializeApollo();
-
-    const { data } = await client.query({
-      query: gql`
-        query GetUser($id: ID!) {
-          user(id: $id) {
-            id
-            name
-            mobile
-            email
-            password
-            role
-            authorStatus
-            avatar {
-              id
-              url
-              height
-              width
-            }
-            about
-            createdAt
-            updatedAt
-          }
-        }
-      `,
-
-      errorPolicy: "all",
+    await client.query({
+      query: GetUserWithPostDocument,
       variables: { id: query.authorId },
     });
 
-    if (data && data.user) {
-      return { props: { query, user: data.user } };
-    }
-    return { props: { query }, notFound: true };
+    return addApolloState(client, { props: { query } });
   } catch (error) {
-    return { props: { query }, notFound: true };
+    return { props: {}, notFound: true };
   }
 };
 

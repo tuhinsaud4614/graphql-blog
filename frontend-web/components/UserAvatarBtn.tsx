@@ -23,7 +23,7 @@ const className = {
   avatarInfo:
     "flex px-4 hover:bg-base-200 dark:hover:bg-base-dark-200 py-2 group",
   avatarInfoImg:
-    "w-8 h-8 inline-block rounded-full overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
+    "shrink-0 w-8 h-8 inline-block rounded-full overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
   avatarInfoDetail: "flex flex-col",
   name: "pb-1 text-sm line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark dark:group-hover:text-accent-dark",
   bio: "text-xs line-clamp-1 text-ellipsis text-neutral/60 dark:text-neutral-dark/60 group-hover:text-accent dark:group-hover:text-accent-dark",
@@ -61,6 +61,7 @@ export default function UserAvatarBtn({
   }
 
   const imgUrl = generateFileUrl(user.avatar?.url);
+  const userName = getUserName(user);
   return (
     <Fragment>
       {imgUrl ? (
@@ -114,12 +115,15 @@ export default function UserAvatarBtn({
           </ul>
           <hr className="border-t my-2" />
           <Link href={ROUTES.authorProfile(user.id)} passHref>
-            <a className={className.avatarInfo}>
-              {user.avatar ? (
-                <span aria-label="Avatar" className={className.avatarInfoImg}>
+            <a aria-label={userName} className={className.avatarInfo}>
+              {imgUrl ? (
+                <span className={className.avatarInfoImg}>
                   <Image
-                    src="/demo.png"
-                    alt="Avatar"
+                    loader={({ src, width, quality }) =>
+                      `${src}?w=${width}&q=${quality || 75}`
+                    }
+                    src={imgUrl}
+                    alt={userName}
                     width={32}
                     height={32}
                     layout="responsive"
@@ -127,10 +131,10 @@ export default function UserAvatarBtn({
                   />
                 </span>
               ) : (
-                <DemoAvatar className="h-8 w-8 mr-3" size={32 / 1.8} />
+                <DemoAvatar className="h-8 w-8 shrink-0 mr-3" size={32 / 1.8} />
               )}
               <div className={className.avatarInfoDetail}>
-                <p className={className.name}>{getUserName(user)}</p>
+                <p className={className.name}>{userName}</p>
                 <span className={className.bio}>{user.email}</span>
               </div>
             </a>

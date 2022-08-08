@@ -1,12 +1,14 @@
 import { ApolloError } from "@apollo/client";
-import { Value } from "@types";
-import { getCookie } from "cookies-next";
+import { SSRRequestType, SSRResponseType, Value } from "@types";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import escapeHtml from "escape-html";
+import { User } from "graphql/generated/schema";
+import nodeFetch from "isomorphic-unfetch";
 import jwtDecode from "jwt-decode";
 import _ from "lodash";
 import { BaseEditor, Editor, Element, Range, Text, Transforms } from "slate";
 import { ReactEditor } from "slate-react";
-import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
+import { IMAGE_URL_REGEX, URL_REGEX, USER_KEY } from "./constants";
 import { IAnchorOrigin, IUser, SlateLinkElement } from "./interfaces";
 
 const ARROW_SIZE = 14;
@@ -386,7 +388,7 @@ export const getAuthUser = (
 
 export const isServer = () => typeof window === "undefined";
 
-export function getUserName(user: Pick<IUser, "email" | "name">) {
+export function getUserName(user: Pick<IUser | User, "email" | "name">) {
   return user.name ? user.name.trim() : user.email.split("@")[0];
 }
 
@@ -398,4 +400,96 @@ export function generateFileUrl(fileUrl?: string) {
     return serverEndpoint + "/" + fileUrl;
   }
   return undefined;
+}
+
+const query = `
+      mutation Token($refreshToken: String!) {
+        token(refreshToken: $refreshToken) {
+          accessToken
+          refreshToken
+        }
+      }
+    `;
+export async function fetchRefreshToken(token: string) {
+  const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        refreshToken: token,
+      },
+    }),
+  });
+  return response.json();
+}
+
+export function storeTokenToCookie(
+  accessToken: string,
+  refreshToken: string,
+  req?: SSRRequestType,
+  res?: SSRResponseType
+) {
+  const user = getAuthUser(accessToken);
+  const user1 = getAuthUser(refreshToken);
+  setCookie("accessToken", accessToken, { maxAge: user?.exp, req, res });
+  setCookie("refreshToken", refreshToken, { maxAge: user1?.exp, req, res });
+  return user;
+}
+
+export function removeTokenFromCookie(
+  req?: SSRRequestType,
+  res?: SSRResponseType
+) {
+  deleteCookie("accessToken", { req, res });
+  deleteCookie("refreshToken", { req, res });
+}
+
+export async function serverSideTokenRotation(
+  req?: SSRRequestType,
+  res?: SSRResponseType
+) {
+  try {
+    const token = getCookie("refreshToken", { req, res }) as string;
+    if (!token) {
+      return null;
+    }
+
+    const response = await nodeFetch(
+      process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          query,
+          variables: {
+            refreshToken: token,
+          },
+        }),
+      }
+    );
+
+    const result = await response.json();
+
+    const accessToken = result.data.token.accessToken;
+    const refreshToken = result.data.token.refreshToken;
+
+    if (accessToken && refreshToken) {
+      storeTokenToCookie(accessToken, refreshToken, req, res);
+      return { accessToken, refreshToken };
+    }
+    removeLocalStorageValue(USER_KEY);
+    removeTokenFromCookie(req, res);
+    return null;
+  } catch (error) {
+    removeLocalStorageValue(USER_KEY);
+    removeTokenFromCookie(req, res);
+    return null;
+  }
 }
