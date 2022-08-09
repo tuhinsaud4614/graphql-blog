@@ -36,7 +36,7 @@ import { getGraphqlYogaError } from "../validations";
 import {
   createPostSchema,
   getAllPostsByTagSchema,
-  getAllPostSSchema,
+  getAllPostsSchema,
   updatePostSchema,
 } from "../validations/post.validation";
 
@@ -195,11 +195,11 @@ export async function getAllPostsCtrl(
   params: IPostsQueryParams
 ) {
   try {
-    await getAllPostSSchema.validate(params, { abortEarly: false });
+    await getAllPostsSchema.validate(params, { abortEarly: false });
 
     const { limit, page } = params;
     const condition = {
-      where: params.role === EUserRole.User ? { published: true } : undefined,
+      where: { published: true },
     };
     let args: Prisma.PostFindManyArgs = {
       ...condition,
@@ -229,7 +229,7 @@ export async function getAllPostsCtrl(
       };
     }
 
-    const result = await prisma.post.findMany(args);
+    const result = await getAllPost(prisma, args);
     return { data: result, total: count };
   } catch (error: any) {
     console.log(error);
@@ -240,6 +240,7 @@ export async function getAllPostsCtrl(
 export async function getTrendingPostsCtrl(prisma: PrismaClient) {
   try {
     const posts = await getTrendingPosts(prisma);
+
     return posts;
   } catch (error: any) {
     console.log(error);

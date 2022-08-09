@@ -154,7 +154,6 @@ export interface IPageInfo {
 }
 
 export interface IPostsQueryParams {
-  role: string;
   limit?: number;
   page?: number;
 }

@@ -59,11 +59,7 @@ export const updatePostSchema = yup.object().shape({
   tags: yup.array().of(yup.string()),
 });
 
-export const getAllPostSSchema = yup.object().shape({
-  role: yup
-    .string()
-    .required(REQUIRED_ERR_MSG("Role"))
-    .oneOf(Object.values(EUserRole), EITHER_ERR_MSG("Role", "AUTHOR, ADMIN")),
+export const getAllPostsSchema = yup.object().shape({
   limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
   page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
 });

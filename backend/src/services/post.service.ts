@@ -32,6 +32,7 @@ export function getAllPost(
 export function getTrendingPosts(prisma: PrismaClient) {
   return prisma.post.findMany({
     take: 6,
+    where: { published: true },
     orderBy: {
       reactionsBy: { _count: "desc" },
     },
