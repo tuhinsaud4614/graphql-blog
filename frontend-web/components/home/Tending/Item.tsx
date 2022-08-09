@@ -1,5 +1,9 @@
 import UserLink from "components/UserLink";
+import { GetTrendingPostsQuery } from "graphql/generated/schema";
+import moment from "moment";
 import Link from "next/link";
+import { Fragment } from "react";
+import { getUserName } from "utils";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -16,24 +20,41 @@ const className = {
 
 interface Props {
   index: number;
+  post: GetTrendingPostsQuery["trendingPosts"][0];
 }
 
-export default function TrendingItem({ index }: Props) {
+export default function TrendingItem({ index, post }: Props) {
+  const userName = getUserName(post.author);
   return (
     <li className={className.root}>
       <section className={className.container}>
         <span className={className.index}>0{index}</span>
         <div className={className.content}>
-          <UserLink href={ROUTES.authorProfile("1")} src="/favicon.ico">
-            Blake Lemoine
+          <UserLink
+            href={ROUTES.authorProfile(post.author.id)}
+            src={post.author.avatar?.url}
+          >
+            {userName}
           </UserLink>
-          <Link href="/post/123" passHref>
-            <a className={className.title}>Is LaMDA Sentient? - an Interview</a>
+          <Link href={ROUTES.post(post.id)} passHref>
+            <a aria-label={post.title} className={className.title}>
+              {post.title}
+            </a>
           </Link>
           <span className={className.timeBox}>
-            <time>Jun 11</time>
-            <span className="px-1.5">·</span>
-            <time>44 min</time>
+            {Math.abs(Date.now() - +post.updatedAt) / 31536000000 > 1 ? (
+              <Fragment>
+                <time>{moment(+post.updatedAt).format("MMM Do YY")}</time>
+                <span className="px-1.5">·</span>
+                <time>{moment(+post.updatedAt).format("h:mm a")}</time>
+              </Fragment>
+            ) : (
+              <time>
+                {moment(+post.updatedAt)
+                  .startOf("second")
+                  .fromNow()}
+              </time>
+            )}
           </span>
         </div>
       </section>

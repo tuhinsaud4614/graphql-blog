@@ -1,5 +1,7 @@
 import { Banner, HomeContent, HomeHeader, Tending } from "components/home";
 import { getCookie } from "cookies-next";
+import { GetTrendingPostsDocument } from "graphql/generated/schema";
+import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
 import * as React from "react";
 import { ROUTES } from "utils/constants";
@@ -29,7 +31,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       props: {},
     };
   }
-  return { props: {} };
+
+  try {
+    const client = initializeApollo();
+    await client.query({
+      query: GetTrendingPostsDocument,
+    });
+
+    return addApolloState(client, { props: {} });
+  } catch (error) {
+    return { props: {} };
+  }
 };
 
 export default Home;

@@ -1,5 +1,6 @@
 import { Button } from "components";
 import { useRouter } from "next/router";
+import { ROUTES } from "utils/constants";
 
 const className = {
   banner:
@@ -27,12 +28,11 @@ export default function Banner() {
             type="button"
             className={className.btn}
             onClick={() => {
-              replace("/my-home");
+              replace(ROUTES.myHome);
             }}
           >
             Start reading
           </Button>
-          {/* <button></button> */}
         </div>
       </div>
     </section>

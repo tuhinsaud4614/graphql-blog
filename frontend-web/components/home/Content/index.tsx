@@ -1,4 +1,4 @@
-import { PostItem, PostItemSkeleton } from "components";
+import { PostItemSkeleton } from "components";
 import Sidebar from "./Sidebar";
 
 const className = {
@@ -12,9 +12,9 @@ export default function Content() {
     <section className={className.root}>
       <Sidebar />
       <ul className={className.items}>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {/* {Array.from({ length: 10 }).map((_, index) => (
           <PostItem key={index} />
-        ))}
+        ))} */}
         <PostItemSkeleton />
         <PostItemSkeleton />
       </ul>
