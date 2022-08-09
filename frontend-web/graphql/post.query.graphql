@@ -16,3 +16,15 @@ query GetTrendingPosts {
     updatedAt
   }
 }
+
+query GetPosts($limit: Int, $page: Int) {
+  posts(limit: $limit, page: $page) {
+    data {
+      ...GetPostItem
+    }
+    total
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { selectUser } from "@features";
 import classNames from "classnames";
-import { GetUserWithPostQuery } from "graphql/generated/schema";
+import { GetPostItemFragment } from "graphql/generated/schema";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +37,7 @@ interface Props {
     tag?: string;
     imgContainer?: string;
   };
-  post: GetUserWithPostQuery["user"]["posts"][0];
+  post: GetPostItemFragment;
 }
 
 export default function PostItem({ classes, post }: Props) {

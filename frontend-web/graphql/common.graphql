@@ -1,1 +1,41 @@
+fragment PageInfoFragment on PageInfo {
+  hasNext
+  nextPage
+  previousPage
+  totalPages
+}
 
+fragment GetPostItem on Post {
+  id
+  author {
+    id
+    name
+    email
+    avatar {
+      id
+      url
+      height
+      width
+    }
+  }
+  title
+  categories {
+    id
+    title
+  }
+  image {
+    id
+    url
+    height
+    width
+  }
+  published
+  publishedAt
+  content
+  tags {
+    id
+    title
+  }
+  createdAt
+  updatedAt
+}

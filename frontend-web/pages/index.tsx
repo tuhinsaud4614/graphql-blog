@@ -1,6 +1,11 @@
 import { Banner, HomeContent, HomeHeader, Tending } from "components/home";
 import { getCookie } from "cookies-next";
-import { GetTrendingPostsDocument } from "graphql/generated/schema";
+import {
+  GetPostsDocument,
+  GetPostsQuery,
+  GetPostsQueryVariables,
+  GetTrendingPostsDocument,
+} from "graphql/generated/schema";
 import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
 import * as React from "react";
@@ -32,16 +37,22 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
+  const client = initializeApollo();
   try {
-    const client = initializeApollo();
-    await client.query({
-      query: GetTrendingPostsDocument,
-    });
-
-    return addApolloState(client, { props: {} });
+    await Promise.any([
+      client.query({
+        query: GetTrendingPostsDocument,
+      }),
+      client.query<GetPostsQuery, GetPostsQueryVariables>({
+        query: GetPostsDocument,
+        variables: { limit: 2, page: 1 },
+      }),
+    ]);
   } catch (error) {
-    return { props: {} };
+    process.env.NODE_ENV === "development" && console.log("error", error);
   }
+
+  return addApolloState(client, { props: {} });
 };
 
 export default Home;

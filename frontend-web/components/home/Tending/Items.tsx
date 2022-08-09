@@ -39,12 +39,7 @@ export default function TrendingItems() {
     );
   }
 
-  if (
-    loading ||
-    !data ||
-    !data.trendingPosts ||
-    data.trendingPosts.length === 0
-  ) {
+  if (!data || !data.trendingPosts || data.trendingPosts.length === 0) {
     return (
       <NoResultFound classes={{ root: "!items-start", title: "text-lg" }}>
         No trending posts for you
