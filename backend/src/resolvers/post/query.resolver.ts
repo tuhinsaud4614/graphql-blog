@@ -2,6 +2,7 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import {
   getAllPostsByTagCtrl,
   getAllPostsCtrl,
+  getTrendingPostsCtrl,
 } from "../../controller/post.controller";
 import { getPostById } from "../../services/post.service";
 import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
@@ -35,6 +36,15 @@ export const Query = {
       console.log(error);
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
     }
+  },
+  async trendingPosts(
+    _: any,
+    __: any,
+    { prisma }: YogaContextReturnType,
+    ___: any
+  ) {
+    const result = await getTrendingPostsCtrl(prisma);
+    return result;
   },
 
   async tagPosts(

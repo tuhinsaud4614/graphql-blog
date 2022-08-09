@@ -8,6 +8,7 @@ import {
   getPostByIdForUser,
   getPostByIdWithReactions,
   getPostsByTag,
+  getTrendingPosts,
   reactionToPost,
   reactionWithdrawToPost,
   updatePost,
@@ -230,6 +231,16 @@ export async function getAllPostsCtrl(
 
     const result = await prisma.post.findMany(args);
     return { data: result, total: count };
+  } catch (error: any) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+  }
+}
+
+export async function getTrendingPostsCtrl(prisma: PrismaClient) {
+  try {
+    const posts = await getTrendingPosts(prisma);
+    return posts;
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));

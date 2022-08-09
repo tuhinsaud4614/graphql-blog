@@ -29,6 +29,15 @@ export function getAllPost(
   });
 }
 
+export function getTrendingPosts(prisma: PrismaClient) {
+  return prisma.post.findMany({
+    take: 6,
+    orderBy: {
+      reactionsBy: { _count: "desc" },
+    },
+  });
+}
+
 export function getPostsByTag(
   prisma: PrismaClient,
   condition?: Prisma.PostFindManyArgs
