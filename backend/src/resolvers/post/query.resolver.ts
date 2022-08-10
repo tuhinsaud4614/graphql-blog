@@ -2,20 +2,31 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import {
   getAllPostsByTagCtrl,
   getAllPostsCtrl,
+  getAllPostsOnOffsetCtrl,
   getTrendingPostsCtrl,
 } from "../../controller/post.controller";
 import { getPostById } from "../../services/post.service";
 import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
 import {
+  ICursorQueryParams,
+  IOffsetQueryParams,
   IPostsByTagQueryParams,
-  IPostsQueryParams,
 } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Query = {
+  async postsOnOffset(
+    _: any,
+    params: IOffsetQueryParams,
+    { prisma }: YogaContextReturnType,
+    ___: any
+  ) {
+    const result = await getAllPostsOnOffsetCtrl(prisma, params);
+    return result;
+  },
   async posts(
     _: any,
-    params: IPostsQueryParams,
+    params: ICursorQueryParams,
     { prisma }: YogaContextReturnType,
     ___: any
   ) {

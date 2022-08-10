@@ -14,6 +14,7 @@ type Post {
   updatedAt: String!
 }
 
+# Offset types start
 type PageInfo {
   hasNext: Boolean!
   nextPage: Int!
@@ -26,6 +27,25 @@ type PaginatePosts {
   total: Int!
   pageInfo: PageInfo
 }
+# Offset types end
+
+# Cursor types start
+type CursorPageInfo {
+  hasNext: Boolean!
+  endCursor: ID
+}
+
+type CursorPostEdge {
+  cursor: ID!
+  node: Post!
+}
+
+type CursorPostResponse {
+  edges: [CursorPostEdge!]!
+  pageInfo: CursorPageInfo!
+  total: Int!
+}
+# Cursor types end
 
 input CreatePostInput {
   title: String!
@@ -47,7 +67,8 @@ input UpdatePostInput {
 }
 
 type Query {
-  posts(limit: Int, page: Int): PaginatePosts!
+  postsOnOffset(limit: Int, page: Int): PaginatePosts!
+  posts(limit: Int!, after: ID): CursorPostResponse!
   trendingPosts: [Post!]!
   post(id: ID!): Post!
   tagPosts(role: String!, tag: String!, limit: Int, page: Int): PaginatePosts!

@@ -60,8 +60,11 @@ export const updatePostSchema = yup.object().shape({
 });
 
 export const getAllPostsSchema = yup.object().shape({
-  limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
-  page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
+  limit: yup
+    .number()
+    .required(REQUIRED_ERR_MSG("Limit"))
+    .integer(NOT_NUM_ERR_MSG("Limit", "integer")),
+  after: yup.string(),
 });
 
 export const getAllPostsByTagSchema = yup.object().shape({

@@ -1,5 +1,10 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { ICreatePostInput, IUpdatePostInput } from "../utils/interfaces";
+import { Post, Prisma, PrismaClient } from "@prisma/client";
+import {
+  ICreatePostInput,
+  ICursorQueryParams,
+  IResponseOnCursor,
+  IUpdatePostInput,
+} from "../utils/interfaces";
 
 export function getPostById(prisma: PrismaClient, id: string) {
   return prisma.post.findUnique({ where: { id } });
@@ -20,22 +25,12 @@ export function getPostByIdForUser(
   return prisma.post.findFirst({ where: { id, authorId } });
 }
 
-export function getAllPost(
+export function getAllPosts(
   prisma: PrismaClient,
   condition?: Prisma.PostFindManyArgs
 ) {
   return prisma.post.findMany({
     ...condition,
-  });
-}
-
-export function getTrendingPosts(prisma: PrismaClient) {
-  return prisma.post.findMany({
-    take: 6,
-    where: { published: true },
-    orderBy: {
-      reactionsBy: { _count: "desc" },
-    },
   });
 }
 
@@ -167,4 +162,60 @@ export function reactionWithdrawToPost(
     where: { id },
     data: { reactionsBy: { disconnect: { id: withdrawById } } },
   });
+}
+
+export async function getPostsOnCursor(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  condition: Prisma.PostFindManyArgs,
+  total: number
+): Promise<IResponseOnCursor<Post>> {
+  const { limit, after } = params;
+  let results: Post[] = [];
+  let newFindArgs = {
+    ...condition,
+  };
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+  results = await getAllPosts(prisma, newFindArgs);
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastPost = results[resultsLen - 1];
+    const newResults = await getAllPosts(prisma, {
+      ...condition,
+      take: limit,
+      cursor: {
+        id: lastPost.id,
+      },
+    });
+
+    return {
+      total,
+      pageInfo: {
+        hasNext: newResults.length >= limit,
+        endCursor: lastPost.id,
+      },
+      edges: results.map((post) => ({ cursor: post.id, node: post })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }

@@ -145,7 +145,7 @@ export interface IPostPayload {
   updatedAt: Date;
 }
 
-export interface IPageInfo {
+export interface IOffsetPageInfo {
   total: number;
   hasNext: boolean;
   nextPage: number;
@@ -153,9 +153,30 @@ export interface IPageInfo {
   totalPages: number;
 }
 
-export interface IPostsQueryParams {
+export interface IOffsetQueryParams {
   limit?: number;
   page?: number;
+}
+
+export interface ICursorQueryParams {
+  after?: string;
+  limit: number;
+}
+
+export interface ICursorPageInfo {
+  hasNext: boolean;
+  endCursor?: string | null;
+}
+
+export interface ICursorEdge<T> {
+  cursor: string;
+  node: T;
+}
+
+export interface IResponseOnCursor<T> {
+  total: number;
+  pageInfo: ICursorPageInfo;
+  edges: ICursorEdge<T>[];
 }
 
 export interface IPostsByTagQueryParams {

@@ -20,7 +20,7 @@ import {
 } from "../utils/constants";
 import {
   ICommentsQueryParams,
-  IPageInfo,
+  IOffsetPageInfo,
   IUserPayload,
 } from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
@@ -150,7 +150,7 @@ export async function getAllCommentsCtrl(
           nextPage: page + 1,
           previousPage: page - 1,
           totalPages: Math.ceil(count / limit),
-        } as IPageInfo,
+        } as IOffsetPageInfo,
       };
     }
 

@@ -4,11 +4,11 @@ import path from "path";
 import {
   createPost,
   deletePost,
-  getAllPost,
+  getAllPosts,
   getPostByIdForUser,
   getPostByIdWithReactions,
   getPostsByTag,
-  getTrendingPosts,
+  getPostsOnCursor,
   reactionToPost,
   reactionWithdrawToPost,
   updatePost,
@@ -26,9 +26,10 @@ import {
 import { EReactionsMutationStatus, EUserRole } from "../utils/enums";
 import {
   ICreatePostInput,
-  IPageInfo,
+  ICursorQueryParams,
+  IOffsetPageInfo,
+  IOffsetQueryParams,
   IPostsByTagQueryParams,
-  IPostsQueryParams,
   IUpdatePostInput,
   IUserPayload,
 } from "../utils/interfaces";
@@ -190,9 +191,10 @@ export async function reactionToCtrl(
   }
 }
 
-export async function getAllPostsCtrl(
+// Offset based pagination start
+export async function getAllPostsOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IPostsQueryParams
+  params: IOffsetQueryParams
 ) {
   try {
     await getAllPostsSchema.validate(params, { abortEarly: false });
@@ -215,7 +217,7 @@ export async function getAllPostsCtrl(
         skip: (page - 1) * limit,
         take: limit,
       };
-      const result = await getAllPost(prisma, args);
+      const result = await getAllPosts(prisma, args);
 
       return {
         data: result,
@@ -225,21 +227,56 @@ export async function getAllPostsCtrl(
           nextPage: page + 1,
           previousPage: page - 1,
           totalPages: Math.ceil(count / limit),
-        } as IPageInfo,
+        } as IOffsetPageInfo,
       };
     }
 
-    const result = await getAllPost(prisma, args);
+    const result = await getAllPosts(prisma, args);
     return { data: result, total: count };
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }
+// Offset based pagination end
+
+// Cursor based pagination start
+export async function getAllPostsCtrl(
+  prisma: PrismaClient,
+  params: ICursorQueryParams
+) {
+  try {
+    await getAllPostsSchema.validate(params, { abortEarly: false });
+    const condition = {
+      where: { published: true },
+    };
+
+    const args: Prisma.PostFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.post.count(condition);
+    const result = await getPostsOnCursor(prisma, params, args, count);
+    return result;
+  } catch (error: any) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+  }
+}
+
+// Cursor based pagination start
 
 export async function getTrendingPostsCtrl(prisma: PrismaClient) {
   try {
-    const posts = await getTrendingPosts(prisma);
+    const posts = await getAllPosts(prisma, {
+      take: 6,
+      where: { published: true },
+      orderBy: {
+        reactionsBy: { _count: "desc" },
+      },
+    });
+    // throw new GraphQLYogaError("hello");
 
     return posts;
   } catch (error: any) {
@@ -289,7 +326,7 @@ export async function getAllPostsByTagCtrl(
           nextPage: page + 1,
           previousPage: page - 1,
           totalPages: Math.ceil(count / limit),
-        } as IPageInfo,
+        } as IOffsetPageInfo,
       };
     }
 
