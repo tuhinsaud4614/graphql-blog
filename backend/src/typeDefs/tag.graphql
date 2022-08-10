@@ -5,3 +5,13 @@ type Tag {
   createdAt: String!
   updatedAt: String!
 }
+
+type OffsetTagsResponse {
+  results: [Tag!]!
+  total: Int!
+  pageInfo: OffsetPageInfo
+}
+
+type Query {
+  tagsOnOffset(limit: Int, page: Int): OffsetTagsResponse!
+}

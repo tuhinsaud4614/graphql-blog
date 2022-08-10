@@ -59,12 +59,12 @@ export const updatePostSchema = yup.object().shape({
   tags: yup.array().of(yup.string()),
 });
 
-export const getAllPostsSchema = yup.object().shape({
+export const offsetQueryParamsSchema = yup.object().shape({
   limit: yup
     .number()
     .required(REQUIRED_ERR_MSG("Limit"))
     .integer(NOT_NUM_ERR_MSG("Limit", "integer")),
-  after: yup.string(),
+  after: yup.string().nullable(),
 });
 
 export const getAllPostsByTagSchema = yup.object().shape({

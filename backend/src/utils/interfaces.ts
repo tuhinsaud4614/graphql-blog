@@ -159,7 +159,7 @@ export interface IOffsetQueryParams {
 }
 
 export interface ICursorQueryParams {
-  after?: string;
+  after?: string | null;
   limit: number;
 }
 

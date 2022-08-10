@@ -37,7 +37,7 @@ import { getGraphqlYogaError } from "../validations";
 import {
   createPostSchema,
   getAllPostsByTagSchema,
-  getAllPostsSchema,
+  offsetQueryParamsSchema,
   updatePostSchema,
 } from "../validations/post.validation";
 
@@ -197,7 +197,7 @@ export async function getAllPostsOnOffsetCtrl(
   params: IOffsetQueryParams
 ) {
   try {
-    await getAllPostsSchema.validate(params, { abortEarly: false });
+    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
 
     const { limit, page } = params;
     const condition = {
@@ -246,7 +246,7 @@ export async function getAllPostsCtrl(
   params: ICursorQueryParams
 ) {
   try {
-    await getAllPostsSchema.validate(params, { abortEarly: false });
+    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
     const condition = {
       where: { published: true },
     };
