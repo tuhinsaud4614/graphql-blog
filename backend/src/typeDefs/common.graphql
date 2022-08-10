@@ -1,5 +1,18 @@
 scalar File
 
+type OffsetPageInfo {
+  hasNext: Boolean!
+  nextPage: Int!
+  previousPage: Int!
+  totalPages: Int!
+}
+
+# Cursor types start
+type CursorPageInfo {
+  hasNext: Boolean!
+  endCursor: ID
+}
+
 type Picture {
   id: ID!
   url: String!

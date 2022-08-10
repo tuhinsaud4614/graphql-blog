@@ -15,24 +15,11 @@ type Post {
 }
 
 # Offset types start
-type PageInfo {
-  hasNext: Boolean!
-  nextPage: Int!
-  previousPage: Int!
-  totalPages: Int!
-}
 
-type PaginatePosts {
+type OffsetPostsResponse {
   data: [Post!]!
   total: Int!
-  pageInfo: PageInfo
-}
-# Offset types end
-
-# Cursor types start
-type CursorPageInfo {
-  hasNext: Boolean!
-  endCursor: ID
+  pageInfo: OffsetPageInfo
 }
 
 type CursorPostEdge {
@@ -40,7 +27,7 @@ type CursorPostEdge {
   node: Post!
 }
 
-type CursorPostResponse {
+type CursorPostsResponse {
   edges: [CursorPostEdge!]!
   pageInfo: CursorPageInfo!
   total: Int!
@@ -67,11 +54,16 @@ input UpdatePostInput {
 }
 
 type Query {
-  postsOnOffset(limit: Int, page: Int): PaginatePosts!
-  posts(limit: Int!, after: ID): CursorPostResponse!
+  postsOnOffset(limit: Int, page: Int): OffsetPostsResponse!
+  posts(limit: Int!, after: ID): CursorPostsResponse!
   trendingPosts: [Post!]!
   post(id: ID!): Post!
-  tagPosts(role: String!, tag: String!, limit: Int, page: Int): PaginatePosts!
+  tagPosts(
+    role: String!
+    tag: String!
+    limit: Int
+    page: Int
+  ): OffsetPostsResponse!
 }
 
 type Mutation {

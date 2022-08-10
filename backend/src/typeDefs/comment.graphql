@@ -22,7 +22,7 @@ input UpdateCommentInput {
 type PaginateComments {
   data: [Comment!]!
   total: Int!
-  pageInfo: PageInfo
+  pageInfo: OffsetPageInfo
 }
 
 type Query {
