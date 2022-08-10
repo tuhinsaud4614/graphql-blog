@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {
     await client.query<GetPostsQuery, GetPostsQueryVariables>({
       query: GetPostsDocument,
-      variables: { limit: 2 },
+      variables: { limit: 1 },
     });
   } catch (error) {
     process.env.NODE_ENV === "development" &&

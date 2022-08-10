@@ -43,3 +43,10 @@ fragment GetPostItem on Post {
   createdAt
   updatedAt
 }
+
+fragment TagItem on Tag {
+  id
+  title
+  createdAt
+  updatedAt
+}

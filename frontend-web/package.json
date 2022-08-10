@@ -32,6 +32,7 @@
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
     "react-toastify": "^9.0.7",
+    "react-waypoint": "^10.3.0",
     "slate": "^0.81.1",
     "slate-history": "^0.66.0",
     "slate-react": "^0.81.0",

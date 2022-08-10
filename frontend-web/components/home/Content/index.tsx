@@ -1,6 +1,5 @@
 import { NetworkStatus } from "@apollo/client";
 import {
-  ClientOnly,
   ErrorBox,
   NoResultFound,
   PostItem,
@@ -8,6 +7,7 @@ import {
 } from "components";
 import { useGetPostsQuery } from "graphql/generated/schema";
 import { Fragment, PropsWithChildren } from "react";
+import { Waypoint } from "react-waypoint";
 import { gplErrorHandler } from "utils";
 import Sidebar from "./Sidebar";
 
@@ -18,10 +18,24 @@ const className = {
 };
 
 export default function Content() {
-  const { data, error, loading, refetch, networkStatus } = useGetPostsQuery({
-    notifyOnNetworkStatusChange: true,
-    variables: { limit: 2 },
-  });
+  const { data, error, loading, refetch, networkStatus, fetchMore } =
+    useGetPostsQuery({
+      notifyOnNetworkStatusChange: true,
+      variables: { limit: 1 },
+    });
+
+  if (networkStatus == NetworkStatus.refetch) {
+    return (
+      <Wrapper>
+        <ul className={className.items}>
+          <Fragment>
+            <PostItemSkeleton />
+            <PostItemSkeleton />
+          </Fragment>
+        </ul>
+      </Wrapper>
+    );
+  }
 
   if (error) {
     return (
@@ -57,15 +71,45 @@ export default function Content() {
     );
   }
 
+  const { hasNext, endCursor } = data.posts.pageInfo;
+  const { edges } = data.posts;
+
   return (
     <Wrapper>
       <ul className={className.items}>
-        {data.posts.edges.map((edge) => (
-          <PostItem post={edge.node} key={edge.node.id} />
+        {edges.map((edge) => (
+          <Fragment key={edge.node.id}>
+            <PostItem post={edge.node} />
+            {hasNext && (
+              <Waypoint
+                onEnter={async () => {
+                  await fetchMore({
+                    variables: {
+                      after: endCursor,
+                    },
+                    updateQuery(prev, { fetchMoreResult }) {
+                      if (!fetchMoreResult) {
+                        return prev;
+                      }
+
+                      return {
+                        posts: {
+                          ...fetchMoreResult.posts,
+                          edges: [
+                            ...prev.posts.edges,
+                            ...fetchMoreResult.posts.edges,
+                          ],
+                        },
+                      };
+                    },
+                  });
+                }}
+              />
+            )}
+          </Fragment>
         ))}
-        {(loading || networkStatus === NetworkStatus.refetch) && (
+        {networkStatus === NetworkStatus.fetchMore && (
           <Fragment>
-            <PostItemSkeleton />
             <PostItemSkeleton />
           </Fragment>
         )}
@@ -77,9 +121,7 @@ export default function Content() {
 function Wrapper({ children }: PropsWithChildren) {
   return (
     <section className={className.root}>
-      <ClientOnly>
-        <Sidebar />
-      </ClientOnly>
+      <Sidebar />
       {children}
     </section>
   );
