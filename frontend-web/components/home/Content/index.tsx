@@ -20,7 +20,7 @@ const className = {
 export default function Content() {
   const { data, error, loading, refetch, networkStatus } = useGetPostsQuery({
     notifyOnNetworkStatusChange: true,
-    variables: { limit: 2, page: 1 },
+    variables: { limit: 2 },
   });
 
   if (error) {
@@ -42,7 +42,7 @@ export default function Content() {
     );
   }
 
-  if (!data || !data.posts.data || data.posts.data.length === 0) {
+  if (!data || !data.posts.edges || data.posts.edges.length === 0) {
     return (
       <Wrapper>
         <NoResultFound
@@ -60,8 +60,8 @@ export default function Content() {
   return (
     <Wrapper>
       <ul className={className.items}>
-        {data.posts.data.map((post) => (
-          <PostItem post={post} key={post.id} />
+        {data.posts.edges.map((edge) => (
+          <PostItem post={edge.node} key={edge.node.id} />
         ))}
         {(loading || networkStatus === NetworkStatus.refetch) && (
           <Fragment>

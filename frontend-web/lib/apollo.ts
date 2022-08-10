@@ -14,7 +14,14 @@ import { createUploadLink } from "apollo-upload-client";
 import { getCookie, setCookie } from "cookies-next";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
-import { fetchRefreshToken, getAuthUser, isServer } from "utils";
+import {
+  fetchRefreshToken,
+  getAuthUser,
+  isServer,
+  removeLocalStorageValue,
+  removeTokenFromCookie,
+} from "utils";
+import { USER_KEY } from "utils/constants";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -80,74 +87,78 @@ const link = split(
   httpLink
 );
 
-const refreshLink = new TokenRefreshLink({
-  accessTokenField: "accessToken",
-  isTokenValidOrUndefined: () => {
-    try {
-      const token = getCookie("accessToken");
-      if (typeof token !== "string") {
-        return true;
-      }
-      const user = getAuthUser(token);
-      if (user && user.exp * 1000 > Date.now()) {
-        return true;
-      }
-      return false;
-    } catch (_) {
-      return false;
-    }
-  },
-  fetchAccessToken: async () => {
-    const token = getCookie("refreshToken");
-    if (!token || typeof token !== "string") {
-      return;
-    }
-    return fetchRefreshToken(token);
-  },
-  handleResponse: () => (response: any) => {
-    if (!response) return { accessToken: null, refreshToken: null };
-    const accessToken = response.data?.token?.accessToken;
-    const refreshToken = response.data?.token?.refreshToken;
-    if (accessToken && refreshToken) {
-      const user = getAuthUser(refreshToken);
-      setCookie("refreshToken", refreshToken, { maxAge: user?.exp });
-    }
-    return {
-      accessToken: response.data?.token?.accessToken,
-      refreshToken: response.data?.token?.refreshToken,
-    };
-  },
-  handleFetch(accessToken) {
-    const user = getAuthUser(accessToken);
-    setCookie("accessToken", accessToken, { maxAge: user?.exp });
-    if (process.env.NODE_ENV === "development") {
-      console.info("accessToken", accessToken);
-    }
-  },
-  handleError: (error) => {
-    if (
-      !isServer() &&
-      (!navigator.onLine ||
-        (error instanceof TypeError &&
-          error.message === "Network request failed"))
-    ) {
-      process.env.NODE_ENV === "development" &&
-        console.log("Offline -> do nothing 🍵");
-    } else {
-      process.env.NODE_ENV === "development" &&
-        console.log("Online -> log out 👋");
-    }
-    process.env.NODE_ENV === "development" &&
-      console.error("Cannot refresh access token:", error);
-  },
-});
-
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
 export function createApolloClient(serverAccessToken?: string) {
+  const refreshLink = new TokenRefreshLink({
+    accessTokenField: "accessToken",
+    isTokenValidOrUndefined: () => {
+      try {
+        const token = getCookie("accessToken");
+
+        if (!token || typeof token !== "string") {
+          return true;
+        }
+        const user = getAuthUser(token);
+        if (user && user.exp * 1000 > Date.now()) {
+          return true;
+        }
+        return false;
+      } catch (_) {
+        return false;
+      }
+    },
+    fetchAccessToken: async () => {
+      const token = getCookie("refreshToken");
+      if (!token || typeof token !== "string") {
+        return;
+      }
+      return fetchRefreshToken(token);
+    },
+    handleResponse: () => (response: any) => {
+      if (!response) return { accessToken: null, refreshToken: null };
+      const accessToken = response.data?.token?.accessToken;
+      const refreshToken = response.data?.token?.refreshToken;
+      if (accessToken && refreshToken) {
+        const user = getAuthUser(refreshToken);
+        setCookie("refreshToken", refreshToken, { maxAge: user?.exp });
+      }
+      return {
+        accessToken: response.data?.token?.accessToken,
+        refreshToken: response.data?.token?.refreshToken,
+      };
+    },
+    handleFetch(accessToken) {
+      const user = getAuthUser(accessToken);
+      setCookie("accessToken", accessToken, { maxAge: user?.exp });
+      if (process.env.NODE_ENV === "development") {
+        console.info("accessToken", accessToken);
+      }
+    },
+    handleError: (error) => {
+      removeTokenFromCookie();
+      removeLocalStorageValue(USER_KEY);
+      if (
+        !isServer() &&
+        (!navigator.onLine ||
+          (error instanceof TypeError &&
+            error.message === "Network request failed"))
+      ) {
+        process.env.NODE_ENV === "development" &&
+          console.log("Offline -> do nothing 🍵");
+      } else {
+        process.env.NODE_ENV === "development" &&
+          console.log("Online -> log out 👋");
+      }
+      process.env.NODE_ENV === "development" &&
+        console.error("Cannot refresh access token:", error);
+    },
+  });
   const authLink = setContext(async (_, { headers }) => {
     // get the authentication token from local storage if it exists
-    const token = serverAccessToken || (getCookie("accessToken") as string);
+    const token = isServer()
+      ? serverAccessToken
+      : (getCookie("accessToken") as string);
     // return the headers to the context so httpLink can read them
     return {
       headers: {
@@ -161,6 +172,7 @@ export function createApolloClient(serverAccessToken?: string) {
     ssrMode: isServer(),
     link: authLink.concat(refreshLink).concat(link),
     cache: new InMemoryCache(),
+    credentials: "include",
   });
 }
 

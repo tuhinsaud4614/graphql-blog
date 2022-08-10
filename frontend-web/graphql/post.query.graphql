@@ -17,14 +17,17 @@ query GetTrendingPosts {
   }
 }
 
-query GetPosts($limit: Int, $page: Int) {
-  posts(limit: $limit, page: $page) {
-    data {
-      ...GetPostItem
-    }
+query GetPosts($limit: Int!, $after: ID) {
+  posts(limit: $limit, after: $after) {
     total
     pageInfo {
-      ...PageInfoFragment
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...GetPostItem
+      }
     }
   }
 }

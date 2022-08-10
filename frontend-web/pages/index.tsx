@@ -39,19 +39,22 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   const client = initializeApollo();
   try {
-    await Promise.any([
-      client.query({
-        query: GetTrendingPostsDocument,
-      }),
-      client.query<GetPostsQuery, GetPostsQueryVariables>({
-        query: GetPostsDocument,
-        variables: { limit: 2, page: 1 },
-      }),
-    ]);
+    await client.query({
+      query: GetTrendingPostsDocument,
+    });
   } catch (error) {
-    process.env.NODE_ENV === "development" && console.log("error", error);
+    process.env.NODE_ENV === "development" &&
+      console.log("Trending Posts error", error);
   }
-
+  try {
+    await client.query<GetPostsQuery, GetPostsQueryVariables>({
+      query: GetPostsDocument,
+      variables: { limit: 2 },
+    });
+  } catch (error) {
+    process.env.NODE_ENV === "development" &&
+      console.log("All posts error", error);
+  }
   return addApolloState(client, { props: {} });
 };
 

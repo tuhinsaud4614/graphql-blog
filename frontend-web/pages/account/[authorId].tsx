@@ -14,7 +14,6 @@ import {
 import { addApolloState, initializeApollo } from "lib/apollo";
 import _ from "lodash";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
@@ -47,7 +46,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
   const { data } = useGetUserWithPostQuery({
     notifyOnNetworkStatusChange: true,
     variables: { id: authorId },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
   });
 
   if (!data?.user) {
@@ -74,7 +73,6 @@ const AboutPage: NextPage<Props> = ({ query }) => {
         </Fragment>
       }
     >
-      <Head>{/* <title>The RAT Diary | {userName}</title> */}</Head>
       <div className={className.title}>
         {imgUrl ? (
           <span className={className.titleImg}>
@@ -113,9 +111,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
           <Fragment />
         )}
         {currentTab === 1 ? (
-          <ClientOnly>
-            <AuthorInfoAboutTab user={user} />
-          </ClientOnly>
+          <ClientOnly>{<AuthorInfoAboutTab user={user} />}</ClientOnly>
         ) : (
           <Fragment />
         )}
@@ -131,10 +127,13 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   try {
     // const tokens = await serverSideTokenRotation(req, res);
+    // const client = initializeApollo(undefined, tokens?.accessToken);
+
     const client = initializeApollo();
     await client.query({
       query: GetUserWithPostDocument,
       variables: { id: query.authorId },
+      // fetchPolicy: "network-only",
     });
 
     return addApolloState(client, { props: { query } });

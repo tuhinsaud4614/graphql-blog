@@ -387,6 +387,8 @@ export const getAuthUser = (
 };
 
 export const isServer = () => typeof window === "undefined";
+export const isDev = () => process.env.NODE_ENV === "development";
+export const isProduction = () => process.env.NODE_ENV === "production";
 
 export function getUserName(user: Pick<IUser | User, "email" | "name">) {
   return user.name ? user.name.trim() : user.email.split("@")[0];

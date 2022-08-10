@@ -1,8 +1,12 @@
-fragment PageInfoFragment on PageInfo {
+fragment FOffsetPageInfo on OffsetPageInfo {
   hasNext
   nextPage
   previousPage
   totalPages
+}
+fragment FCursorPageInfo on CursorPageInfo {
+  hasNext
+  endCursor
 }
 
 fragment GetPostItem on Post {
