@@ -56,6 +56,9 @@ input UpdatePostInput {
 type Query {
   postsOnOffset(limit: Int, page: Int): OffsetPostsResponse!
   posts(limit: Int!, after: ID): CursorPostsResponse!
+  # Auth required
+  followingAuthorPosts(limit: Int!, after: ID): CursorPostsResponse!
+  # recommendedPosts(limit: Int!, after: ID): CursorPostsResponse!
   trendingPosts: [Post!]!
   post(id: ID!): Post!
   tagPosts(

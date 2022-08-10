@@ -264,7 +264,6 @@ export async function getAllPostsCtrl(
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }
-
 // Cursor based pagination start
 
 export async function getTrendingPostsCtrl(prisma: PrismaClient) {
@@ -272,13 +271,48 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
     const posts = await getAllPosts(prisma, {
       take: 6,
       where: { published: true },
-      orderBy: {
-        reactionsBy: { _count: "desc" },
-      },
+      orderBy: [
+        {
+          reactionsBy: { _count: "desc" },
+        },
+        {
+          comments: { _count: "desc" },
+        },
+      ],
     });
     // throw new GraphQLYogaError("hello");
 
     return posts;
+  } catch (error: any) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+  }
+}
+
+export async function getFollowingAuthorPostsCtrl(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  userId: string
+) {
+  try {
+    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
+
+    const condition = {
+      where: {
+        published: true,
+        author: { followers: { some: { id: userId } } },
+      } as Prisma.PostWhereInput,
+    };
+
+    const args: Prisma.PostFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.post.count(condition);
+    const result = await getPostsOnCursor(prisma, params, args, count);
+
+    return result;
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));

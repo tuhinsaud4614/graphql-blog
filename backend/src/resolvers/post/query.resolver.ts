@@ -3,10 +3,11 @@ import {
   getAllPostsByTagCtrl,
   getAllPostsCtrl,
   getAllPostsOnOffsetCtrl,
+  getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
 } from "../../controller/post.controller";
 import { getPostById } from "../../services/post.service";
-import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
+import { NOT_EXIST_ERR_MSG, UN_AUTH_ERR_MSG } from "../../utils/constants";
 import {
   ICursorQueryParams,
   IOffsetQueryParams,
@@ -31,6 +32,18 @@ export const Query = {
     ___: any
   ) {
     const result = await getAllPostsCtrl(prisma, params);
+    return result;
+  },
+  async followingAuthorPosts(
+    _: any,
+    params: ICursorQueryParams,
+    { prisma, user }: YogaContextReturnType,
+    ___: any
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+    const result = await getFollowingAuthorPostsCtrl(prisma, params, user.id);
     return result;
   },
   async post(
