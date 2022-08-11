@@ -11,6 +11,7 @@ export const ROUTES = {
   login: "/account/login",
   register: "/account/register",
   myHome: "/my-home",
+  myHomeFollowing: "/my-home?tab=following",
   search: "/search",
   post: (id: string) => `/posts/${id}`,
   postsByCategory: (id: string) => `/posts/category/${id}`,

@@ -1,4 +1,4 @@
-import { NotFoundMessage, PostItem, TabBox } from "components";
+import { NotFoundMessage, TabBox } from "components";
 
 const className = {
   item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",
@@ -19,9 +19,13 @@ export default function TabRecommended() {
         )
       }
     >
-      {Array.from({ length: 10 }).map((_, index) => (
-        <PostItem key={index} classes={{ root: className.item }} />
-      ))}
+      {/* {data?.followingAuthorPosts.edges.map((edge) => (
+        <PostItem
+          key={edge.node.id}
+          post={edge.node}
+          classes={{ root: className.item }}
+        />
+      ))} */}
     </TabBox>
   );
 }

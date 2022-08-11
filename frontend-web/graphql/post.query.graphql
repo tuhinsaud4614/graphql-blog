@@ -31,3 +31,17 @@ query GetPosts($limit: Int!, $after: ID) {
     }
   }
 }
+query GetFollowingAuthorPosts($limit: Int!, $after: ID) {
+  followingAuthorPosts(limit: $limit, after: $after) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...GetPostItem
+      }
+    }
+  }
+}

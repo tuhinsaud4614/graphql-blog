@@ -1,16 +1,26 @@
-import { Tabs } from "components";
+import { ClientOnly, Tabs } from "@component";
 import { UserLayout } from "components/Layout";
 import {
   UserHomeFollowList,
   UserHomeTabFollowing,
   UserHomeTabRecommended,
 } from "components/user-home";
+import {
+  GetFollowingAuthorPostsDocument,
+  GetFollowingAuthorPostsQuery,
+  GetFollowingAuthorPostsQueryVariables,
+  GetPostsDocument,
+  GetPostsQuery,
+  GetPostsQueryVariables,
+} from "graphql/generated/schema";
+import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
-import { queryChecking } from "utils";
+import { isDev, queryChecking, ssrAuthorize } from "utils";
+import { ROUTES } from "utils/constants";
 
 const className = {
   top: "flex items-center text-neutral-focus dark:text-neutral-dark-focus my-6",
@@ -32,7 +42,7 @@ const MyHome: NextPage<Props> = ({ query }) => {
 
   return (
     <UserLayout>
-      <Link href="/account/me/following?tab=suggestions">
+      <Link href={ROUTES.mySuggestions}>
         <a aria-label="Suggestions" className={className.top}>
           <span className={className.topIcon}>
             <BsPlusLg size={12} />
@@ -40,13 +50,15 @@ const MyHome: NextPage<Props> = ({ query }) => {
           <p>Keep up with the latest in any topic</p>
         </a>
       </Link>
-      <UserHomeFollowList />
-      {/* <UserHomeFollowSkeleton /> */}
+      <ClientOnly>
+        <UserHomeFollowList />
+      </ClientOnly>
+      {/* <UserHomeFollowSkeleton />*/}
       <Tabs
         tabs={tabs}
         onTab={(index) => {
           setCurrentTab(index);
-          replace(index === 0 ? "/my-home?tab=following" : "/my-home");
+          replace(index === 0 ? ROUTES.myHomeFollowing : ROUTES.myHome);
         }}
         selectedTab={currentTab}
       >
@@ -57,8 +69,52 @@ const MyHome: NextPage<Props> = ({ query }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  return { props: { query } };
+export const getServerSideProps: GetServerSideProps = async ({
+  query,
+  req,
+  res,
+}) => {
+  const accessToken = await ssrAuthorize(req, res);
+
+  if (!accessToken) {
+    return {
+      redirect: { destination: ROUTES.home, permanent: false },
+      props: {},
+    };
+  }
+
+  const client = initializeApollo(undefined, accessToken);
+
+  if ("tab" in query && query["tab"] === "following") {
+    try {
+      await client.query<
+        GetFollowingAuthorPostsQuery,
+        GetFollowingAuthorPostsQueryVariables
+      >({
+        query: GetFollowingAuthorPostsDocument,
+        variables: { limit: 1 },
+        errorPolicy: "all",
+      });
+
+      return addApolloState(client, { props: { query } });
+    } catch (error) {
+      isDev() && console.log(error);
+      return addApolloState(client, { props: { query } });
+    }
+  }
+
+  try {
+    await client.query<GetPostsQuery, GetPostsQueryVariables>({
+      query: GetPostsDocument,
+      variables: { limit: 1 },
+      errorPolicy: "all",
+    });
+
+    return addApolloState(client, { props: { query } });
+  } catch (error) {
+    isDev() && console.log(error);
+    return addApolloState(client, { props: { query } });
+  }
 };
 
 export default MyHome;

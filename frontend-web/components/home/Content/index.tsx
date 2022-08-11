@@ -6,6 +6,7 @@ import {
   PostItemSkeleton,
 } from "components";
 import { useGetPostsQuery } from "graphql/generated/schema";
+import _ from "lodash";
 import { Fragment, PropsWithChildren } from "react";
 import { Waypoint } from "react-waypoint";
 import { gplErrorHandler } from "utils";
@@ -18,13 +19,13 @@ const className = {
 };
 
 export default function Content() {
-  const { data, error, loading, refetch, networkStatus, fetchMore } =
-    useGetPostsQuery({
-      notifyOnNetworkStatusChange: true,
-      variables: { limit: 1 },
-    });
+  const { data, error, refetch, networkStatus, fetchMore } = useGetPostsQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { limit: 1 },
+    errorPolicy: "all",
+  });
 
-  if (networkStatus == NetworkStatus.refetch) {
+  if (networkStatus === NetworkStatus.refetch) {
     return (
       <Wrapper>
         <ul className={className.items}>
@@ -56,7 +57,7 @@ export default function Content() {
     );
   }
 
-  if (!data || !data.posts.edges || data.posts.edges.length === 0) {
+  if (!data || data.posts.edges.length === 0) {
     return (
       <Wrapper>
         <NoResultFound
@@ -74,45 +75,46 @@ export default function Content() {
   const { hasNext, endCursor } = data.posts.pageInfo;
   const { edges } = data.posts;
 
+  const fetchMoreHandler = async () => {
+    try {
+      await fetchMore({
+        variables: {
+          after: endCursor,
+        },
+        updateQuery(prev, { fetchMoreResult }) {
+          if (!fetchMoreResult) {
+            return {
+              ...prev,
+              posts: {
+                ...prev.posts,
+                pageInfo: { ...prev.posts.pageInfo, hasNext: false },
+              },
+            };
+          }
+          return {
+            posts: {
+              ...fetchMoreResult.posts,
+              edges: _.uniqBy(
+                [...prev.posts.edges, ...fetchMoreResult.posts.edges],
+                "cursor"
+              ),
+            },
+          };
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Wrapper>
       <ul className={className.items}>
-        {edges.map((edge) => (
-          <Fragment key={edge.node.id}>
-            <PostItem post={edge.node} />
-            {hasNext && (
-              <Waypoint
-                onEnter={async () => {
-                  await fetchMore({
-                    variables: {
-                      after: endCursor,
-                    },
-                    updateQuery(prev, { fetchMoreResult }) {
-                      if (!fetchMoreResult) {
-                        return prev;
-                      }
-
-                      return {
-                        posts: {
-                          ...fetchMoreResult.posts,
-                          edges: [
-                            ...prev.posts.edges,
-                            ...fetchMoreResult.posts.edges,
-                          ],
-                        },
-                      };
-                    },
-                  });
-                }}
-              />
-            )}
-          </Fragment>
+        {edges.map(({ node }) => (
+          <PostItem key={node.id} post={node} />
         ))}
-        {networkStatus === NetworkStatus.fetchMore && (
-          <Fragment>
-            <PostItemSkeleton />
-          </Fragment>
-        )}
+        {hasNext && <Waypoint onEnter={fetchMoreHandler} />}
+        {networkStatus === NetworkStatus.fetchMore && <PostItemSkeleton />}
       </ul>
     </Wrapper>
   );

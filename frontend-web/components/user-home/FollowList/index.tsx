@@ -1,6 +1,8 @@
+import { selectUser } from "@features";
 import classNames from "classnames";
 import { ComponentPropsWithoutRef } from "react";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
+import { useAppSelector } from "store";
 import { Navigation, Virtual } from "swiper";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import FollowItem from "./Item";
@@ -46,8 +48,12 @@ const NextButton = (props: ComponentPropsWithoutRef<"button">) => {
 };
 
 export default function FollowList() {
+  const rdxUser = useAppSelector(selectUser);
   const prevId = "prev-btn";
   const nextId = "next-btn";
+  if (!rdxUser) {
+    return null;
+  }
   return (
     <Swiper
       modules={[Navigation, Virtual]}

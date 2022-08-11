@@ -38,6 +38,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   const client = initializeApollo();
+  await client.resetStore();
   try {
     await client.query({
       query: GetTrendingPostsDocument,
@@ -50,6 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await client.query<GetPostsQuery, GetPostsQueryVariables>({
       query: GetPostsDocument,
       variables: { limit: 1 },
+      errorPolicy: "all",
     });
   } catch (error) {
     process.env.NODE_ENV === "development" &&
