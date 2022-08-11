@@ -36,6 +36,7 @@ import {
 import { getGraphqlYogaError } from "../validations";
 import {
   createPostSchema,
+  cursorQueryParamsSchema,
   getAllPostsByTagSchema,
   offsetQueryParamsSchema,
   updatePostSchema,
@@ -246,17 +247,14 @@ export async function getAllPostsCtrl(
   params: ICursorQueryParams
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
-    const condition = {
-      where: { published: true },
-    };
+    await cursorQueryParamsSchema.validate(params, { abortEarly: false });
 
     const args: Prisma.PostFindManyArgs = {
       orderBy: { updatedAt: "desc" },
-      ...condition,
+      where: { published: true },
     };
 
-    const count = await prisma.post.count(condition);
+    const count = await prisma.post.count({ where: { published: true } });
     const result = await getPostsOnCursor(prisma, params, args, count);
     return result;
   } catch (error: any) {
@@ -295,7 +293,7 @@ export async function getFollowingAuthorPostsCtrl(
   userId: string
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
+    await cursorQueryParamsSchema.validate(params, { abortEarly: false });
 
     const condition = {
       where: {
@@ -311,7 +309,6 @@ export async function getFollowingAuthorPostsCtrl(
 
     const count = await prisma.post.count(condition);
     const result = await getPostsOnCursor(prisma, params, args, count);
-
     return result;
   } catch (error: any) {
     console.log(error);
