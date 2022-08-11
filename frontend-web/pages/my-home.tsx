@@ -92,7 +92,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         GetFollowingAuthorPostsQueryVariables
       >({
         query: GetFollowingAuthorPostsDocument,
-        variables: { limit: 1 },
+        variables: { limit: 10 },
         errorPolicy: "all",
       });
 
@@ -106,7 +106,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   try {
     await client.query<GetPostsQuery, GetPostsQueryVariables>({
       query: GetPostsDocument,
-      variables: { limit: 1 },
+      variables: { limit: 10 },
       errorPolicy: "all",
     });
 

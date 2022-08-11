@@ -9,7 +9,7 @@ import {
 import { useGetFollowingAuthorPostsQuery } from "graphql/generated/schema";
 import _ from "lodash";
 import { Waypoint } from "react-waypoint";
-import { gplErrorHandler } from "utils";
+import { gplErrorHandler, isDev } from "utils";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -20,7 +20,7 @@ export default function TabFollowing() {
   const { data, error, networkStatus, refetch, fetchMore } =
     useGetFollowingAuthorPostsQuery({
       notifyOnNetworkStatusChange: true,
-      variables: { limit: 1 },
+      variables: { limit: 10 },
       errorPolicy: "all",
     });
 
@@ -37,7 +37,7 @@ export default function TabFollowing() {
       <TabBox
         notFound={
           <ErrorBox
-            title="Fetching posts errors"
+            title="Fetching posts from the authors you follow errors"
             errors={gplErrorHandler(error)}
             classes={{
               root: "mt-6",
@@ -45,7 +45,13 @@ export default function TabFollowing() {
             onRetry={async () => {
               try {
                 await refetch();
-              } catch (error) {}
+              } catch (error) {
+                isDev() &&
+                  console.log(
+                    "Fetching posts from the authors you follow errors",
+                    error
+                  );
+              }
             }}
           />
         }
@@ -56,13 +62,11 @@ export default function TabFollowing() {
     return (
       <TabBox
         notFound={
-          (!data || data.followingAuthorPosts.edges.length === 0) && (
-            <NotFoundMessage
-              title="Posts from the authors you follow will appear here."
-              goto={ROUTES.myHome}
-              gotoText="Browse recommended posts"
-            />
-          )
+          <NotFoundMessage
+            title="Posts from the authors you follow will appear here."
+            goto={ROUTES.myHome}
+            gotoText="Browse recommended posts"
+          />
         }
       />
     );
@@ -79,16 +83,7 @@ export default function TabFollowing() {
         },
         updateQuery(prev, { fetchMoreResult }) {
           if (!fetchMoreResult) {
-            return {
-              ...prev,
-              followingAuthorPosts: {
-                ...prev.followingAuthorPosts,
-                pageInfo: {
-                  ...prev.followingAuthorPosts.pageInfo,
-                  hasNext: false,
-                },
-              },
-            };
+            return prev;
           }
           return {
             followingAuthorPosts: {
@@ -105,7 +100,7 @@ export default function TabFollowing() {
         },
       });
     } catch (error) {
-      console.log(error);
+      isDev() && console.log(error);
     }
   };
   return (
