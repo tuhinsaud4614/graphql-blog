@@ -1,3 +1,4 @@
+export { default as AuthGuard } from "./AuthGuard";
 export { default as Backdrop } from "./Backdrop";
 export { default as BottomSheet } from "./BottomSheet";
 export { default as Button } from "./Button";

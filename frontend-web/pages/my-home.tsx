@@ -1,4 +1,4 @@
-import { ClientOnly, Tabs } from "@component";
+import { AuthGuard, ClientOnly, Tabs } from "@component";
 import { UserLayout } from "components/Layout";
 import {
   UserHomeFollowList,
@@ -12,6 +12,7 @@ import {
   GetPostsDocument,
   GetPostsQuery,
   GetPostsQueryVariables,
+  UserRole,
 } from "graphql/generated/schema";
 import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
@@ -41,31 +42,33 @@ const MyHome: NextPage<Props> = ({ query }) => {
   const { replace } = useRouter();
 
   return (
-    <UserLayout>
-      <Link href={ROUTES.mySuggestions}>
-        <a aria-label="Suggestions" className={className.top}>
-          <span className={className.topIcon}>
-            <BsPlusLg size={12} />
-          </span>
-          <p>Keep up with the latest in any topic</p>
-        </a>
-      </Link>
-      <ClientOnly>
-        <UserHomeFollowList />
-      </ClientOnly>
-      {/* <UserHomeFollowSkeleton />*/}
-      <Tabs
-        tabs={tabs}
-        onTab={(index) => {
-          setCurrentTab(index);
-          replace(index === 0 ? ROUTES.myHomeFollowing : ROUTES.myHome);
-        }}
-        selectedTab={currentTab}
-      >
-        {currentTab === 0 ? <UserHomeTabFollowing /> : <Fragment />}
-        {currentTab === 1 ? <UserHomeTabRecommended /> : <Fragment />}
-      </Tabs>
-    </UserLayout>
+    <AuthGuard role={UserRole.Author}>
+      <UserLayout>
+        <Link href={ROUTES.mySuggestions}>
+          <a aria-label="Suggestions" className={className.top}>
+            <span className={className.topIcon}>
+              <BsPlusLg size={12} />
+            </span>
+            <p>Keep up with the latest in any topic</p>
+          </a>
+        </Link>
+        <ClientOnly>
+          <UserHomeFollowList />
+        </ClientOnly>
+        {/* <UserHomeFollowSkeleton />*/}
+        <Tabs
+          tabs={tabs}
+          onTab={(index) => {
+            setCurrentTab(index);
+            replace(index === 0 ? ROUTES.myHomeFollowing : ROUTES.myHome);
+          }}
+          selectedTab={currentTab}
+        >
+          {currentTab === 0 ? <UserHomeTabFollowing /> : <Fragment />}
+          {currentTab === 1 ? <UserHomeTabRecommended /> : <Fragment />}
+        </Tabs>
+      </UserLayout>
+    </AuthGuard>
   );
 };
 
