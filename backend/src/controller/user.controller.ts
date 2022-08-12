@@ -1,5 +1,5 @@
 import { GraphQLYogaError, PubSub } from "@graphql-yoga/node";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { unlink } from "fs";
 import { pick } from "lodash";
@@ -11,6 +11,7 @@ import {
   getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWithInfo,
+  getUsersOnOffset,
   sendUserVerificationCode,
   unfollowTo,
   updateUserName,
@@ -28,6 +29,7 @@ import {
   AUTH_FAIL_ERR_MSG,
   CREATION_ERR_MSG,
   EXIST_ERR_MSG,
+  FETCH_ERR_MSG,
   FOLLOW_ERR_MSG,
   INVALID_CREDENTIAL,
   NOT_EXIST_ERR_MSG,
@@ -38,9 +40,15 @@ import {
   USER_VERIFICATION_KEY_NAME,
 } from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
-import { ILoginInput, IRegisterInput, IUserPayload } from "../utils/interfaces";
+import {
+  ILoginInput,
+  IOffsetQueryParams,
+  IRegisterInput,
+  IUserPayload,
+} from "../utils/interfaces";
 import redisClient from "../utils/redis";
 import { getGraphqlYogaError } from "../validations";
+import { offsetQueryParamsSchema } from "../validations/post.validation";
 import {
   loginSchema,
   registerSchema,
@@ -376,5 +384,32 @@ export async function unfollowRequestCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, FOLLOW_ERR_MSG);
+  }
+}
+
+export async function getUsersOnOffsetCtrl(
+  prisma: PrismaClient,
+  params: IOffsetQueryParams
+) {
+  try {
+    await offsetQueryParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+
+    const { limit, page } = params;
+    let args: Prisma.UserFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+    };
+
+    const count = await prisma.user.count();
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const result = await getUsersOnOffset(prisma, count, page, limit, args);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
   }
 }

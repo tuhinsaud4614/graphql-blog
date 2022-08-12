@@ -58,8 +58,15 @@ input LoginInput {
   password: String!
 }
 
+type PaginateUsers {
+  data: [User!]!
+  total: Int!
+  pageInfo: OffsetPageInfo
+}
+
 type Query {
   users: [User!]!
+  usersOnOffset(limit: Int, page: Int): PaginateUsers!
   user(id: ID!): User!
 }
 

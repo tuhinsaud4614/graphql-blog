@@ -1,9 +1,9 @@
-import type { PrismaClient } from "@prisma/client";
+import type { Prisma, PrismaClient, User } from "@prisma/client";
 import path from "path";
 import { nanoid } from "../utils";
 import { USER_VERIFICATION_KEY_NAME } from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
-import { IRegisterInput } from "../utils/interfaces";
+import { IRegisterInput, IResponseOnOffset } from "../utils/interfaces";
 import sendMail from "../utils/mailer";
 import redisClient from "../utils/redis";
 
@@ -62,6 +62,36 @@ export function getUserByEmailOrMobileWithInfo(
     where: { OR: [{ email }, { mobile }] },
     include: infoIncludes,
   });
+}
+
+export async function getUsersOnOffset(
+  prisma: PrismaClient,
+  count: number,
+  page?: number,
+  limit?: number,
+  condition?: Prisma.UserFindManyArgs
+) {
+  if (limit && page) {
+    const result = await prisma.user.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      ...condition,
+    });
+
+    return {
+      data: result,
+      total: count,
+      pageInfo: {
+        hasNext: limit * page < count,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        totalPages: Math.ceil(count / limit),
+      },
+    } as IResponseOnOffset<User>;
+  }
+
+  const result = await prisma.user.findMany(condition);
+  return { data: result, total: count } as IResponseOnOffset<User>;
 }
 
 export function verifyAuthorStatus(prisma: PrismaClient, userId: string) {
