@@ -1,7 +1,10 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { getUsersOnOffsetCtrl } from "../../controller/user.controller";
+import {
+  getUsersOnOffsetCtrl,
+  suggestAuthorsToUserOnOffsetCtrl,
+} from "../../controller/user.controller";
 import { getUserById } from "../../services/user.service";
-import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
+import { NOT_EXIST_ERR_MSG, UN_AUTH_ERR_MSG } from "../../utils/constants";
 import { IOffsetQueryParams } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 import { getGraphqlYogaError } from "../../validations";
@@ -18,6 +21,22 @@ export const Query = {
     { prisma }: YogaContextReturnType
   ) {
     const result = await getUsersOnOffsetCtrl(prisma, params);
+    return result;
+  },
+
+  async suggestAuthorsToUserOnOffset(
+    _: any,
+    params: IOffsetQueryParams,
+    { prisma, user }: YogaContextReturnType
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+    }
+    const result = await suggestAuthorsToUserOnOffsetCtrl(
+      prisma,
+      params,
+      user.id
+    );
     return result;
   },
 

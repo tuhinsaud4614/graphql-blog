@@ -413,3 +413,39 @@ export async function getUsersOnOffsetCtrl(
     return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
   }
 }
+
+export async function suggestAuthorsToUserOnOffsetCtrl(
+  prisma: PrismaClient,
+  params: IOffsetQueryParams,
+  userId: string
+) {
+  try {
+    await offsetQueryParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+
+    const { limit, page } = params;
+    const condition = {
+      where: {
+        NOT: {
+          followers: { some: { id: userId } },
+        },
+      } as Prisma.UserWhereInput,
+    };
+    let args: Prisma.UserFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.user.count(condition);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const result = await getUsersOnOffset(prisma, count, page, limit, args);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
+  }
+}
