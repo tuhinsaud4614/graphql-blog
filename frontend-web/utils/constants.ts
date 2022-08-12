@@ -14,6 +14,7 @@ export const ROUTES = {
   myHomeFollowing: "/my-home?tab=following",
   search: "/search",
   post: (id: string) => `/posts/${id}`,
+  categories: "/categories",
   postsByCategory: (id: string) => `/posts/category/${id}`,
   postsByTag: (id: string) => `/posts/tag/${id}`,
   createPost: "/posts/create",

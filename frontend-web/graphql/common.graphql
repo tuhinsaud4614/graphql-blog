@@ -4,6 +4,7 @@ fragment FOffsetPageInfo on OffsetPageInfo {
   previousPage
   totalPages
 }
+
 fragment FCursorPageInfo on CursorPageInfo {
   hasNext
   endCursor

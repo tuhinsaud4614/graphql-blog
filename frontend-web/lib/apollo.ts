@@ -17,6 +17,7 @@ import { useMemo } from "react";
 import {
   fetchRefreshToken,
   getAuthUser,
+  isDev,
   isServer,
   removeLocalStorageValue,
   removeTokenFromCookie,
@@ -132,7 +133,7 @@ export function createApolloClient(serverAccessToken?: string) {
       const user = getAuthUser(accessToken);
       setCookie("accessToken", accessToken, { maxAge: user?.exp });
       if (process.env.NODE_ENV === "development") {
-        console.info("accessToken", accessToken);
+        isDev() && console.info("accessToken", accessToken);
       }
     },
     handleError: (error) => {

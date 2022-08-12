@@ -1,0 +1,6 @@
+fragment FCategory on Category {
+  id
+  title
+  createdAt
+  updatedAt
+}
