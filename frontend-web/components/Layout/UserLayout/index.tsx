@@ -27,17 +27,6 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
             <Tags />
             <hr className={className.divider} />
             <Authors />
-            {/* <SidebarContent
-              moreLink={ROUTES.mySuggestions}
-              moreText="See more suggestions"
-              title="Who to follow"
-              classes={{ items: "pb-8" }}
-            >
-              <FollowItem />
-              <FollowItem />
-              <FollowItem />
-              <FollowItem />
-            </SidebarContent> */}
           </Fragment>
         )
       }

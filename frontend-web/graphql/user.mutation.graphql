@@ -10,3 +10,12 @@ mutation UploadAvatar($avatar: File!) {
 mutation UpdateName($name: String!) {
   updateName(name: $name)
 }
+
+mutation SendFollowRequest($toId: ID!) {
+  followRequest(toId: $toId) {
+    ...FUser
+  }
+}
+mutation SendUnFollowRequest($toId: ID!) {
+  unFollowRequest(toId: $toId)
+}

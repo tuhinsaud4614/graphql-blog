@@ -5,7 +5,7 @@ import {
   NoResultFound,
 } from "components";
 import { SidebarContent } from "components/Sidebar";
-import { useGetUsersOnOffsetQuery } from "graphql/generated/schema";
+import { useGetSuggestAuthorsOnOffsetQuery } from "graphql/generated/schema";
 import { gplErrorHandler, isDev } from "utils";
 import { ROUTES } from "utils/constants";
 
@@ -16,13 +16,11 @@ const className = {
 };
 
 export default function Authors() {
-  const { data, loading, refetch, error } = useGetUsersOnOffsetQuery({
+  const { data, loading, refetch, error } = useGetSuggestAuthorsOnOffsetQuery({
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
     variables: { limit: 4, page: 1 },
   });
-
-  console.log(data);
 
   if (loading) {
     return (
@@ -54,7 +52,7 @@ export default function Authors() {
     );
   }
 
-  if (!data || data.usersOnOffset.data.length === 0) {
+  if (!data || data.suggestAuthorsToUserOnOffset.data.length === 0) {
     return <NoResultFound>No author found for you</NoResultFound>;
   }
 
@@ -63,13 +61,13 @@ export default function Authors() {
       moreLink={ROUTES.mySuggestions}
       title="Who to follow"
       moreText={
-        data.usersOnOffset.pageInfo?.hasNext
+        data.suggestAuthorsToUserOnOffset.pageInfo?.hasNext
           ? "See more suggestions"
           : undefined
       }
       classes={{ items: "pb-8" }}
     >
-      {data.usersOnOffset.data.map((user) => (
+      {data.suggestAuthorsToUserOnOffset.data.map((user) => (
         <FollowItem key={user.id} user={user} />
       ))}
     </SidebarContent>

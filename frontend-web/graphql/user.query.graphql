@@ -55,3 +55,15 @@ query GetUsersOnOffset($limit: Int, $page: Int) {
     }
   }
 }
+
+query GetSuggestAuthorsOnOffset($limit: Int, $page: Int) {
+  suggestAuthorsToUserOnOffset(limit: $limit, page: $page) {
+    total
+    data {
+      ...FUser
+    }
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+  }
+}

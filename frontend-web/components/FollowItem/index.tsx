@@ -2,10 +2,12 @@ import classNames from "classnames";
 import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { generateFileUrl, getUserName } from "utils";
 import { ROUTES } from "utils/constants";
-import Button from "./Button";
-import DemoAvatar from "./DemoAvatar";
+import DemoAvatar from "../DemoAvatar";
+import FollowButton from "./FollowButton";
+import UnFollowButton from "./UnFollowButton";
 
 const className = {
   root: "space-y-3 flex items-center",
@@ -28,9 +30,12 @@ interface Props {
     btn?: string;
   };
   user: FUserFragment;
+  followed?: boolean;
 }
 
-export default function FollowItem({ classes, user }: Props) {
+export default function FollowItem({ classes, user, followed = false }: Props) {
+  const [isFollowed, setFollowed] = useState(followed);
+
   const userName = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
   return (
@@ -79,14 +84,19 @@ export default function FollowItem({ classes, user }: Props) {
           </p>
         </a>
       </Link>
-      <Button
-        type="button"
-        aria-label="Follow"
-        className={classNames(className.btn, classes?.btn)}
-        mode="outline"
-      >
-        Following
-      </Button>
+      {isFollowed ? (
+        <UnFollowButton
+          className={classNames(className.btn, classes?.btn)}
+          onUnFollow={() => setFollowed(false)}
+          toId={user.id}
+        />
+      ) : (
+        <FollowButton
+          className={classNames(className.btn, classes?.btn)}
+          onFollow={() => setFollowed(true)}
+          toId={user.id}
+        />
+      )}
     </li>
   );
 }
