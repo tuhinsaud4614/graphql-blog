@@ -18,9 +18,9 @@ export const Query = {
   async usersOnOffset(
     _: any,
     params: IOffsetQueryParams,
-    { prisma }: YogaContextReturnType
+    { prisma, user }: YogaContextReturnType
   ) {
-    const result = await getUsersOnOffsetCtrl(prisma, params);
+    const result = await getUsersOnOffsetCtrl(prisma, params, user?.id);
     return result;
   },
 

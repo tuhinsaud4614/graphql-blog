@@ -389,7 +389,8 @@ export async function unfollowRequestCtrl(
 
 export async function getUsersOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams
+  params: IOffsetQueryParams,
+  userId?: string
 ) {
   try {
     await offsetQueryParamsSchema.validate(params, {
@@ -397,11 +398,18 @@ export async function getUsersOnOffsetCtrl(
     });
 
     const { limit, page } = params;
+    const condition = {
+      where: {
+        role: { not: EUserRole.Admin },
+        id: { not: userId },
+      } as Prisma.UserWhereInput,
+    };
     let args: Prisma.UserFindManyArgs = {
       orderBy: { updatedAt: "desc" },
+      ...condition,
     };
 
-    const count = await prisma.user.count();
+    const count = await prisma.user.count(condition);
     if (count === 0) {
       return { data: [], total: count };
     }
@@ -430,6 +438,8 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
         NOT: {
           followers: { some: { id: userId } },
         },
+        role: { not: EUserRole.Admin },
+        id: { not: userId },
       } as Prisma.UserWhereInput,
     };
     let args: Prisma.UserFindManyArgs = {
