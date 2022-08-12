@@ -1,0 +1,15 @@
+fragment FUser on User {
+  id
+  name
+  mobile
+  email
+  role
+  authorStatus
+  avatar {
+    id
+    url
+    height
+    width
+  }
+  about
+}

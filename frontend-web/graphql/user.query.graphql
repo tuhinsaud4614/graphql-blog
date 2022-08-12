@@ -43,3 +43,15 @@ query GetUserWithPost($id: ID!) {
     }
   }
 }
+
+query GetUsersOnOffset($limit: Int, $page: Int) {
+  usersOnOffset(limit: $limit, page: $page) {
+    total
+    data {
+      ...FUser
+    }
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+  }
+}

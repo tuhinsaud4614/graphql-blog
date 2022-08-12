@@ -1,7 +1,11 @@
 import classNames from "classnames";
+import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
+import { generateFileUrl, getUserName } from "utils";
+import { ROUTES } from "utils/constants";
 import Button from "./Button";
+import DemoAvatar from "./DemoAvatar";
 
 const className = {
   root: "space-y-3 flex items-center",
@@ -23,38 +27,55 @@ interface Props {
     subtitle?: string;
     btn?: string;
   };
+  user: FUserFragment;
 }
 
-export default function FollowItem({ classes }: Props) {
+export default function FollowItem({ classes, user }: Props) {
+  const userName = getUserName(user);
+  const imgUrl = generateFileUrl(user.avatar?.url);
   return (
     <li className={classNames(className.root, classes?.root)}>
-      <Link href="/account/profile">
-        <a
-          aria-label="User profile"
-          className={classNames(className.avatar, classes?.avatar)}
-        >
-          <Image
-            height={32}
-            width={32}
-            src="/demo.png"
-            alt="Avatar"
-            className="h-[inherit] w-[inherit]"
-            layout="responsive"
-            objectFit="cover"
+      <Link href={ROUTES.authorProfile(user.id)} passHref>
+        {imgUrl ? (
+          <a
+            aria-label={userName}
+            className={classNames(className.avatar, classes?.avatar)}
+          >
+            <Image
+              loader={({ src, width, quality }) =>
+                `${src}?w=${width}&q=${quality || 75}`
+              }
+              src={imgUrl}
+              alt={userName}
+              width={32}
+              height={32}
+              className="h-[inherit] w-[inherit]"
+              layout="responsive"
+              objectFit="cover"
+            />
+          </a>
+        ) : (
+          <DemoAvatar
+            as="a"
+            aria-label={userName}
+            type="button"
+            className="w-8 h-8"
+            size={32 / 1.8}
           />
-        </a>
+        )}
       </Link>
-      <Link href="/account/profile">
+      <Link href={ROUTES.authorProfile(user.id)}>
         <a
-          aria-label="User profile"
+          aria-label={userName}
           className={classNames(className.mid, classes?.mid)}
         >
           <h2 className={classNames(className.title, classes?.title)}>
-            Suneet Bansal
+            {userName}
           </h2>
           <p className={classNames(className.subtitle, classes?.subtitle)}>
-            Technical Writer | Editor | Coder | Active Stackoveflow contributor
-            | Love to learn More |
+            {user.about ||
+              `Technical Writer | Editor | Coder | Active Stackoveflow contributor
+            | Love to learn More |`}
           </p>
         </a>
       </Link>

@@ -12,6 +12,7 @@ export { default as DemoAvatar } from "./DemoAvatar";
 export { default as ErrorBox } from "./ErrorBox";
 export { default as ErrorModal } from "./ErrorModal";
 export { default as FollowItem } from "./FollowItem";
+export { default as FollowItemSkeleton } from "./FollowItemSkeleton";
 export { default as Header } from "./home/Header";
 export { default as ImagePicker } from "./ImagePicker";
 export { default as Menu } from "./Menu";

@@ -1,9 +1,7 @@
-import { FollowItem } from "components";
-import { SidebarContent } from "components/Sidebar";
 import { Fragment, ReactNode } from "react";
-import { ROUTES } from "utils/constants";
 
 import Container from "../Container";
+import Authors from "./Authors";
 import Categories from "./Categories";
 import Tags from "./Tags";
 
@@ -28,7 +26,8 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
             <hr className={className.divider} />
             <Tags />
             <hr className={className.divider} />
-            <SidebarContent
+            <Authors />
+            {/* <SidebarContent
               moreLink={ROUTES.mySuggestions}
               moreText="See more suggestions"
               title="Who to follow"
@@ -38,7 +37,7 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
               <FollowItem />
               <FollowItem />
               <FollowItem />
-            </SidebarContent>
+            </SidebarContent> */}
           </Fragment>
         )
       }
