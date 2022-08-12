@@ -3,6 +3,7 @@ import {
   ICreatePostInput,
   ICursorQueryParams,
   IResponseOnCursor,
+  IResponseOnOffset,
   IUpdatePostInput,
 } from "../utils/interfaces";
 
@@ -218,4 +219,34 @@ export async function getPostsOnCursor(
     },
     edges: [],
   };
+}
+
+export async function getPostsOnOffset(
+  prisma: PrismaClient,
+  count: number,
+  page?: number,
+  limit?: number,
+  condition?: Prisma.PostFindManyArgs
+) {
+  if (limit && page) {
+    const result = await prisma.post.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      ...condition,
+    });
+
+    return {
+      data: result,
+      total: count,
+      pageInfo: {
+        hasNext: limit * page < count,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        totalPages: Math.ceil(count / limit),
+      },
+    } as IResponseOnOffset<Post>;
+  }
+
+  const result = await prisma.post.findMany(condition);
+  return { data: result, total: count } as IResponseOnOffset<Post>;
 }

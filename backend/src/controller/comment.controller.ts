@@ -1,5 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import _ from "lodash";
 import {
   countCommentsForPost,
   createComment,
@@ -7,7 +8,7 @@ import {
   deleteComment,
   getCommentForReply,
   getCommentForUser,
-  getPaginateComments,
+  getCommentsOnOffset,
   updateComment,
 } from "../services/comment.service";
 import { getPostById } from "../services/post.service";
@@ -18,16 +19,10 @@ import {
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
-import {
-  ICommentsQueryParams,
-  IOffsetPageInfo,
-  IUserPayload,
-} from "../utils/interfaces";
+import { IOffsetQueryParams, IUserPayload } from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
-import {
-  createCommentSchema,
-  getAllCommentsSchema,
-} from "../validations/comment.validation";
+import { createCommentSchema } from "../validations/comment.validation";
+import { offsetQueryParamsSchema } from "../validations/post.validation";
 
 export async function createCommentCtrl(
   prisma: PrismaClient,
@@ -112,12 +107,14 @@ export async function deleteCommentCtrl(
   }
 }
 
-export async function getAllCommentsCtrl(
+export async function getPostCommentsOnOffsetCtrl(
   prisma: PrismaClient,
-  params: ICommentsQueryParams
+  params: IOffsetQueryParams & { postId: string }
 ) {
   try {
-    await getAllCommentsSchema.validate(params, { abortEarly: false });
+    await offsetQueryParamsSchema.validate(_.omit(params, ["postId"]), {
+      abortEarly: false,
+    });
 
     const { postId, limit, page } = params;
 
@@ -132,30 +129,11 @@ export async function getAllCommentsCtrl(
       return { data: [], total: count };
     }
 
-    const args: Prisma.CommentFindManyArgs = {
+    const result = await getCommentsOnOffset(prisma, count, page, limit, {
       orderBy: { updatedAt: "desc" },
       where: { postId },
-    };
-
-    // limit && page all have value return paginate value
-
-    if (limit && page) {
-      const result = await getPaginateComments(prisma, page, limit, args);
-
-      return {
-        data: result,
-        total: count,
-        pageInfo: {
-          hasNext: limit * page < count,
-          nextPage: page + 1,
-          previousPage: page - 1,
-          totalPages: Math.ceil(count / limit),
-        } as IOffsetPageInfo,
-      };
-    }
-
-    const result = await prisma.comment.findMany(args);
-    return { data: result, total: count };
+    });
+    return result;
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));

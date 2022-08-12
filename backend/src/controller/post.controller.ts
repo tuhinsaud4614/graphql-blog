@@ -9,6 +9,7 @@ import {
   getPostByIdWithReactions,
   getPostsByTag,
   getPostsOnCursor,
+  getPostsOnOffset,
   reactionToPost,
   reactionWithdrawToPost,
   updatePost,
@@ -212,28 +213,14 @@ export async function getAllPostsOnOffsetCtrl(
     // limit && page all have value return paginate value
 
     const count = await prisma.post.count(condition);
-    if (limit && page) {
-      args = {
-        ...args,
-        skip: (page - 1) * limit,
-        take: limit,
-      };
-      const result = await getAllPosts(prisma, args);
 
-      return {
-        data: result,
-        total: count,
-        pageInfo: {
-          hasNext: limit * page < count,
-          nextPage: page + 1,
-          previousPage: page - 1,
-          totalPages: Math.ceil(count / limit),
-        } as IOffsetPageInfo,
-      };
+    if (count === 0) {
+      return { data: [], total: count };
     }
 
-    const result = await getAllPosts(prisma, args);
-    return { data: result, total: count };
+    const result = await getPostsOnOffset(prisma, count, page, limit, args);
+
+    return result;
   } catch (error: any) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));

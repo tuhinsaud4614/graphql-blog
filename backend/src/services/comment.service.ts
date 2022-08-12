@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Comment, Prisma, PrismaClient } from "@prisma/client";
+import { IResponseOnOffset } from "../utils/interfaces";
 
 export function getCommentForUser(
   prisma: PrismaClient,
@@ -83,4 +84,34 @@ export function updateComment(
 
 export function deleteComment(prisma: PrismaClient, id: string) {
   return prisma.comment.delete({ where: { id } });
+}
+
+export async function getCommentsOnOffset(
+  prisma: PrismaClient,
+  count: number,
+  page?: number,
+  limit?: number,
+  condition?: Prisma.CommentFindManyArgs
+) {
+  if (limit && page) {
+    const result = await prisma.comment.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      ...condition,
+    });
+
+    return {
+      data: result,
+      total: count,
+      pageInfo: {
+        hasNext: limit * page < count,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        totalPages: Math.ceil(count / limit),
+      },
+    } as IResponseOnOffset<Comment>;
+  }
+
+  const result = await prisma.comment.findMany(condition);
+  return { data: result, total: count } as IResponseOnOffset<Comment>;
 }

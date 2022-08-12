@@ -68,10 +68,7 @@ export const cursorQueryParamsSchema = yup.object().shape({
 });
 
 export const offsetQueryParamsSchema = yup.object().shape({
-  limit: yup
-    .number()
-    .required(REQUIRED_ERR_MSG("Limit"))
-    .integer(NOT_NUM_ERR_MSG("Limit", "integer")),
+  limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
   page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
 });
 

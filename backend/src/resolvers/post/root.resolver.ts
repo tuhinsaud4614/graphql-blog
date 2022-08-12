@@ -100,10 +100,13 @@ export const Post = {
   async comments(
     { id }: IPost,
     _: any,
-    { prisma }: YogaContextReturnType,
+    { prisma, user }: YogaContextReturnType,
     __: any
   ) {
     try {
+      if (!user) {
+        return [];
+      }
       const comments = await prisma.post
         .findUnique({
           where: { id },

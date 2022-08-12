@@ -6,8 +6,14 @@ type Category {
   updatedAt: String!
 }
 
+type PaginateCategories {
+  data: [Category!]!
+  total: Int!
+  pageInfo: OffsetPageInfo
+}
+
 type Query {
-  categories: [Category!]!
+  categoriesOnOffset(limit: Int, page: Int): PaginateCategories!
 }
 
 type Mutation {

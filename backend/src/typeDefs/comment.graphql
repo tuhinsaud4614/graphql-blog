@@ -26,7 +26,7 @@ type PaginateComments {
 }
 
 type Query {
-  comments(postId: ID!, limit: Int, page: Int): PaginateComments!
+  postCommentsOnOffset(postId: ID!, limit: Int, page: Int): PaginateComments!
 }
 
 type Mutation {

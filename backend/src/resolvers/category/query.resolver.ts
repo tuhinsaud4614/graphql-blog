@@ -1,22 +1,15 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { getCategoriesOnOffsetCtrl } from "../../controller/category.controller";
+import { IOffsetQueryParams } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Query = {
-  async categories(
+  async categoriesOnOffset(
     _: any,
-    __: any,
+    params: IOffsetQueryParams,
     { prisma }: YogaContextReturnType,
     ___: any
   ) {
-    try {
-      const result = await prisma.category.findMany();
-      // console.log(JSON.stringify(result, null, 2));
-
-      return result;
-    } catch (error: any) {
-      console.log(error);
-
-      return new GraphQLYogaError(error);
-    }
+    const result = await getCategoriesOnOffsetCtrl(prisma, params);
+    return result;
   },
 };

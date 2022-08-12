@@ -145,14 +145,6 @@ export interface IPostPayload {
   updatedAt: Date;
 }
 
-export interface IOffsetPageInfo {
-  total: number;
-  hasNext: boolean;
-  nextPage: number;
-  previousPage: number;
-  totalPages: number;
-}
-
 export interface IOffsetQueryParams {
   limit?: number;
   page?: number;
@@ -179,15 +171,22 @@ export interface IResponseOnCursor<T> {
   edges: ICursorEdge<T>[];
 }
 
+export interface IOffsetPageInfo {
+  hasNext: boolean;
+  nextPage: number;
+  previousPage: number;
+  totalPages: number;
+}
+
+export interface IResponseOnOffset<T> {
+  data: T[];
+  total: number;
+  pageInfo?: IOffsetPageInfo;
+}
+
 export interface IPostsByTagQueryParams {
   role: string;
   tag: string;
-  limit?: number;
-  page?: number;
-}
-
-export interface ICommentsQueryParams {
-  postId: string;
   limit?: number;
   page?: number;
 }
