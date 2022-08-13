@@ -1,4 +1,5 @@
 import { createServer, renderGraphiQL } from "@graphql-yoga/node";
+import cookieParser from "cookie-parser";
 import express from "express";
 import path from "path";
 import resolvers from "./resolvers";
@@ -34,6 +35,7 @@ const server = createServer({
 
 // app.use(helmet());
 // app.use(compression());
+app.use(cookieParser());
 app.use(express.static(path.join(process.cwd(), "public")));
 app.use("/images", express.static(path.join(process.cwd(), "images")));
 app.use("/graphql", server);

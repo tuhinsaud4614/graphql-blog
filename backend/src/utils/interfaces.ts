@@ -99,8 +99,6 @@ export interface IUserPayload {
   authorStatus: EAuthorStatus | null;
   avatar: IPicturePayload | null;
   about: string | null;
-  followers: IUserFollow[];
-  followings: IUserFollow[];
 }
 
 export interface ICategoryPayload {

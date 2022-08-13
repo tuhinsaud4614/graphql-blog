@@ -1,7 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import {
-  SUBSCRIPTION_REACTIONS,
   SUBSCRIPTION_REACTIONS_ERR_MSG,
   UN_AUTH_ERR_MSG,
 } from "../../utils/constants";
@@ -20,11 +19,13 @@ export const Subscription = {
         if (user === null) {
           return new GraphQLYogaError(UN_AUTH_ERR_MSG);
         }
-        return pubSub.subscribe(SUBSCRIPTION_REACTIONS(postId));
+        // return pubSub.subscribe(SUBSCRIPTION_REACTIONS(postId));
+        return pubSub.subscribe("reactions", postId);
       } catch (error) {
         console.log(error);
         return getGraphqlYogaError(error, SUBSCRIPTION_REACTIONS_ERR_MSG);
       }
     },
+    resolve: (payload: any) => payload,
   },
 };

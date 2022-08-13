@@ -91,10 +91,11 @@ enum FollowingMutationStatus {
 
 enum UserMutationStatus {
   VERIFIED
+  PENDING
 }
 
 type SubFollowedBY {
-  followedBy: UserFollow!
+  followedBy: User!
   mutation: FollowingMutationStatus!
 }
 

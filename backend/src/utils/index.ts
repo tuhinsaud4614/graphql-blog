@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
+import { IncomingMessage } from "http";
 import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
 import { has, random } from "lodash";
@@ -64,8 +65,6 @@ export function getUserPayload(decoded: string | JwtPayload) {
       authorStatus: decoded["authorStatus"],
       avatar: decoded["avatar"],
       about: decoded["about"],
-      followers: decoded["followers"],
-      followings: decoded["followings"],
     } as IUserPayload;
   }
 
@@ -89,9 +88,14 @@ export const verifyRefreshToken = async (token: string) => {
   }
 };
 
-export const verifyAccessTokenInContext = (req: Request) => {
+export const verifyAccessTokenInContext = (
+  request: Request,
+  req: IncomingMessage
+) => {
   try {
-    const authToken = req.headers.get("Authorization");
+    // @ts-ignore
+    const accessToken = req.cookies.accessToken;
+    const authToken = request.headers.get("Authorization") || accessToken;
     if (!authToken) {
       return null;
     }

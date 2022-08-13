@@ -1,4 +1,4 @@
-import { GraphQLYogaError, PubSub } from "@graphql-yoga/node";
+import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { unlink } from "fs";
@@ -34,7 +34,6 @@ import {
   INVALID_CREDENTIAL,
   NOT_EXIST_ERR_MSG,
   REFRESH_TOKEN_KEY_NAME,
-  SUBSCRIPTION_USER_VERIFICATION,
   UN_AUTH_ERR_MSG,
   USER_FOLLOWED_ERR_MSG,
   USER_VERIFICATION_KEY_NAME,
@@ -139,8 +138,6 @@ export async function resendActivationCtrl(
 }
 export async function verifyUserCtrl(
   prisma: PrismaClient,
-  // @ts-ignore
-  pubSub: PubSub<PubSubPublishArgsByKey>,
   userId: string,
   code: string
 ) {
@@ -167,12 +164,12 @@ export async function verifyUserCtrl(
     await redisClient.del(VRKey);
     await verifyAuthorStatus(prisma, userId);
 
-    pubSub.publish(SUBSCRIPTION_USER_VERIFICATION(userId), {
-      userVerify: {
-        userId,
-        mutation: EAuthorStatus.Verified,
-      },
-    });
+    // pubSub.publish(SUBSCRIPTION_USER_VERIFICATION(userId), {
+    //   userVerify: {
+    //     userId,
+    //     mutation: EAuthorStatus.Verified,
+    //   },
+    // });
     return userId;
   } catch (error) {
     console.log(error);
@@ -212,8 +209,6 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
         "authorStatus",
         "about",
         "avatar",
-        "followers",
-        "followings",
       ]),
     } as IUserPayload;
     const { accessToken, refreshToken } = await generateTokens(user);

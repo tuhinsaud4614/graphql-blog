@@ -1,9 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import {
-  SUBSCRIPTION_FOLLOWING,
   SUBSCRIPTION_FOLLOWING_ERR_MSG,
-  SUBSCRIPTION_USER_VERIFICATION,
   SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
   UN_AUTH_ERR_MSG,
 } from "../../utils/constants";
@@ -15,19 +13,20 @@ export const Subscription = {
     async subscribe(
       _: any,
       __: any,
-      { user, pubSub }: YogaContextReturnType,
+      { pubSub, user }: YogaContextReturnType,
       ___: GraphQLResolveInfo
     ) {
       try {
         if (user === null) {
           return new GraphQLYogaError(UN_AUTH_ERR_MSG);
         }
-        return pubSub.subscribe(SUBSCRIPTION_FOLLOWING(user.id));
+        return pubSub.subscribe("following", user.id);
       } catch (error) {
         console.log(error);
         return getGraphqlYogaError(error, SUBSCRIPTION_FOLLOWING_ERR_MSG);
       }
     },
+    resolve: (payload: any) => payload,
   },
   userVerify: {
     async subscribe(
@@ -37,7 +36,8 @@ export const Subscription = {
       ___: GraphQLResolveInfo
     ) {
       try {
-        return pubSub.subscribe(SUBSCRIPTION_USER_VERIFICATION(userId));
+        // return pubSub.subscribe(SUBSCRIPTION_USER_VERIFICATION(userId));
+        return pubSub.subscribe("verifyUser", userId);
       } catch (error) {
         console.log(error);
         return getGraphqlYogaError(
@@ -46,5 +46,6 @@ export const Subscription = {
         );
       }
     },
+    resolve: (payload: any) => payload,
   },
 };

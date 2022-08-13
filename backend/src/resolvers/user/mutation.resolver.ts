@@ -14,11 +14,10 @@ import {
 } from "../../controller/user.controller";
 import {
   FOLLOW_OWN_ERR_MSG,
-  SUBSCRIPTION_FOLLOWING,
   UN_AUTH_ERR_MSG,
   UN_FOLLOW_OWN_ERR_MSG,
 } from "../../utils/constants";
-import { EFollowingMutationStatus } from "../../utils/enums";
+import { EAuthorStatus, EFollowingMutationStatus } from "../../utils/enums";
 import { ILoginInput, IRegisterInput } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
@@ -57,8 +56,14 @@ export const Mutation = {
     { prisma, pubSub }: YogaContextReturnType,
     __: GraphQLResolveInfo
   ) {
-    const result = await verifyUserCtrl(prisma, pubSub, userId, code);
-    return result;
+    const verifiedUserId = await verifyUserCtrl(prisma, userId, code);
+    if (!(verifiedUserId instanceof GraphQLYogaError)) {
+      pubSub.publish("verifyUser", verifiedUserId, {
+        mutation: EAuthorStatus.Verified,
+        userId: verifiedUserId,
+      });
+    }
+    return verifiedUserId;
   },
 
   async login(
@@ -137,11 +142,15 @@ export const Mutation = {
     }
 
     const result = await followRequestCtrl(prisma, toId, user);
-    pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
-      following: {
-        followedBy: user,
-        mutation: EFollowingMutationStatus.Follow,
-      },
+    // pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
+    //   following: {
+    //     followedBy: user,
+    //     mutation: EFollowingMutationStatus.Follow,
+    //   },
+    // });
+    pubSub.publish("following", toId, {
+      followedBy: user,
+      mutation: EFollowingMutationStatus.Follow,
     });
     return result;
   },
@@ -161,11 +170,15 @@ export const Mutation = {
     }
 
     const result = await unfollowRequestCtrl(prisma, toId, user);
-    pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
-      following: {
-        followedBy: user,
-        mutation: EFollowingMutationStatus.Unfollow,
-      },
+    // pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
+    //   following: {
+    //     followedBy: user,
+    //     mutation: EFollowingMutationStatus.Unfollow,
+    //   },
+    // });
+    pubSub.publish("following", toId, {
+      followedBy: user,
+      mutation: EFollowingMutationStatus.Unfollow,
     });
     return result;
   },

@@ -1,4 +1,4 @@
-import { GraphQLYogaError, PubSub } from "@graphql-yoga/node";
+import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
 import {
@@ -21,9 +21,9 @@ import {
   FETCH_ERR_MSG,
   NOT_EXIST_ERR_MSG,
   REACTIONS_ERR_MSG,
-  SUBSCRIPTION_REACTIONS,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
+import { YogaPubSubType } from "../utils/context";
 import { EReactionsMutationStatus, EUserRole } from "../utils/enums";
 import {
   ICreatePostInput,
@@ -148,8 +148,8 @@ export async function deletePostCtrl(
 
 export async function reactionToCtrl(
   prisma: PrismaClient,
-  // @ts-ignore
-  pubSub: PubSub<PubSubPublishArgsByKey>,
+  // pubSub: PubSub<PubSubPublishArgsByKey>,
+  pubSub: YogaPubSubType,
   toId: string,
   user: IUserPayload
 ) {
@@ -167,11 +167,15 @@ export async function reactionToCtrl(
     if (index === -1) {
       await reactionToPost(prisma, toId, user.id);
 
-      pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
-        reactions: {
-          reactBy: user,
-          mutation: EReactionsMutationStatus.React,
-        },
+      // pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
+      //   reactions: {
+      //     reactBy: user,
+      //     mutation: EReactionsMutationStatus.React,
+      //   },
+      // });
+      pubSub.publish("reactions", toId, {
+        reactBy: user,
+        mutation: EReactionsMutationStatus.React,
       });
 
       return user;
@@ -179,11 +183,15 @@ export async function reactionToCtrl(
 
     await reactionWithdrawToPost(prisma, toId, user.id);
 
-    pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
-      reactions: {
-        reactBy: user,
-        mutation: EReactionsMutationStatus.Withdraw,
-      },
+    // pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
+    //   reactions: {
+    //     reactBy: user,
+    //     mutation: EReactionsMutationStatus.Withdraw,
+    //   },
+    // });
+    pubSub.publish("reactions", toId, {
+      reactBy: user,
+      mutation: EReactionsMutationStatus.Withdraw,
     });
 
     return user;
