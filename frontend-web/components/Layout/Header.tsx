@@ -1,10 +1,12 @@
 import { selectUser } from "@features";
 import { useMediaQuery } from "@hooks";
 import { ClientOnly } from "components";
+import { useFollowingSubscription } from "graphql/generated/schema";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { BiBell } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
 import { useAppSelector } from "store";
@@ -18,7 +20,7 @@ const className = {
   homeLink: "flex items-center justify-center h-[3.125rem] w-[3.125rem]",
   items: "list-none m-0 flex items-center space-x-3",
   notifications:
-    "w-9 h-9 flex items-center justify-center rounded-full border border-accent hover:border-accent-focus dark:border-accent-dark dark:hover:border-accent text-accent hover:text-accent-focus dark:text-accent-dark dark:hover:text-accent cursor-pointer select-none active:scale-95",
+    "relative w-9 h-9 flex items-center justify-center rounded-full border border-accent hover:border-accent-focus dark:border-accent-dark dark:hover:border-accent text-accent hover:text-accent-focus dark:text-accent-dark dark:hover:text-accent cursor-pointer select-none active:scale-95",
   link: "cursor-pointer select-none active:scale-95 text-accent hover:text-accent-focus dark:text-accent-dark dark:hover:text-accent",
 };
 
@@ -63,23 +65,49 @@ export default function Header() {
           {!!user && (
             <ClientOnly>
               <li>
-                <Link href={ROUTES.notifications} passHref>
-                  <a
-                    className={className.notifications}
-                    aria-label="Notifications"
-                  >
-                    {pathname === ROUTES.notifications ? (
-                      <FaBell size={20} />
-                    ) : (
-                      <BiBell size={20} />
-                    )}
-                  </a>
-                </Link>
+                <Bell pathname={pathname} />
               </li>
             </ClientOnly>
           )}
         </ul>
       </nav>
     </header>
+  );
+}
+
+function Bell({ pathname }: { pathname: string }) {
+  const [show, setShow] = useState(false);
+  const { data } = useFollowingSubscription({
+    fetchPolicy: "network-only",
+  });
+
+  useEffect(() => {
+    if (data?.following.mutation) {
+      console.log(data?.following.mutation);
+
+      setShow(true);
+    }
+  }, [data]);
+
+  return (
+    <Link href={ROUTES.notifications} passHref>
+      <a
+        className={className.notifications}
+        aria-label="Notifications"
+        onClick={() => setShow(false)}
+      >
+        {pathname === ROUTES.notifications ? (
+          <FaBell size={20} />
+        ) : (
+          <BiBell size={20} />
+        )}
+
+        {show && (
+          <span className="inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-secondary rounded-full border-2 border-white dark:border-base-dark-300">
+            1
+          </span>
+        )}
+      </a>
+    </Link>
   );
 }

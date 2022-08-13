@@ -41,6 +41,7 @@ class SSELink extends ApolloLink {
       JSON.stringify(operation.operationName)
     );
     url.searchParams.append("variables", JSON.stringify(operation.variables));
+
     if (operation.extensions) {
       url.searchParams.append(
         "extensions",
@@ -65,10 +66,12 @@ class SSELink extends ApolloLink {
   }
 }
 
-const uri = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
+const uri = `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}/graphql`;
 
 const sseLink = new SSELink({
-  uri,
+  // uri: uri,
+  uri: "http://localhost:4000/graphql",
+  withCredentials: true,
 });
 
 const httpLink = createUploadLink({
@@ -173,7 +176,7 @@ export function createApolloClient(serverAccessToken?: string) {
     ssrMode: isServer(),
     link: authLink.concat(refreshLink).concat(link),
     cache: new InMemoryCache(),
-    credentials: "include",
+    credentials: "same-origin",
   });
 }
 

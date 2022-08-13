@@ -80,7 +80,7 @@ export default function NameEdit() {
             aria-label="name"
             aria-invalid={!name}
             type="text"
-            value={name || user?.name}
+            value={name || !user?.name ? "" : user?.name}
             onChange={(e) => {
               setName(e.target.value);
             }}

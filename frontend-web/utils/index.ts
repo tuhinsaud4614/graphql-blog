@@ -395,8 +395,7 @@ export function getUserName(user: Pick<IUser | User, "email" | "name">) {
 }
 
 export function generateFileUrl(fileUrl?: string) {
-  const serverEndpoint =
-    process.env.NEXT_PUBLIC_SERVER_ENDPOINT || "http://localhost:4000";
+  const serverEndpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
 
   if (fileUrl && serverEndpoint) {
     return serverEndpoint + "/" + fileUrl;
@@ -413,20 +412,14 @@ const query = `
       }
     `;
 export async function fetchRefreshToken(token: string) {
-  const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
+  const { data } = await axios.post(
+    `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
+    {
       query,
-      variables: {
-        refreshToken: token,
-      },
-    }),
-  });
-  return response.json();
+      variables: { refreshToken: token },
+    }
+  );
+  return data;
 }
 
 export function storeTokenToCookie(
@@ -457,14 +450,10 @@ export async function serverSideTokenRotation(
 ) {
   try {
     const { data } = await axios.post(
-      process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "",
+      `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
       {
         query,
         variables: { refreshToken: token },
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
       }
     );
     const accessToken = data.data.token.accessToken;

@@ -18,7 +18,7 @@ import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { isDev, queryChecking, ssrAuthorize } from "utils";
 import { ROUTES } from "utils/constants";
@@ -41,6 +41,10 @@ const MyHome: NextPage<Props> = ({ query }) => {
   );
   const { replace } = useRouter();
 
+  useEffect(() => {
+    setCurrentTab(queryChecking(query, tabs, "tab", 1));
+  }, [query]);
+
   return (
     <AuthGuard role={UserRole.Author}>
       <UserLayout>
@@ -54,12 +58,11 @@ const MyHome: NextPage<Props> = ({ query }) => {
         </Link>
         <ClientOnly>
           <UserHomeFollowList />
+          {/* <UserHomeFollowSkeleton />*/}
         </ClientOnly>
-        {/* <UserHomeFollowSkeleton />*/}
         <Tabs
           tabs={tabs}
           onTab={(index) => {
-            setCurrentTab(index);
             replace(index === 0 ? ROUTES.myHomeFollowing : ROUTES.myHome);
           }}
           selectedTab={currentTab}

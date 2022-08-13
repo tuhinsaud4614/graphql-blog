@@ -1,0 +1,8 @@
+subscription Following {
+  following {
+    followedBy {
+      ...FUser
+    }
+    mutation
+  }
+}

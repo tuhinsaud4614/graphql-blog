@@ -16,7 +16,7 @@ export default function NotFoundMessage({ goto, gotoText, title }: Props) {
   return (
     <div className={className.root}>
       <p className={className.title}>{title}</p>
-      <LinkButton href={goto} className="text-sm">
+      <LinkButton href={goto} passHref className="text-sm">
         {gotoText}
       </LinkButton>
     </div>

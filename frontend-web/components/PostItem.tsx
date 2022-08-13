@@ -1,5 +1,6 @@
 import { selectUser } from "@features";
 import classNames from "classnames";
+import { motion } from "framer-motion";
 import { GetPostItemFragment } from "graphql/generated/schema";
 import moment from "moment";
 import Image from "next/image";
@@ -8,6 +9,7 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useAppSelector } from "store";
 import { generateFileUrl, getUserName } from "utils";
 import { ROUTES } from "utils/constants";
+import { itemInVariants } from "utils/framer-variants";
 import ClientOnly from "./ClientOnly";
 import UserLink from "./UserLink";
 
@@ -20,8 +22,8 @@ const className = {
   imgContainer:
     "w-14 h-[calc(3.5rem/16*9)] md:w-28 md:h-[calc(7rem/16*9)] bg-neutral/5 relative",
   img: "absolute z-10 inset-0 w-full h-full",
-  tags: "flex-1 overflow-hidden flex items-center space-x-2",
-  tag: "py-0.5 px-2 text:xs md:text-sm text-neutral/75 dark:text-neutral-dark/75 bg-neutral/5 dark:bg-neutral-dark/5 active:scale-95 capitalize rounded-full whitespace-nowrap",
+  tags: "flex-1 flex-wrap md:flex-nowrap md:overflow-hidden flex items-center space-x-2 space-y-2 -mt-2",
+  tag: "first:mt-2 py-0.5 px-2 text:xs md:text-sm text-neutral/75 dark:text-neutral-dark/75 bg-neutral/5 dark:bg-neutral-dark/5 active:scale-95 capitalize rounded-full whitespace-nowrap",
   timeBox:
     "pt-8 flex items-center text-xs text-neutral/70 dark:text-neutral-dark/70",
   favBtn: "ml-2 active:scale-95 hover:text-secondary-focus",
@@ -45,7 +47,14 @@ export default function PostItem({ classes, post }: Props) {
   const userName = getUserName(post.author);
 
   return (
-    <li className={classNames(className.root, classes?.root)}>
+    <motion.li
+      layout
+      variants={itemInVariants}
+      initial="offscreen"
+      whileInView="onscreen"
+      viewport={{ once: true, amount: 0.5 }}
+      className={classNames(className.root, classes?.root)}
+    >
       <div className={classNames(className.left, classes?.left)}>
         <UserLink
           href={ROUTES.authorProfile(post.author.id)}
@@ -125,6 +134,6 @@ export default function PostItem({ classes, post }: Props) {
           objectFit="cover"
         />
       </div>
-    </li>
+    </motion.li>
   );
 }
