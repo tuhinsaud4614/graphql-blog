@@ -35,6 +35,7 @@ import {
   NOT_EXIST_ERR_MSG,
   REFRESH_TOKEN_KEY_NAME,
   UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
   USER_FOLLOWED_ERR_MSG,
   USER_VERIFICATION_KEY_NAME,
 } from "../utils/constants";
@@ -226,7 +227,12 @@ export async function logoutCtrl(user: IUserPayload) {
     return user.id;
   } catch (error) {
     console.log(error);
-    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+    return getGraphqlYogaError(
+      error,
+      UN_AUTH_ERR_MSG,
+      undefined,
+      UN_AUTH_EXT_ERR_CODE
+    );
   }
 }
 
@@ -236,7 +242,9 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
     const isExist = await getUserById(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     const { accessToken, refreshToken: rfToken } = await generateTokens(user);
@@ -244,7 +252,12 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
     return { accessToken, refreshToken: rfToken };
   } catch (error) {
     console.log(error);
-    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+    return getGraphqlYogaError(
+      error,
+      UN_AUTH_ERR_MSG,
+      undefined,
+      UN_AUTH_EXT_ERR_CODE
+    );
   }
 }
 
@@ -257,7 +270,9 @@ export async function uploadAvatar(
     const isExist = await getUserByIdWithInfo(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     const uId = nanoid();
@@ -298,7 +313,12 @@ export async function uploadAvatar(
     return pick(updatedUser.avatar, ["id", "url", "height", "width"]);
   } catch (error) {
     console.log(error);
-    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+    return getGraphqlYogaError(
+      error,
+      UN_AUTH_ERR_MSG,
+      undefined,
+      UN_AUTH_EXT_ERR_CODE
+    );
   }
 }
 
@@ -311,14 +331,21 @@ export async function updateNameCtrl(
     const isExist = await getUserByIdWithInfo(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     const updatedUser = await updateUserName(prisma, isExist.id, name);
     return updatedUser.name;
   } catch (error) {
     console.log(error);
-    return getGraphqlYogaError(error, UN_AUTH_ERR_MSG);
+    return getGraphqlYogaError(
+      error,
+      UN_AUTH_ERR_MSG,
+      undefined,
+      UN_AUTH_EXT_ERR_CODE
+    );
   }
 }
 

@@ -4,7 +4,11 @@ import {
   suggestAuthorsToUserOnOffsetCtrl,
 } from "../../controller/user.controller";
 import { getUserById } from "../../services/user.service";
-import { NOT_EXIST_ERR_MSG, UN_AUTH_ERR_MSG } from "../../utils/constants";
+import {
+  NOT_EXIST_ERR_MSG,
+  UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
+} from "../../utils/constants";
 import { IOffsetQueryParams } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 import { getGraphqlYogaError } from "../../validations";
@@ -30,7 +34,9 @@ export const Query = {
     { prisma, user }: YogaContextReturnType
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
     const result = await suggestAuthorsToUserOnOffsetCtrl(
       prisma,

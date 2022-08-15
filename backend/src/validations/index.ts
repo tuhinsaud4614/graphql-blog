@@ -9,18 +9,24 @@ export class CustomError {
   }
 }
 
-export function getGraphqlYogaError(error: any, msg: string, errFor?: string) {
+export function getGraphqlYogaError(
+  error: any,
+  msg: string,
+  errFor?: string,
+  code?: string
+) {
   if (error instanceof CustomError) {
-    return new GraphQLYogaError(error.message);
+    return new GraphQLYogaError(error.message, { code });
   }
 
   if (error instanceof yup.ValidationError) {
     const err = formatYupError(error);
     return new GraphQLYogaError(VALIDATION_ERR_MSG(errFor), {
+      code,
       fields: err,
     });
   }
-  return new GraphQLYogaError(msg);
+  return new GraphQLYogaError(msg, { code });
 }
 
 export const uploadFileSchema = yup.object().shape({

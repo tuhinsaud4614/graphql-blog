@@ -5,7 +5,11 @@ import {
   deleteCategoryCtrl,
   updateCategoryCtrl,
 } from "../../controller/category.controller";
-import { ROLE_ERR_MSG, UN_AUTH_ERR_MSG } from "../../utils/constants";
+import {
+  ROLE_ERR_MSG,
+  UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
+} from "../../utils/constants";
 import { EUserRole } from "../../utils/enums";
 import { YogaContextReturnType } from "../../utils/types";
 
@@ -17,7 +21,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     if (user.role !== EUserRole.Admin) {
@@ -35,7 +41,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     if (user.role !== EUserRole.Admin) {
@@ -53,7 +61,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     if (user.role !== EUserRole.Admin) {

@@ -15,6 +15,7 @@ import {
 import {
   FOLLOW_OWN_ERR_MSG,
   UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
   UN_FOLLOW_OWN_ERR_MSG,
 } from "../../utils/constants";
 import { EAuthorStatus, EFollowingMutationStatus } from "../../utils/enums";
@@ -83,7 +84,9 @@ export const Mutation = {
     ___: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
     const result = await logoutCtrl(user);
     return result;
@@ -106,7 +109,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     const result = await uploadAvatar(prisma, avatar, user);
@@ -120,7 +125,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     const result = await updateNameCtrl(prisma, name, user);
@@ -134,7 +141,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     if (user.id === toId) {
@@ -162,7 +171,9 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     if (user.id === toId) {

@@ -4,6 +4,7 @@ import {
   SUBSCRIPTION_FOLLOWING_ERR_MSG,
   SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
   UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
 } from "../../utils/constants";
 import { YogaContextReturnType } from "../../utils/types";
 import { getGraphqlYogaError } from "../../validations";
@@ -18,7 +19,9 @@ export const Subscription = {
     ) {
       try {
         if (user === null) {
-          return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+          return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+            code: UN_AUTH_EXT_ERR_CODE,
+          });
         }
         return pubSub.subscribe("following", user.id);
       } catch (error) {

@@ -4,6 +4,7 @@ import { uploadFileCtrl } from "../../controller/common.controller";
 import {
   ROLE_ERR_MSG,
   UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
   VERIFIED_AUTHOR_ERR_MSG,
 } from "../../utils/constants";
 import { EAuthorStatus, EUserRole } from "../../utils/enums";
@@ -17,7 +18,9 @@ export const Mutation = {
     ___: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
 
     if (user.role === EUserRole.User) {

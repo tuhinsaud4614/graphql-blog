@@ -7,7 +7,11 @@ import {
   getTrendingPostsCtrl,
 } from "../../controller/post.controller";
 import { getPostById } from "../../services/post.service";
-import { NOT_EXIST_ERR_MSG, UN_AUTH_ERR_MSG } from "../../utils/constants";
+import {
+  NOT_EXIST_ERR_MSG,
+  UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
+} from "../../utils/constants";
 import {
   ICursorQueryParams,
   IOffsetQueryParams,
@@ -41,7 +45,9 @@ export const Query = {
     ___: any
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG);
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
     }
     const result = await getFollowingAuthorPostsCtrl(prisma, params, user.id);
     return result;
