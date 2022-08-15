@@ -1,5 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
-import { ProgressBar } from "@component";
+import { ClientOnly, ProgressBar, SubscriptionContainer } from "@component";
 import { useDarkMode } from "@hooks";
 import type { AppPropsWithLayout } from "@types";
 import { useApollo } from "lib/apollo";
@@ -15,7 +15,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../styles/globals.css";
 
-export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
   const { events } = useRouter();
   const apolloClient = useApollo(pageProps);
@@ -59,6 +59,9 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Provider store={store}>
         <ApolloProvider client={apolloClient}>
           <Component {...pageProps} />
+          <ClientOnly>
+            <SubscriptionContainer />
+          </ClientOnly>
         </ApolloProvider>
       </Provider>
       <ToastContainer
@@ -74,3 +77,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     </React.Fragment>
   );
 }
+
+// export default nextReduxWrapper.withRedux(MyApp);
+export default MyApp;

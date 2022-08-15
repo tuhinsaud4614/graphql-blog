@@ -2,6 +2,7 @@ import {
   ApolloClient,
   ApolloLink,
   FetchResult,
+  from,
   InMemoryCache,
   NormalizedCacheObject,
   Operation,
@@ -26,7 +27,9 @@ import { USER_KEY } from "utils/constants";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
-type SSELinkOptions = EventSourceInit & { uri: string };
+type SSELinkOptions = EventSourceInit & {
+  uri: string;
+};
 
 class SSELink extends ApolloLink {
   constructor(private options: SSELinkOptions) {
@@ -41,7 +44,6 @@ class SSELink extends ApolloLink {
       JSON.stringify(operation.operationName)
     );
     url.searchParams.append("variables", JSON.stringify(operation.variables));
-
     if (operation.extensions) {
       url.searchParams.append(
         "extensions",
@@ -68,9 +70,10 @@ class SSELink extends ApolloLink {
 
 const uri = `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}/graphql`;
 
+const sseUri = isDev() ? "http://localhost:4000/graphql" : "";
+
 const sseLink = new SSELink({
-  // uri: uri,
-  uri: "http://localhost:4000/graphql",
+  uri: sseUri,
   withCredentials: true,
 });
 
@@ -90,7 +93,6 @@ const link = split(
   sseLink,
   httpLink
 );
-
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
 export function createApolloClient(serverAccessToken?: string) {
@@ -135,9 +137,6 @@ export function createApolloClient(serverAccessToken?: string) {
     handleFetch(accessToken) {
       const user = getAuthUser(accessToken);
       setCookie("accessToken", accessToken, { maxAge: user?.exp });
-      if (process.env.NODE_ENV === "development") {
-        isDev() && console.info("accessToken", accessToken);
-      }
     },
     handleError: (error) => {
       removeTokenFromCookie();
@@ -148,14 +147,11 @@ export function createApolloClient(serverAccessToken?: string) {
           (error instanceof TypeError &&
             error.message === "Network request failed"))
       ) {
-        process.env.NODE_ENV === "development" &&
-          console.log("Offline -> do nothing 🍵");
+        isDev() && console.log("Offline -> do nothing 🍵");
       } else {
-        process.env.NODE_ENV === "development" &&
-          console.log("Online -> log out 👋");
+        isDev() && console.log("Online -> log out 👋");
       }
-      process.env.NODE_ENV === "development" &&
-        console.error("Cannot refresh access token:", error);
+      isDev() && console.error("Cannot refresh access token:", error);
     },
   });
   const authLink = setContext(async (_, { headers }) => {
@@ -163,6 +159,7 @@ export function createApolloClient(serverAccessToken?: string) {
     const token = isServer()
       ? serverAccessToken
       : (getCookie("accessToken") as string);
+
     // return the headers to the context so httpLink can read them
     return {
       headers: {
@@ -172,9 +169,9 @@ export function createApolloClient(serverAccessToken?: string) {
     };
   });
   return new ApolloClient({
-    connectToDevTools: process.env.NODE_ENV === "development",
+    connectToDevTools: isDev(),
     ssrMode: isServer(),
-    link: authLink.concat(refreshLink).concat(link),
+    link: from([refreshLink, authLink, link]),
     cache: new InMemoryCache(),
     credentials: "same-origin",
   });

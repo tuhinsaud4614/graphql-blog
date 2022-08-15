@@ -1,6 +1,7 @@
 // Local Storage key
 export const RECENT_SEARCHES_KEY = "recent-searches";
 export const USER_KEY = "user";
+export const NOTIFICATIONS_KEY = "notifications";
 
 // TABS
 export const SEARCH_TABS = ["posts", "author", "categories", "tags"] as const;

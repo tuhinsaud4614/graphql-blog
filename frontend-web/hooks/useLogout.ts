@@ -12,11 +12,10 @@ export default function useLogout() {
 
   async function logoutHandler() {
     try {
-      await logout();
       deleteCookie("accessToken");
       deleteCookie("refreshToken");
       rdxDispatch(setAuthUser(null));
-      await client.resetStore();
+      await logout();
     } catch (error) {
       isDev() && console.log("Logout error", error);
     }

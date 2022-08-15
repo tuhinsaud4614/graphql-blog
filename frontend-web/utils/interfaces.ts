@@ -1,5 +1,11 @@
+import { NotificationType } from "@types";
 import { EmptyText } from "components/PostEditor/utils";
-import { AuthorStatus, UserRole } from "graphql/generated/schema";
+import {
+  AuthorStatus,
+  FollowingMutationStatus,
+  FUserFragment,
+  UserRole,
+} from "graphql/generated/schema";
 import { Descendant } from "slate";
 
 export interface IAnchorOrigin {
@@ -37,4 +43,10 @@ export interface IUser {
   mobile: string;
   name?: string | null;
   role: UserRole;
+}
+
+export interface IFollowingNotification {
+  type: NotificationType;
+  followedBy: FUserFragment;
+  mutation: FollowingMutationStatus;
 }

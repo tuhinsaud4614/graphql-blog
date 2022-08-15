@@ -1,5 +1,6 @@
 export { default as AuthGuard } from "./AuthGuard";
 export { default as Backdrop } from "./Backdrop";
+export { default as Badge } from "./Badge";
 export { default as BottomSheet } from "./BottomSheet";
 export { default as Button } from "./Button";
 export { default as LinkButton } from "./Button/LinkButton";
@@ -40,6 +41,7 @@ export { default as SlateLeaf } from "./SlateLeaf";
 export { default as SlateLink } from "./SlateLink";
 export { default as SlateMarkButton } from "./SlateMarkButton";
 export { default as SlateViewer } from "./SlateViewer";
+export { default as SubscriptionContainer } from "./SubscriptionContainer";
 export { default as TabBox } from "./TabBox";
 export { default as Tabs } from "./Tabs";
 export { default as TabPanel } from "./Tabs/TabPanel";

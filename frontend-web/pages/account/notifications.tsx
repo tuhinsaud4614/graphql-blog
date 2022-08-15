@@ -1,25 +1,43 @@
-import { NextPageWithLayout } from "@types";
 import { UserLayout } from "components/Layout";
+import { getCookie } from "cookies-next";
+import { seenAll } from "features/notificationSlice/notificationSlice";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { Fragment, ReactElement } from "react";
+import { useEffect } from "react";
+import { useAppDispatch } from "store";
+import { ROUTES } from "utils/constants";
 
 const className = {
   title:
     "my-6 text-neutral dark:text-neutral-dark font-bold line-clamp-1 text-ellipsis md:leading-[3.25rem] text-xl md:text-[2.625rem]",
 };
 
-const NotificationsPage: NextPageWithLayout = () => {
+const NotificationsPage: NextPage = () => {
+  const rdxDispatch = useAppDispatch();
+  useEffect(() => {
+    rdxDispatch(seenAll());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Fragment>
+    <UserLayout>
       <Head>
         <title>The RAT Diary | Notifications</title>
       </Head>
       <h1 className={className.title}>Notifications</h1>
-    </Fragment>
+    </UserLayout>
   );
 };
 
-NotificationsPage.getLayout = (page: ReactElement) => {
-  return <UserLayout>{page}</UserLayout>;
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie("refreshToken", { req, res });
+  if (!token) {
+    return {
+      redirect: { destination: ROUTES.myHome, permanent: false },
+      props: {},
+    };
+  }
+
+  return { props: {} };
 };
 export default NotificationsPage;

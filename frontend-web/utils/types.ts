@@ -46,3 +46,5 @@ export type Value<T> = T | null;
 
 export type SSRRequestType = Pick<GetServerSidePropsContext, "req">["req"];
 export type SSRResponseType = Pick<GetServerSidePropsContext, "res">["res"];
+
+export type NotificationType = "FOLLOWING";

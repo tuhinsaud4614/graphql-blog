@@ -429,9 +429,15 @@ export function storeTokenToCookie(
   res?: SSRResponseType
 ) {
   const user = getAuthUser(accessToken);
-  const user1 = getAuthUser(refreshToken);
-  setCookie("accessToken", accessToken, { maxAge: user?.exp, req, res });
-  setCookie("refreshToken", refreshToken, { maxAge: user1?.exp, req, res });
+
+  setCookie("accessToken", accessToken, {
+    req,
+    res,
+  });
+  setCookie("refreshToken", refreshToken, {
+    req,
+    res,
+  });
   return user;
 }
 

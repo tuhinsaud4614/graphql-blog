@@ -1,6 +1,8 @@
+import { selectUser } from "@features";
 import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
-import { ClientOnly, UserAvatarBtn } from "components";
+import { Badge, ClientOnly, UserAvatarBtn } from "components";
+import { selectNotificationUnSeenCount } from "features/notificationSlice/notificationSlice";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +12,7 @@ import { BiBell, BiEdit } from "react-icons/bi";
 import { CgLoadbarDoc } from "react-icons/cg";
 import { FaBell } from "react-icons/fa";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
+import { useAppSelector } from "store";
 import { ROUTES } from "utils/constants";
 
 const Theme = dynamic(() => import("components/Theme"), { ssr: false });
@@ -70,11 +73,16 @@ export default function SideNav() {
                     "!text-secondary dark:!text-secondary-dark"
                 )}
               >
-                {pathname === ROUTES.notifications ? (
-                  <FaBell size={24} />
-                ) : (
-                  <BiBell size={24} />
-                )}
+                <span className="relative">
+                  {pathname === ROUTES.notifications ? (
+                    <FaBell size={24} />
+                  ) : (
+                    <BiBell size={24} />
+                  )}
+                  <ClientOnly>
+                    <NotifyCount />
+                  </ClientOnly>
+                </span>
               </a>
             </Link>
           </li>
@@ -141,4 +149,13 @@ export default function SideNav() {
       </nav>
     </aside>
   );
+}
+
+function NotifyCount() {
+  const count = useAppSelector(selectNotificationUnSeenCount);
+  const user = useAppSelector(selectUser);
+
+  return user && !!count ? (
+    <Badge variant="secondary">{count >= 100 ? "99+" : count}</Badge>
+  ) : null;
 }

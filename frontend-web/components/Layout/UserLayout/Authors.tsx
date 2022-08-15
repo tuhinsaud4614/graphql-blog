@@ -18,7 +18,6 @@ const className = {
 export default function Authors() {
   const { data, loading, refetch, error } = useGetSuggestAuthorsOnOffsetQuery({
     notifyOnNetworkStatusChange: true,
-    errorPolicy: "all",
     variables: { limit: 4, page: 1 },
   });
 
