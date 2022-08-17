@@ -11,6 +11,7 @@ import {
   getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWithInfo,
+  getUsersOnCursor,
   getUsersOnOffset,
   sendUserVerificationCode,
   unfollowTo,
@@ -41,6 +42,7 @@ import {
 } from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
 import {
+  ICursorQueryParams,
   ILoginInput,
   IOffsetQueryParams,
   IRegisterInput,
@@ -48,7 +50,10 @@ import {
 } from "../utils/interfaces";
 import redisClient from "../utils/redis";
 import { getGraphqlYogaError } from "../validations";
-import { offsetQueryParamsSchema } from "../validations/post.validation";
+import {
+  cursorQueryParamsSchema,
+  offsetQueryParamsSchema,
+} from "../validations/post.validation";
 import {
   loginSchema,
   registerSchema,
@@ -479,5 +484,37 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
+  }
+}
+
+export async function authorFollowersOnCursorCtrl(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  userId: string
+) {
+  try {
+    await cursorQueryParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+
+    const condition = {
+      where: {
+        followings: { some: { id: userId } },
+        role: { not: EUserRole.Admin },
+        id: { not: userId },
+      } as Prisma.UserWhereInput,
+    };
+
+    const args: Prisma.UserFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.user.count(condition);
+    const result = await getUsersOnCursor(prisma, params, args, count);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("authors followers"));
   }
 }

@@ -3,7 +3,12 @@ import path from "path";
 import { nanoid } from "../utils";
 import { USER_VERIFICATION_KEY_NAME } from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
-import { IRegisterInput, IResponseOnOffset } from "../utils/interfaces";
+import {
+  ICursorQueryParams,
+  IRegisterInput,
+  IResponseOnCursor,
+  IResponseOnOffset,
+} from "../utils/interfaces";
 import sendMail from "../utils/mailer";
 import redisClient from "../utils/redis";
 
@@ -92,6 +97,64 @@ export async function getUsersOnOffset(
 
   const result = await prisma.user.findMany(condition);
   return { data: result, total: count } as IResponseOnOffset<User>;
+}
+
+export async function getUsersOnCursor(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  condition: Prisma.UserFindManyArgs,
+  total: number
+): Promise<IResponseOnCursor<User>> {
+  const { limit, after } = params;
+  let results: User[] = [];
+  let newFindArgs = {
+    ...condition,
+  };
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+  results = await prisma.user.findMany({
+    ...newFindArgs,
+  });
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastPost = results[resultsLen - 1];
+    const newResults = await prisma.user.findMany({
+      ...condition,
+      take: limit,
+      cursor: {
+        id: lastPost.id,
+      },
+    });
+
+    return {
+      total,
+      pageInfo: {
+        hasNext: newResults.length >= limit,
+        endCursor: lastPost.id,
+      },
+      edges: results.map((post) => ({ cursor: post.id, node: post })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }
 
 export function verifyAuthorStatus(prisma: PrismaClient, userId: string) {

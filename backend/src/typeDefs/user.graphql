@@ -64,10 +64,22 @@ type PaginateUsers {
   pageInfo: OffsetPageInfo
 }
 
+type CursorUserEdge {
+  cursor: ID!
+  node: User!
+}
+
+type CursorUserResponse {
+  edges: [CursorUserEdge!]!
+  pageInfo: CursorPageInfo!
+  total: Int!
+}
+
 type Query {
   users: [User!]!
   usersOnOffset(limit: Int, page: Int): PaginateUsers!
   suggestAuthorsToUserOnOffset(limit: Int, page: Int): PaginateUsers!
+  authorFollowersOnCursor(limit: Int!, after: ID): CursorUserResponse!
   user(id: ID!): User!
 }
 
