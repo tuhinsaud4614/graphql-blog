@@ -1,9 +1,4 @@
-import {
-  ErrorBox,
-  FollowItem,
-  FollowItemSkeleton,
-  NoResultFound,
-} from "components";
+import { ErrorBox, FollowItem, FollowItemSkeleton } from "components";
 import { SidebarContent } from "components/Sidebar";
 import { useGetSuggestAuthorsOnOffsetQuery } from "graphql/generated/schema";
 import { gplErrorHandler, isDev } from "utils";
@@ -52,7 +47,7 @@ export default function Authors() {
   }
 
   if (!data || data.suggestAuthorsToUserOnOffset.data.length === 0) {
-    return <NoResultFound>No author found for you</NoResultFound>;
+    return null;
   }
 
   return (

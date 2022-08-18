@@ -26,7 +26,6 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
             <hr className={className.divider} />
             <Tags />
             <hr className={className.divider} />
-
             <Authors />
           </Fragment>
         )

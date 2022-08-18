@@ -58,7 +58,6 @@ const MyHome: NextPage<Props> = ({ query }) => {
         </Link>
         <ClientOnly>
           <UserHomeFollowList />
-          {/* <UserHomeFollowSkeleton />*/}
         </ClientOnly>
         <Tabs
           tabs={tabs}

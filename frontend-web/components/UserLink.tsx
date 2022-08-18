@@ -47,7 +47,6 @@ export default function UserLink({ href, src, classes, children }: Props) {
           <DemoAvatar
             as="a"
             aria-label={children}
-            type="button"
             className="w-5 h-5"
             size={20 / 1.8}
           />

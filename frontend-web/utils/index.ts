@@ -429,14 +429,22 @@ export function storeTokenToCookie(
   res?: SSRResponseType
 ) {
   const user = getAuthUser(accessToken);
+  const user1 = getAuthUser(refreshToken);
+
+  const accessExp = user?.exp ? new Date(user.exp * 1000) : undefined;
+  const refreshExp = user1?.exp ? new Date(user1.exp * 1000) : undefined;
 
   setCookie("accessToken", accessToken, {
     req,
     res,
+    secure: true,
+    expires: accessExp,
   });
   setCookie("refreshToken", refreshToken, {
     req,
     res,
+    secure: true,
+    expires: refreshExp,
   });
   return user;
 }

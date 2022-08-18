@@ -12,7 +12,7 @@ import { setContext } from "@apollo/client/link/context";
 import { mergeDeep, Observable } from "@apollo/client/utilities";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { createUploadLink } from "apollo-upload-client";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
 import {
@@ -70,10 +70,8 @@ class SSELink extends ApolloLink {
 
 const uri = `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}/graphql`;
 
-const sseUri = isDev() ? "http://localhost:4000/graphql" : "";
-
 const sseLink = new SSELink({
-  uri: sseUri,
+  uri,
   withCredentials: true,
 });
 
@@ -125,18 +123,18 @@ export function createApolloClient(serverAccessToken?: string) {
       if (!response) return { accessToken: null, refreshToken: null };
       const accessToken = response.data?.token?.accessToken;
       const refreshToken = response.data?.token?.refreshToken;
-      if (accessToken && refreshToken) {
-        const user = getAuthUser(refreshToken);
-        setCookie("refreshToken", refreshToken, { maxAge: user?.exp });
-      }
+      // if (accessToken && refreshToken) {
+      //   const user = getAuthUser(refreshToken);
+      //   // setCookie("refreshToken", refreshToken, { maxAge: user?.exp });
+      // }
       return {
-        accessToken: response.data?.token?.accessToken,
-        refreshToken: response.data?.token?.refreshToken,
+        accessToken,
+        refreshToken,
       };
     },
     handleFetch(accessToken) {
       const user = getAuthUser(accessToken);
-      setCookie("accessToken", accessToken, { maxAge: user?.exp });
+      // setCookie("accessToken", accessToken, { maxAge: user?.exp });
     },
     handleError: (error) => {
       removeTokenFromCookie();

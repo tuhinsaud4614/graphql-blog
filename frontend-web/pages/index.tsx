@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   const client = initializeApollo();
-  await client.resetStore();
+  // await client.resetStore();
   try {
     await client.query({
       query: GetTrendingPostsDocument,

@@ -1,23 +1,47 @@
+import DemoAvatar from "components/DemoAvatar";
+import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
+import { generateFileUrl, getUserName } from "utils";
+import { ROUTES } from "utils/constants";
 
 const className = {
-  root: "w-12 h-12 inline-block rounded-full overflow-hidden",
+  root: "w-12 h-12 inline-block rounded-full dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark",
 };
 
-export default function FollowItem() {
+interface Props {
+  user: FUserFragment;
+}
+
+export default function FollowItem({ user }: Props) {
+  const username = getUserName(user);
+  const imgUrl = generateFileUrl(user.avatar?.url);
+
   return (
-    <Link href="/account/profile">
-      <a aria-label="Following" className={className.root}>
-        <Image
-          src="/demo.png"
-          alt="Avatar"
-          width={48}
-          height={48}
-          objectFit="cover"
-          layout="responsive"
+    <Link href={ROUTES.authorProfile(user.id)}>
+      {imgUrl ? (
+        <a aria-label={username} className={className.root}>
+          <Image
+            loader={({ src, width, quality }) =>
+              `${src}?w=${width}&q=${quality || 75}`
+            }
+            src={imgUrl}
+            alt={username}
+            width={48}
+            height={48}
+            className="rounded-full"
+            objectFit="cover"
+            layout="responsive"
+          />
+        </a>
+      ) : (
+        <DemoAvatar
+          as="a"
+          aria-label={username}
+          className="w-12 h-12"
+          size={48 / 1.8}
         />
-      </a>
+      )}
     </Link>
   );
 }

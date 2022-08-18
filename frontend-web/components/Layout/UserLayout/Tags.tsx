@@ -1,4 +1,4 @@
-import { ErrorBox, LinkButton, NoResultFound } from "components";
+import { ErrorBox, LinkButton } from "components";
 import { SidebarContent, SidebarSkeleton } from "components/Sidebar";
 import { useGetTagsOnOffsetQuery } from "graphql/generated/schema";
 import { gplErrorHandler, isDev } from "utils";
@@ -40,7 +40,7 @@ export default function Tags() {
   }
 
   if (!data || data.tagsOnOffset.results.length === 0) {
-    return <NoResultFound>No tag found for you</NoResultFound>;
+    return null;
   }
 
   return (

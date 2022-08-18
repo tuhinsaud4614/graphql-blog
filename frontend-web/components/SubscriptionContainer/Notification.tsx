@@ -7,14 +7,11 @@ import { useEffect } from "react";
 import { useAppDispatch } from "store";
 
 export default function Notification() {
-  const { data, error } = useFollowingSubscription({
+  const { data } = useFollowingSubscription({
     fetchPolicy: "network-only",
   });
 
   const rdxDispatch = useAppDispatch();
-
-  console.log(data);
-  console.log("error", error);
 
   useEffect(() => {
     if (data?.following.mutation === FollowingMutationStatus.Follow) {
@@ -25,7 +22,6 @@ export default function Notification() {
           type: "FOLLOWING",
         })
       );
-      console.log(data?.following.mutation);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);

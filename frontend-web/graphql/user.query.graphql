@@ -67,3 +67,18 @@ query GetSuggestAuthorsOnOffset($limit: Int, $page: Int) {
     }
   }
 }
+
+query GetAuthorFollowersOnCursor($limit: Int!, $after: ID) {
+  authorFollowersOnCursor(limit: $limit, after: $after) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...FUser
+      }
+    }
+  }
+}

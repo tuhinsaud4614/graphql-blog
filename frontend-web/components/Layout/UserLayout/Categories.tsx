@@ -1,4 +1,4 @@
-import { ErrorBox, NoResultFound } from "components";
+import { ErrorBox } from "components";
 import {
   SidebarCategory,
   SidebarContent,
@@ -39,7 +39,7 @@ export default function Categories() {
   }
 
   if (!data || data.categoriesOnOffset.data.length === 0) {
-    return <NoResultFound>No category found for you</NoResultFound>;
+    return null;
   }
 
   return (
