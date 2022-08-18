@@ -8,6 +8,7 @@ import {
   resendActivationCtrl,
   tokenCtrl,
   unfollowRequestCtrl,
+  updateAboutCtrl,
   updateNameCtrl,
   uploadAvatar,
   verifyUserCtrl,
@@ -131,6 +132,22 @@ export const Mutation = {
     }
 
     const result = await updateNameCtrl(prisma, name, user);
+    return result;
+  },
+
+  async updateAbout(
+    _: any,
+    { value }: { value: string },
+    { prisma, user }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
+    }
+
+    const result = await updateAboutCtrl(prisma, value, user);
     return result;
   },
 

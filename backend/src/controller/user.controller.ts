@@ -15,6 +15,7 @@ import {
   getUsersOnOffset,
   sendUserVerificationCode,
   unfollowTo,
+  updateUserAbout,
   updateUserName,
   verifyAuthorStatus,
 } from "../services/user.service";
@@ -343,6 +344,33 @@ export async function updateNameCtrl(
 
     const updatedUser = await updateUserName(prisma, isExist.id, name);
     return updatedUser.name;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(
+      error,
+      UN_AUTH_ERR_MSG,
+      undefined,
+      UN_AUTH_EXT_ERR_CODE
+    );
+  }
+}
+
+export async function updateAboutCtrl(
+  prisma: PrismaClient,
+  value: string,
+  user: IUserPayload
+) {
+  try {
+    const isExist = await getUserByIdWithInfo(prisma, user.id);
+
+    if (!isExist) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
+    }
+
+    const updatedUser = await updateUserAbout(prisma, isExist.id, value);
+    return updatedUser.about;
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(
