@@ -1,7 +1,11 @@
 import { useLockBody } from "@hooks";
-import { ReactorModal, ReactorModalItem } from "components";
+import classNames from "classnames";
+import { ErrorBox, ReactorModal, ReactorModalItem } from "components";
+import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
+import { gplErrorHandler, isDev } from "utils";
 import FollowingItem from "./FollowingItem";
+import FollowingItemSkeleton from "./FollowingItemSkeleton";
 
 const className = {
   root: "flex flex-col",
@@ -10,13 +14,64 @@ const className = {
   more: "text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95 self-start",
 };
 
-export default function FollowingList() {
+interface Props {
+  authorId: string;
+}
+
+export default function FollowingList({ authorId }: Props) {
+  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
+    {
+      notifyOnNetworkStatusChange: true,
+      variables: { limit: 6, authorId },
+    }
+  );
+
+  if (loading) {
+    return (
+      <div className={classNames(className.root, "space-y-2")}>
+        <FollowingItemSkeleton />
+        <FollowingItemSkeleton />
+        <FollowingItemSkeleton />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={className.root}>
+        <ErrorBox
+          title="Fetching followings errors"
+          errors={gplErrorHandler(error)}
+          classes={{
+            root: "mt-6",
+            title: "text-base",
+          }}
+          onRetry={async () => {
+            try {
+              await refetch();
+            } catch (error) {
+              isDev() && console.log("Fetching followings errors", error);
+            }
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (!data || data.authorFollowingsOnCursor.edges.length === 0) {
+    return null;
+  }
+
+  const {
+    pageInfo: { hasNext, endCursor },
+    edges,
+  } = data.authorFollowingsOnCursor;
   return (
     <div className={className.root}>
       <h3 className={className.title}>Following</h3>
       <ul className={className.items}>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <FollowingItem key={index} />
+        {edges.map(({ node }) => (
+          <FollowingItem user={node} key={node.id} />
         ))}
       </ul>
       <SeeAll />

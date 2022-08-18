@@ -68,8 +68,8 @@ const AboutPage: NextPage<Props> = ({ query }) => {
       sidebar={
         <Fragment>
           <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
-          <AuthorInfoFollowingList />
-          <AuthorInfoFollowerList />
+          <AuthorInfoFollowingList authorId={authorId} />
+          <AuthorInfoFollowerList authorId={authorId} />
         </Fragment>
       }
     >

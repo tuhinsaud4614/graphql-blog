@@ -17,7 +17,7 @@ import { IUser } from "utils/interfaces";
 
 const className = {
   root: "flex flex-col items-start",
-  img: "w-[5.5rem] h-[5.5rem] inline-block rounded-full overflow-hidden",
+  img: "w-[5.5rem] h-[5.5rem] inline-block rounded-full overflow-hidden border-2 dark:border-none dark:ring-1 dark:ring-secondary-dark p-1",
   name: "text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus font-medium mt-4 active:scale-95",
   editLink:
     "mt-6 text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark-focus active:scale-95",
@@ -55,6 +55,7 @@ export default function UserProfiler({ classes, user }: Props) {
             height={88}
             layout="responsive"
             objectFit="cover"
+            className="rounded-full"
           />
         </span>
       ) : (

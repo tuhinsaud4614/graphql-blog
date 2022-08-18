@@ -1,8 +1,6 @@
-import { PostItem } from "@component";
 import { NextPageWithLayout } from "@types";
 import { UserLayout } from "components/Layout";
 import Head from "next/head";
-import { Fragment, ReactElement } from "react";
 
 const className = {
   title:
@@ -13,23 +11,19 @@ const className = {
 
 const FavoritePage: NextPageWithLayout = () => {
   return (
-    <Fragment>
+    <UserLayout>
       <Head>
         <title>The RAT Diary | Favorites</title>
       </Head>
       <h1 className={className.title}>Your favorite posts</h1>
       <ul className={className.items}>
+        {/* <PostItem classes={{ root: className.item }} />
         <PostItem classes={{ root: className.item }} />
         <PostItem classes={{ root: className.item }} />
-        <PostItem classes={{ root: className.item }} />
-        <PostItem classes={{ root: className.item }} />
+        <PostItem classes={{ root: className.item }} /> */}
       </ul>
-    </Fragment>
+    </UserLayout>
   );
-};
-
-FavoritePage.getLayout = (page: ReactElement) => {
-  return <UserLayout>{page}</UserLayout>;
 };
 
 export default FavoritePage;

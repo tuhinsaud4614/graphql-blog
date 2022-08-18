@@ -1,14 +1,16 @@
-import { Button, Menu } from "components";
+import { Button, DemoAvatar, Menu } from "components";
+import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { generateFileUrl, getUserName } from "utils";
 import { ROUTES } from "utils/constants";
 
 const className = {
   root: "flex items-center justify-between",
   link: "flex items-center min-w-0 flex-1 group",
-  img: "rounded-full w-5 h-5 overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark",
+  img: "rounded-full w-5 h-5 overflow-hidden border dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark",
   text: "ml-3 text-sm line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark group-hover:text-accent dark:group-hover:text-accent-dark capitalize",
   actions:
     "h-8 w-8 outline-none border-none scale-95 flex items-center justify-center text-neutral dark:text-neutral-dark dark:hover:text-neutral hover:bg-accent dark:hover:bg-accent-dark active:bg-accent-focus dark:active:bg-accent active:scale-95 rounded-full",
@@ -24,22 +26,35 @@ const className = {
   menuBottomLeft: "text-neutral/60 dark:text-neutral-dark/60 text-sm",
 };
 
-export default function FollowingItem() {
+interface Props {
+  user: FUserFragment;
+}
+
+export default function FollowingItem({ user }: Props) {
+  const username = getUserName(user);
+  const imgUrl = generateFileUrl(user.avatar?.url);
   return (
     <li className={className.root}>
-      <Link href={ROUTES.authorProfile("2")} passHref>
-        <a aria-label="Author profile" className={className.link}>
-          <span className={className.img}>
-            <Image
-              src="/demo.png"
-              width={20}
-              height={20}
-              alt="Author profile"
-              objectFit="cover"
-              layout="responsive"
-            />
-          </span>
-          <span className={className.text}>Lorem ipsum</span>
+      <Link href={ROUTES.authorProfile(user.id)} passHref>
+        <a aria-label={username} className={className.link}>
+          {imgUrl ? (
+            <span className={className.img}>
+              <Image
+                loader={({ src, width, quality }) =>
+                  `${src}?w=${width}&q=${quality || 75}`
+                }
+                src={imgUrl}
+                alt={username}
+                width={20}
+                height={20}
+                objectFit="cover"
+                layout="responsive"
+              />
+            </span>
+          ) : (
+            <DemoAvatar className="w-5 h-5" size={20 / 1.8} />
+          )}
+          <span className={className.text}>{username}</span>
         </a>
       </Link>
       <More />

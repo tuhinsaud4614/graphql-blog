@@ -7,9 +7,10 @@ import { Fragment, MouseEvent, useEffect, useState } from "react";
 import { BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
 import { useAppSelector } from "store";
-import { generateFileUrl, getUserName, gplErrorHandler, isServer } from "utils";
+import { generateFileUrl, getUserName, gplErrorHandler } from "utils";
 import { ROUTES } from "utils/constants";
 import { IAnchorOrigin } from "utils/interfaces";
+import ClientOnly from "./ClientOnly";
 import DemoAvatar from "./DemoAvatar";
 import ErrorModal from "./ErrorModal";
 import Menu from "./Menu";
@@ -23,7 +24,7 @@ const className = {
   avatarInfo:
     "flex px-4 hover:bg-base-200 dark:hover:bg-base-dark-200 py-2 group",
   avatarInfoImg:
-    "shrink-0 w-8 h-8 inline-block rounded-full overflow-hidden dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
+    "shrink-0 w-8 h-8 inline-block rounded-full overflow-hidden border p-1 dark:border-none dark:p-0 dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
   avatarInfoDetail: "flex flex-col",
   name: "pb-1 text-sm line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark dark:group-hover:text-accent-dark",
   bio: "text-xs line-clamp-1 text-ellipsis text-neutral/60 dark:text-neutral-dark/60 group-hover:text-accent dark:group-hover:text-accent-dark",
@@ -103,7 +104,11 @@ export default function UserAvatarBtn({
       >
         <div className={className.avatarMenu}>
           <ul className={className.avatarMenuItems}>
-            <li>{!isServer() && <Logout />}</li>
+            <ClientOnly>
+              <li>
+                <Logout />
+              </li>
+            </ClientOnly>
             <li>
               <Link href={ROUTES.accountSettings} passHref>
                 <a aria-label="Settings" className={className.avatarMenuLink}>

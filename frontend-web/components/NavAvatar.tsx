@@ -4,7 +4,7 @@ import { ComponentPropsWithRef } from "react";
 
 const className = {
   avatar:
-    "rounded-full overflow-hidden dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark active:scale-95",
+    "rounded-full overflow-hidden border p-0.5 dark:border-none dark:p-0 dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark active:scale-95",
 };
 
 interface Props extends ImageProps {
