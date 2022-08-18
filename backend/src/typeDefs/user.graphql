@@ -79,7 +79,16 @@ type Query {
   users: [User!]!
   usersOnOffset(limit: Int, page: Int): PaginateUsers!
   suggestAuthorsToUserOnOffset(limit: Int, page: Int): PaginateUsers!
-  authorFollowersOnCursor(limit: Int!, after: ID): CursorUserResponse!
+  authorFollowersOnCursor(
+    limit: Int!
+    after: ID
+    authorId: ID
+  ): CursorUserResponse!
+  authorFollowingsOnCursor(
+    limit: Int!
+    after: ID
+    authorId: ID
+  ): CursorUserResponse!
   user(id: ID!): User!
 }
 

@@ -518,3 +518,35 @@ export async function authorFollowersOnCursorCtrl(
     return getGraphqlYogaError(error, FETCH_ERR_MSG("authors followers"));
   }
 }
+
+export async function authorFollowingsOnCursorCtrl(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  userId: string
+) {
+  try {
+    await cursorQueryParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+
+    const condition = {
+      where: {
+        followers: { some: { id: userId } },
+        role: { not: EUserRole.Admin },
+        id: { not: userId },
+      } as Prisma.UserWhereInput,
+    };
+
+    const args: Prisma.UserFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.user.count(condition);
+    const result = await getUsersOnCursor(prisma, params, args, count);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("authors following"));
+  }
+}

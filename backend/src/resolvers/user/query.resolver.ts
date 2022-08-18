@@ -1,6 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import {
   authorFollowersOnCursorCtrl,
+  authorFollowingsOnCursorCtrl,
   getUsersOnOffsetCtrl,
   suggestAuthorsToUserOnOffsetCtrl,
 } from "../../controller/user.controller";
@@ -49,7 +50,7 @@ export const Query = {
 
   async authorFollowersOnCursor(
     _: any,
-    params: ICursorQueryParams,
+    { authorId, ...rest }: ICursorQueryParams & { authorId?: string },
     { prisma, user }: YogaContextReturnType
   ) {
     if (user === null) {
@@ -57,7 +58,29 @@ export const Query = {
         code: UN_AUTH_EXT_ERR_CODE,
       });
     }
-    const result = await authorFollowersOnCursorCtrl(prisma, params, user.id);
+    const result = await authorFollowersOnCursorCtrl(
+      prisma,
+      rest,
+      authorId || user.id
+    );
+    return result;
+  },
+
+  async authorFollowingsOnCursor(
+    _: any,
+    { authorId, ...rest }: ICursorQueryParams & { authorId?: string },
+    { prisma, user }: YogaContextReturnType
+  ) {
+    if (user === null) {
+      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
+        code: UN_AUTH_EXT_ERR_CODE,
+      });
+    }
+    const result = await authorFollowingsOnCursorCtrl(
+      prisma,
+      rest,
+      authorId || user.id
+    );
     return result;
   },
 
