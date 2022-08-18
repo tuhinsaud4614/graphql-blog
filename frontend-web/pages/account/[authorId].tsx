@@ -1,4 +1,4 @@
-import { ClientOnly, DemoAvatar, Tabs } from "@component";
+import { AuthGuard, ClientOnly, DemoAvatar, Tabs } from "@component";
 import {
   AuthorInfoAboutTab,
   AuthorInfoFollowerList,
@@ -10,6 +10,7 @@ import { SidebarUserProfiler } from "components/Sidebar";
 import {
   GetUserWithPostDocument,
   useGetUserWithPostQuery,
+  UserRole,
 } from "graphql/generated/schema";
 import { addApolloState, initializeApollo } from "lib/apollo";
 import _ from "lodash";
@@ -64,59 +65,61 @@ const AboutPage: NextPage<Props> = ({ query }) => {
   const userName = getUserName(user);
 
   return (
-    <LayoutContainer
-      sidebar={
-        <Fragment>
-          <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
-          <AuthorInfoFollowingList authorId={authorId} />
-          <AuthorInfoFollowerList authorId={authorId} />
-        </Fragment>
-      }
-    >
-      <div className={className.title}>
-        {imgUrl ? (
-          <span className={className.titleImg}>
-            <Image
-              loader={({ src, width, quality }) =>
-                `${src}?w=${width}&q=${quality || 75}`
-              }
-              src={imgUrl}
-              alt={userName}
-              width={32}
-              height={32}
-              layout="responsive"
-              objectFit="cover"
-            />
-          </span>
-        ) : (
-          <DemoAvatar className="w-8 h-8 mr-5 md:hidden" size={32 / 1.8} />
-        )}
-        <h1 className={className.titleText}>{userName}</h1>
-      </div>
-      <Tabs
-        tabs={tabs}
-        onTab={(index) => {
-          setCurrentTab(index);
-          replace(
-            index === 0
-              ? ROUTES.authorProfile(authorId)
-              : ROUTES.authorProfile(authorId) + "?tab=about"
-          );
-        }}
-        selectedTab={currentTab}
+    <AuthGuard role={UserRole.Author}>
+      <LayoutContainer
+        sidebar={
+          <Fragment>
+            <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
+            <AuthorInfoFollowingList authorId={authorId} />
+            <AuthorInfoFollowerList authorId={authorId} />
+          </Fragment>
+        }
       >
-        {currentTab === 0 ? (
-          <AuthorInfoHomeTab posts={data.user.posts} />
-        ) : (
-          <Fragment />
-        )}
-        {currentTab === 1 ? (
-          <ClientOnly>{<AuthorInfoAboutTab user={user} />}</ClientOnly>
-        ) : (
-          <Fragment />
-        )}
-      </Tabs>
-    </LayoutContainer>
+        <div className={className.title}>
+          {imgUrl ? (
+            <span className={className.titleImg}>
+              <Image
+                loader={({ src, width, quality }) =>
+                  `${src}?w=${width}&q=${quality || 75}`
+                }
+                src={imgUrl}
+                alt={userName}
+                width={32}
+                height={32}
+                layout="responsive"
+                objectFit="cover"
+              />
+            </span>
+          ) : (
+            <DemoAvatar className="w-8 h-8 mr-5 md:hidden" size={32 / 1.8} />
+          )}
+          <h1 className={className.titleText}>{userName}</h1>
+        </div>
+        <Tabs
+          tabs={tabs}
+          onTab={(index) => {
+            setCurrentTab(index);
+            replace(
+              index === 0
+                ? ROUTES.authorProfile(authorId)
+                : ROUTES.authorProfile(authorId) + "?tab=about"
+            );
+          }}
+          selectedTab={currentTab}
+        >
+          {currentTab === 0 ? (
+            <AuthorInfoHomeTab posts={data.user.posts} />
+          ) : (
+            <Fragment />
+          )}
+          {currentTab === 1 ? (
+            <ClientOnly>{<AuthorInfoAboutTab user={user} />}</ClientOnly>
+          ) : (
+            <Fragment />
+          )}
+        </Tabs>
+      </LayoutContainer>
+    </AuthGuard>
   );
 };
 

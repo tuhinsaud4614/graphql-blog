@@ -12,7 +12,7 @@ import { setContext } from "@apollo/client/link/context";
 import { mergeDeep, Observable } from "@apollo/client/utilities";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { createUploadLink } from "apollo-upload-client";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
 import {
@@ -77,6 +77,7 @@ const sseLink = new SSELink({
 
 const httpLink = createUploadLink({
   uri,
+  credentials: "include",
 });
 
 const link = split(
@@ -101,7 +102,7 @@ export function createApolloClient(serverAccessToken?: string) {
         const token = getCookie("accessToken");
 
         if (!token || typeof token !== "string") {
-          return true;
+          return false;
         }
         const user = getAuthUser(token);
         if (user && user.exp * 1000 > Date.now()) {
@@ -123,10 +124,11 @@ export function createApolloClient(serverAccessToken?: string) {
       if (!response) return { accessToken: null, refreshToken: null };
       const accessToken = response.data?.token?.accessToken;
       const refreshToken = response.data?.token?.refreshToken;
-      // if (accessToken && refreshToken) {
-      //   const user = getAuthUser(refreshToken);
-      //   // setCookie("refreshToken", refreshToken, { maxAge: user?.exp });
-      // }
+      if (accessToken && refreshToken) {
+        const user = getAuthUser(refreshToken);
+        const exp = user?.exp ? new Date(user.exp * 1000) : undefined;
+        setCookie("refreshToken", refreshToken, { expires: exp, secure: true });
+      }
       return {
         accessToken,
         refreshToken,
@@ -134,7 +136,8 @@ export function createApolloClient(serverAccessToken?: string) {
     },
     handleFetch(accessToken) {
       const user = getAuthUser(accessToken);
-      // setCookie("accessToken", accessToken, { maxAge: user?.exp });
+      const exp = user?.exp ? new Date(user.exp * 1000) : undefined;
+      setCookie("accessToken", accessToken, { expires: exp, secure: true });
     },
     handleError: (error) => {
       removeTokenFromCookie();
@@ -171,7 +174,7 @@ export function createApolloClient(serverAccessToken?: string) {
     ssrMode: isServer(),
     link: from([refreshLink, authLink, link]),
     cache: new InMemoryCache(),
-    credentials: "same-origin",
+    credentials: "include",
   });
 }
 

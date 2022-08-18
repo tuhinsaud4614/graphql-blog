@@ -6,7 +6,16 @@ import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
 import jwtDecode from "jwt-decode";
 import _ from "lodash";
-import { BaseEditor, Editor, Element, Range, Text, Transforms } from "slate";
+import {
+  BaseEditor,
+  Descendant,
+  Editor,
+  Element,
+  Node,
+  Range,
+  Text,
+  Transforms,
+} from "slate";
 import { ReactEditor } from "slate-react";
 import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
 import { IAnchorOrigin, IUser, SlateLinkElement } from "./interfaces";
@@ -411,12 +420,12 @@ const query = `
         }
       }
     `;
-export async function fetchRefreshToken(token: string) {
+export async function fetchRefreshToken(refreshToken: string) {
   const { data } = await axios.post(
     `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
     {
       query,
-      variables: { refreshToken: token },
+      variables: { refreshToken },
     }
   );
   return data;
@@ -502,3 +511,23 @@ export async function ssrAuthorize(req: SSRRequestType, res: SSRResponseType) {
   }
   return accessToken;
 }
+
+export const serializeSlateValue = (value: Descendant[]) => {
+  return (
+    value
+      // Return the string content of each paragraph in the value's children.
+      .map((n) => Node.string(n))
+      // Join them all with line breaks denoting paragraphs.
+      .join("\n")
+  );
+};
+
+// Define a deserializing function that takes a string and returns a value.
+export const deserializeSlateValue = (str: string) => {
+  // Return a value array of children derived by splitting the string.
+  return str.split("\n").map((line) => {
+    return {
+      children: [{ text: line }],
+    };
+  });
+};

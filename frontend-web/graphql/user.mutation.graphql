@@ -11,6 +11,10 @@ mutation UpdateName($name: String!) {
   updateName(name: $name)
 }
 
+mutation UpdateAbout($value: String) {
+  updateAbout(value: $value)
+}
+
 mutation SendFollowRequest($toId: ID!) {
   followRequest(toId: $toId) {
     ...FUser

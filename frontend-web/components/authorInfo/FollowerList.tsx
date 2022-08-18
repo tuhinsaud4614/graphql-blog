@@ -1,6 +1,6 @@
 import { useLockBody } from "@hooks";
 import classNames from "classnames";
-import { ErrorBox, ReactorModal, ReactorModalItem } from "components";
+import { ErrorBox, ReactorModal } from "components";
 import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
 import { gplErrorHandler, isDev } from "utils";
@@ -96,9 +96,9 @@ function SeeAll() {
         open={open}
         onHide={() => setOpen(false)}
       >
-        {Array.from({ length: 15 }).map((_, index) => (
+        {/* {Array.from({ length: 15 }).map((_, index) => (
           <ReactorModalItem key={index} />
-        ))}
+        ))} */}
       </ReactorModal>
     </Fragment>
   );

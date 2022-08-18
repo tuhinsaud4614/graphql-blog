@@ -1,6 +1,10 @@
-import { Button } from "components";
+import { Button, DemoAvatar } from "components";
+import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
+import { Descendant } from "slate";
+import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -14,35 +18,46 @@ const className = {
     "w-10 h-10 inline-block rounded-full overflow-hidden mr-5 dark:ring-1 dark:ring-secondary-dark",
 };
 
-export default function ReactorItem() {
+interface Props {
+  user: FUserFragment;
+}
+
+export default function ReactorItem({ user }: Props) {
+  const username = getUserName(user);
+  const imgUrl = generateFileUrl(user.avatar?.url);
+  const { about } = user;
+  const aboutText = useMemo(
+    () =>
+      about ? serializeSlateValue(JSON.parse(about) as Descendant[]) : null,
+    [about]
+  );
   return (
     <li className={className.userTile}>
       <div className={className.userTileLeft}>
-        <span className={className.userTileImg}>
-          <Image
-            src="/demo.png"
-            alt="Avatar"
-            width={88}
-            height={88}
-            layout="responsive"
-            objectFit="cover"
-          />
-        </span>
+        {imgUrl ? (
+          <span className={className.userTileImg}>
+            <Image
+              loader={({ src, width, quality }) =>
+                `${src}?w=${width}&q=${quality || 75}`
+              }
+              src={imgUrl}
+              alt={username}
+              width={88}
+              height={88}
+              layout="responsive"
+              objectFit="cover"
+            />
+          </span>
+        ) : (
+          <DemoAvatar className="w-[5.5rem] h-[5.5rem]" size={88 / 1.8} />
+        )}
         <span className="flex flex-col min-w-0 flex-1">
-          <Link href={ROUTES.authorProfile("1")} passHref>
-            <a
-              aria-label="Author Profile"
-              className={className.userTileAuthorName}
-            >
-              Nothing
+          <Link href={ROUTES.authorProfile(user.id)} passHref>
+            <a aria-label={username} className={className.userTileAuthorName}>
+              {username}
             </a>
           </Link>
-          <p className={className.userTileAuthorAbout}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum
-            deleniti quam mollitia quaerat quos! Aut molestias sit nesciunt
-            dolores assumenda nam suscipit eum, voluptatum cupiditate voluptas
-            corporis temporibus dolorum quo.
-          </p>
+          <p className={className.userTileAuthorAbout}>{aboutText}</p>
         </span>
       </div>
       <Button

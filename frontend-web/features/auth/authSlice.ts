@@ -58,11 +58,24 @@ export const authSlice = createSlice({
         state.user.name = action.payload;
       }
     },
+    updateUserAbout: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        setLocalStorageValue(USER_KEY, {
+          ...state.user,
+          about: action.payload,
+        });
+        state.user.about = action.payload;
+      }
+    },
   },
 });
 
-export const { setAuthUser, updateUserAvatar, updateUserName } =
-  authSlice.actions;
+export const {
+  setAuthUser,
+  updateUserAvatar,
+  updateUserName,
+  updateUserAbout,
+} = authSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 const authReducer = authSlice.reducer;
 export default authReducer;

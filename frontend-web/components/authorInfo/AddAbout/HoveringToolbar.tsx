@@ -19,7 +19,7 @@ const className = {
   inputBox: "h-full flex items-center bg-base-100 dark:bg-base-dark-200 p-1.5",
   input:
     "flex-1 min-w-0 bg-transparent outline-none pr-1.5 text-neutral dark:text-neutral-dark",
-  btn: " outline-none border-none bg-transparent text-error hover:text-error-focus dark:text-error-dark dark:hover:text-error",
+  btn: "outline-none border-none bg-transparent text-error hover:text-error-focus dark:text-error-dark dark:hover:text-error",
 };
 
 export default function HoveringToolbar() {
@@ -117,7 +117,12 @@ export default function HoveringToolbar() {
           </div>
         )}
         <div className={className.container}>
-          <SlateMarkButton aria-label="Mark bold" hotKey="mod+b" mark="bold">
+          <SlateMarkButton
+            className="first:mt-1.5 first:ml-1.5"
+            aria-label="Mark bold"
+            hotKey="mod+b"
+            mark="bold"
+          >
             <BiBold size={18} />
           </SlateMarkButton>
           <SlateMarkButton

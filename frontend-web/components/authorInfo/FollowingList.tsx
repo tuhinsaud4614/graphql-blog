@@ -65,6 +65,7 @@ export default function FollowingList({ authorId }: Props) {
   const {
     pageInfo: { hasNext, endCursor },
     edges,
+    total,
   } = data.authorFollowingsOnCursor;
   return (
     <div className={className.root}>
@@ -74,13 +75,21 @@ export default function FollowingList({ authorId }: Props) {
           <FollowingItem user={node} key={node.id} />
         ))}
       </ul>
-      <SeeAll />
+      <SeeAll authorId={authorId} total={total} />
     </div>
   );
 }
 
-function SeeAll() {
+function SeeAll({ total, authorId }: { authorId: string; total: number }) {
   const [open, setOpen] = useState(false);
+
+  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
+    {
+      notifyOnNetworkStatusChange: true,
+      variables: { limit: 6, authorId },
+    }
+  );
+
   useLockBody(open);
   return (
     <Fragment>
@@ -90,15 +99,15 @@ function SeeAll() {
         className={className.more}
         onClick={() => setOpen(true)}
       >
-        See all (96)
+        See all ({total})
       </button>
       <ReactorModal
-        title="96 following"
+        title={`${total} following`}
         open={open}
         onHide={() => setOpen(false)}
       >
-        {Array.from({ length: 15 }).map((_, index) => (
-          <ReactorModalItem key={index} />
+        {data?.authorFollowingsOnCursor.edges.map(({ node }) => (
+          <ReactorModalItem key={node.id} user={node} />
         ))}
       </ReactorModal>
     </Fragment>
