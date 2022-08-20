@@ -531,3 +531,10 @@ export const deserializeSlateValue = (str: string) => {
     };
   });
 };
+
+export function followConvert(count: number, text: string) {
+  return `${Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(count)} ${text}${count > 1 ? "s" : ""}`;
+}

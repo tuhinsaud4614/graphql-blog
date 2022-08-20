@@ -1,4 +1,4 @@
-import { Button, Modal, ModalHeader } from "components";
+import { Modal, ModalHeader } from "components";
 import { ReactNode } from "react";
 
 const className = {
@@ -23,20 +23,7 @@ export default function ReactorModal({ open, onHide, children, title }: Props) {
       <ModalHeader onClose={onHide} className="border-none" />
       <div className={className.modalBody}>
         <h2 className={className.modalBodyTitle}>{title}</h2>
-        <ul className={className.modalBodyItems}>
-          {children}
-          <li className="!mx-6 !mt-6 flex items-center justify-center">
-            <Button
-              type="button"
-              aria-label="More"
-              className="px-3.5 py-1 text-sm"
-              variant="neutral"
-              mode="outline"
-            >
-              More
-            </Button>
-          </li>
-        </ul>
+        <ul className={className.modalBodyItems}>{children}</ul>
       </div>
     </Modal>
   );

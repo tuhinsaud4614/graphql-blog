@@ -1,14 +1,15 @@
 import { useLockBody } from "@hooks";
 import classNames from "classnames";
-import { ErrorBox, ReactorModal, ReactorModalItem } from "components";
-import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
+import { ErrorBox, ReactorModal } from "components";
+import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
-import { gplErrorHandler, isDev } from "utils";
-import FollowingItem from "./FollowingItem";
-import FollowingItemSkeleton from "./FollowingItemSkeleton";
+import { followConvert, gplErrorHandler, isDev } from "utils";
+import FollowingItem from "../FollowingItem";
+import FollowingItemSkeleton from "../FollowingItemSkeleton";
+import SeeMoreFollow from "./SeeMoreFollow";
 
 const className = {
-  root: "flex flex-col",
+  root: "flex flex-col mt-10 mb-8",
   title: "text-base font-medium text-neutral dark:text-neutral-dark",
   items: "list-none my-4 flex flex-col space-y-1",
   more: "text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95 self-start",
@@ -18,13 +19,11 @@ interface Props {
   authorId: string;
 }
 
-export default function FollowingList({ authorId }: Props) {
-  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
-    {
-      notifyOnNetworkStatusChange: true,
-      variables: { limit: 6, authorId },
-    }
-  );
+export default function FollowerList({ authorId }: Props) {
+  const { data, error, loading, refetch } = useGetAuthorFollowersOnCursorQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { limit: 6, authorId },
+  });
 
   if (loading) {
     return (
@@ -40,7 +39,7 @@ export default function FollowingList({ authorId }: Props) {
     return (
       <div className={className.root}>
         <ErrorBox
-          title="Fetching followings errors"
+          title="Fetching followers errors"
           errors={gplErrorHandler(error)}
           classes={{
             root: "mt-6",
@@ -50,7 +49,7 @@ export default function FollowingList({ authorId }: Props) {
             try {
               await refetch();
             } catch (error) {
-              isDev() && console.log("Fetching followings errors", error);
+              isDev() && console.log("Fetching followers errors", error);
             }
           }}
         />
@@ -58,39 +57,33 @@ export default function FollowingList({ authorId }: Props) {
     );
   }
 
-  if (!data || data.authorFollowingsOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowersOnCursor.edges.length === 0) {
     return null;
   }
 
   const {
-    pageInfo: { hasNext, endCursor },
-    edges,
+    pageInfo: { hasNext },
     total,
-  } = data.authorFollowingsOnCursor;
+    edges,
+  } = data.authorFollowersOnCursor;
+
   return (
     <div className={className.root}>
-      <h3 className={className.title}>Following</h3>
+      <h3 className={className.title}>Followers</h3>
       <ul className={className.items}>
         {edges.map(({ node }) => (
           <FollowingItem user={node} key={node.id} />
         ))}
       </ul>
-      <SeeAll authorId={authorId} total={total} />
+      {hasNext && <SeeAll authorId={authorId} total={total} />}
     </div>
   );
 }
 
 function SeeAll({ total, authorId }: { authorId: string; total: number }) {
   const [open, setOpen] = useState(false);
-
-  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
-    {
-      notifyOnNetworkStatusChange: true,
-      variables: { limit: 6, authorId },
-    }
-  );
-
   useLockBody(open);
+
   return (
     <Fragment>
       <button
@@ -102,13 +95,11 @@ function SeeAll({ total, authorId }: { authorId: string; total: number }) {
         See all ({total})
       </button>
       <ReactorModal
-        title={`${total} following`}
+        title={followConvert(total, "following")}
         open={open}
         onHide={() => setOpen(false)}
       >
-        {data?.authorFollowingsOnCursor.edges.map(({ node }) => (
-          <ReactorModalItem key={node.id} user={node} />
-        ))}
+        <SeeMoreFollow authorId={authorId} />
       </ReactorModal>
     </Fragment>
   );

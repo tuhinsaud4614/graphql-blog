@@ -97,3 +97,25 @@ query GetAuthorFollowingsOnCursor($limit: Int!, $after: ID, $authorId: ID) {
     }
   }
 }
+
+query UserMentionTooltipStats($id: ID!) {
+  userResult(id: $id) {
+    followerCount
+    hasFollow
+  }
+}
+
+query GetUserFollow($id: ID!) {
+  userFollow(id: $id) {
+    followerCount
+    followingCount
+  }
+}
+
+query GetUserFollowers($id: ID!) {
+  userFollowers(id: $id)
+}
+
+query GetUserFollowings($id: ID!) {
+  userFollowings(id: $id)
+}

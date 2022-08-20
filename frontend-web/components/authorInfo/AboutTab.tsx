@@ -8,9 +8,10 @@ import OtherAboutTab from "./OtherAbout";
 
 interface Props {
   user?: IUser | User | null;
+  userId: string;
 }
 
-export default function AboutTab({ user }: Props) {
+export default function AboutTab({ user, userId }: Props) {
   const rdxUser = useAppSelector(selectUser);
   if (user && rdxUser && user.id === rdxUser.id) {
     const about = rdxUser.about
@@ -19,5 +20,5 @@ export default function AboutTab({ user }: Props) {
     return <AddAbout previousValue={about} />;
   }
   const about = user?.about ? (JSON.parse(user.about) as Descendant[]) : null;
-  return <OtherAboutTab about={about} />;
+  return <OtherAboutTab about={about} userId={userId} />;
 }

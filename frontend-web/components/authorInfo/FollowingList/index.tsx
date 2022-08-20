@@ -1,14 +1,15 @@
 import { useLockBody } from "@hooks";
 import classNames from "classnames";
 import { ErrorBox, ReactorModal } from "components";
-import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
+import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
-import { gplErrorHandler, isDev } from "utils";
-import FollowingItem from "./FollowingItem";
-import FollowingItemSkeleton from "./FollowingItemSkeleton";
+import { followConvert, gplErrorHandler, isDev } from "utils";
+import FollowingItem from "../FollowingItem";
+import FollowingItemSkeleton from "../FollowingItemSkeleton";
+import SeeMoreFollow from "./SeeMoreFollow";
 
 const className = {
-  root: "flex flex-col mt-10 mb-8",
+  root: "flex flex-col",
   title: "text-base font-medium text-neutral dark:text-neutral-dark",
   items: "list-none my-4 flex flex-col space-y-1",
   more: "text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95 self-start",
@@ -18,11 +19,13 @@ interface Props {
   authorId: string;
 }
 
-export default function FollowerList({ authorId }: Props) {
-  const { data, error, loading, refetch } = useGetAuthorFollowersOnCursorQuery({
-    notifyOnNetworkStatusChange: true,
-    variables: { limit: 6, authorId },
-  });
+export default function FollowingList({ authorId }: Props) {
+  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
+    {
+      notifyOnNetworkStatusChange: true,
+      variables: { limit: 6, authorId },
+    }
+  );
 
   if (loading) {
     return (
@@ -38,7 +41,7 @@ export default function FollowerList({ authorId }: Props) {
     return (
       <div className={className.root}>
         <ErrorBox
-          title="Fetching followers errors"
+          title="Fetching followings errors"
           errors={gplErrorHandler(error)}
           classes={{
             root: "mt-6",
@@ -48,7 +51,7 @@ export default function FollowerList({ authorId }: Props) {
             try {
               await refetch();
             } catch (error) {
-              isDev() && console.log("Fetching followers errors", error);
+              isDev() && console.log("Fetching followings errors", error);
             }
           }}
         />
@@ -56,31 +59,32 @@ export default function FollowerList({ authorId }: Props) {
     );
   }
 
-  if (!data || data.authorFollowersOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowingsOnCursor.edges.length === 0) {
     return null;
   }
 
   const {
-    pageInfo: { hasNext, endCursor },
+    pageInfo: { hasNext },
     edges,
-  } = data.authorFollowersOnCursor;
-
+    total,
+  } = data.authorFollowingsOnCursor;
   return (
     <div className={className.root}>
-      <h3 className={className.title}>Followers</h3>
+      <h3 className={className.title}>Following</h3>
       <ul className={className.items}>
         {edges.map(({ node }) => (
           <FollowingItem user={node} key={node.id} />
         ))}
       </ul>
-      <SeeAll />
+      {hasNext && <SeeAll authorId={authorId} total={total} />}
     </div>
   );
 }
 
-function SeeAll() {
+function SeeAll({ total, authorId }: { authorId: string; total: number }) {
   const [open, setOpen] = useState(false);
   useLockBody(open);
+
   return (
     <Fragment>
       <button
@@ -89,16 +93,14 @@ function SeeAll() {
         className={className.more}
         onClick={() => setOpen(true)}
       >
-        See all (96)
+        See all ({total})
       </button>
       <ReactorModal
-        title="96 followers"
+        title={followConvert(total, "following")}
         open={open}
         onHide={() => setOpen(false)}
       >
-        {/* {Array.from({ length: 15 }).map((_, index) => (
-          <ReactorModalItem key={index} />
-        ))} */}
+        <SeeMoreFollow authorId={authorId} />
       </ReactorModal>
     </Fragment>
   );

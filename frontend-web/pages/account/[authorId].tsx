@@ -1,4 +1,5 @@
 import { AuthGuard, ClientOnly, DemoAvatar, Tabs } from "@component";
+import { useMediaQuery } from "@hooks";
 import {
   AuthorInfoAboutTab,
   AuthorInfoFollowerList,
@@ -18,7 +19,12 @@ import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
-import { generateFileUrl, getUserName, queryChecking } from "utils";
+import {
+  generateFileUrl,
+  getUserName,
+  queryChecking,
+  ssrAuthorize,
+} from "utils";
 import { ROUTES } from "utils/constants";
 import { IUser } from "utils/interfaces";
 
@@ -41,6 +47,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
     queryChecking(query, tabs, "tab")
   );
+  const matches = useMediaQuery("(min-width: 1024px)");
   const { replace } = useRouter();
   const { authorId } = query;
 
@@ -70,8 +77,10 @@ const AboutPage: NextPage<Props> = ({ query }) => {
         sidebar={
           <Fragment>
             <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
-            <AuthorInfoFollowingList authorId={authorId} />
-            <AuthorInfoFollowerList authorId={authorId} />
+            <ClientOnly>
+              {matches && <AuthorInfoFollowingList authorId={authorId} />}
+              {matches && <AuthorInfoFollowerList authorId={authorId} />}
+            </ClientOnly>
           </Fragment>
         }
       >
@@ -113,7 +122,9 @@ const AboutPage: NextPage<Props> = ({ query }) => {
             <Fragment />
           )}
           {currentTab === 1 ? (
-            <ClientOnly>{<AuthorInfoAboutTab user={user} />}</ClientOnly>
+            <ClientOnly>
+              {<AuthorInfoAboutTab user={user} userId={user.id || authorId} />}
+            </ClientOnly>
           ) : (
             <Fragment />
           )}
@@ -125,18 +136,24 @@ const AboutPage: NextPage<Props> = ({ query }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({
   query,
-  // req,
-  // res,
+  req,
+  res,
 }) => {
   try {
-    // const tokens = await serverSideTokenRotation(req, res);
-    // const client = initializeApollo(undefined, tokens?.accessToken);
+    const accessToken = await ssrAuthorize(req, res);
 
-    const client = initializeApollo();
+    if (!accessToken) {
+      return {
+        redirect: { destination: ROUTES.home, permanent: false },
+        props: {},
+      };
+    }
+
+    const client = initializeApollo(undefined, accessToken);
+
     await client.query({
       query: GetUserWithPostDocument,
       variables: { id: query.authorId },
-      // fetchPolicy: "network-only",
     });
 
     return addApolloState(client, { props: { query } });
