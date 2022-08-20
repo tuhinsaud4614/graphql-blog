@@ -11,6 +11,9 @@ import {
   getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWithInfo,
+  getUserFollowCount,
+  getUserFollowersCount,
+  getUserFollowingsCount,
   getUsersOnCursor,
   getUsersOnOffset,
   sendUserVerificationCode,
@@ -576,5 +579,80 @@ export async function authorFollowingsOnCursorCtrl(
   } catch (error) {
     console.log(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("authors following"));
+  }
+}
+
+export async function userResultCtrl(
+  prisma: PrismaClient,
+  forUserId: string,
+  userId?: string
+) {
+  try {
+    if (userId) {
+      const [followerCount, hasFollow] = await prisma.$transaction([
+        getUserFollowersCount(prisma, forUserId),
+        prisma.user.findFirst({
+          where: {
+            id: forUserId,
+            followers: { some: { id: userId } },
+          },
+        }),
+      ]);
+
+      return {
+        followerCount: followerCount?._count.followers ?? 0,
+        hasFollow: !!hasFollow,
+      };
+    }
+
+    const followerCount = await getUserFollowersCount(prisma, forUserId);
+
+    return {
+      followerCount: followerCount?._count.followers ?? 0,
+      hasFollow: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("user result"));
+  }
+}
+
+export async function userFollowCtrl(prisma: PrismaClient, userId: string) {
+  try {
+    const counts = await getUserFollowCount(prisma, userId);
+
+    return {
+      followerCount: counts?._count.followers ?? 0,
+      followingCount: counts?._count.followings ?? 0,
+    };
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("user follow"));
+  }
+}
+
+export async function userFollowersCtrl(
+  prisma: PrismaClient,
+
+  userId: string
+) {
+  try {
+    const followerCount = await getUserFollowersCount(prisma, userId);
+
+    return followerCount?._count.followers ?? 0;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("user followers"));
+  }
+}
+
+export async function userFollowingsCtrl(prisma: PrismaClient, userId: string) {
+  try {
+    const followerCount = await getUserFollowingsCount(prisma, userId);
+
+    return followerCount?._count.followings ?? 0;
+  } catch (error) {
+    console.log(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("user followings"));
   }
 }

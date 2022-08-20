@@ -4,6 +4,10 @@ import {
   authorFollowingsOnCursorCtrl,
   getUsersOnOffsetCtrl,
   suggestAuthorsToUserOnOffsetCtrl,
+  userFollowCtrl,
+  userFollowersCtrl,
+  userFollowingsCtrl,
+  userResultCtrl,
 } from "../../controller/user.controller";
 import { getUserById } from "../../services/user.service";
 import {
@@ -98,5 +102,41 @@ export const Query = {
     } catch (error) {
       return getGraphqlYogaError(error, NOT_EXIST_ERR_MSG("User"));
     }
+  },
+
+  async userResult(
+    _: unknown,
+    { id }: { id: string },
+    { prisma, user }: YogaContextReturnType
+  ) {
+    const result = await userResultCtrl(prisma, id, user?.id);
+    return result;
+  },
+
+  async userFollow(
+    _: unknown,
+    { id }: { id: string },
+    { prisma }: YogaContextReturnType
+  ) {
+    const result = await userFollowCtrl(prisma, id);
+    return result;
+  },
+
+  async userFollowers(
+    _: unknown,
+    { id }: { id: string },
+    { prisma }: YogaContextReturnType
+  ) {
+    const result = await userFollowersCtrl(prisma, id);
+    return result;
+  },
+
+  async userFollowings(
+    _: unknown,
+    { id }: { id: string },
+    { prisma }: YogaContextReturnType
+  ) {
+    const result = await userFollowingsCtrl(prisma, id);
+    return result;
   },
 };

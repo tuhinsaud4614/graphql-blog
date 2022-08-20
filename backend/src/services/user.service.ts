@@ -242,6 +242,27 @@ export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
   });
 }
 
+export function getUserFollowersCount(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { followers: true } } },
+  });
+}
+
+export function getUserFollowCount(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { followers: true, followings: true } } },
+  });
+}
+
+export function getUserFollowingsCount(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { followings: true } } },
+  });
+}
+
 export const userVerificationMessage = (
   userId: string,
   code: string,

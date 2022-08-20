@@ -75,6 +75,16 @@ type CursorUserResponse {
   total: Int!
 }
 
+type UserResultResponse {
+  followerCount: Int!
+  hasFollow: Boolean!
+}
+
+type UserFollowResponse {
+  followerCount: Int!
+  followingCount: Int!
+}
+
 type Query {
   users: [User!]!
   usersOnOffset(limit: Int, page: Int): PaginateUsers!
@@ -90,6 +100,10 @@ type Query {
     authorId: ID
   ): CursorUserResponse!
   user(id: ID!): User!
+  userResult(id: ID!): UserResultResponse!
+  userFollow(id: ID!): UserFollowResponse!
+  userFollowers(id: ID!): Int!
+  userFollowings(id: ID!): Int!
 }
 
 type Mutation {
