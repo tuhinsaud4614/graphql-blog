@@ -1,39 +1,54 @@
-import classNames from "classnames";
+import { selectUser } from "@features";
 import { Button } from "components";
-import { useUserMentionTooltipStatsQuery } from "graphql/generated/schema";
-
-const className = {
-  skeltonCommon:
-    "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20 rounded-full",
-  skeletonText: "w-16 h-6",
-  skeletonBtn: "w-24 h-8 mt-3",
-};
+import {
+  useSendFollowRequestMutation,
+  useSendUnFollowRequestMutation,
+} from "graphql/generated/schema";
+import { useState } from "react";
+import { useAppSelector } from "store";
 
 interface Props {
   userId: string;
+  isFollowed: boolean;
 }
 
-export default function ReactorItemAction({ userId }: Props) {
-  const { data, loading, error } = useUserMentionTooltipStatsQuery({
-    notifyOnNetworkStatusChange: true,
-    variables: { id: userId },
-  });
+export default function ReactorItemAction({ userId, isFollowed }: Props) {
+  const [follow, setFollow] = useState(isFollowed);
+  const rdxUser = useAppSelector(selectUser);
 
-  if (loading || error || !data?.userResult) {
-    return (
-      <span
-        className={classNames(className.skeltonCommon, className.skeletonBtn)}
-      />
-    );
-  }
+  const [sendFollow, { loading: loadingFollow }] = useSendFollowRequestMutation(
+    {
+      notifyOnNetworkStatusChange: true,
+    }
+  );
+  const [sendUnFollow, { loading: unFollowLoading }] =
+    useSendUnFollowRequestMutation({
+      notifyOnNetworkStatusChange: true,
+    });
+
+  const onClick = async () => {
+    try {
+      if (follow) {
+        await sendUnFollow({ variables: { toId: userId } });
+        setFollow(false);
+      } else {
+        await sendFollow({ variables: { toId: userId } });
+        setFollow(true);
+      }
+    } catch (error) {}
+  };
+
   return (
     <Button
-      aria-label={data.userResult.hasFollow ? "Follow" : "Following"}
+      aria-label={follow ? "Follow" : "Following"}
       type="button"
       className="px-3.5 py-1.5 text-sm"
-      mode={data.userResult.hasFollow ? "outline" : "fill"}
+      mode={follow ? "outline" : "fill"}
+      disabled={rdxUser?.id === userId || loadingFollow || unFollowLoading}
+      loading={loadingFollow || unFollowLoading}
+      onClick={rdxUser?.id !== userId ? onClick : undefined}
     >
-      {data.userResult.hasFollow ? "Following" : "Follow"}
+      {follow ? "Following" : "Follow"}
     </Button>
   );
 }

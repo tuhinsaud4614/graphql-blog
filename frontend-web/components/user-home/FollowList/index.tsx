@@ -1,8 +1,7 @@
-import { NetworkStatus } from "@apollo/client";
 import { selectUser } from "@features";
 import classNames from "classnames";
 import { ErrorBox } from "components";
-import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
+import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
 import { ComponentPropsWithoutRef } from "react";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 import { useAppSelector } from "store";
@@ -54,11 +53,13 @@ const NextButton = (props: ComponentPropsWithoutRef<"button">) => {
 
 export default function FollowList() {
   const rdxUser = useAppSelector(selectUser);
-  const { data, error, loading, networkStatus, refetch } =
-    useGetAuthorFollowersOnCursorQuery({
+  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
+    {
       notifyOnNetworkStatusChange: true,
+      fetchPolicy: "network-only",
       variables: { limit: 2 },
-    });
+    }
+  );
 
   const prevId = "prev-btn";
   const nextId = "next-btn";
@@ -67,7 +68,7 @@ export default function FollowList() {
     return null;
   }
 
-  if (networkStatus === NetworkStatus.refetch) {
+  if (loading) {
     return <FollowSkeleton />;
   }
 
@@ -90,14 +91,14 @@ export default function FollowList() {
     );
   }
 
-  if (!data || data.authorFollowersOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowingsOnCursor.edges.length === 0) {
     return null;
   }
 
   const {
     pageInfo: { hasNext, endCursor },
     edges,
-  } = data.authorFollowersOnCursor;
+  } = data.authorFollowingsOnCursor;
 
   return (
     <Swiper

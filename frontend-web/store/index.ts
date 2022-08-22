@@ -1,5 +1,6 @@
 import { authReducer } from "@features";
 import { configureStore } from "@reduxjs/toolkit";
+import authorFollowerCountReducer from "features/authorFollowerCount";
 import notificationReducer from "features/notificationSlice/notificationSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
@@ -7,6 +8,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     notification: notificationReducer,
+    authorFollowerCount: authorFollowerCountReducer,
   },
   devTools: process.env.NODE_ENV === "development",
 });

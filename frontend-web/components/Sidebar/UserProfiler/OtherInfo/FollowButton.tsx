@@ -1,24 +1,27 @@
+import { authorFollowerDecrement, authorFollowerIncrement } from "@features";
 import { Button } from "components";
 import {
   useSendFollowRequestMutation,
-  useSendUnFollowRequestMutation
+  useSendUnFollowRequestMutation,
 } from "graphql/generated/schema";
 import { useState } from "react";
+import { useAppDispatch } from "store";
 
 interface Props {
   isFollowed: boolean;
   toId: string;
-  onFollow(isFollowed: boolean): void;
 }
 
-export default function FollowButton({ isFollowed, toId, onFollow }: Props) {
+export default function FollowButton({ isFollowed, toId }: Props) {
   const [follow, setFollow] = useState(isFollowed);
+  const rdxDispatch = useAppDispatch();
   const [sendFollow, { loading: loadingFollow }] = useSendFollowRequestMutation(
     {
       notifyOnNetworkStatusChange: true,
       errorPolicy: "all",
     }
   );
+
   const [sendUnFollow, { loading: unFollowLoading }] =
     useSendUnFollowRequestMutation({
       notifyOnNetworkStatusChange: true,
@@ -30,11 +33,11 @@ export default function FollowButton({ isFollowed, toId, onFollow }: Props) {
       if (follow) {
         await sendUnFollow({ variables: { toId } });
         setFollow(false);
-        onFollow(false);
+        rdxDispatch(authorFollowerDecrement());
       } else {
         await sendFollow({ variables: { toId } });
         setFollow(true);
-        onFollow(true);
+        rdxDispatch(authorFollowerIncrement());
       }
     } catch (error) {}
   };

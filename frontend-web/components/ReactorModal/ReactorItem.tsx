@@ -1,5 +1,9 @@
+import classNames from "classnames";
 import { DemoAvatar } from "components";
-import { FUserFragment } from "graphql/generated/schema";
+import {
+  FUserFragment,
+  useUserMentionTooltipStatsQuery,
+} from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -16,7 +20,11 @@ const className = {
   userTileAuthorAbout:
     "text-xs text-neutral/60 dark:text-neutral-dark/60 line-clamp-1 text-ellipsis mt-1",
   userTileImg:
-    "w-10 h-10 inline-block rounded-full overflow-hidden mr-5 border p-0.5 dark:p-0 dark:border-none dark:ring-1 dark:ring-secondary-dark",
+    "w-10 h-10 inline-block rounded-full overflow-hidden mr-5 border dark:border-none dark:ring-1 dark:ring-secondary-dark",
+  skeltonCommon:
+    "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20 rounded-full",
+  skeletonText: "w-16 h-6",
+  skeletonBtn: "w-24 h-8 mt-3",
 };
 
 interface Props {
@@ -32,6 +40,13 @@ export default function ReactorItem({ user }: Props) {
       about ? serializeSlateValue(JSON.parse(about) as Descendant[]) : null,
     [about]
   );
+
+  const { data, loading, error } = useUserMentionTooltipStatsQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: { id: user.id },
+  });
+
   return (
     <li className={className.userTile}>
       <div className={className.userTileLeft}>
@@ -63,7 +78,16 @@ export default function ReactorItem({ user }: Props) {
           )}
         </span>
       </div>
-      <ReactorItemAction userId={user.id} />
+      {loading || error || !data ? (
+        <span
+          className={classNames(className.skeltonCommon, className.skeletonBtn)}
+        />
+      ) : (
+        <ReactorItemAction
+          userId={user.id}
+          isFollowed={data.userResult.hasFollow}
+        />
+      )}
     </li>
   );
 }

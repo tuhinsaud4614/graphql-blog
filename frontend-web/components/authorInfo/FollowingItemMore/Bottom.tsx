@@ -73,7 +73,7 @@ export function Bottom({ id }: { id: string }) {
         aria-label={follow ? "Following" : "Follow"}
         mode={follow ? "outline" : "fill"}
         className="text-sm !px-2 !py-0.5"
-        onClick={count ? onClick : undefined}
+        onClick={rdxUser?.id !== id ? onClick : undefined}
         disabled={rdxUser?.id === id || loadingFollow || unFollowLoading}
         loading={loadingFollow || unFollowLoading}
       >

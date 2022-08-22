@@ -1,9 +1,11 @@
+import { selectAuthorFollowerCount } from "@features";
 import { useLockBody } from "@hooks";
 import classNames from "classnames";
-import { ReactorModal, SlateViewer } from "components";
-import { useGetUserFollowQuery } from "graphql/generated/schema";
+import { Button, ReactorModal, SlateViewer } from "components";
+import { useGetUserFollowingsQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
 import { Descendant } from "slate";
+import { useAppSelector } from "store";
 import { followConvert } from "utils";
 import BottomFollowers from "./BottomFollowers";
 import BottomFollowings from "./BottomFollowings";
@@ -64,11 +66,13 @@ export default function OtherAboutTab({ userId, about }: Props) {
   const [open, setOpen] = useState<"follower" | "following" | null>(null);
   useLockBody(!!open);
 
-  const { loading, data, error } = useGetUserFollowQuery({
+  const { loading, data, error } = useGetUserFollowingsQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
     variables: { id: userId },
   });
+
+  const count = useAppSelector(selectAuthorFollowerCount);
 
   return (
     <Fragment>
@@ -81,7 +85,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
           )}
         </section>
         <div className={className.bottom}>
-          {loading || error || !data?.userFollow ? (
+          {loading || error || !data ? (
             <span
               className={classNames(
                 className.skeltonCommon,
@@ -89,17 +93,21 @@ export default function OtherAboutTab({ userId, about }: Props) {
               )}
             />
           ) : (
-            <button
+            <Button
               type="button"
               aria-label="Followers"
-              className={className.btn}
-              onClick={() => setOpen("follower")}
+              className="px-0"
+              disabled={!count}
+              onClick={() => {
+                count && setOpen("follower");
+              }}
+              mode="text"
             >
-              {followConvert(data.userFollow.followerCount, "Follower")}
-            </button>
+              {followConvert(count, "Follower")}
+            </Button>
           )}
           <span className="mx-3 text-neutral dark:text-neutral-dark">·</span>
-          {loading || error || !data?.userFollow ? (
+          {loading || error || !data ? (
             <span
               className={classNames(
                 className.skeltonCommon,
@@ -107,23 +115,27 @@ export default function OtherAboutTab({ userId, about }: Props) {
               )}
             />
           ) : (
-            <button
+            <Button
               type="button"
               aria-label="Following"
-              className={className.btn}
-              onClick={() => setOpen("following")}
+              className="px-0"
+              disabled={!data.userFollowings}
+              onClick={() => {
+                !!data.userFollowings && setOpen("following");
+              }}
+              mode="text"
             >
-              {followConvert(data.userFollow.followingCount, "Following")}
-            </button>
+              {followConvert(data.userFollowings, "Following")}
+            </Button>
           )}
         </div>
       </div>
-      {!!data?.userFollow && (
+      {(!!data?.userFollowings || !!count) && (
         <ReactorModal
           title={
             open === "follower"
-              ? followConvert(data.userFollow.followerCount, "follower")
-              : followConvert(data.userFollow.followingCount, "following")
+              ? followConvert(count, "follower")
+              : followConvert(data?.userFollowings ?? 0, "following")
           }
           open={!!open}
           onHide={() => setOpen(null)}

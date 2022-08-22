@@ -24,7 +24,7 @@ const className = {
   avatarInfo:
     "flex px-4 hover:bg-base-200 dark:hover:bg-base-dark-200 py-2 group",
   avatarInfoImg:
-    "shrink-0 w-8 h-8 inline-block rounded-full overflow-hidden border p-1 dark:border-none dark:p-0 dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
+    "shrink-0 w-8 h-8 inline-block rounded-full overflow-hidden border dark:border-none dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary-dark mr-3",
   avatarInfoDetail: "flex flex-col",
   name: "pb-1 text-sm line-clamp-1 text-ellipsis text-neutral dark:text-neutral-dark dark:group-hover:text-accent-dark",
   bio: "text-xs line-clamp-1 text-ellipsis text-neutral/60 dark:text-neutral-dark/60 group-hover:text-accent dark:group-hover:text-accent-dark",

@@ -1,9 +1,11 @@
+import { selectAuthorFollowerCount, setAuthorFollowerCount } from "@features";
 import { useLockBody } from "@hooks";
 import classNames from "classnames";
 import { Button, ReactorModal } from "components";
 import { useUserMentionTooltipStatsQuery } from "graphql/generated/schema";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Descendant } from "slate";
+import { useAppDispatch, useAppSelector } from "store";
 import { followConvert, serializeSlateValue } from "utils";
 import { IUser } from "utils/interfaces";
 import AllFollowers from "../AllFollowers";
@@ -26,9 +28,11 @@ export default function OtherInfo({ user }: Props) {
   const { data } = useUserMentionTooltipStatsQuery({
     notifyOnNetworkStatusChange: true,
     variables: { id: user.id },
+    fetchPolicy: "network-only",
   });
+  const count = useAppSelector(selectAuthorFollowerCount);
+  const rdxDispatch = useAppDispatch();
 
-  const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
   useLockBody(open);
 
@@ -40,7 +44,10 @@ export default function OtherInfo({ user }: Props) {
   );
 
   useEffect(() => {
-    setCount(data?.userResult.followerCount ?? 0);
+    if (data?.userResult.followerCount) {
+      rdxDispatch(setAuthorFollowerCount(data.userResult.followerCount));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.userResult.followerCount]);
 
   return (
@@ -69,17 +76,7 @@ export default function OtherInfo({ user }: Props) {
       )}
       {aboutText && <p className={className.about}>{aboutText}</p>}
       {data?.userResult ? (
-        <FollowButton
-          isFollowed={data.userResult.hasFollow}
-          toId={user.id}
-          onFollow={(isFollowed) => {
-            if (isFollowed) {
-              setCount((prev) => prev + 1);
-            } else {
-              setCount((prev) => (!!prev ? prev - 1 : 0));
-            }
-          }}
-        />
+        <FollowButton isFollowed={data.userResult.hasFollow} toId={user.id} />
       ) : (
         <span
           className={classNames(className.skeltonCommon, className.skeletonBtn)}
