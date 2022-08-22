@@ -2,19 +2,16 @@ import { useLockBody } from "@hooks";
 import classNames from "classnames";
 import { Button, ReactorModal } from "components";
 import { useUserMentionTooltipStatsQuery } from "graphql/generated/schema";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Descendant } from "slate";
 import { followConvert, serializeSlateValue } from "utils";
 import { IUser } from "utils/interfaces";
-import AllFollowers from "./AllFollowers";
+import AllFollowers from "../AllFollowers";
+import FollowButton from "./FollowButton";
 
 const className = {
-  countBtn:
-    "border-none outline-none text-neutral/60 dark:text-neutral-dark/60 hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 min-w-min mt-1",
   about:
     "mt-3 text-sm text-neutral/50 dark:text-neutral-dark/50 line-clamp-1 text-ellipsis",
-  followBtn:
-    "outline-none px-3.5 py-1.5 rounded-full text-sm text-center inline-block active:scale-95",
   skeltonCommon:
     "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20 rounded-full",
   skeletonText: "w-16 h-6",
@@ -30,6 +27,8 @@ export default function OtherInfo({ user }: Props) {
     notifyOnNetworkStatusChange: true,
     variables: { id: user.id },
   });
+
+  const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
   useLockBody(open);
 
@@ -39,17 +38,27 @@ export default function OtherInfo({ user }: Props) {
       about ? serializeSlateValue(JSON.parse(about) as Descendant[]) : null,
     [about]
   );
+
+  useEffect(() => {
+    setCount(data?.userResult.followerCount ?? 0);
+  }, [data?.userResult.followerCount]);
+
   return (
     <Fragment>
-      {data?.userResult.followerCount ? (
-        <button
+      {data?.userResult ? (
+        <Button
           aria-label="Followers"
           type="button"
-          onClick={() => setOpen(true)}
-          className={className.countBtn}
+          onClick={() => {
+            !!count && setOpen(true);
+          }}
+          variant="neutral"
+          mode="text"
+          className="px-0"
+          disabled={!count}
         >
-          {followConvert(data.userResult.followerCount, "follower")}
-        </button>
+          {followConvert(count, "follower")}
+        </Button>
       ) : (
         <span
           className={classNames(
@@ -59,23 +68,26 @@ export default function OtherInfo({ user }: Props) {
         />
       )}
       {aboutText && <p className={className.about}>{aboutText}</p>}
-      {data?.userResult.hasFollow ? (
-        <Button
-          aria-label={data.userResult.hasFollow ? "Following" : "Follow"}
-          type="button"
-          className="mt-3 text-sm"
-          mode="outline"
-        >
-          {data.userResult.hasFollow ? "Following" : "Follow"}
-        </Button>
+      {data?.userResult ? (
+        <FollowButton
+          isFollowed={data.userResult.hasFollow}
+          toId={user.id}
+          onFollow={(isFollowed) => {
+            if (isFollowed) {
+              setCount((prev) => prev + 1);
+            } else {
+              setCount((prev) => (!!prev ? prev - 1 : 0));
+            }
+          }}
+        />
       ) : (
         <span
           className={classNames(className.skeltonCommon, className.skeletonBtn)}
         />
       )}
-      {!!data?.userResult.followerCount && (
+      {!!count && (
         <ReactorModal
-          title={followConvert(data.userResult.followerCount, "follower")}
+          title={followConvert(count, "follower")}
           open={open}
           onHide={() => setOpen(false)}
         >

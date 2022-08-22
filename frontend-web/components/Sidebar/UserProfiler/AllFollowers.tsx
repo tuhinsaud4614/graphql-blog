@@ -19,6 +19,7 @@ export default function AllFollowers({ authorId }: Props) {
   const { data, fetchMore, refetch, error, networkStatus, loading } =
     useGetAuthorFollowersOnCursorQuery({
       notifyOnNetworkStatusChange: true,
+      fetchPolicy: "network-only",
       variables: { limit: 6, authorId },
     });
 
