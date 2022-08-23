@@ -9,7 +9,7 @@ import { IMAGE_MIMES } from "utils/constants";
 
 const className = {
   root: "ml-5 shrink-0",
-  container: "w-20 h-20 rounded-full relative",
+  container: "w-20 h-20 rounded-full relative border",
   controller:
     "absolute z-10 inset-0 bg-black/[54%] overflow-hidden rounded-full",
   btn: "outline-none border-none w-full h-full flex items-center justify-center text-base-100/60 hover:text-base-100",
