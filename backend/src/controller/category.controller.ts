@@ -1,5 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
+import logger from "../logger";
 import {
   createCategory,
   deleteCategory,
@@ -46,7 +47,7 @@ export async function getCategoriesOnOffsetCtrl(
     );
     return result;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("categories"));
   }
 }
@@ -57,7 +58,7 @@ export async function createCategoryCtrl(prisma: PrismaClient, title: string) {
 
     return category;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, CREATION_ERR_MSG("Category"));
   }
 }
@@ -76,7 +77,7 @@ export async function updateCategoryCtrl(
     const category = await updateCategory(prisma, id, title);
     return category;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, UPDATE_ERR_MSG("Category"));
   }
 }
@@ -91,7 +92,7 @@ export async function deleteCategoryCtrl(prisma: PrismaClient, id: string) {
     const category = await deleteCategory(prisma, id);
     return category.id;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, DELETE_ERR_MSG("Category"));
   }
 }

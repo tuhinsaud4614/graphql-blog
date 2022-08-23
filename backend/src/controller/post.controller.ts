@@ -1,6 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
+import logger from "../logger";
 import {
   createPost,
   deletePost,
@@ -73,7 +74,7 @@ export async function createPostCtrl(
     return post;
   } catch (error) {
     removeFile(imagePath);
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, CREATION_ERR_MSG("Post"), "Post input");
   }
 }
@@ -121,7 +122,7 @@ export async function updatePostCtrl(
     return post;
   } catch (error) {
     removeFile(imagePath);
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, UPDATE_ERR_MSG("Post"), "Post input");
   }
 }
@@ -141,7 +142,7 @@ export async function deletePostCtrl(
     const deletedPost = await deletePost(prisma, id);
     return deletedPost.id;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, DELETE_ERR_MSG("Post"), "Post input");
   }
 }
@@ -196,7 +197,7 @@ export async function reactionToCtrl(
 
     return user;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, REACTIONS_ERR_MSG);
   }
 }
@@ -230,7 +231,7 @@ export async function getAllPostsOnOffsetCtrl(
 
     return result;
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }
@@ -253,7 +254,7 @@ export async function getAllPostsCtrl(
     const result = await getPostsOnCursor(prisma, params, args, count);
     return result;
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }
@@ -277,7 +278,7 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
 
     return posts;
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }
@@ -306,7 +307,7 @@ export async function getFollowingAuthorPostsCtrl(
     const result = await getPostsOnCursor(prisma, params, args, count);
     return result;
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
   }
 }
@@ -359,7 +360,7 @@ export async function getAllPostsByTagCtrl(
     const result = await getPostsByTag(prisma, args);
     return { data: result, total: count };
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("Posts"));
   }
 }

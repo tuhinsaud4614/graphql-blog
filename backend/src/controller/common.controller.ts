@@ -1,3 +1,4 @@
+import logger from "../logger";
 import { fileUpload, nanoid, removeFile } from "../utils";
 import { CREATION_ERR_MSG } from "../utils/constants";
 import { getGraphqlYogaError, uploadFileSchema } from "../validations";
@@ -17,7 +18,7 @@ export async function uploadFileCtrl(file: File) {
     return `files/${name}`;
   } catch (error) {
     removeFile(newFilePath);
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, CREATION_ERR_MSG("File"), "File input");
   }
 }

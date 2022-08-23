@@ -6,6 +6,7 @@ import {
   getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
 } from "../../controller/post.controller";
+import logger from "../../logger";
 import { getPostById } from "../../services/post.service";
 import {
   NOT_EXIST_ERR_MSG,
@@ -63,7 +64,7 @@ export const Query = {
 
       return result;
     } catch (error: any) {
-      console.log(error);
+      logger.error(error);
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
     }
   },

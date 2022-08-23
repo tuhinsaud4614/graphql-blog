@@ -1,23 +1,25 @@
 import { createClient } from "redis";
+import logger from "../logger";
+import config from "./config";
 
 const redisClient = createClient({
-  url: process.env.REDIS_URI || "redis://127.0.0.1:6379",
+  url: config.REDIS_URI,
 });
 
 redisClient.on("connect", () => {
-  console.info("Redis connected successfully.");
+  logger.info("Redis connected successfully.");
 });
 
 redisClient.on("ready", () => {
-  console.info(`Redis is ready to use.`);
+  logger.info(`Redis is ready to use.`);
 });
 
 redisClient.on("error", (err) => {
-  console.error(`Redis not connected. ${err.message}`);
+  logger.error(`Redis not connected. ${err.message}`);
 });
 
 redisClient.on("end", () => {
-  console.warn(`Redis is disconnected.`);
+  logger.warn(`Redis is disconnected.`);
 });
 
 export default redisClient;

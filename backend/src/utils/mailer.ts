@@ -5,6 +5,7 @@ import {
   getTestMessageUrl,
   SendMailOptions,
 } from "nodemailer";
+import config from "./config";
 
 const createDemoAccount = async () => {
   return createTestAccount();
@@ -12,8 +13,8 @@ const createDemoAccount = async () => {
 
 const transporter = (usr: string, pass: string) =>
   createTransport({
-    port: parseInt(process.env.SMTP_PORT as string) || 587,
-    host: process.env.SMTP_HOST || "smtp.ethereal.email",
+    port: config.SMTP_PORT,
+    host: config.SMTP_HOST,
     secure: false,
     // auth: {
     //   user: process.env.SMTP_USER || "w6o47kszasvmdbki@ethereal.email",

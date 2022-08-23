@@ -111,6 +111,8 @@ type Mutation {
   resendActivation(userId: ID!): ID!
   verifyUser(userId: ID!, code: String!): ID!
   login(data: LoginInput): Tokens!
+    @rateLimit(window: "1m", max: 5, message: "Too many calls made by login")
+
   logout: ID!
   token(refreshToken: String!): Tokens!
   uploadAvatar(avatar: File!): Picture!

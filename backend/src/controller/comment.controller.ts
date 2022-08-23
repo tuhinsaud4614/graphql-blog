@@ -1,6 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
 import _ from "lodash";
+import logger from "../logger";
 import {
   countCommentsForPost,
   createComment,
@@ -58,7 +59,7 @@ export async function createCommentCtrl(
 
     return comment;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, CREATION_ERR_MSG("Comment"));
   }
 }
@@ -82,7 +83,7 @@ export async function updateCommentCtrl(
     const comment = await updateComment(prisma, commentId, content);
     return comment;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, UPDATE_ERR_MSG("Comment"));
   }
 }
@@ -102,7 +103,7 @@ export async function deleteCommentCtrl(
     const comment = await deleteComment(prisma, commentId);
     return comment.id;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, DELETE_ERR_MSG("Comment"));
   }
 }
@@ -135,7 +136,7 @@ export async function getPostCommentsOnOffsetCtrl(
     });
     return result;
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
   }
 }

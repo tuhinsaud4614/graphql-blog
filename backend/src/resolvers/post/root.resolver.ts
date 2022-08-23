@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+import logger from "../../logger";
 import { NOT_EXIST_FOR_ERR_MSG } from "../../utils/constants";
 import { IPost } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
@@ -19,7 +20,7 @@ export const Post = {
 
       return author;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("User", "post"));
     }
   },
@@ -37,7 +38,7 @@ export const Post = {
         .categories();
       return categories;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
 
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Categories", "post"));
     }
@@ -57,7 +58,7 @@ export const Post = {
 
       return tags;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Tags", "post"));
     }
   },
@@ -74,7 +75,7 @@ export const Post = {
 
       return categories;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Image", "post"));
     }
   },
@@ -93,7 +94,7 @@ export const Post = {
 
       return reactions;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Reactions", "post"));
     }
   },
@@ -115,7 +116,7 @@ export const Post = {
 
       return comments;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Comments", "post"));
     }
   },

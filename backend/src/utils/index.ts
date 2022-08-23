@@ -8,7 +8,9 @@ import ms from "ms";
 import path from "path";
 import { promisify } from "util";
 import { ValidationError } from "yup";
+import logger from "../logger";
 import { CustomError } from "../validations";
+import config from "./config";
 import {
   FAILED_FILE_ERR_MSG,
   IMAGE_MIMES,
@@ -73,7 +75,7 @@ export function getUserPayload(decoded: string | JwtPayload) {
 
 export const verifyRefreshToken = async (token: string) => {
   try {
-    const decoded = verify(token, process.env.REFRESH_TOKEN_SECRET_KEY!);
+    const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY);
     const payload = getUserPayload(decoded);
 
     const value = await redisClient.get(REFRESH_TOKEN_KEY_NAME(payload.id));
@@ -83,7 +85,7 @@ export const verifyRefreshToken = async (token: string) => {
     redisClient.del(REFRESH_TOKEN_KEY_NAME(payload.id));
     throw new CustomError(UN_AUTH_ERR_MSG);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     throw new CustomError(UN_AUTH_ERR_MSG);
   }
 };
@@ -101,7 +103,7 @@ export const verifyAccessTokenInContext = (
     }
 
     const token = authToken.replace(/^Bearer\s/, "");
-    const decoded = verify(token, process.env.ACCESS_TOKEN_SECRET_KEY!);
+    const decoded = verify(token, config.ACCESS_TOKEN_SECRET_KEY);
     return getUserPayload(decoded);
   } catch (error) {
     return null;
@@ -225,3 +227,5 @@ export function removeFile(filePath?: string) {
     }
   });
 }
+
+export const isDev = () => process.env.NODE_ENV === "development";

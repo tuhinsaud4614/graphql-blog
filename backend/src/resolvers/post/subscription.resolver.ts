@@ -1,5 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
+import logger from "../../logger";
 import {
   SUBSCRIPTION_REACTIONS_ERR_MSG,
   UN_AUTH_ERR_MSG,
@@ -25,7 +26,7 @@ export const Subscription = {
         // return pubSub.subscribe(SUBSCRIPTION_REACTIONS(postId));
         return pubSub.subscribe("reactions", postId);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         return getGraphqlYogaError(error, SUBSCRIPTION_REACTIONS_ERR_MSG);
       }
     },

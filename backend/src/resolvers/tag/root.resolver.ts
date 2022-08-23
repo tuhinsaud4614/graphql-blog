@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+import logger from "../../logger";
 import { NOT_EXIST_FOR_ERR_MSG } from "../../utils/constants";
 import { ITag } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
@@ -19,7 +20,7 @@ export const Tag = {
 
       return posts;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
 
       return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
     }

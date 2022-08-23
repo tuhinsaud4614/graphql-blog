@@ -1,5 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import * as yup from "yup";
+import { UserInputError } from "../model";
 import { formatYupError } from "../utils";
 import { REQUIRED_ERR_MSG, VALIDATION_ERR_MSG } from "../utils/constants";
 
@@ -21,8 +22,7 @@ export function getGraphqlYogaError(
 
   if (error instanceof yup.ValidationError) {
     const err = formatYupError(error);
-    return new GraphQLYogaError(VALIDATION_ERR_MSG(errFor), {
-      code,
+    return new UserInputError(VALIDATION_ERR_MSG(errFor), {
       fields: err,
     });
   }

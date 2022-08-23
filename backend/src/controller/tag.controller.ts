@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import logger from "../logger";
 import { getManyTags } from "../services/tag.service";
 import { FETCH_ERR_MSG } from "../utils/constants";
 import { IOffsetPageInfo, IOffsetQueryParams } from "../utils/interfaces";
@@ -46,7 +47,7 @@ export async function getTagsOnOffsetCtrl(
 
     return { results, total: count };
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("tags"));
   }
 }

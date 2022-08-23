@@ -4,6 +4,7 @@ import { hash, verify } from "argon2";
 import { unlink } from "fs";
 import { pick } from "lodash";
 import path from "path";
+import logger from "../logger";
 import {
   createUser,
   followTo,
@@ -28,6 +29,7 @@ import {
   nanoid,
   verifyRefreshToken,
 } from "../utils";
+import config from "../utils/config";
 import {
   ALREADY_FOLLOWED_ERR_MSG,
   ALREADY_UN_FOLLOWED_ERR_MSG,
@@ -68,14 +70,14 @@ import {
 async function generateTokens(user: IUserPayload) {
   const accessToken = await generateToken(
     user,
-    process.env.ACCESS_TOKEN_SECRET_KEY!,
-    process.env.ACCESS_TOKEN_EXPIRES!
+    config.ACCESS_TOKEN_SECRET_KEY,
+    config.ACCESS_TOKEN_EXPIRES
   );
 
   const refreshToken = await generateToken(
     user,
-    process.env.REFRESH_TOKEN_SECRET_KEY!,
-    process.env.REFRESH_TOKEN_EXPIRES!,
+    config.REFRESH_TOKEN_SECRET_KEY,
+    config.REFRESH_TOKEN_EXPIRES,
     true
   );
 
@@ -114,7 +116,7 @@ export async function registerCtrl(
 
     return user.id;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(
       error,
       CREATION_ERR_MSG("User"),
@@ -142,7 +144,7 @@ export async function resendActivationCtrl(
     await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
     return userId;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, "Resend activation failed");
   }
 }
@@ -182,7 +184,7 @@ export async function verifyUserCtrl(
     // });
     return userId;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, "User verification failed");
   }
 }
@@ -225,7 +227,7 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
 
     return { accessToken, refreshToken };
   } catch (error: any) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, AUTH_FAIL_ERR_MSG, "Login input");
   }
 }
@@ -235,7 +237,7 @@ export async function logoutCtrl(user: IUserPayload) {
     await redisClient.del(REFRESH_TOKEN_KEY_NAME(user.id));
     return user.id;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(
       error,
       UN_AUTH_ERR_MSG,
@@ -260,7 +262,7 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
 
     return { accessToken, refreshToken: rfToken };
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(
       error,
       UN_AUTH_ERR_MSG,
@@ -321,7 +323,7 @@ export async function uploadAvatar(
 
     return pick(updatedUser.avatar, ["id", "url", "height", "width"]);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(
       error,
       UN_AUTH_ERR_MSG,
@@ -348,7 +350,7 @@ export async function updateNameCtrl(
     const updatedUser = await updateUserName(prisma, isExist.id, name);
     return updatedUser.name;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(
       error,
       UN_AUTH_ERR_MSG,
@@ -375,7 +377,7 @@ export async function updateAboutCtrl(
     const updatedUser = await updateUserAbout(prisma, isExist.id, value);
     return updatedUser.about;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(
       error,
       UN_AUTH_ERR_MSG,
@@ -412,7 +414,7 @@ export async function followRequestCtrl(
     const followedUser = await followTo(prisma, toId, user.id);
     return followedUser;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FOLLOW_ERR_MSG);
   }
 }
@@ -440,7 +442,7 @@ export async function unfollowRequestCtrl(
     await unfollowTo(prisma, toId, user.id);
     return toId;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FOLLOW_ERR_MSG);
   }
 }
@@ -475,7 +477,7 @@ export async function getUsersOnOffsetCtrl(
     const result = await getUsersOnOffset(prisma, count, page, limit, args);
     return result;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
   }
 }
@@ -513,7 +515,7 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
     const result = await getUsersOnOffset(prisma, count, page, limit, args);
     return result;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
   }
 }
@@ -545,7 +547,7 @@ export async function authorFollowersOnCursorCtrl(
     const result = await getUsersOnCursor(prisma, params, args, count);
     return result;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("authors followers"));
   }
 }
@@ -577,7 +579,7 @@ export async function authorFollowingsOnCursorCtrl(
     const result = await getUsersOnCursor(prisma, params, args, count);
     return result;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("authors following"));
   }
 }
@@ -612,7 +614,7 @@ export async function userResultCtrl(
       hasFollow: false,
     };
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("user result"));
   }
 }
@@ -626,7 +628,7 @@ export async function userFollowCtrl(prisma: PrismaClient, userId: string) {
       followingCount: counts?._count.followings ?? 0,
     };
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("user follow"));
   }
 }
@@ -641,7 +643,7 @@ export async function userFollowersCtrl(
 
     return followerCount?._count.followers ?? 0;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("user followers"));
   }
 }
@@ -652,7 +654,7 @@ export async function userFollowingsCtrl(prisma: PrismaClient, userId: string) {
 
     return followerCount?._count.followings ?? 0;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("user followings"));
   }
 }
