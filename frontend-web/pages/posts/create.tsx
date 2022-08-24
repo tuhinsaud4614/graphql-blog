@@ -13,7 +13,11 @@ import {
   PostCreateHeader,
 } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
-import { UserRole } from "graphql/generated/schema";
+import {
+  useGetCategoriesByTextOnOffsetLazyQuery,
+  useGetTagsByTextOnOffsetLazyQuery,
+  UserRole,
+} from "graphql/generated/schema";
 import _ from "lodash";
 import { NextPage } from "next";
 import Head from "next/head";
@@ -94,6 +98,14 @@ const CreatePost: NextPage = () => {
   const tagsId = useId();
   const publishedId = useId();
 
+  const [fetchCategories] = useGetCategoriesByTextOnOffsetLazyQuery({
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [fetchTags] = useGetTagsByTextOnOffsetLazyQuery({
+    notifyOnNetworkStatusChange: true,
+  });
+
   const onSubmit = async (
     values: IValues,
     formikHelpers: FormikHelpers<IValues>
@@ -168,18 +180,22 @@ const CreatePost: NextPage = () => {
                 errors.categories
               }
               loadOptions={async (value) => {
-                const p = new Promise<{ name: string; value: string }[]>(
-                  (res) => {
-                    if (!value) {
-                      return res([]);
-                    }
-                    setTimeout(() => {
-                      res([{ name: value.toUpperCase(), value }]);
-                    }, 500);
+                try {
+                  const { data } = await fetchCategories({
+                    variables: { text: value || "" },
+                  });
+                  if (data) {
+                    return data.categoriesByTextOnOffset.data.map(
+                      (category) => ({
+                        name: category.title,
+                        value: category.id,
+                      })
+                    );
                   }
-                );
-                const result = await p;
-                return result;
+                  return [];
+                } catch (error) {
+                  return [];
+                }
               }}
               required
             />
@@ -201,18 +217,20 @@ const CreatePost: NextPage = () => {
                 touched.tags && typeof errors.tags === "string" && errors.tags
               }
               loadOptions={async (value) => {
-                const p = new Promise<{ name: string; value: string }[]>(
-                  (res) => {
-                    if (!value) {
-                      return res([]);
-                    }
-                    setTimeout(() => {
-                      res([{ name: value.toUpperCase(), value }]);
-                    }, 500);
+                try {
+                  const { data } = await fetchTags({
+                    variables: { text: value || "" },
+                  });
+                  if (data) {
+                    return data.tagsByTextOnOffset.results.map((tag) => ({
+                      name: tag.title,
+                      value: tag.id,
+                    }));
                   }
-                );
-                const result = await p;
-                return result;
+                  return [];
+                } catch (error) {
+                  return [];
+                }
               }}
               required
             />
