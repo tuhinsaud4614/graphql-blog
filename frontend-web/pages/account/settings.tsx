@@ -1,3 +1,5 @@
+import { AuthGuard } from "@component";
+import { selectUser } from "@features";
 import { LayoutContainer } from "components/Layout";
 import {
   SettingsAvatarEdit,
@@ -5,8 +7,10 @@ import {
   SettingsPasswordChange,
 } from "components/settings";
 import { getCookie } from "cookies-next";
+import { UserRole } from "graphql/generated/schema";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+import { useAppSelector } from "store";
 import { ROUTES } from "utils/constants";
 
 const className = {
@@ -16,18 +20,21 @@ const className = {
 };
 
 const SettingsPage: NextPage = () => {
+  const user = useAppSelector(selectUser);
   return (
-    <LayoutContainer>
-      <Head>
-        <title>The RAT Diary | Your settings</title>
-      </Head>
-      <h1 className={className.title}>About you</h1>
-      <ul className={className.items}>
-        <SettingsNameEdit />
-        <SettingsAvatarEdit />
-        <SettingsPasswordChange />
-      </ul>
-    </LayoutContainer>
+    <AuthGuard role={UserRole.Author}>
+      <LayoutContainer>
+        <Head>
+          <title>The RAT Diary | Your settings</title>
+        </Head>
+        <h1 className={className.title}>About you</h1>
+        <ul className={className.items}>
+          <SettingsNameEdit user={user} />
+          <SettingsAvatarEdit />
+          <SettingsPasswordChange />
+        </ul>
+      </LayoutContainer>
+    </AuthGuard>
   );
 };
 

@@ -61,11 +61,17 @@ export default function AvatarEdit() {
             <div>
               <p className={className.info}>
                 Your avatar appears on your{" "}
-                <Link href={ROUTES.authorProfile("2")} passHref>
-                  <a aria-label="Profile" className="underline">
-                    Profile
-                  </a>
-                </Link>{" "}
+                <ClientOnly>
+                  {user?.id ? (
+                    <Link href={ROUTES.authorProfile(user.id)} passHref>
+                      <a aria-label="Profile" className="underline">
+                        Profile
+                      </a>
+                    </Link>
+                  ) : (
+                    "Profile"
+                  )}
+                </ClientOnly>{" "}
                 page and with your posts across Apps.
               </p>
               <br />

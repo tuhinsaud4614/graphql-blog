@@ -1,7 +1,10 @@
-import { Button } from "components";
+import { Button, ErrorModal } from "components";
 import { FormControl } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
+import { useResetPasswordMutation } from "graphql/generated/schema";
 import { Fragment, useId, useState } from "react";
+import { toast } from "react-toastify";
+import { gplErrorHandler } from "utils";
 import * as yup from "yup";
 
 const className = {
@@ -32,10 +35,32 @@ export default function PasswordChange() {
   const newPasswordId = useId();
   const oldPasswordId = useId();
 
+  const [resetPassword, { loading, error, reset }] = useResetPasswordMutation({
+    errorPolicy: "all",
+  });
+
   const onSubmit = async (
-    values: IValues,
-    formikHelpers: FormikHelpers<IValues>
-  ) => {};
+    { newPassword, oldPassword }: IValues,
+    { resetForm }: FormikHelpers<IValues>
+  ) => {
+    try {
+      const { data } = await resetPassword({
+        variables: { newPassword, oldPassword },
+      });
+      if (data) {
+        toast.success(data.resetPassword, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+        });
+        resetForm();
+        setEditable(false);
+      }
+    } catch (error) {
+      resetForm();
+    }
+  };
 
   const {
     handleSubmit,
@@ -54,88 +79,95 @@ export default function PasswordChange() {
   });
 
   return (
-    <li>
-      <form onSubmit={handleSubmit} className={className.item}>
-        <div className={className.itemLeft}>
-          <label className={className.label}>Password change</label>
-          {!editable ? (
-            <p className={className.info}>
-              You can change your password. That will help you to log in.
-            </p>
-          ) : (
-            <Fragment>
-              <FormControl
-                classes={{
-                  label: "text-left self-start",
-                  input: "!text-left pb-2",
-                }}
-                id={oldPasswordId}
-                title="Old password"
-                name="oldPassword"
-                aria-label="Old password"
-                placeholder="Your old password"
-                aria-invalid={Boolean(
-                  touched.oldPassword && errors.oldPassword
-                )}
-                type="password"
-                valid={!(touched.oldPassword && errors.oldPassword)}
-                errorText={touched.oldPassword && errors.oldPassword}
-                value={values.oldPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                required
-              />
-              <FormControl
-                classes={{
-                  root: "mt-4",
-                  label: "text-left self-start",
-                  input: "!text-left pb-2",
-                }}
-                id={newPasswordId}
-                title="New password"
-                name="newPassword"
-                aria-label="New password"
-                placeholder="Your new password"
-                aria-invalid={Boolean(
-                  touched.newPassword && errors.newPassword
-                )}
-                type="password"
-                valid={!(touched.newPassword && errors.newPassword)}
-                errorText={touched.newPassword && errors.newPassword}
-                value={values.newPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                required
-              />
-            </Fragment>
-          )}
-        </div>
-        <div className={className.itemRight}>
-          {editable && (
+    <Fragment>
+      <li>
+        <form onSubmit={handleSubmit} className={className.item}>
+          <div className={className.itemLeft}>
+            <label className={className.label}>Password change</label>
+            {!editable ? (
+              <p className={className.info}>
+                You can change your password. That will help you to log in.
+              </p>
+            ) : (
+              <Fragment>
+                <FormControl
+                  classes={{
+                    label: "text-left self-start",
+                    input: "!text-left pb-2",
+                  }}
+                  id={oldPasswordId}
+                  title="Old password"
+                  name="oldPassword"
+                  aria-label="Old password"
+                  placeholder="Your old password"
+                  aria-invalid={Boolean(
+                    touched.oldPassword && errors.oldPassword
+                  )}
+                  type="password"
+                  valid={!(touched.oldPassword && errors.oldPassword)}
+                  errorText={touched.oldPassword && errors.oldPassword}
+                  value={values.oldPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  required
+                />
+                <FormControl
+                  classes={{
+                    root: "mt-4",
+                    label: "text-left self-start",
+                    input: "!text-left pb-2",
+                  }}
+                  id={newPasswordId}
+                  title="New password"
+                  name="newPassword"
+                  aria-label="New password"
+                  placeholder="Your new password"
+                  aria-invalid={Boolean(
+                    touched.newPassword && errors.newPassword
+                  )}
+                  type="password"
+                  valid={!(touched.newPassword && errors.newPassword)}
+                  errorText={touched.newPassword && errors.newPassword}
+                  value={values.newPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  required
+                />
+              </Fragment>
+            )}
+          </div>
+          <div className={className.itemRight}>
+            {editable && (
+              <Button
+                className="mr-2 text-sm"
+                type="submit"
+                aria-label="Save"
+                variant="success"
+                mode="outline"
+                loading={isSubmitting || loading}
+                disabled={!(isValid && dirty) || isSubmitting}
+              >
+                Save
+              </Button>
+            )}
             <Button
-              className="mr-2 text-sm"
-              type="submit"
-              aria-label="Save"
-              variant="success"
+              className="text-sm"
+              type="button"
+              aria-label={editable ? "Cancel" : "Edit"}
+              variant="neutral"
               mode="outline"
-              loading={isSubmitting}
-              disabled={!(isValid && dirty) || isSubmitting}
+              onClick={() => setEditable((prev) => !prev)}
             >
-              Save
+              {editable ? "Cancel" : "Edit"}
             </Button>
-          )}
-          <Button
-            className="text-sm"
-            type="button"
-            aria-label={editable ? "Cancel" : "Edit"}
-            variant="neutral"
-            mode="outline"
-            onClick={() => setEditable((prev) => !prev)}
-          >
-            {editable ? "Cancel" : "Edit"}
-          </Button>
-        </div>
-      </form>
-    </li>
+          </div>
+        </form>
+      </li>
+      <ErrorModal
+        onClose={() => reset()}
+        title="Reset Password Errors"
+        errors={gplErrorHandler(error)}
+      />
+    </Fragment>
   );
 }

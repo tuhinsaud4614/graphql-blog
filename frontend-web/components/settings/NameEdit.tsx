@@ -1,13 +1,14 @@
-import { selectUser, updateUserName } from "@features";
+import { updateUserName } from "@features";
 import { Button, ErrorModal } from "components";
 import { FormControl } from "components/account";
 import { useUpdateNameMutation } from "graphql/generated/schema";
 import Link from "next/link";
 import { Fragment, useEffect, useId, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "store";
+import { useAppDispatch } from "store";
 import { gplErrorHandler } from "utils";
 import { ROUTES } from "utils/constants";
+import { IUser } from "utils/interfaces";
 
 const className = {
   item: "py-8 flex flex-wrap sm:flex-nowrap items-center justify-between space-y-3",
@@ -16,13 +17,16 @@ const className = {
   itemRight: "flex self-start shrink-0",
 };
 
-export default function NameEdit() {
+interface Props {
+  user: IUser | null;
+}
+
+export default function NameEdit({ user }: Props) {
   const [nameEdit, setNameEdit] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(user?.name || "");
   const inputRef = useRef<HTMLInputElement | null>(null);
   const nameId = useId();
 
-  const user = useAppSelector(selectUser);
   const rdxDispatch = useAppDispatch();
   const [updateName, { loading, error, reset }] = useUpdateNameMutation({
     fetchPolicy: "network-only",
@@ -78,9 +82,8 @@ export default function NameEdit() {
             title="Name"
             name="name"
             aria-label="name"
-            aria-invalid={!name}
             type="text"
-            value={name || !user?.name ? "" : user?.name}
+            value={name}
             onChange={(e) => {
               setName(e.target.value);
             }}
