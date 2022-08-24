@@ -32,6 +32,8 @@ export function Upload({ onAdd }: Props) {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
+  // const []
+
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const files = e.target.files;

@@ -3,6 +3,7 @@ import {
   Button,
   CheckInput,
   ClientOnly,
+  ErrorModal,
   ImagePicker,
   PostEditor,
   Select,
@@ -14,6 +15,7 @@ import {
 } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
 import {
+  useCreatePostMutation,
   useGetCategoriesByTextOnOffsetLazyQuery,
   useGetTagsByTextOnOffsetLazyQuery,
   UserRole,
@@ -22,8 +24,14 @@ import _ from "lodash";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useId } from "react";
+import { toast } from "react-toastify";
 import { Descendant } from "slate";
-import { maxFileSize, readLocalStorageValue } from "utils";
+import {
+  gplErrorHandler,
+  maxFileSize,
+  readLocalStorageValue,
+  removeLocalStorageValue,
+} from "utils";
 import { CREATE_POST_KEY, IMAGE_MIMES } from "utils/constants";
 import * as yup from "yup";
 
@@ -106,10 +114,42 @@ const CreatePost: NextPage = () => {
     notifyOnNetworkStatusChange: true,
   });
 
+  const [createPost, { loading, error, reset }] = useCreatePostMutation({
+    notifyOnNetworkStatusChange: true,
+  });
+
   const onSubmit = async (
-    values: IValues,
-    formikHelpers: FormikHelpers<IValues>
-  ) => {};
+    { body, categories, image, published, tags, title }: IValues,
+    { resetForm }: FormikHelpers<IValues>
+  ) => {
+    try {
+      const { data } = await createPost({
+        variables: {
+          data: {
+            content: JSON.stringify(body),
+            categories: categories.map((cat) => cat.value),
+            tags: tags.map((tag) => tag.value),
+            image,
+            published,
+            title,
+          },
+        },
+      });
+      if (data) {
+        toast.success(`${data.createPost.title} post created successfully!`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+        });
+        removeLocalStorageValue(CREATE_POST_KEY);
+        resetForm();
+      }
+    } catch (error) {
+      resetForm();
+    }
+  };
 
   const {
     handleSubmit,
@@ -128,8 +168,6 @@ const CreatePost: NextPage = () => {
     onSubmit,
     validationSchema: schema,
   });
-
-  console.log(JSON.stringify(values.body));
 
   return (
     <AuthGuard role={UserRole.Author}>
@@ -218,14 +256,20 @@ const CreatePost: NextPage = () => {
               }
               loadOptions={async (value) => {
                 try {
-                  const { data } = await fetchTags({
-                    variables: { text: value || "" },
-                  });
-                  if (data) {
-                    return data.tagsByTextOnOffset.results.map((tag) => ({
-                      name: tag.title,
-                      value: tag.id,
-                    }));
+                  if (value) {
+                    value = value.trim();
+                    const { data } = await fetchTags({
+                      variables: { text: value || "" },
+                    });
+                    if (data) {
+                      if (data.tagsByTextOnOffset.results.length === 0) {
+                        return [{ name: value, value }];
+                      }
+                      return data.tagsByTextOnOffset.results.map((tag) => ({
+                        name: tag.title,
+                        value: tag.title,
+                      }));
+                    }
                   }
                   return [];
                 } catch (error) {
@@ -269,13 +313,18 @@ const CreatePost: NextPage = () => {
                 className="w-[14.125rem] px-5 !py-2 "
                 type="submit"
                 aria-label="Save"
-                loading={isSubmitting}
+                loading={isSubmitting || loading}
                 disabled={!(isValid && dirty) || isSubmitting}
               >
                 Save
               </Button>
             </div>
           </form>
+          <ErrorModal
+            onClose={() => reset()}
+            title="Create Post Errors"
+            errors={gplErrorHandler(error)}
+          />
         </PostCreateContainer>
       </ClientOnly>
     </AuthGuard>
