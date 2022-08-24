@@ -63,7 +63,9 @@ export async function getCategoriesByTextOnOffsetCtrl(
 
     const { limit, page } = rest;
 
-    const condition: Prisma.CategoryWhereInput = { title: { search: text } };
+    const condition: Prisma.CategoryWhereInput = {
+      title: { contains: text, mode: "insensitive" },
+    };
     let args: Prisma.CategoryFindManyArgs = {
       orderBy: { updatedAt: "desc" },
       where: condition,

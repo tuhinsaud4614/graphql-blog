@@ -37,20 +37,20 @@ type CursorPostsResponse {
 input CreatePostInput {
   title: String!
   image: File!
-  categories: [String!]!
+  categories: [ID!]!
   published: Boolean!
   content: String!
-  tags: [String!]!
+  tags: [ID!]!
 }
 
 input UpdatePostInput {
   id: String!
   title: String
   image: File
-  categories: [String!]
+  categories: [ID!]
   published: Boolean
   content: String
-  tags: [String!]
+  tags: [ID!]
 }
 
 type Query {
