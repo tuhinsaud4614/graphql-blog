@@ -5,8 +5,13 @@ import {
   SidebarSkeleton,
 } from "components/Sidebar";
 import { useGetCategoriesOnOffsetQuery } from "graphql/generated/schema";
+import { Fragment } from "react";
 import { gplErrorHandler, isDev } from "utils";
 import { ROUTES } from "utils/constants";
+
+const className = {
+  divider: "w-full border-b dark:border-base-dark-300 my-4",
+};
 
 export default function Categories() {
   const { data, loading, refetch, error } = useGetCategoriesOnOffsetQuery({
@@ -16,7 +21,12 @@ export default function Categories() {
   });
 
   if (loading) {
-    return <SidebarSkeleton />;
+    return (
+      <Fragment>
+        <SidebarSkeleton />
+        <hr className={className.divider} />
+      </Fragment>
+    );
   }
   if (error) {
     return (
@@ -43,22 +53,25 @@ export default function Categories() {
   }
 
   return (
-    <SidebarContent
-      title="Categories"
-      moreLink={ROUTES.categories}
-      moreText={
-        data.categoriesOnOffset.pageInfo?.hasNext
-          ? "See all the categories"
-          : undefined
-      }
-    >
-      {data.categoriesOnOffset.data.map((category) => (
-        <SidebarCategory
-          key={category.id}
-          title={category.title}
-          link={ROUTES.postsByCategory(category.id)}
-        />
-      ))}
-    </SidebarContent>
+    <Fragment>
+      <SidebarContent
+        title="Categories"
+        moreLink={ROUTES.categories}
+        moreText={
+          data.categoriesOnOffset.pageInfo?.hasNext
+            ? "See all the categories"
+            : undefined
+        }
+      >
+        {data.categoriesOnOffset.data.map((category) => (
+          <SidebarCategory
+            key={category.id}
+            title={category.title}
+            link={ROUTES.postsByCategory(category.id)}
+          />
+        ))}
+      </SidebarContent>
+      <hr className={className.divider} />
+    </Fragment>
   );
 }

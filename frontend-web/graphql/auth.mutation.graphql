@@ -1,5 +1,5 @@
 mutation Register(
-  $name: String!
+  $name: String
   $email: String!
   $password: String!
   $confirmPassword: String!
@@ -9,7 +9,6 @@ mutation Register(
     data: {
       name: $name
       email: $email
-      role: "AUTHOR"
       password: $password
       confirmPassword: $confirmPassword
       mobile: $mobile

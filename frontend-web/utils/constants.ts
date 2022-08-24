@@ -3,6 +3,7 @@ export const RECENT_SEARCHES_KEY = "recent-searches";
 export const USER_KEY = "user";
 export const NOTIFICATIONS_KEY = "notifications";
 export const ABOUT_ME_KEY = "about-me";
+export const CREATE_POST_KEY = "create-post";
 
 // TABS
 export const SEARCH_TABS = ["posts", "author", "categories", "tags"] as const;

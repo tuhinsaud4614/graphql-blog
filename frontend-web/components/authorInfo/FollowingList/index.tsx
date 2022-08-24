@@ -23,6 +23,7 @@ export default function FollowingList({ authorId }: Props) {
   const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
     {
       notifyOnNetworkStatusChange: true,
+      fetchPolicy: "network-only",
       variables: { limit: 6, authorId },
     }
   );

@@ -1,23 +1,26 @@
 import {
+  AuthGuard,
   Button,
   CheckInput,
+  ClientOnly,
   ImagePicker,
   PostEditor,
   Select,
 } from "@component";
-import { NextPageWithLayout } from "@types";
 import {
   FormControl,
   PostCreateContainer,
   PostCreateHeader,
 } from "components/account";
 import { FormikHelpers, useFormik } from "formik";
+import { UserRole } from "graphql/generated/schema";
 import _ from "lodash";
+import { NextPage } from "next";
 import Head from "next/head";
-import { Fragment, ReactElement, useId } from "react";
+import { useId } from "react";
 import { Descendant } from "slate";
-import { maxFileSize } from "utils";
-import { IMAGE_MIMES } from "utils/constants";
+import { maxFileSize, readLocalStorageValue } from "utils";
+import { CREATE_POST_KEY, IMAGE_MIMES } from "utils/constants";
 import * as yup from "yup";
 
 const className = {
@@ -33,11 +36,9 @@ interface IValues {
   published: boolean;
 }
 
-const initialBodyValue: Descendant[] = [
-  {
-    children: [{ text: "" }],
-  },
-];
+const initialBodyValue: Descendant[] = JSON.parse(
+  readLocalStorageValue(CREATE_POST_KEY) || '[{"children":[{"text":""}]}]'
+);
 
 // validation
 const schema = yup.object().shape({
@@ -78,7 +79,7 @@ const schema = yup.object().shape({
   published: yup.boolean(),
 });
 
-const CreatePost: NextPageWithLayout = () => {
+const CreatePost: NextPage = () => {
   const initialValues: IValues = {
     title: "",
     categories: [],
@@ -119,145 +120,148 @@ const CreatePost: NextPageWithLayout = () => {
   console.log(JSON.stringify(values.body));
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Head>
-        <title>New post – The RAT Diary</title>
-        <meta name="title" content="New post – The RAT Diary" />
-        <meta
-          name="description"
-          content="In its most basic form, a post on The RAT Diary consists of title, categories, tags, image & body"
-        />
-      </Head>
+    <AuthGuard role={UserRole.Author}>
+      <ClientOnly>
+        <PostCreateHeader />
+        <PostCreateContainer>
+          <form onSubmit={handleSubmit}>
+            <Head>
+              <title>New post – The RAT Diary</title>
+              <meta name="title" content="New post – The RAT Diary" />
+              <meta
+                name="description"
+                content="In its most basic form, a post on The RAT Diary consists of title, categories, tags, image & body"
+              />
+            </Head>
 
-      <FormControl
-        classes={{ root: className.control }}
-        id={titleId}
-        title="Post title"
-        name="title"
-        aria-label="Post title"
-        aria-invalid={Boolean(touched.title && errors.title)}
-        valid={!(touched.title && errors.title)}
-        errorText={touched.title && errors.title}
-        value={values.title}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        required
-      />
-      <Select
-        classes={{ root: className.control }}
-        id={categoriesId}
-        title="Post categories"
-        name="categories"
-        aria-label="Post categories"
-        aria-invalid={Boolean(touched.categories && errors.categories)}
-        placeholder="Select categories..."
-        values={values.categories}
-        onChangeValues={(val) => setFieldValue("categories", val)}
-        onBlur={() => {
-          if (!touched.categories) setFieldTouched("categories", true);
-        }}
-        valid={!(touched.categories && errors.categories)}
-        errorText={
-          touched.categories &&
-          typeof errors.categories === "string" &&
-          errors.categories
-        }
-        loadOptions={async (value) => {
-          const p = new Promise<{ name: string; value: string }[]>((res) => {
-            if (!value) {
-              return res([]);
-            }
-            setTimeout(() => {
-              res([{ name: value.toUpperCase(), value }]);
-            }, 500);
-          });
-          const result = await p;
-          return result;
-        }}
-        required
-      />
-      <Select
-        classes={{ root: className.control }}
-        id={tagsId}
-        title="Post tags"
-        name="tags"
-        aria-label="Post tags"
-        aria-invalid={Boolean(touched.tags && errors.tags)}
-        placeholder="Select tags..."
-        values={values.tags}
-        onChangeValues={(val) => setFieldValue("tags", val)}
-        onBlur={() => {
-          if (!touched.tags) setFieldTouched("tags", true);
-        }}
-        valid={!(touched.tags && errors.tags)}
-        errorText={
-          touched.tags && typeof errors.tags === "string" && errors.tags
-        }
-        loadOptions={async (value) => {
-          const p = new Promise<{ name: string; value: string }[]>((res) => {
-            if (!value) {
-              return res([]);
-            }
-            setTimeout(() => {
-              res([{ name: value.toUpperCase(), value }]);
-            }, 500);
-          });
-          const result = await p;
-          return result;
-        }}
-        required
-      />
-      <ImagePicker
-        title="Post image"
-        name="image"
-        aria-label="Post image"
-        aria-invalid={Boolean(touched.image && errors.image)}
-        classes={{ container: className.control }}
-        value={values.image}
-        onFileChange={(file) => setFieldValue("image", file)}
-        onTouched={() => {
-          if (!touched.image) setFieldTouched("image", true);
-        }}
-        valid={!(touched.image && errors.image)}
-        errorText={touched.image && errors.image}
-        required
-      />
-      <PostEditor
-        value={values.body}
-        onChange={(value) => setFieldValue("body", value)}
-      />
-      <div className="w-52 mt-3">
-        <CheckInput
-          label="Published"
-          id={publishedId}
-          name="published"
-          aria-label="Post published"
-          aria-checked={values.published}
-          checked={values.published}
-          onChange={(e) => setFieldValue("published", e.target.checked)}
-        />
-      </div>
-      <div className="flex justify-center pt-5 pb-3">
-        <Button
-          className="w-[14.125rem] px-5 !py-2 "
-          type="submit"
-          aria-label="Save"
-          loading={isSubmitting}
-          disabled={!(isValid && dirty) || isSubmitting}
-        >
-          Save
-        </Button>
-      </div>
-    </form>
+            <FormControl
+              classes={{ root: className.control }}
+              id={titleId}
+              title="Post title"
+              name="title"
+              aria-label="Post title"
+              aria-invalid={Boolean(touched.title && errors.title)}
+              valid={!(touched.title && errors.title)}
+              errorText={touched.title && errors.title}
+              value={values.title}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              required
+            />
+            <Select
+              classes={{ root: className.control }}
+              id={categoriesId}
+              title="Post categories"
+              name="categories"
+              aria-label="Post categories"
+              aria-invalid={Boolean(touched.categories && errors.categories)}
+              placeholder="Select categories..."
+              values={values.categories}
+              onChangeValues={(val) => setFieldValue("categories", val)}
+              onBlur={() => {
+                if (!touched.categories) setFieldTouched("categories", true);
+              }}
+              valid={!(touched.categories && errors.categories)}
+              errorText={
+                touched.categories &&
+                typeof errors.categories === "string" &&
+                errors.categories
+              }
+              loadOptions={async (value) => {
+                const p = new Promise<{ name: string; value: string }[]>(
+                  (res) => {
+                    if (!value) {
+                      return res([]);
+                    }
+                    setTimeout(() => {
+                      res([{ name: value.toUpperCase(), value }]);
+                    }, 500);
+                  }
+                );
+                const result = await p;
+                return result;
+              }}
+              required
+            />
+            <Select
+              classes={{ root: className.control }}
+              id={tagsId}
+              title="Post tags"
+              name="tags"
+              aria-label="Post tags"
+              aria-invalid={Boolean(touched.tags && errors.tags)}
+              placeholder="Select tags..."
+              values={values.tags}
+              onChangeValues={(val) => setFieldValue("tags", val)}
+              onBlur={() => {
+                if (!touched.tags) setFieldTouched("tags", true);
+              }}
+              valid={!(touched.tags && errors.tags)}
+              errorText={
+                touched.tags && typeof errors.tags === "string" && errors.tags
+              }
+              loadOptions={async (value) => {
+                const p = new Promise<{ name: string; value: string }[]>(
+                  (res) => {
+                    if (!value) {
+                      return res([]);
+                    }
+                    setTimeout(() => {
+                      res([{ name: value.toUpperCase(), value }]);
+                    }, 500);
+                  }
+                );
+                const result = await p;
+                return result;
+              }}
+              required
+            />
+            <ImagePicker
+              title="Post image"
+              name="image"
+              aria-label="Post image"
+              aria-invalid={Boolean(touched.image && errors.image)}
+              classes={{ container: className.control }}
+              value={values.image}
+              onFileChange={(file) => setFieldValue("image", file)}
+              onTouched={() => {
+                if (!touched.image) setFieldTouched("image", true);
+              }}
+              valid={!(touched.image && errors.image)}
+              errorText={touched.image && errors.image}
+              required
+            />
+            <PostEditor
+              value={values.body}
+              onChange={(value) => setFieldValue("body", value)}
+            />
+            <div className="w-52 mt-3">
+              <CheckInput
+                label="Published"
+                id={publishedId}
+                name="published"
+                aria-label="Post published"
+                aria-checked={values.published}
+                checked={values.published}
+                onChange={(e) => setFieldValue("published", e.target.checked)}
+              />
+            </div>
+            <div className="flex justify-center pt-5 pb-3">
+              <Button
+                className="w-[14.125rem] px-5 !py-2 "
+                type="submit"
+                aria-label="Save"
+                loading={isSubmitting}
+                disabled={!(isValid && dirty) || isSubmitting}
+              >
+                Save
+              </Button>
+            </div>
+          </form>
+        </PostCreateContainer>
+      </ClientOnly>
+    </AuthGuard>
   );
 };
 
-CreatePost.getLayout = (page: ReactElement) => {
-  return (
-    <Fragment>
-      <PostCreateHeader />
-      <PostCreateContainer>{page}</PostCreateContainer>
-    </Fragment>
-  );
-};
 export default CreatePost;

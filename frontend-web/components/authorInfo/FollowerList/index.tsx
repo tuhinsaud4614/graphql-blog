@@ -22,6 +22,7 @@ interface Props {
 export default function FollowerList({ authorId }: Props) {
   const { data, error, loading, refetch } = useGetAuthorFollowersOnCursorQuery({
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
     variables: { limit: 6, authorId },
   });
 

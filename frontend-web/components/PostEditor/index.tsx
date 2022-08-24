@@ -11,17 +11,12 @@ import {
   Slate,
   withReact,
 } from "slate-react";
-import { withEmbeds, withImages, withLinks } from "utils";
+import { setLocalStorageValue, withEmbeds, withImages, withLinks } from "utils";
+import { CREATE_POST_KEY } from "utils/constants";
 
 import Toolbar from "./Toolbar";
 
 const className = { root: "border dark:border-base-dark-300 rounded-md" };
-
-const initialValue: Descendant[] = [
-  {
-    children: [{ text: "" }],
-  },
-];
 
 interface Props {
   value: Descendant[];
@@ -51,7 +46,21 @@ export default function PostEditor({ onChange, value }: Props) {
 
   return (
     <section className={className.root}>
-      <Slate editor={editor} value={value} onChange={onChange}>
+      <Slate
+        editor={editor}
+        value={value}
+        onChange={(value) => {
+          const isAstChange = editor.operations.some(
+            (op: any) => "set_selection" !== op.type
+          );
+          if (isAstChange) {
+            // Save the value to Local Storage.
+            const content = JSON.stringify(value);
+            setLocalStorageValue(CREATE_POST_KEY, content);
+          }
+          onChange(value);
+        }}
+      >
         <Toolbar />
         <section className="px-4 py-2 overflow-x-auto min-h-[12rem]">
           <Editable

@@ -11,7 +11,6 @@ interface Props {
 }
 
 const className = {
-  divider: "w-full border-b dark:border-base-dark-300 my-4",
   link: "first:mt-3 first:ml-3 !rounded-full bg-neutral/5 dark:bg-neutral-dark/5 active:scale-95",
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",
 };
@@ -23,9 +22,7 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
         hideSidebar ? null : (
           <Fragment>
             <Categories />
-            <hr className={className.divider} />
             <Tags />
-            <hr className={className.divider} />
             <Authors />
           </Fragment>
         )
