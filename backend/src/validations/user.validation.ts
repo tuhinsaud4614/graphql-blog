@@ -62,3 +62,12 @@ export const loginSchema = yup.object().shape({
     ),
   password: yup.string().required(REQUIRED_ERR_MSG("password")),
 });
+
+export const resetPasswordSchema = yup.object().shape({
+  oldPassword: yup.string().required(REQUIRED_ERR_MSG("Old password")),
+  newPassword: yup
+    .string()
+    .required(REQUIRED_ERR_MSG("New password"))
+    .min(3, PASSWORD_NOT_LONG_ENOUGH)
+    .max(255, PASSWORD_TOO_LONG),
+});

@@ -6,13 +6,16 @@ import {
   logoutCtrl,
   registerCtrl,
   resendActivationCtrl,
+  resetPasswordCtrl,
   tokenCtrl,
   unfollowRequestCtrl,
   updateAboutCtrl,
   updateNameCtrl,
   uploadAvatar,
+  verifyResetPasswordCtrl,
   verifyUserCtrl,
 } from "../../controller/user.controller";
+import { AuthenticationError } from "../../model";
 import {
   FOLLOW_OWN_ERR_MSG,
   UN_AUTH_ERR_MSG,
@@ -85,9 +88,7 @@ export const Mutation = {
     ___: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
     const result = await logoutCtrl(user);
     return result;
@@ -100,6 +101,38 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     const result = await tokenCtrl(prisma, refreshToken);
+    return result;
+  },
+
+  async resetPassword(
+    _: any,
+    { newPassword, oldPassword }: { oldPassword: string; newPassword: string },
+    { prisma, user, req }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+    const result = await resetPasswordCtrl(
+      prisma,
+      user.id,
+      oldPassword,
+      newPassword,
+      req.headers.origin
+    );
+    return result;
+  },
+
+  async verifyResetPassword(
+    _: any,
+    { code }: { code: string },
+    { prisma, user }: YogaContextReturnType,
+    __: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+    const result = await verifyResetPasswordCtrl(prisma, user.id, code);
     return result;
   },
 
@@ -168,12 +201,6 @@ export const Mutation = {
     }
 
     const result = await followRequestCtrl(prisma, toId, user);
-    // pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
-    //   following: {
-    //     followedBy: user,
-    //     mutation: EFollowingMutationStatus.Follow,
-    //   },
-    // });
     pubSub.publish("following", toId, {
       followedBy: user,
       mutation: EFollowingMutationStatus.Follow,
@@ -198,12 +225,6 @@ export const Mutation = {
     }
 
     const result = await unfollowRequestCtrl(prisma, toId, user);
-    // pubSub.publish(SUBSCRIPTION_FOLLOWING(toId), {
-    //   following: {
-    //     followedBy: user,
-    //     mutation: EFollowingMutationStatus.Unfollow,
-    //   },
-    // });
     pubSub.publish("following", toId, {
       followedBy: user,
       mutation: EFollowingMutationStatus.Unfollow,

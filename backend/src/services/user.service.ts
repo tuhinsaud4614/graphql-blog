@@ -1,7 +1,11 @@
 import type { Prisma, PrismaClient, User } from "@prisma/client";
 import path from "path";
+import logger from "../logger";
 import { nanoid } from "../utils";
-import { USER_VERIFICATION_KEY_NAME } from "../utils/constants";
+import {
+  RESET_PASSWORD_VERIFICATION_KEY_NAME,
+  USER_VERIFICATION_KEY_NAME,
+} from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
 import {
   ICursorQueryParams,
@@ -164,6 +168,17 @@ export function verifyAuthorStatus(prisma: PrismaClient, userId: string) {
   });
 }
 
+export function userResetPassword(
+  prisma: PrismaClient,
+  userId: string,
+  newPassword: string
+) {
+  return prisma.user.update({
+    data: { password: newPassword },
+    where: { id: userId },
+  });
+}
+
 export function getUserFollowerList(
   prisma: PrismaClient,
   id: string,
@@ -263,43 +278,16 @@ export function getUserFollowingsCount(prisma: PrismaClient, id: string) {
   });
 }
 
-export const userVerificationMessage = (
-  userId: string,
-  code: string,
-  email: string,
-  host?: string
+export const sendMailToUser = async (
+  to: string,
+  subject: string,
+  message: string,
+  from = "foo@example.com"
 ) => {
-  const href = `${
-    host || "http://localhost:4000"
-  }/account/verify?userId=${userId}&code=${code}`;
-
-  const link = `<a href="${href}">${href}</a>`;
-
-  const message = `
-    <img style="width:100px; height: 100px; padding: 30px 0;" alt="The RAT Diary" src="cid:unique@cid">
-    <br/>
-    <p style="margin-bottom: 20px;">We got a note saying you want to create an account with email ${email}.</p>
-    <b style="color:red;">User ID:</b> ${userId}
-    <br/>
-    <b>Verification Code:</b> ${code}
-    <br/>
-    <br/>
-    <a href="${href}" style="color:#ffffff;text-decoration:none;display:inline-block;height:38px;line-height:38px;padding-top:0;padding-right:24px;padding-bottom:0;padding-left:24px;border:0;outline:0;background-color:#1a8917;font-size:14px;font-style:normal;font-weight:400;text-align:center;white-space:nowrap;border-radius:99em" target="_blank">Verify user</a>
-    <br/>
-    <br/>
-    <small>Or verify using this link:</small>
-    <br/>
-    ${link}
-  `;
-
-  return message;
-};
-
-export const sendMailToUser = async (to: string, message: string) => {
   const info = await sendMail({
-    from: "foo@example.com",
+    from,
     to: to,
-    subject: "The RAT Diary account verification code",
+    subject: subject,
     html: message,
     attachments: [
       {
@@ -309,7 +297,7 @@ export const sendMailToUser = async (to: string, message: string) => {
       },
     ],
   });
-  console.info(info);
+  logger.info(info);
 };
 
 export const sendUserVerificationCode = async (
@@ -318,16 +306,77 @@ export const sendUserVerificationCode = async (
   host?: string
 ) => {
   const verificationCode = nanoid(6);
-  const message = userVerificationMessage(
-    userId,
-    verificationCode,
+  const href = `${
+    host || "http://localhost:4000"
+  }/account/verify?userId=${userId}&code=${verificationCode}`;
+
+  const link = `<a href="${href}">${href}</a>`;
+
+  const message = `
+    <img style="width:100px; height: 100px; padding: 30px 0;" alt="The RAT Diary" src="cid:unique@cid">
+    <br/>
+    <p style="margin-bottom: 20px;">We got a note saying you want to create an account with email ${email}.</p>
+    <b style="color:red;">User ID:</b> ${userId}
+    <br/>
+    <b>Verification Code:</b> ${verificationCode}
+    <br/>
+    <br/>
+    <a href="${href}" style="color:#ffffff;text-decoration:none;display:inline-block;height:38px;line-height:38px;padding-top:0;padding-right:24px;padding-bottom:0;padding-left:24px;border:0;outline:0;background-color:#1a8917;font-size:14px;font-style:normal;font-weight:400;text-align:center;white-space:nowrap;border-radius:99em" target="_blank">Verify user</a>
+    <br/>
+    <br/>
+    <small>Or verify using this link:</small>
+    <br/>
+    ${link}
+  `;
+  await sendMailToUser(
     email,
-    host
+    "The RAT Diary account verification code",
+    message
   );
   await redisClient.setEx(
     USER_VERIFICATION_KEY_NAME(userId),
     600,
     verificationCode
   );
-  await sendMailToUser(email, message);
+};
+
+export const sendResetPasswordVerificationCode = async (
+  userId: string,
+  email: string,
+  password: string,
+  host?: string
+) => {
+  const verificationCode = nanoid(6);
+  const href = `${
+    host || "http://localhost:4000"
+  }/account/verify-reset-password?code=${verificationCode}`;
+
+  const link = `<a href="${href}">${href}</a>`;
+
+  const message = `
+    <img style="width:100px; height: 100px; padding: 30px 0;" alt="The RAT Diary" src="cid:unique@cid">
+    <br/>
+    <p style="margin-bottom: 20px;">We got a note saying you want to reset your password with email ${email}.</p>
+    <b style="color:red;">User ID:</b> ${userId}
+    <br/>
+    <b>Verification Code:</b> ${verificationCode}
+    <br/>
+    <br/>
+    <a href="${href}" style="color:#ffffff;text-decoration:none;display:inline-block;height:38px;line-height:38px;padding-top:0;padding-right:24px;padding-bottom:0;padding-left:24px;border:0;outline:0;background-color:#1a8917;font-size:14px;font-style:normal;font-weight:400;text-align:center;white-space:nowrap;border-radius:99em" target="_blank">Verify Reset Password</a>
+    <br/>
+    <br/>
+    <small>Or verify using this link:</small>
+    <br/>
+    ${link}
+  `;
+  await sendMailToUser(
+    email,
+    "The RAT Diary reset password verification code",
+    message
+  );
+  await redisClient.setEx(
+    RESET_PASSWORD_VERIFICATION_KEY_NAME(userId),
+    600,
+    JSON.stringify({ code: verificationCode, hash: password })
+  );
 };

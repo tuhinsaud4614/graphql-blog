@@ -204,3 +204,8 @@ export interface ISuccessResponse {
   data: any;
   timeStamp: string;
 }
+
+export interface IVerifyResetPassword {
+  code: string;
+  hash: string;
+}

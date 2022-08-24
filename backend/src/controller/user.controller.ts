@@ -5,6 +5,7 @@ import { unlink } from "fs";
 import { pick } from "lodash";
 import path from "path";
 import logger from "../logger";
+import { UserInputError, ValidationError } from "../model";
 import {
   createUser,
   followTo,
@@ -17,15 +18,18 @@ import {
   getUserFollowingsCount,
   getUsersOnCursor,
   getUsersOnOffset,
+  sendResetPasswordVerificationCode,
   sendUserVerificationCode,
   unfollowTo,
   updateUserAbout,
   updateUserName,
+  userResetPassword,
   verifyAuthorStatus,
 } from "../services/user.service";
 import {
   generateToken,
   imageUpload,
+  isVerifyResetPassword,
   nanoid,
   verifyRefreshToken,
 } from "../utils";
@@ -38,9 +42,11 @@ import {
   EXIST_ERR_MSG,
   FETCH_ERR_MSG,
   FOLLOW_ERR_MSG,
+  INTERNAL_SERVER_ERROR,
   INVALID_CREDENTIAL,
   NOT_EXIST_ERR_MSG,
   REFRESH_TOKEN_KEY_NAME,
+  RESET_PASSWORD_VERIFICATION_KEY_NAME,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
   USER_FOLLOWED_ERR_MSG,
@@ -64,6 +70,7 @@ import {
   loginSchema,
   registerSchema,
   resendActivationSchema,
+  resetPasswordSchema,
   verifyUserSchema,
 } from "../validations/user.validation";
 
@@ -268,6 +275,84 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
       UN_AUTH_ERR_MSG,
       undefined,
       UN_AUTH_EXT_ERR_CODE
+    );
+  }
+}
+
+export async function resetPasswordCtrl(
+  prisma: PrismaClient,
+  userId: string,
+  oldPassword: string,
+  newPassword: string,
+  host?: string
+) {
+  try {
+    await resetPasswordSchema.validate(
+      { oldPassword, newPassword },
+      { abortEarly: false }
+    );
+    const isExist = await getUserById(prisma, userId);
+
+    if (!isExist) {
+      return new ValidationError(NOT_EXIST_ERR_MSG("User"));
+    }
+
+    const isValidPassword = await verify(isExist.password, oldPassword);
+    if (!isValidPassword) {
+      return new UserInputError("Invalid credentials");
+    }
+
+    const hashNewPassword = await hash(newPassword);
+    await sendResetPasswordVerificationCode(
+      userId,
+      isExist.email,
+      hashNewPassword,
+      host
+    );
+
+    return "Reset password verification code sent. Check the email.";
+  } catch (error) {
+    logger.error(error);
+    return getGraphqlYogaError(
+      error,
+      "Failed to reset password",
+      undefined,
+      INTERNAL_SERVER_ERROR
+    );
+  }
+}
+
+export async function verifyResetPasswordCtrl(
+  prisma: PrismaClient,
+  userId: string,
+  code: string
+) {
+  try {
+    const isUserExist = await getUserById(prisma, userId);
+
+    if (!isUserExist) {
+      return new ValidationError(NOT_EXIST_ERR_MSG("User"));
+    }
+
+    const key = RESET_PASSWORD_VERIFICATION_KEY_NAME(userId);
+
+    const data = await redisClient.get(key);
+    const result = data ? JSON.parse(data) : null;
+
+    if (!result || !isVerifyResetPassword(result) || result.code !== code) {
+      return new ValidationError("Reset password verification failed");
+    }
+    await redisClient.del(key);
+    await userResetPassword(prisma, userId, result.hash);
+
+    return "Reset password successfully.";
+  } catch (error) {
+    logger.error(error);
+    return getGraphqlYogaError(
+      error,
+      "Reset password verification failed",
+      undefined,
+      INTERNAL_SERVER_ERROR
     );
   }
 }

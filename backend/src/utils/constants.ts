@@ -56,6 +56,8 @@ export const VALIDATION_ERR_MSG = (key?: string) =>
 export const REFRESH_TOKEN_KEY_NAME = (id: string) => `REFRESH_TOKEN-${id}`;
 export const USER_VERIFICATION_KEY_NAME = (id: string) =>
   `USER_VERIFICATION-${id}`;
+export const RESET_PASSWORD_VERIFICATION_KEY_NAME = (id: string) =>
+  `RESET_PASSWORD_VERIFICATION-${id}`;
 // REDIS KEY END
 
 export const IMAGE_MIMES = {

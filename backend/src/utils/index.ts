@@ -3,7 +3,7 @@ import fs, { unlink } from "fs";
 import { IncomingMessage } from "http";
 import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
-import { has, random } from "lodash";
+import _, { has, random } from "lodash";
 import ms from "ms";
 import path from "path";
 import { promisify } from "util";
@@ -20,7 +20,7 @@ import {
   TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
 } from "./constants";
-import { IUserPayload } from "./interfaces";
+import { IUserPayload, IVerifyResetPassword } from "./interfaces";
 import redisClient from "./redis";
 
 // Sub exports
@@ -229,3 +229,7 @@ export function removeFile(filePath?: string) {
 }
 
 export const isDev = () => process.env.NODE_ENV === "development";
+export const isVerifyResetPassword = (
+  data: any
+): data is IVerifyResetPassword =>
+  typeof data === "object" && _.has(data, "code") && _.has(data, "hash");

@@ -112,9 +112,15 @@ type Mutation {
   verifyUser(userId: ID!, code: String!): ID!
   login(data: LoginInput): Tokens!
     @rateLimit(window: "1m", max: 5, message: "Too many calls made by login")
-
   logout: ID!
   token(refreshToken: String!): Tokens!
+  resetPassword(oldPassword: String!, newPassword: String!): String!
+    @rateLimit(
+      window: "1m"
+      max: 2
+      message: "Too many calls for resetting password"
+    )
+  verifyResetPassword(code: String!): String!
   uploadAvatar(avatar: File!): Picture!
   updateName(name: String!): String!
   updateAbout(value: String): String!
