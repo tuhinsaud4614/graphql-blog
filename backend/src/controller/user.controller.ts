@@ -49,7 +49,6 @@ import {
   RESET_PASSWORD_VERIFICATION_KEY_NAME,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
-  USER_FOLLOWED_ERR_MSG,
   USER_VERIFICATION_KEY_NAME,
 } from "../utils/constants";
 import { EAuthorStatus, EUserRole } from "../utils/enums";
@@ -97,7 +96,7 @@ export async function registerCtrl(
   host: string
 ) {
   try {
-    const { email, password, mobile, role, name } = args;
+    const { email, password, mobile, name } = args;
     await registerSchema.validate(args, { abortEarly: false });
     const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
 
@@ -114,7 +113,6 @@ export async function registerCtrl(
     const user = await createUser(prisma, {
       email,
       mobile,
-      role,
       name,
       password: hashPassword,
     });
@@ -482,10 +480,6 @@ export async function followRequestCtrl(
 
     if (!isExist) {
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
-    }
-
-    if (isExist.role === EUserRole.User) {
-      return new GraphQLYogaError(USER_FOLLOWED_ERR_MSG);
     }
 
     const index = isExist.followers.findIndex(

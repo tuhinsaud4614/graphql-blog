@@ -7,7 +7,6 @@ import {
   updatePostCtrl,
 } from "../../controller/post.controller";
 import {
-  ROLE_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
   VERIFIED_AUTHOR_ERR_MSG,
@@ -27,10 +26,6 @@ export const Mutation = {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
         code: UN_AUTH_EXT_ERR_CODE,
       });
-    }
-
-    if (user.role === EUserRole.User) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin", "author"));
     }
 
     if (
@@ -56,10 +51,6 @@ export const Mutation = {
       });
     }
 
-    if (user.role === EUserRole.User) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin", "author"));
-    }
-
     if (
       user.role === EUserRole.Author &&
       user.authorStatus !== EAuthorStatus.Verified
@@ -81,10 +72,6 @@ export const Mutation = {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
         code: UN_AUTH_EXT_ERR_CODE,
       });
-    }
-
-    if (user.role === EUserRole.User) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin", "author"));
     }
 
     const result = await deletePostCtrl(prisma, id, user);

@@ -1,7 +1,6 @@
 import * as yup from "yup";
 
 import {
-  EITHER_ERR_MSG,
   INVALID_EMAIL,
   INVALID_MOBILE,
   INVALID_MOBILE_OR_EMAIL_ERR_MSG,
@@ -12,7 +11,6 @@ import {
   VALID_EMAIL_REGEX,
   VALID_MOBILE_REGEX,
 } from "../utils/constants";
-import { EUserRole } from "../utils/enums";
 
 export const registerSchema = yup.object().shape({
   email: yup.string().required(REQUIRED_ERR_MSG("Email")).email(INVALID_EMAIL),
@@ -31,10 +29,6 @@ export const registerSchema = yup.object().shape({
     .string()
     .required(REQUIRED_ERR_MSG("Confirm password"))
     .oneOf([yup.ref("password"), null], MATCHED_ERR_MSG("Password")),
-  role: yup
-    .string()
-    .required(REQUIRED_ERR_MSG("Role"))
-    .oneOf([EUserRole.Author], EITHER_ERR_MSG("Role", "AUTHOR")),
 });
 
 export const resendActivationSchema = yup.object().shape({

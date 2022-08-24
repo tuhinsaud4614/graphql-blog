@@ -2,11 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +17,7 @@ model User {
   mobile       String    @unique
   email        String    @unique
   password     String
-  role         String    @default("USER")
+  role         UserRole  @default(AUTHOR)
   authorStatus String?
   avatar       Picture?
   about        String?
@@ -87,4 +88,9 @@ model Tag {
   posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  AUTHOR
+  ADMIN
 }

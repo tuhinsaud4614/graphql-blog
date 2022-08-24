@@ -49,7 +49,6 @@ export interface IRegisterInput {
   confirmPassword: string;
   mobile: string;
   name?: string;
-  role: EUserRole.Author | EUserRole.User;
 }
 
 export interface ILoginInput {

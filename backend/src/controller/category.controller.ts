@@ -51,6 +51,43 @@ export async function getCategoriesOnOffsetCtrl(
     return getGraphqlYogaError(error, FETCH_ERR_MSG("categories"));
   }
 }
+
+export async function getCategoriesByTextOnOffsetCtrl(
+  prisma: PrismaClient,
+  { text, ...rest }: IOffsetQueryParams & { text: string }
+) {
+  try {
+    await offsetQueryParamsSchema.validate(rest, {
+      abortEarly: false,
+    });
+
+    const { limit, page } = rest;
+
+    const condition: Prisma.CategoryWhereInput = { title: { search: text } };
+    let args: Prisma.CategoryFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      where: condition,
+    };
+
+    const count = await prisma.category.count({ where: condition });
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const result = await getCategoriesOnOffset(
+      prisma,
+      count,
+      page,
+      limit,
+      args
+    );
+    return result;
+  } catch (error) {
+    logger.error(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("categories"));
+  }
+}
+
 export async function createCategoryCtrl(prisma: PrismaClient, title: string) {
   try {
     const category = await createCategory(prisma, title);

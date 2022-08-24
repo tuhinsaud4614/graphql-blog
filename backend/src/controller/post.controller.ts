@@ -25,7 +25,7 @@ import {
   UPDATE_ERR_MSG,
 } from "../utils/constants";
 import { YogaPubSubType } from "../utils/context";
-import { EReactionsMutationStatus, EUserRole } from "../utils/enums";
+import { EReactionsMutationStatus } from "../utils/enums";
 import {
   ICreatePostInput,
   ICursorQueryParams,
@@ -323,7 +323,7 @@ export async function getAllPostsByTagCtrl(
 
     const condition = {
       where: {
-        ...(params.role === EUserRole.User ? { published: true } : undefined),
+        published: true,
         tags: { some: { title: tag } },
       },
     };

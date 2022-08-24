@@ -2,7 +2,6 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import { uploadFileCtrl } from "../../controller/common.controller";
 import {
-  ROLE_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
   VERIFIED_AUTHOR_ERR_MSG,
@@ -21,10 +20,6 @@ export const Mutation = {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
         code: UN_AUTH_EXT_ERR_CODE,
       });
-    }
-
-    if (user.role === EUserRole.User) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin", "author"));
     }
 
     if (

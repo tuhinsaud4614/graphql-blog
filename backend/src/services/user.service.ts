@@ -201,13 +201,7 @@ export function getUserFollowingList(
 
 export function createUser(
   prisma: PrismaClient,
-  {
-    email,
-    mobile,
-    password,
-    name,
-    role,
-  }: Omit<IRegisterInput, "confirmPassword">
+  { email, mobile, password, name }: Omit<IRegisterInput, "confirmPassword">
 ) {
   return prisma.user.create({
     data: {
@@ -215,8 +209,8 @@ export function createUser(
       mobile,
       password,
       name,
-      role,
-      authorStatus: role === EUserRole.Author ? EAuthorStatus.Pending : null,
+      role: EUserRole.Author,
+      authorStatus: EAuthorStatus.Pending,
     },
   });
 }
