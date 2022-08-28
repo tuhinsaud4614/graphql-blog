@@ -1,6 +1,6 @@
+import { ROUTES } from "@constants";
 import { FollowItem, LinkTextButton } from "components";
 import { Fragment } from "react";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "mt-6",

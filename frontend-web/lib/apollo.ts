@@ -10,6 +10,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep, Observable } from "@apollo/client/utilities";
+import { USER_KEY } from "@constants";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { createUploadLink } from "apollo-upload-client";
 import { getCookie, setCookie } from "cookies-next";
@@ -23,7 +24,6 @@ import {
   removeLocalStorageValue,
   removeTokenFromCookie,
 } from "utils";
-import { USER_KEY } from "utils/constants";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 

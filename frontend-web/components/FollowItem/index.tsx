@@ -1,10 +1,10 @@
+import { ROUTES } from "@constants";
 import classNames from "classnames";
 import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { generateFileUrl, getUserName } from "utils";
-import { ROUTES } from "utils/constants";
 import DemoAvatar from "../DemoAvatar";
 import FollowButton from "./FollowButton";
 import UnFollowButton from "./UnFollowButton";

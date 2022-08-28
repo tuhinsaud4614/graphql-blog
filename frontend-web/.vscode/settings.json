@@ -1,6 +1,7 @@
 {
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
+    "source.addMissingImports": true,
     "source.fixAll.eslint": true,
     "source.fixAll.tslint": true,
     "source.organizeImports": true

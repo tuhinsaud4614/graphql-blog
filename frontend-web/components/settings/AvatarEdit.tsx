@@ -2,13 +2,13 @@ import _ from "lodash";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 
+import { ROUTES } from "@constants";
 import { selectUser, updateUserAvatar } from "@features";
 import { Button, ClientOnly, ErrorModal } from "components";
 import { useUploadAvatarMutation } from "graphql/generated/schema";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "store";
 import { generateFileUrl, gplErrorHandler } from "utils";
-import { ROUTES } from "utils/constants";
 import AvatarPicker from "./AvatarPicker";
 
 const className = {

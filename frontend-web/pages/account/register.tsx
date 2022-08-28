@@ -1,4 +1,5 @@
 import { Button, ErrorModal } from "@component";
+import { ROUTES, VALID_MOBILE_REGEX } from "@constants";
 import { Form, FormContainer, FormControl } from "components/account";
 import { getCookie } from "cookies-next";
 import { Formik, FormikHelpers } from "formik";
@@ -9,7 +10,6 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useId } from "react";
 import { toast } from "react-toastify";
 import { gplErrorHandler } from "utils";
-import { ROUTES, VALID_MOBILE_REGEX } from "utils/constants";
 import * as yup from "yup";
 
 const className = {

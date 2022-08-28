@@ -1,10 +1,10 @@
+import { ROUTES } from "@constants";
 import classNames from "classnames";
 import { Button, Menu, Modal, ModalHeader } from "components";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "flex flex-col",

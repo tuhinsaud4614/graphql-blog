@@ -1,4 +1,5 @@
 import { AuthGuard, ClientOnly, Tabs } from "@component";
+import { ROUTES } from "@constants";
 import { UserLayout } from "components/Layout";
 import {
   UserHomeFollowList,
@@ -21,7 +22,6 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { isDev, queryChecking, ssrAuthorize } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   top: "flex items-center text-neutral-focus dark:text-neutral-dark-focus my-6",

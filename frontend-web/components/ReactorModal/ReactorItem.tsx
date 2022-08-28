@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import classNames from "classnames";
 import { DemoAvatar } from "components";
 import {
@@ -9,7 +10,6 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { Descendant } from "slate";
 import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
-import { ROUTES } from "utils/constants";
 import ReactorItemAction from "./ReactorItemAction";
 
 const className = {

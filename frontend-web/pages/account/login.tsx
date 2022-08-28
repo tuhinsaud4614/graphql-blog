@@ -1,5 +1,6 @@
 import { useApolloClient } from "@apollo/client";
 import { Button, ErrorModal } from "@component";
+import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "@constants";
 import { setAuthUser } from "@features";
 import { Form, FormContainer, FormControl } from "components/account";
 import { getCookie } from "cookies-next";
@@ -11,7 +12,6 @@ import { useRouter } from "next/router";
 import { Fragment, useId } from "react";
 import { useAppDispatch } from "store";
 import { gplErrorHandler, storeTokenToCookie } from "utils";
-import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "utils/constants";
 import * as yup from "yup";
 
 const className = {

@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { Banner, HomeContent, HomeHeader, Tending } from "components/home";
 import { getCookie } from "cookies-next";
 import {
@@ -9,7 +10,6 @@ import {
 import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
 import * as React from "react";
-import { ROUTES } from "utils/constants";
 
 const className = {
   main: "bg-base-100 dark:bg-base-dark-100",

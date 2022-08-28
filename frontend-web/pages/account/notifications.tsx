@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { UserLayout } from "components/Layout";
 import { getCookie } from "cookies-next";
 import { seenAll } from "features/notificationSlice/notificationSlice";
@@ -5,7 +6,6 @@ import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import { useAppDispatch } from "store";
-import { ROUTES } from "utils/constants";
 
 const className = {
   title:

@@ -8,6 +8,7 @@ import {
   PostEditor,
   Select,
 } from "@component";
+import { CREATE_POST_KEY, IMAGE_MIMES } from "@constants";
 import {
   FormControl,
   PostCreateContainer,
@@ -32,7 +33,6 @@ import {
   readLocalStorageValue,
   removeLocalStorageValue,
 } from "utils";
-import { CREATE_POST_KEY, IMAGE_MIMES } from "utils/constants";
 import * as yup from "yup";
 
 const className = {

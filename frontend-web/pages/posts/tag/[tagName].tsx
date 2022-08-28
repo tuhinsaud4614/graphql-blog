@@ -1,4 +1,5 @@
 import { PostItem, Tag } from "@component";
+import { ROUTES } from "@constants";
 import { SearchLayout } from "components/Layout";
 import {
   PostByCounter,
@@ -12,7 +13,6 @@ import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { Fragment } from "react";
 import { AiFillTag } from "react-icons/ai";
-import { ROUTES } from "utils/constants";
 
 const className = {
   item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",

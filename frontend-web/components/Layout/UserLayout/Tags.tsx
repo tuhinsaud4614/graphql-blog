@@ -1,9 +1,9 @@
+import { ROUTES } from "@constants";
 import { ErrorBox, LinkButton } from "components";
 import { SidebarContent, SidebarSkeleton } from "components/Sidebar";
 import { useGetTagsOnOffsetQuery } from "graphql/generated/schema";
 import { Fragment } from "react";
 import { gplErrorHandler, isDev } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",

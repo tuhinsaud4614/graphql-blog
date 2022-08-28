@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import { useMediaQuery } from "@hooks";
 import classNames from "classnames";
@@ -13,7 +14,6 @@ import { CgLoadbarDoc } from "react-icons/cg";
 import { FaBell } from "react-icons/fa";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
 import { useAppSelector } from "store";
-import { ROUTES } from "utils/constants";
 
 const Theme = dynamic(() => import("components/Theme"), { ssr: false });
 

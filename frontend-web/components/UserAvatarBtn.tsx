@@ -1,5 +1,7 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import { useLogout, useMediaQuery } from "@hooks";
+import { IAnchorOrigin } from "@interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
@@ -8,8 +10,6 @@ import { BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
 import { useAppSelector } from "store";
 import { generateFileUrl, getUserName, gplErrorHandler } from "utils";
-import { ROUTES } from "utils/constants";
-import { IAnchorOrigin } from "utils/interfaces";
 import ClientOnly from "./ClientOnly";
 import DemoAvatar from "./DemoAvatar";
 import ErrorModal from "./ErrorModal";

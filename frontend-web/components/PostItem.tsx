@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import classNames from "classnames";
 import { motion } from "framer-motion";
@@ -8,7 +9,6 @@ import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useAppSelector } from "store";
 import { generateFileUrl, getUserName } from "utils";
-import { ROUTES } from "utils/constants";
 import { itemInVariants } from "utils/framer-variants";
 import ClientOnly from "./ClientOnly";
 import UserLink from "./UserLink";

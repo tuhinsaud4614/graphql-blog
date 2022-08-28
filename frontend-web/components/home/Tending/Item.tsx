@@ -1,10 +1,10 @@
+import { ROUTES } from "@constants";
 import UserLink from "components/UserLink";
 import { GetTrendingPostsQuery } from "graphql/generated/schema";
 import moment from "moment";
 import Link from "next/link";
 import { Fragment } from "react";
 import { getUserName } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "basis-full md:basis-1/2 md1:basis-1/3 px-3 md:px-4",

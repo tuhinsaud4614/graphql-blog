@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import { useLogout, useMediaQuery } from "@hooks";
 import classNames from "classnames";
@@ -20,7 +21,6 @@ import { FiSearch } from "react-icons/fi";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
 import { useAppSelector } from "store";
 import { generateFileUrl, getUserName, gplErrorHandler, isServer } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:bg-base-dark-200 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-dark-200/50 backdrop-blur-sm px-4 shadow-top",

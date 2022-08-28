@@ -1,3 +1,4 @@
+import { SlateVideoElement } from "@interfaces";
 import classNames from "classnames";
 import { BiTrash } from "react-icons/bi";
 import { Transforms } from "slate";
@@ -9,7 +10,6 @@ import {
   useSelected,
   useSlateStatic,
 } from "slate-react";
-import { SlateVideoElement } from "utils/interfaces";
 
 const className = {
   container: "pt-[75%] relative",

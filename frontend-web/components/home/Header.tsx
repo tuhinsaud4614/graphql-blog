@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { useDarkMode } from "@hooks";
 import classNames from "classnames";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
@@ -5,7 +6,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ROUTES } from "utils/constants";
 
 const Theme = dynamic(() => import("components/Theme"), { ssr: false });
 

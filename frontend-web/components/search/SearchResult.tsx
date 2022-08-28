@@ -1,10 +1,10 @@
+import { RECENT_SEARCHES_KEY, SEARCH_TABS } from "@constants";
 import { useLocalStorage } from "@hooks";
 import { SearchBox, Tabs } from "components";
 import { SearchLayout } from "components/Layout";
 import { useRouter } from "next/router";
 import { Fragment, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { queryChecking } from "utils";
-import { RECENT_SEARCHES_KEY, SEARCH_TABS } from "utils/constants";
 import {
   SearchAuthor,
   SearchCategories,

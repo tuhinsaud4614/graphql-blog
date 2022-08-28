@@ -1,6 +1,6 @@
+import { IAnchorOrigin } from "@interfaces";
 import React from "react";
 import { getPositions } from "utils";
-import { IAnchorOrigin } from "utils/interfaces";
 
 const className = {
   tip: "fixed select-none z-[999] w-auto px-1.5 py-1 min-w-max rounded-sm text-base-100 dark:text-base-dark-100 bg-neutral dark:bg-base-dark-300 text-xs font-bold",

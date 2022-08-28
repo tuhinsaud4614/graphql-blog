@@ -1,12 +1,12 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
+import { IUser } from "@interfaces";
 import classNames from "classnames";
 import { ClientOnly, DemoAvatar } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { useAppSelector } from "store";
 import { generateFileUrl, getUserName } from "utils";
-import { ROUTES } from "utils/constants";
-import { IUser } from "utils/interfaces";
 import OtherInfo from "./OtherInfo";
 
 const className = {

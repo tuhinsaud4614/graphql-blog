@@ -1,4 +1,5 @@
 import { Button, LinkButton } from "@component";
+import { ROUTES } from "@constants";
 import { PostCreateContainer, PostCreateHeader } from "components/account";
 import { LoaderIcon } from "components/svg";
 import {
@@ -13,7 +14,6 @@ import { Fragment, PropsWithChildren, useEffect } from "react";
 import { BiError } from "react-icons/bi";
 import { toast } from "react-toastify";
 import { gplErrorHandler } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   container: "flex flex-col items-center justify-center min-h-[40vh]",

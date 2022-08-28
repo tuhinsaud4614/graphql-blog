@@ -1,9 +1,9 @@
+import { ROUTES } from "@constants";
 import DemoAvatar from "components/DemoAvatar";
 import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { generateFileUrl, getUserName } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "w-12 h-12 inline-block rounded-full dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark",

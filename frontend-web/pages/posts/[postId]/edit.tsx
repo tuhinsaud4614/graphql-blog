@@ -5,6 +5,7 @@ import {
   PostEditor,
   Select,
 } from "@component";
+import { IMAGE_MIMES } from "@constants";
 import { NextPageWithLayout } from "@types";
 import {
   FormControl,
@@ -17,7 +18,6 @@ import Head from "next/head";
 import { Fragment, ReactElement, useId } from "react";
 import { Descendant } from "slate";
 import { maxFileSize } from "utils";
-import { IMAGE_MIMES } from "utils/constants";
 import * as yup from "yup";
 
 const className = {

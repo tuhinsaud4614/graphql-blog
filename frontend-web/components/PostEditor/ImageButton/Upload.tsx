@@ -1,10 +1,10 @@
+import { IMAGE_MIMES } from "@constants";
 import classNames from "classnames";
 import { Button } from "components";
 import _ from "lodash";
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
 import { maxFileSize } from "utils";
-import { IMAGE_MIMES } from "utils/constants";
 import Loader from "./Loader";
 
 const className = {

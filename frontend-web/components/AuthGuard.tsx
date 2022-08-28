@@ -1,9 +1,9 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import { UserRole } from "graphql/generated/schema";
 import Router from "next/router";
 import { Fragment, ReactNode, useEffect } from "react";
 import { useAppSelector } from "store";
-import { ROUTES } from "utils/constants";
 
 interface Props {
   role?: UserRole;

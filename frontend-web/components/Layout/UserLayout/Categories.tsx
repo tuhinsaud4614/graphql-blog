@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { ErrorBox } from "components";
 import {
   SidebarCategory,
@@ -7,7 +8,6 @@ import {
 import { useGetCategoriesOnOffsetQuery } from "graphql/generated/schema";
 import { Fragment } from "react";
 import { gplErrorHandler, isDev } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   divider: "w-full border-b dark:border-base-dark-300 my-4",

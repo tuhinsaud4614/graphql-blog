@@ -1,4 +1,5 @@
 import { LinkButton, Tabs } from "@component";
+import { MY_POSTS_TABS, ROUTES } from "@constants";
 import {
   AccountPostsTabDrafts,
   AccountPostsTabPublished,
@@ -9,7 +10,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import { queryChecking } from "utils";
-import { MY_POSTS_TABS, ROUTES } from "utils/constants";
 
 const className = {
   rootBar: "flex items-center justify-between",

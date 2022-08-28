@@ -1,9 +1,9 @@
+import { NOTIFICATIONS_KEY } from "@constants";
+import { IFollowingNotification } from "@interfaces";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
 import { readLocalStorageValue, setLocalStorageValue } from "utils";
-import { NOTIFICATIONS_KEY } from "utils/constants";
-import { IFollowingNotification } from "utils/interfaces";
 
 export const isFollowingNotification = (
   notification: IFollowingNotification

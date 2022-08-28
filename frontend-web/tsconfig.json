@@ -17,16 +17,15 @@
     "baseUrl": ".",
     "paths": {
       "@component": ["components"],
-      "@component/home": ["components/home"],
       "@types": ["utils/types"],
+      "@interfaces": ["utils/interfaces"],
+      "@enums": ["utils/enums"],
+      "@constants": ["utils/constants"],
       "@lib": ["lib"],
       "@hooks": ["hooks"],
       "@features": ["features"]
-      // "@component/about-us": ["components/about-us"],
-      // "@component/icons": ["components/icons"],
-      // "@locale": ["locales"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/withApollo.tss"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

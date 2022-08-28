@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import { useMediaQuery } from "@hooks";
 import { Badge, ClientOnly } from "components";
@@ -9,7 +10,6 @@ import { useRouter } from "next/router";
 import { BiBell } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
 import { useAppSelector } from "store";
-import { ROUTES } from "utils/constants";
 
 const Theme = dynamic(() => import("components/Theme"), { ssr: false });
 

@@ -1,10 +1,10 @@
 import { LinkButton } from "@component";
+import { ROUTES } from "@constants";
 import { NextPageWithLayout } from "@types";
 import { LayoutContainer } from "components/Layout";
 import Head from "next/head";
 import { Fragment } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import { ROUTES } from "utils/constants";
 
 const className = {
   title:

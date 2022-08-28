@@ -1,8 +1,8 @@
+import { ROUTES } from "@constants";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { ROUTES } from "utils/constants";
 
 const className = {
   header: "flex items-center justify-between",

@@ -1,10 +1,10 @@
+import { RECENT_SEARCHES_KEY } from "@constants";
 import { useIsomorphicLayoutEffect, useLocalStorage } from "@hooks";
 import classNames from "classnames";
 import { SearchLayout } from "components/Layout";
 import { useRouter } from "next/router";
 import { Fragment, useRef } from "react";
 import { BiX } from "react-icons/bi";
-import { RECENT_SEARCHES_KEY } from "utils/constants";
 
 const className = {
   root: "",

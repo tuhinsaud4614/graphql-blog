@@ -1,4 +1,6 @@
+import { ROUTES } from "@constants";
 import { updateUserName } from "@features";
+import { IUser } from "@interfaces";
 import { Button, ErrorModal } from "components";
 import { FormControl } from "components/account";
 import { useUpdateNameMutation } from "graphql/generated/schema";
@@ -7,8 +9,6 @@ import { Fragment, useEffect, useId, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "store";
 import { gplErrorHandler } from "utils";
-import { ROUTES } from "utils/constants";
-import { IUser } from "utils/interfaces";
 
 const className = {
   item: "py-8 flex flex-wrap sm:flex-nowrap items-center justify-between space-y-3",

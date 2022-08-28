@@ -1,6 +1,6 @@
+import { ROUTES } from "@constants";
 import { UserLink } from "components";
 import Link from "next/link";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "flex flex-col",

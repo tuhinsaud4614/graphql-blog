@@ -1,5 +1,6 @@
 import { selectAuthorFollowerCount, setAuthorFollowerCount } from "@features";
 import { useLockBody } from "@hooks";
+import { IUser } from "@interfaces";
 import classNames from "classnames";
 import { Button, ReactorModal } from "components";
 import { useUserMentionTooltipStatsQuery } from "graphql/generated/schema";
@@ -7,7 +8,6 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Descendant } from "slate";
 import { useAppDispatch, useAppSelector } from "store";
 import { followConvert, serializeSlateValue } from "utils";
-import { IUser } from "utils/interfaces";
 import AllFollowers from "../AllFollowers";
 import FollowButton from "./FollowButton";
 

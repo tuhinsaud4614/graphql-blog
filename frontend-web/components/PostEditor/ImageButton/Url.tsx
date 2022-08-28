@@ -1,7 +1,7 @@
+import { IMAGE_URL_REGEX } from "@constants";
 import { Button } from "components";
 import { FormControl } from "components/account";
 import { ChangeEvent, useEffect, useId, useState } from "react";
-import { IMAGE_URL_REGEX } from "utils/constants";
 import Loader from "./Loader";
 
 interface Props {

@@ -1,4 +1,5 @@
 import { FollowItem, Tabs } from "@component";
+import { ROUTES } from "@constants";
 import { LayoutContainer } from "components/Layout";
 import { SidebarContent } from "components/Sidebar";
 import {
@@ -11,7 +12,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { queryChecking } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   title:

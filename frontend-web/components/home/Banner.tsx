@@ -1,6 +1,6 @@
+import { ROUTES } from "@constants";
 import { Button } from "components";
 import { useRouter } from "next/router";
-import { ROUTES } from "utils/constants";
 
 const className = {
   banner:

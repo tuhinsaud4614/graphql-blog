@@ -1,8 +1,8 @@
 import { selectUser } from "@features";
+import { IUser } from "@interfaces";
 import { User } from "graphql/generated/schema";
 import { Descendant } from "slate";
 import { useAppSelector } from "store";
-import { IUser } from "utils/interfaces";
 import AddAbout from "./AddAbout";
 import OtherAboutTab from "./OtherAbout";
 

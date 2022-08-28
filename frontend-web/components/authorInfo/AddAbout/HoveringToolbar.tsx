@@ -1,3 +1,4 @@
+import { URL_REGEX } from "@constants";
 import { useOnClickOutside } from "@hooks";
 import {
   Portal,
@@ -11,7 +12,6 @@ import { CgFormatHeading } from "react-icons/cg";
 import { Editor, Range, Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 import { insertLink, isLinkActive, unwrapLink } from "utils";
-import { URL_REGEX } from "utils/constants";
 
 const className = {
   root: "fixed z-10 -left-[-10000px] -top-[-10000px] bg-base-100 dark:bg-base-dark-200 px-2 py-1.5 rounded-md shadow-mui overflow-hidden",

@@ -1,8 +1,8 @@
+import { ROUTES } from "@constants";
 import { ErrorBox, FollowItem, FollowItemSkeleton } from "components";
 import { SidebarContent } from "components/Sidebar";
 import { useGetSuggestAuthorsOnOffsetQuery } from "graphql/generated/schema";
 import { gplErrorHandler, isDev } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",

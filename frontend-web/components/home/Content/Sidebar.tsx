@@ -1,9 +1,9 @@
 import { NetworkStatus } from "@apollo/client";
+import { ROUTES } from "@constants";
 import { useSynchronizeAnimation } from "@hooks";
 import { ClientOnly, ErrorBox, LinkButton } from "components";
 import { useGetTagsOnOffsetQuery } from "graphql/generated/schema";
 import { gplErrorHandler } from "utils";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "border-b md1:border-0 md1:min-w-[17.75rem] md1:max-w-[18rem] relative px-4 md1:pl-0",

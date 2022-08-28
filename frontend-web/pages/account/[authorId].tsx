@@ -1,5 +1,7 @@
 import { AuthGuard, ClientOnly, DemoAvatar, Tabs } from "@component";
+import { ROUTES } from "@constants";
 import { useMediaQuery } from "@hooks";
+import { IUser } from "@interfaces";
 import {
   AuthorInfoAboutTab,
   AuthorInfoFollowerList,
@@ -25,8 +27,6 @@ import {
   queryChecking,
   ssrAuthorize,
 } from "utils";
-import { ROUTES } from "utils/constants";
-import { IUser } from "utils/interfaces";
 
 const className = {
   title: "mb-4 mt-8 flex items-center",

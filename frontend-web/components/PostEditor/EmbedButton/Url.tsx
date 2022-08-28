@@ -1,7 +1,7 @@
+import { URL_REGEX } from "@constants";
 import { Button } from "components";
 import { FormControl } from "components/account";
 import { ChangeEvent, useId, useState } from "react";
-import { URL_REGEX } from "utils/constants";
 
 interface Props {
   title?: string;

@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { DemoAvatar, Menu } from "components";
 import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
@@ -6,7 +7,6 @@ import { Fragment, useMemo, useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { Descendant } from "slate";
 import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
-import { ROUTES } from "utils/constants";
 import { Bottom } from "./Bottom";
 
 const className = {

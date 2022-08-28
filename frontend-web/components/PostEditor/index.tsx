@@ -1,4 +1,5 @@
 import { SlateElement, SlateLeaf } from "@component";
+import { CREATE_POST_KEY } from "@constants";
 import pipe from "lodash/fp/pipe";
 import { useCallback, useState } from "react";
 import { createEditor, Descendant } from "slate";
@@ -12,7 +13,6 @@ import {
   withReact,
 } from "slate-react";
 import { setLocalStorageValue, withEmbeds, withImages, withLinks } from "utils";
-import { CREATE_POST_KEY } from "utils/constants";
 
 import Toolbar from "./Toolbar";
 

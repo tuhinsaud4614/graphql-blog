@@ -1,3 +1,5 @@
+import { USER_KEY } from "@constants";
+import { IPicture, IUser } from "@interfaces";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
@@ -7,8 +9,6 @@ import {
   removeLocalStorageValue,
   setLocalStorageValue,
 } from "utils";
-import { USER_KEY } from "utils/constants";
-import { IPicture, IUser } from "utils/interfaces";
 
 export interface AuthState {
   user: IUser | null;

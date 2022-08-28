@@ -1,7 +1,7 @@
 import { useDarkMode } from "@hooks";
+import { IAnchorOrigin } from "@interfaces";
 import classNames from "classnames";
 import { Fragment, ReactNode, useState } from "react";
-import { IAnchorOrigin } from "utils/interfaces";
 import Menu from "./Menu";
 import { DarkIcon, LightIcon, SystemIcon } from "./svg";
 

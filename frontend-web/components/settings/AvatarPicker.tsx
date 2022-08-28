@@ -1,3 +1,4 @@
+import { IMAGE_MIMES } from "@constants";
 import classNames from "classnames";
 import DemoAvatar from "components/DemoAvatar";
 import _ from "lodash";
@@ -5,7 +6,6 @@ import Image from "next/image";
 import { ChangeEvent, useRef } from "react";
 import { AiOutlineCamera } from "react-icons/ai";
 import { maxFileSize } from "utils";
-import { IMAGE_MIMES } from "utils/constants";
 
 const className = {
   root: "ml-5 shrink-0",

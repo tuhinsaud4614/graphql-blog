@@ -1,10 +1,10 @@
 import { useIsomorphicLayoutEffect } from "@hooks";
+import { IAnchorOrigin } from "@interfaces";
 import classNames from "classnames";
 import { motion, Variants } from "framer-motion";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { getPositions } from "utils";
-import { IAnchorOrigin } from "utils/interfaces";
 import Portal from "./Portal";
 
 const variants: Variants = {

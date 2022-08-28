@@ -1,6 +1,6 @@
+import { ROUTES } from "@constants";
 import Image from "next/image";
 import Link from "next/link";
-import { ROUTES } from "utils/constants";
 
 const className = {
   root: "my-8 flex items-center",

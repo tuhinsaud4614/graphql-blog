@@ -1,8 +1,8 @@
+import { RECENT_SEARCHES_KEY, ROUTES } from "@constants";
 import { useLocalStorage, useMediaQuery } from "@hooks";
 import { Menu, SearchBox } from "components";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, KeyboardEvent, useRef, useState } from "react";
-import { RECENT_SEARCHES_KEY, ROUTES } from "utils/constants";
 import Result from "./Result";
 import ResultItem from "./ResultItem";
 
