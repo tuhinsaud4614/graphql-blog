@@ -74,33 +74,35 @@ export const Mutation = {
   async login(
     _: any,
     { data }: { data: ILoginInput },
-    { prisma }: YogaContextReturnType,
+    { prisma, res }: YogaContextReturnType,
     __: GraphQLResolveInfo
   ) {
-    const result = await loginCtrl(prisma, data);
+    const result = await loginCtrl(prisma, data, res);
+    return result;
+  },
+
+  async token(
+    _: any,
+    __: unknown,
+    { prisma, req }: YogaContextReturnType,
+    ___: GraphQLResolveInfo
+  ) {
+    // @ts-ignore
+    const refreshToken = req.cookies?.jwt;
+    const result = await tokenCtrl(prisma, refreshToken);
     return result;
   },
 
   async logout(
     _: any,
     __: any,
-    { user }: YogaContextReturnType,
+    { user, req, res }: YogaContextReturnType,
     ___: GraphQLResolveInfo
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await logoutCtrl(user);
-    return result;
-  },
-
-  async token(
-    _: any,
-    { refreshToken }: { refreshToken: string },
-    { prisma }: YogaContextReturnType,
-    __: GraphQLResolveInfo
-  ) {
-    const result = await tokenCtrl(prisma, refreshToken);
+    const result = await logoutCtrl(user, req, res);
     return result;
   },
 

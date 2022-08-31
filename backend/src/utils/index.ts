@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
-import { IncomingMessage } from "http";
 import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
 import _, { has, random } from "lodash";
@@ -9,16 +8,19 @@ import path from "path";
 import { promisify } from "util";
 import { ValidationError } from "yup";
 import logger from "../logger";
-import { CustomError } from "../validations";
+import { CustomError } from "../model";
 import config from "./config";
 import {
+  BAD_USER_INPUT,
   FAILED_FILE_ERR_MSG,
   IMAGE_MIMES,
+  INTERNAL_SERVER_ERROR,
   INVALID_FILE_ERR_MSG,
   NOT_IMG_ERR_MSG,
   REFRESH_TOKEN_KEY_NAME,
   TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
+  UN_AUTH_EXT_ERR_CODE,
 } from "./constants";
 import { IUserPayload, IVerifyResetPassword } from "./interfaces";
 import redisClient from "./redis";
@@ -70,7 +72,7 @@ export function getUserPayload(decoded: string | JwtPayload) {
     } as IUserPayload;
   }
 
-  throw new CustomError(UN_AUTH_ERR_MSG);
+  throw new CustomError(UN_AUTH_ERR_MSG, UN_AUTH_EXT_ERR_CODE);
 }
 
 export const verifyRefreshToken = async (token: string) => {
@@ -83,21 +85,16 @@ export const verifyRefreshToken = async (token: string) => {
       return payload;
     }
     redisClient.del(REFRESH_TOKEN_KEY_NAME(payload.id));
-    throw new CustomError(UN_AUTH_ERR_MSG);
+    throw new CustomError(UN_AUTH_ERR_MSG, UN_AUTH_EXT_ERR_CODE);
   } catch (error) {
     logger.error(error);
-    throw new CustomError(UN_AUTH_ERR_MSG);
+    throw new CustomError(UN_AUTH_ERR_MSG, UN_AUTH_EXT_ERR_CODE);
   }
 };
 
-export const verifyAccessTokenInContext = (
-  request: Request,
-  req: IncomingMessage
-) => {
+export const verifyAccessTokenInContext = (request: Request) => {
   try {
-    // @ts-ignore
-    const accessToken = req.cookies.accessToken;
-    const authToken = request.headers.get("Authorization") || accessToken;
+    const authToken = request.headers.get("Authorization");
     if (!authToken) {
       return null;
     }
@@ -149,7 +146,7 @@ const fileFilterCb = (error: CustomError | null, valid?: boolean) => {
   if (error !== null) {
     throw error;
   } else if (valid === false) {
-    throw new CustomError(INVALID_FILE_ERR_MSG);
+    throw new CustomError(INVALID_FILE_ERR_MSG, BAD_USER_INPUT);
   }
 };
 
@@ -180,7 +177,7 @@ export async function fileUpload(
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError(FAILED_FILE_ERR_MSG);
+    throw new CustomError(FAILED_FILE_ERR_MSG, INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -196,11 +193,16 @@ export async function imageUpload(
     filterFunction(newFile, cb) {
       const { type, size } = newFile;
       if (!has(IMAGE_MIMES, type)) {
-        return cb(new CustomError(NOT_IMG_ERR_MSG));
+        return cb(new CustomError(NOT_IMG_ERR_MSG, BAD_USER_INPUT));
       }
 
       if (size > maxSize) {
-        return cb(new CustomError(TOO_LARGE_FILE_ERR_MSG("Image", "5 Mb")));
+        return cb(
+          new CustomError(
+            TOO_LARGE_FILE_ERR_MSG("Image", "5 Mb"),
+            BAD_USER_INPUT
+          )
+        );
       }
 
       return cb(null, true);

@@ -1,23 +1,21 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import * as yup from "yup";
-import { UserInputError } from "../model";
+import { CustomError, UserInputError } from "../model";
 import { formatYupError } from "../utils";
-import { REQUIRED_ERR_MSG, VALIDATION_ERR_MSG } from "../utils/constants";
-
-export class CustomError {
-  constructor(public message: string) {
-    Object.setPrototypeOf(this, CustomError.prototype);
-  }
-}
+import {
+  INTERNAL_SERVER_ERROR,
+  REQUIRED_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from "../utils/constants";
 
 export function getGraphqlYogaError(
   error: any,
   msg: string,
   errFor?: string,
-  code?: string
+  code: string = INTERNAL_SERVER_ERROR
 ) {
   if (error instanceof CustomError) {
-    return new GraphQLYogaError(error.message, { code });
+    return error;
   }
 
   if (error instanceof yup.ValidationError) {

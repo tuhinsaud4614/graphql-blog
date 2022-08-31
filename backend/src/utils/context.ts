@@ -27,11 +27,7 @@ export type YogaPubSubType = typeof pubSub;
 
 const prisma = new PrismaClient();
 
-export default function createContext({
-  request,
-  req,
-  ...rest
-}: YogaContextType) {
-  const user = verifyAccessTokenInContext(request, req);
-  return { ...rest, req, request, pubSub, prisma, user } as const;
+export default function createContext({ request, ...rest }: YogaContextType) {
+  const user = verifyAccessTokenInContext(request);
+  return { ...rest, request, pubSub, prisma, user } as const;
 }

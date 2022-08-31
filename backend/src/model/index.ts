@@ -6,6 +6,7 @@ import {
   GRAPHQL_PARSE_FAILED,
   GRAPHQL_VALIDATION_FAILED,
   INTERNAL_SERVER_ERROR,
+  NO_CONTENT,
   PERSISTED_QUERY_NOT_FOUND,
   PERSISTED_QUERY_NOT_SUPPORTED,
   RATE_LIMIT_EXCEED,
@@ -83,6 +84,15 @@ export class HttpSuccess {
   }
 }
 
+export class CustomError extends GraphQLYogaError {
+  constructor(message: string, code: string) {
+    super(message, { code });
+
+    // this is for instanceof behave properly
+    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+  }
+}
+
 // The GraphQL operation string contains a syntax error.
 export class SyntaxError extends GraphQLYogaError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
@@ -127,6 +137,16 @@ export class AuthenticationError extends GraphQLYogaError {
 export class ForbiddenError extends GraphQLYogaError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: FORBIDDEN });
+
+    // this is for instanceof behave properly
+    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+  }
+}
+
+// No content error.
+export class NoContentError extends GraphQLYogaError {
+  constructor(message: string, extensions?: GraphQLErrorExtensions) {
+    super(message, { ...extensions, code: NO_CONTENT });
 
     // this is for instanceof behave properly
     Object.setPrototypeOf(this, GraphQLYogaError.prototype);

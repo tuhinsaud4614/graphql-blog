@@ -2,10 +2,17 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { unlink } from "fs";
+import { IncomingMessage, ServerResponse } from "http";
 import { pick } from "lodash";
+import ms from "ms";
 import path from "path";
 import logger from "../logger";
-import { UserInputError, ValidationError } from "../model";
+import {
+  AuthenticationError,
+  NoContentError,
+  UserInputError,
+  ValidationError,
+} from "../model";
 import {
   createUser,
   followTo,
@@ -194,7 +201,11 @@ export async function verifyUserCtrl(
   }
 }
 
-export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
+export async function loginCtrl(
+  prisma: PrismaClient,
+  args: ILoginInput,
+  res: ServerResponse
+) {
   try {
     const { emailOrMobile, password } = args;
 
@@ -230,16 +241,37 @@ export async function loginCtrl(prisma: PrismaClient, args: ILoginInput) {
     } as IUserPayload;
     const { accessToken, refreshToken } = await generateTokens(user);
 
-    return { accessToken, refreshToken };
+    // @ts-ignore
+    res.cookie("jwt", refreshToken, {
+      httpOnly: true, // accessible only by web server
+      secure: true, // https
+      sameSite: "None", // cross-site cookie
+      maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
+    });
+    return accessToken;
   } catch (error: any) {
     logger.error(error);
     return getGraphqlYogaError(error, AUTH_FAIL_ERR_MSG, "Login input");
   }
 }
 
-export async function logoutCtrl(user: IUserPayload) {
+export async function logoutCtrl(
+  user: IUserPayload,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
   try {
+    // @ts-ignore
+    const jwt = req.cookies?.jwt;
+    if (!jwt) {
+      return new NoContentError("Logout failed");
+    }
+
     await redisClient.del(REFRESH_TOKEN_KEY_NAME(user.id));
+
+    // @ts-ignore
+    res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
+
     return user.id;
   } catch (error) {
     logger.error(error);
@@ -252,20 +284,25 @@ export async function logoutCtrl(user: IUserPayload) {
   }
 }
 
-export async function tokenCtrl(prisma: PrismaClient, refreshToken: string) {
+export async function tokenCtrl(prisma: PrismaClient, refreshToken: any) {
   try {
+    if (!refreshToken) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
     const user = await verifyRefreshToken(refreshToken);
     const isExist = await getUserById(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    const { accessToken, refreshToken: rfToken } = await generateTokens(user);
+    const accessToken = await generateToken(
+      user,
+      config.ACCESS_TOKEN_SECRET_KEY,
+      config.ACCESS_TOKEN_EXPIRES
+    );
 
-    return { accessToken, refreshToken: rfToken };
+    return accessToken;
   } catch (error) {
     logger.error(error);
     return getGraphqlYogaError(

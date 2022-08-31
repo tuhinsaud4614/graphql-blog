@@ -1,3 +1,16 @@
+import {
+  AuthenticationError,
+  ForbiddenError,
+  NoContentError,
+  PersistedQueryNotFoundError,
+  PersistedQueryNotSupportedError,
+  RateLimitError,
+  SyntaxError,
+  UnknownError,
+  UserInputError,
+  ValidationError,
+} from "../model";
+
 // Error Messages
 export const INVALID_CREDENTIAL = "Invalid email, phone or password";
 export const INVALID_EMAIL = "Enter a valid email";
@@ -96,6 +109,7 @@ export const UN_AUTH_EXT_ERR_CODE = "UNAUTHENTICATED";
 export const RATE_LIMIT_EXCEED = "RATE_LIMIT_EXCEED";
 export const INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 export const FORBIDDEN = "FORBIDDEN";
+export const NO_CONTENT = "NO_CONTENT";
 export const BAD_USER_INPUT = "BAD_USER_INPUT";
 export const GRAPHQL_VALIDATION_FAILED = "GRAPHQL_VALIDATION_FAILED";
 export const PERSISTED_QUERY_NOT_SUPPORTED = "PERSISTED_QUERY_NOT_SUPPORTED";
@@ -103,3 +117,16 @@ export const PERSISTED_QUERY_NOT_FOUND = "PERSISTED_QUERY_NOT_FOUND";
 export const GRAPHQL_PARSE_FAILED = "GRAPHQL_PARSE_FAILED"; // The GraphQL operation string contains a syntax error.
 
 export const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
+
+export const ERRORS = [
+  SyntaxError,
+  ValidationError,
+  UserInputError,
+  AuthenticationError,
+  ForbiddenError,
+  NoContentError,
+  PersistedQueryNotFoundError,
+  PersistedQueryNotSupportedError,
+  UnknownError,
+  RateLimitError,
+] as const;
