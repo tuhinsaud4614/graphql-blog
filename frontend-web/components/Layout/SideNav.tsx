@@ -46,16 +46,16 @@ export default function SideNav() {
         </Link>
         <ul className={className.items}>
           <li className={className.item}>
-            <Link href="/my-home" passHref>
+            <Link href={ROUTES.myHome} passHref>
               <a
                 aria-label="Home"
                 className={classNames(
                   className.link,
-                  pathname === "/my-home" &&
+                  pathname === ROUTES.myHome &&
                     "!text-secondary dark:!text-secondary-dark"
                 )}
               >
-                {pathname === "/my-home" ? (
+                {pathname === ROUTES.myHome ? (
                   <HiHome size={24} />
                 ) : (
                   <HiOutlineHome size={24} />

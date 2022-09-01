@@ -4,6 +4,7 @@ import axios from "axios";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
+import { IncomingMessage } from "http";
 import jwtDecode from "jwt-decode";
 import _ from "lodash";
 import {
@@ -413,22 +414,24 @@ export function generateFileUrl(fileUrl?: string) {
 }
 
 const query = `
-      mutation Token($refreshToken: String!) {
-        token(refreshToken: $refreshToken) {
-          accessToken
-          refreshToken
-        }
+      query Token($refreshToken: String) {
+        token(refreshToken: $refreshToken)
       }
     `;
-export async function fetchRefreshToken(refreshToken: string) {
+export async function fetchRefreshToken(req?: IncomingMessage) {
   const { data } = await axios.post(
     `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
     {
       query,
-      variables: { refreshToken },
+      variables: { refreshToken: undefined },
+    },
+    {
+      withCredentials: true,
+      headers:
+        req && req.headers.cookie ? { cookie: req.headers.cookie } : undefined,
     }
   );
-  return data;
+  return data?.data?.token;
 }
 
 export function storeTokenToCookie(

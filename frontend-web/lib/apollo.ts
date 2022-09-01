@@ -3,27 +3,21 @@ import {
   ApolloLink,
   FetchResult,
   from,
+  fromPromise,
   InMemoryCache,
   NormalizedCacheObject,
   Operation,
   split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 import { mergeDeep, Observable } from "@apollo/client/utilities";
-import { USER_KEY } from "@constants";
-import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { createUploadLink } from "apollo-upload-client";
-import { getCookie, setCookie } from "cookies-next";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
-import {
-  fetchRefreshToken,
-  getAuthUser,
-  isDev,
-  isServer,
-  removeLocalStorageValue,
-  removeTokenFromCookie,
-} from "utils";
+import { makeStore } from "store";
+// import { store } from "store";
+import { fetchRefreshToken, isDev, isServer } from "utils";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -94,72 +88,80 @@ const link = split(
 );
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
-export function createApolloClient(serverAccessToken?: string) {
-  const refreshLink = new TokenRefreshLink({
-    accessTokenField: "accessToken",
-    isTokenValidOrUndefined: () => {
-      try {
-        const token = getCookie("accessToken");
+const errorLink = onError(
+  ({ graphQLErrors, networkError, operation, forward }) => {
+    if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        if (
+          err?.extensions?.code &&
+          err.extensions.code === "UNAUTHENTICATED"
+        ) {
+          return fromPromise(
+            fetchRefreshToken().catch((error) => {
+              return;
+            })
+          )
+            .filter((value) => Boolean(value))
+            .flatMap((accessToken?: string) => {
+              const oldHeaders = operation.getContext().headers;
+              operation.setContext({
+                headers: {
+                  ...oldHeaders,
+                  Authorization: accessToken ? `Bearer ${accessToken}` : "",
+                },
+              });
+              return forward(operation);
+            });
+        }
+      }
+    }
+  }
+);
 
-        if (!token || typeof token !== "string") {
-          return false;
-        }
-        const user = getAuthUser(token);
-        if (user && user.exp * 1000 > Date.now()) {
-          return true;
-        }
-        return false;
-      } catch (_) {
-        return false;
-      }
-    },
-    fetchAccessToken: async () => {
-      const token = getCookie("refreshToken");
-      if (!token || typeof token !== "string") {
-        return;
-      }
-      return fetchRefreshToken(token);
-    },
-    handleResponse: () => (response: any) => {
-      if (!response) return { accessToken: null, refreshToken: null };
-      const accessToken = response.data?.token?.accessToken;
-      const refreshToken = response.data?.token?.refreshToken;
-      if (accessToken && refreshToken) {
-        const user = getAuthUser(refreshToken);
-        const exp = user?.exp ? new Date(user.exp * 1000) : undefined;
-        setCookie("refreshToken", refreshToken, { expires: exp, secure: true });
-      }
-      return {
-        accessToken,
-        refreshToken,
-      };
-    },
-    handleFetch(accessToken) {
-      const user = getAuthUser(accessToken);
-      const exp = user?.exp ? new Date(user.exp * 1000) : undefined;
-      setCookie("accessToken", accessToken, { expires: exp, secure: true });
-    },
-    handleError: (error) => {
-      removeTokenFromCookie();
-      removeLocalStorageValue(USER_KEY);
-      if (
-        !isServer() &&
-        (!navigator.onLine ||
-          (error instanceof TypeError &&
-            error.message === "Network request failed"))
-      ) {
-        isDev() && console.log("Offline -> do nothing 🍵");
-      } else {
-        isDev() && console.log("Online -> log out 👋");
-      }
-      isDev() && console.error("Cannot refresh access token:", error);
-    },
-  });
+// const refreshLink = new TokenRefreshLink({
+//   accessTokenField: "accessToken",
+//   isTokenValidOrUndefined: () => {
+//     // const store = makeStore();
+//     // const { token, user } = store.getState().auth;
+
+//     // if (!token) {
+//     //   return false;
+//     // }
+
+//     // if (user && user.exp * 1000 > Date.now()) {
+//     //   return true;
+//     // }
+
+//     return false;
+//   },
+//   fetchAccessToken: async () => {
+//     return fetchRefreshToken();
+//   },
+//   handleFetch(token) {
+//     const user = getAuthUser(token);
+//     const store = makeStore();
+//     store.dispatch(setAuthUser({ user, token }));
+//   },
+//   handleError: (error) => {
+//     isDev() && console.error("Cannot refresh access token:", error);
+//     if (
+//       !isServer() &&
+//       (!navigator.onLine ||
+//         (error instanceof TypeError &&
+//           error.message === "Network request failed"))
+//     ) {
+//       isDev() && console.log("Offline -> do nothing 🍵");
+//     } else {
+//       isDev() && console.log("Online -> log out 👋");
+//     }
+//   },
+// });
+
+export function createApolloClient(serverAccessToken?: string) {
   const authLink = setContext(async (_, { headers }) => {
-    // get the authentication token from local storage if it exists
     const token = isServer()
       ? serverAccessToken
-      : (getCookie("accessToken") as string);
+      : makeStore().getState().auth.token;
 
     // return the headers to the context so httpLink can read them
     return {
@@ -172,7 +174,7 @@ export function createApolloClient(serverAccessToken?: string) {
   return new ApolloClient({
     connectToDevTools: isDev(),
     ssrMode: isServer(),
-    link: from([refreshLink, authLink, link]),
+    link: from([authLink, errorLink, link]),
     cache: new InMemoryCache(),
     credentials: "include",
   });

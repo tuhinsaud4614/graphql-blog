@@ -1,0 +1,3 @@
+query Token($refreshToken: String) {
+  token(refreshToken: $refreshToken)
+}

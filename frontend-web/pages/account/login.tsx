@@ -11,7 +11,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useId } from "react";
 import { useAppDispatch } from "store";
-import { gplErrorHandler, storeTokenToCookie } from "utils";
+import { getAuthUser, gplErrorHandler } from "utils";
 import * as yup from "yup";
 
 const className = {
@@ -66,9 +66,10 @@ const Login: NextPage = () => {
         variables: { password, emailOrMobile: emailMobile },
       });
       if (data && data.login) {
-        const { accessToken, refreshToken } = data.login;
-        const user = storeTokenToCookie(accessToken, refreshToken);
-        rdxDispatch(setAuthUser(user));
+        const accessToken = data.login;
+        const user = getAuthUser(accessToken);
+        rdxDispatch(setAuthUser({ user, token: accessToken }));
+
         replace(ROUTES.myHome);
       }
     } catch (error) {
@@ -161,7 +162,7 @@ const Login: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("refreshToken", { req, res });
+  const token = getCookie("jwt", { req, res });
   if (token) {
     return {
       redirect: { destination: ROUTES.myHome, permanent: false },

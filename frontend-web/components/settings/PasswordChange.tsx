@@ -35,15 +35,17 @@ export default function PasswordChange() {
   const newPasswordId = useId();
   const oldPasswordId = useId();
 
-  const [resetPassword, { loading, error, reset }] = useResetPasswordMutation({
-    errorPolicy: "all",
-  });
+  const [resetPassword, { loading, error, reset, client }] =
+    useResetPasswordMutation({
+      errorPolicy: "all",
+    });
 
   const onSubmit = async (
     { newPassword, oldPassword }: IValues,
     { resetForm }: FormikHelpers<IValues>
   ) => {
     try {
+      await client.resetStore();
       const { data } = await resetPassword({
         variables: { newPassword, oldPassword },
       });

@@ -25,17 +25,7 @@ mutation ResendActivationLink($userId: ID!) {
 }
 
 mutation Login($emailOrMobile: String!, $password: String!) {
-  login(data: { emailOrMobile: $emailOrMobile, password: $password }) {
-    accessToken
-    refreshToken
-  }
-}
-
-mutation Token($refreshToken: String!) {
-  token(refreshToken: $refreshToken) {
-    accessToken
-    refreshToken
-  }
+  login(data: { emailOrMobile: $emailOrMobile, password: $password })
 }
 
 mutation Logout {

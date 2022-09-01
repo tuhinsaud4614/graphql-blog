@@ -6,10 +6,10 @@ import { useApollo } from "lib/apollo";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import * as React from "react";
-import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { store } from "store";
+import { nextReduxWrapper } from "store";
+// import { store } from "store";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -56,14 +56,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       {progress && (
         <ProgressBar className="fixed z-[999] top-0 left-0 right-0" />
       )}
-      <Provider store={store}>
-        <ApolloProvider client={apolloClient}>
-          <Component {...pageProps} />
-          <ClientOnly>
-            <SubscriptionContainer />
-          </ClientOnly>
-        </ApolloProvider>
-      </Provider>
+      {/* <Provider store={store}> */}
+      <ApolloProvider client={apolloClient}>
+        <Component {...pageProps} />
+        <ClientOnly>
+          <SubscriptionContainer />
+        </ClientOnly>
+      </ApolloProvider>
+      {/* </Provider> */}
       <ToastContainer
         theme={
           ternaryDarkMode === "system"
@@ -78,5 +78,5 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-// export default nextReduxWrapper.withRedux(MyApp);
-export default MyApp;
+export default nextReduxWrapper.withRedux(MyApp);
+// export default MyApp;

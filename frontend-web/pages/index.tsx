@@ -10,6 +10,7 @@ import {
 import { addApolloState, initializeApollo } from "lib/apollo";
 import { GetServerSideProps, NextPage } from "next";
 import * as React from "react";
+import { isDev } from "utils";
 
 const className = {
   main: "bg-base-100 dark:bg-base-dark-100",
@@ -29,7 +30,8 @@ const Home: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("refreshToken", { req, res });
+  const token = getCookie("jwt", { req, res });
+
   if (token) {
     return {
       redirect: { destination: ROUTES.myHome, permanent: false },
@@ -38,24 +40,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   const client = initializeApollo();
-  // await client.resetStore();
   try {
     await client.query({
       query: GetTrendingPostsDocument,
     });
-  } catch (error) {
-    process.env.NODE_ENV === "development" &&
-      console.log("Trending Posts error", error);
-  }
-  try {
     await client.query<GetPostsQuery, GetPostsQueryVariables>({
       query: GetPostsDocument,
       variables: { limit: 1 },
-      errorPolicy: "all",
     });
   } catch (error) {
-    process.env.NODE_ENV === "development" &&
-      console.log("All posts error", error);
+    isDev() && console.log("error", error);
   }
   return addApolloState(client, { props: {} });
 };

@@ -226,7 +226,7 @@ function SuccessMsg() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("refreshToken", { req, res });
+  const token = getCookie("jwt", { req, res });
   if (token) {
     return {
       redirect: { destination: ROUTES.myHome, permanent: false },

@@ -46,9 +46,9 @@ export default function BottomTab() {
     <nav className={className.root}>
       <ul className={className.items}>
         <li className={className.item}>
-          <Link href="/my-home" passHref>
+          <Link href={ROUTES.myHome} passHref>
             <a className={className.link} aria-label="Home">
-              {pathname === "/my-home" ? (
+              {pathname === ROUTES.myHome ? (
                 <HiHome
                   size={24}
                   className="text-secondary dark:!text-secondary-dark"

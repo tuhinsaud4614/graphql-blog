@@ -2,6 +2,7 @@ import { USER_KEY } from "@constants";
 import { IPicture, IUser } from "@interfaces";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
 import { RootState } from "store";
 import {
   getAuthUser,
@@ -12,6 +13,7 @@ import {
 
 export interface AuthState {
   user: IUser | null;
+  token: string | null;
 }
 
 const getUser = () => {
@@ -26,19 +28,22 @@ const getUser = () => {
 
 const initialState: AuthState = {
   user: getUser(),
+  token: null,
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthUser: (state, action: PayloadAction<IUser | null>) => {
-      if (action.payload) {
-        setLocalStorageValue("user", action.payload);
+    setAuthUser: (state, action: PayloadAction<AuthState>) => {
+      const { user } = action.payload;
+      if (user) {
+        setLocalStorageValue(USER_KEY, action.payload.user);
       } else {
         removeLocalStorageValue(USER_KEY);
       }
-      state.user = action.payload;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     },
     updateUserAvatar: (state, action: PayloadAction<IPicture>) => {
       if (state.user) {
@@ -66,6 +71,22 @@ export const authSlice = createSlice({
         });
         state.user.about = action.payload;
       }
+    },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action: PayloadAction<any>) => {
+      if (!action.payload.auth.user || !action.payload.auth.token) {
+        return state;
+      }
+      const nextState = {
+        ...state, // use previous state
+        // @ts-ignore
+        user: action.payload.auth.user,
+        // @ts-ignore
+        token: action.payload.auth.token,
+      };
+      setLocalStorageValue(USER_KEY, action.payload.auth.user);
+      return nextState;
     },
   },
 });

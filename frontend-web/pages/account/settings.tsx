@@ -7,11 +7,11 @@ import {
   SettingsNameEdit,
   SettingsPasswordChange,
 } from "components/settings";
-import { getCookie } from "cookies-next";
 import { UserRole } from "graphql/generated/schema";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useAppSelector } from "store";
+import { withSSRAuth } from "utils/ssr";
 
 const className = {
   title:
@@ -38,15 +38,17 @@ const SettingsPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("refreshToken", { req, res });
-  if (!token) {
-    return {
-      redirect: { destination: ROUTES.login, permanent: false },
-      props: {},
-    };
-  }
-  return { props: {} };
-};
+export const getServerSideProps: GetServerSideProps = withSSRAuth(ROUTES.login);
+
+// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+//   const token = getCookie("refreshToken", { req, res });
+//   if (!token) {
+//     return {
+//       redirect: { destination: ROUTES.login, permanent: false },
+//       props: {},
+//     };
+//   }
+//   return { props: {} };
+// };
 
 export default SettingsPage;

@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useAppSelector } from "store";
-import { generateFileUrl, getUserName } from "utils";
+import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
 import { itemInVariants } from "utils/framer-variants";
 import ClientOnly from "./ClientOnly";
 import UserLink from "./UserLink";
@@ -76,7 +76,7 @@ export default function PostItem({ classes, post }: Props) {
             aria-label={post.title}
             className={classNames(className.body, classes?.body)}
           >
-            {post.content}
+            {serializeSlateValue(JSON.parse(post.content))}
           </a>
         </Link>
         <div className={classNames(className.timeBox, classes?.timeBox)}>

@@ -1,4 +1,4 @@
-import { HomeHeader } from "@component/home";
+import { HomeHeader } from "components/home";
 import { ReactNode } from "react";
 
 const className = {

@@ -1,5 +1,4 @@
 import { setAuthUser } from "@features";
-import { deleteCookie } from "cookies-next";
 import { useLogoutMutation } from "graphql/generated/schema";
 import { useAppDispatch } from "store";
 import { isDev } from "utils";
@@ -12,10 +11,9 @@ export default function useLogout() {
 
   async function logoutHandler() {
     try {
-      deleteCookie("accessToken");
-      deleteCookie("refreshToken");
-      rdxDispatch(setAuthUser(null));
       await logout();
+      rdxDispatch(setAuthUser({ user: null, token: null }));
+      await client.resetStore();
     } catch (error) {
       isDev() && console.log("Logout error", error);
     }
