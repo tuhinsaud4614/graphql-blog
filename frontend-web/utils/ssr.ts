@@ -1,4 +1,5 @@
 import { setAuthUser } from "@features";
+import { deleteCookie } from "cookies-next";
 import {
   GetServerSidePropsContext,
   GetServerSidePropsResult,
@@ -11,20 +12,21 @@ import { fetchRefreshToken, getAuthUser } from "utils";
 export const withSSRAuth = (
   redirectTo: string,
 
-  cb?: <P extends {} = any>(
+  cb?: (
     store: Store,
     ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
     token?: string
-  ) => Promise<GetServerSidePropsResult<P>>
+  ) => Promise<GetServerSidePropsResult<any>>
 ) =>
   nextReduxWrapper.getServerSideProps((store) => async (ctx) => {
     const { dispatch } = store;
-    const { req } = ctx;
+    const { req, res } = ctx;
     let accessToken: undefined | string;
     try {
       accessToken = await fetchRefreshToken(req);
 
       if (!accessToken) {
+        deleteCookie("jwt", { req, res });
         dispatch(setAuthUser({ user: null, token: null }));
         return {
           redirect: { destination: redirectTo, permanent: false },
@@ -35,6 +37,7 @@ export const withSSRAuth = (
       const user = getAuthUser(accessToken);
       dispatch(setAuthUser({ user, token: accessToken }));
     } catch (error) {
+      deleteCookie("jwt", { req, res });
       dispatch(setAuthUser({ user: null, token: null }));
       return {
         redirect: { destination: redirectTo, permanent: false },

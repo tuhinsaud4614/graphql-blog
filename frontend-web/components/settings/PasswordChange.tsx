@@ -158,6 +158,7 @@ export default function PasswordChange() {
               aria-label={editable ? "Cancel" : "Edit"}
               variant="neutral"
               mode="outline"
+              disabled={isSubmitting}
               onClick={() => setEditable((prev) => !prev)}
             >
               {editable ? "Cancel" : "Edit"}

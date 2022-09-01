@@ -1,7 +1,7 @@
 import { ApolloError } from "@apollo/client";
-import { SSRRequestType, SSRResponseType, Value } from "@types";
+import { Value } from "@types";
 import axios from "axios";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
 import { IncomingMessage } from "http";
@@ -432,87 +432,6 @@ export async function fetchRefreshToken(req?: IncomingMessage) {
     }
   );
   return data?.data?.token;
-}
-
-export function storeTokenToCookie(
-  accessToken: string,
-  refreshToken: string,
-  req?: SSRRequestType,
-  res?: SSRResponseType
-) {
-  const user = getAuthUser(accessToken);
-  const user1 = getAuthUser(refreshToken);
-
-  const accessExp = user?.exp ? new Date(user.exp * 1000) : undefined;
-  const refreshExp = user1?.exp ? new Date(user1.exp * 1000) : undefined;
-
-  setCookie("accessToken", accessToken, {
-    req,
-    res,
-    secure: true,
-    expires: accessExp,
-  });
-  setCookie("refreshToken", refreshToken, {
-    req,
-    res,
-    secure: true,
-    expires: refreshExp,
-  });
-  return user;
-}
-
-export function removeTokenFromCookie(
-  req?: SSRRequestType,
-  res?: SSRResponseType
-) {
-  deleteCookie("accessToken", { req, res });
-  deleteCookie("refreshToken", { req, res });
-}
-
-export async function serverSideTokenRotation(
-  token: string,
-  req: SSRRequestType,
-  res: SSRResponseType
-) {
-  try {
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
-      {
-        query,
-        variables: { refreshToken: token },
-      }
-    );
-    const accessToken = data.data.token.accessToken;
-    const refreshToken = data.data.token.refreshToken;
-
-    if (accessToken && refreshToken) {
-      storeTokenToCookie(accessToken, refreshToken, req, res);
-      return { accessToken, refreshToken };
-    }
-
-    removeTokenFromCookie(req, res);
-    return null;
-  } catch (error) {
-    isDev() && console.log("Server Token Rotation error", error);
-    removeTokenFromCookie(req, res);
-    return null;
-  }
-}
-
-export async function ssrAuthorize(req: SSRRequestType, res: SSRResponseType) {
-  const refreshToken = getCookie("refreshToken", { req, res }) as string;
-
-  if (!refreshToken) {
-    return null;
-  }
-
-  const accessToken = getCookie("accessToken", { req, res }) as string;
-
-  if (!accessToken) {
-    const tokens = await serverSideTokenRotation(refreshToken, req, res);
-    return tokens?.accessToken;
-  }
-  return accessToken;
 }
 
 export const serializeSlateValue = (value: Descendant[]) => {

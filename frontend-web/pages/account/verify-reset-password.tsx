@@ -7,12 +7,13 @@ import {
   useVerifyResetPasswordMutation,
 } from "graphql/generated/schema";
 import _ from "lodash";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { BiError } from "react-icons/bi";
 import { gplErrorHandler } from "utils";
+import { withSSRAuth } from "utils/ssr";
 
 const className = {
   container: "flex flex-col items-center justify-center min-h-[40vh]",
@@ -21,32 +22,40 @@ const className = {
   text: "text-warning dark:text-warning-dark text-lg font-medium",
 };
 
-const VerifyResetPassword: NextPage = () => {
-  const { query, replace } = useRouter();
-  const [verifyResetPassword, { loading, data, error }] =
-    useVerifyResetPasswordMutation({
-      errorPolicy: "all",
+interface Props {
+  query: { [key: string]: any };
+}
+
+const VerifyResetPassword: NextPage<Props> = ({ query }) => {
+  const { replace } = useRouter();
+  const [verifyResetPassword, { error, data }] = useVerifyResetPasswordMutation(
+    {
       fetchPolicy: "network-only",
-    });
+    }
+  );
+
+  const code = "code" in query ? query.code : "";
 
   useEffect(() => {
-    (async () => {
-      if ("code" in query && typeof query.code === "string") {
+    const handler = async () => {
+      try {
         await verifyResetPassword({
-          variables: { code: query.code },
+          variables: { code: code },
         });
-      }
-    })();
-
+      } catch (error) {}
+    };
+    if (code) {
+      handler();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+  }, [code]);
 
   useEffect(() => {
-    if (!loading && data && query && data.verifyResetPassword) {
+    if (data?.verifyResetPassword) {
       replace(ROUTES.accountSettings);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, data, query]);
+  }, [data]);
 
   const errors = gplErrorHandler(error);
 
@@ -58,35 +67,33 @@ const VerifyResetPassword: NextPage = () => {
     );
   }
 
-  if (!loading && errors) {
-    const errors = gplErrorHandler(error);
+  if (errors) {
     return (
       <Wrapper>
         <div className={className.container}>
           <BiError size={50} className="mb-4 text-error dark:text-error-dark" />
-          {Array.isArray(errors) ? (
-            <ul className={className.items}>
-              {errors.map((er) => (
+          <ul className={className.items}>
+            {Array.isArray(errors) ? (
+              errors.map((er) => (
                 <li key={er} className={className.item}>
                   {er}
                 </li>
-              ))}
-            </ul>
-          ) : (
-            <Fragment>
-              <p className={className.item}>{errors}!</p>
-              <div className="flex items-center justify-center space-x-3 mt-4">
-                <LinkButton
-                  href={ROUTES.accountSettings}
-                  replace
-                  variant="warning"
-                  mode="outline"
-                >
-                  Go to settings
-                </LinkButton>
-              </div>
-            </Fragment>
-          )}
+              ))
+            ) : (
+              <li className={className.item}>{errors}</li>
+            )}
+          </ul>
+
+          <div className="flex items-center justify-center space-x-3 mt-4">
+            <LinkButton
+              href={ROUTES.accountSettings}
+              replace
+              variant="warning"
+              mode="outline"
+            >
+              Go to settings
+            </LinkButton>
+          </div>
         </div>
       </Wrapper>
     );
@@ -113,5 +120,10 @@ function Wrapper({ children }: PropsWithChildren) {
     </AuthGuard>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = withSSRAuth(
+  ROUTES.accountSettings,
+  async (_, { query }) => ({ props: { query } })
+);
 
 export default VerifyResetPassword;

@@ -21,12 +21,8 @@ import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
-import {
-  generateFileUrl,
-  getUserName,
-  queryChecking,
-  ssrAuthorize,
-} from "utils";
+import { generateFileUrl, getUserName, queryChecking } from "utils";
+import { withSSRAuth } from "utils/ssr";
 
 const className = {
   title: "mb-4 mt-8 flex items-center",
@@ -134,32 +130,49 @@ const AboutPage: NextPage<Props> = ({ query }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  query,
-  req,
-  res,
-}) => {
-  try {
-    const accessToken = await ssrAuthorize(req, res);
-
-    if (!accessToken) {
-      return {
-        redirect: { destination: ROUTES.home, permanent: false },
-        props: {},
-      };
-    }
-
+export const getServerSideProps: GetServerSideProps = withSSRAuth(
+  ROUTES.home,
+  async (_, { query }, accessToken) => {
     const client = initializeApollo(undefined, accessToken);
+    try {
+      await client.query({
+        query: GetUserWithPostDocument,
+        variables: { id: query.authorId },
+      });
 
-    await client.query({
-      query: GetUserWithPostDocument,
-      variables: { id: query.authorId },
-    });
-
-    return addApolloState(client, { props: { query } });
-  } catch (error) {
-    return { props: {}, notFound: true };
+      return addApolloState(client, { props: { query } });
+    } catch (error) {
+      return { props: {}, notFound: true };
+    }
   }
-};
+);
+
+// export const getServerSideProps: GetServerSideProps = async ({
+//   query,
+//   req,
+//   res,
+// }) => {
+//   try {
+//     const accessToken = await ssrAuthorize(req, res);
+
+//     if (!accessToken) {
+//       return {
+//         redirect: { destination: ROUTES.home, permanent: false },
+//         props: {},
+//       };
+//     }
+
+//     const client = initializeApollo(undefined, accessToken);
+
+//     await client.query({
+//       query: GetUserWithPostDocument,
+//       variables: { id: query.authorId },
+//     });
+
+//     return addApolloState(client, { props: { query } });
+//   } catch (error) {
+//     return { props: {}, notFound: true };
+//   }
+// };
 
 export default AboutPage;
