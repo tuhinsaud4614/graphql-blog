@@ -231,6 +231,7 @@ export function removeFile(filePath?: string) {
 }
 
 export const isDev = () => process.env.NODE_ENV === "development";
+
 export const isVerifyResetPassword = (
   data: any
 ): data is IVerifyResetPassword =>

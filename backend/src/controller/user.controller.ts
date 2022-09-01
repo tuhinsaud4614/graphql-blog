@@ -386,9 +386,10 @@ export async function verifyResetPasswordCtrl(
     const data = await redisClient.get(key);
     const result = data ? JSON.parse(data) : null;
 
-    if (!result || !isVerifyResetPassword(result) || result.code !== code) {
+    if (!isVerifyResetPassword(result) || result.code !== code) {
       return new ValidationError("Reset password verification failed");
     }
+
     await redisClient.del(key);
     await userResetPassword(prisma, userId, result.hash);
 

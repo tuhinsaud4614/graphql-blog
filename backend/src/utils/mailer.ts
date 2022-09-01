@@ -1,11 +1,12 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
 import {
   createTestAccount,
   createTransport,
   getTestMessageUrl,
   SendMailOptions,
 } from "nodemailer";
+import { CustomError } from "../model";
 import config from "./config";
+import { INTERNAL_SERVER_ERROR } from "./constants";
 
 const createDemoAccount = async () => {
   return createTestAccount();
@@ -34,7 +35,7 @@ const sendMail = async (options: SendMailOptions) => {
   } catch (error: any) {
     // logger.error(error.message);
     console.log(error.message);
-    throw new GraphQLYogaError("Email not sent");
+    throw new CustomError("Email not sent", INTERNAL_SERVER_ERROR);
   }
 };
 
