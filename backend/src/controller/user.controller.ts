@@ -20,6 +20,7 @@ import {
   getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWithInfo,
+  getUserByIdWitInfo,
   getUserFollowCount,
   getUserFollowersCount,
   getUserFollowingsCount,
@@ -284,20 +285,31 @@ export async function logoutCtrl(
   }
 }
 
-export async function tokenCtrl(prisma: PrismaClient, refreshToken: any) {
+export async function tokenCtrl(prisma: PrismaClient, refreshToken?: string) {
   try {
     if (!refreshToken) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
     const user = await verifyRefreshToken(refreshToken);
-    const isExist = await getUserById(prisma, user.id);
+    const isExist = await getUserByIdWitInfo(prisma, user.id);
 
     if (!isExist) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
     const accessToken = await generateToken(
-      user,
+      {
+        ...pick(isExist, [
+          "id",
+          "name",
+          "mobile",
+          "email",
+          "role",
+          "authorStatus",
+          "about",
+          "avatar",
+        ]),
+      } as IUserPayload,
       config.ACCESS_TOKEN_SECRET_KEY,
       config.ACCESS_TOKEN_EXPIRES
     );

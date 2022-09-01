@@ -7,7 +7,6 @@ import {
   registerCtrl,
   resendActivationCtrl,
   resetPasswordCtrl,
-  tokenCtrl,
   unfollowRequestCtrl,
   updateAboutCtrl,
   updateNameCtrl,
@@ -78,18 +77,6 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     const result = await loginCtrl(prisma, data, res);
-    return result;
-  },
-
-  async token(
-    _: any,
-    __: unknown,
-    { prisma, req }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
-  ) {
-    // @ts-ignore
-    const refreshToken = req.cookies?.jwt;
-    const result = await tokenCtrl(prisma, refreshToken);
     return result;
   },
 

@@ -20,6 +20,10 @@ export function getUserById(prisma: PrismaClient, id: string) {
   return prisma.user.findUnique({ where: { id } });
 }
 
+export function getUserByIdWitInfo(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({ where: { id }, include: infoIncludes });
+}
+
 export function getUserByEmail(prisma: PrismaClient, email: string) {
   return prisma.user.findUnique({ where: { email } });
 }

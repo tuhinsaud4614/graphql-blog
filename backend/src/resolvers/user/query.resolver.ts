@@ -4,6 +4,7 @@ import {
   authorFollowingsOnCursorCtrl,
   getUsersOnOffsetCtrl,
   suggestAuthorsToUserOnOffsetCtrl,
+  tokenCtrl,
   userFollowCtrl,
   userFollowersCtrl,
   userFollowingsCtrl,
@@ -20,6 +21,18 @@ import { YogaContextReturnType } from "../../utils/types";
 import { getGraphqlYogaError } from "../../validations";
 
 export const Query = {
+  async token(
+    _: any,
+    { refreshToken }: { refreshToken?: string },
+    { prisma, req }: YogaContextReturnType
+  ) {
+    // @ts-ignore
+    refreshToken ||= req.cookies?.jwt;
+
+    const result = await tokenCtrl(prisma, refreshToken);
+    return result;
+  },
+
   async users(_: unknown, __: unknown, { prisma }: YogaContextReturnType) {
     const u = await prisma.user.findMany();
     return u;

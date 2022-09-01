@@ -84,6 +84,7 @@ type UserFollowResponse {
 }
 
 type Query {
+  token(refreshToken: String): String!
   users: [User!]!
   usersOnOffset(limit: Int, page: Int): PaginateUsers!
   suggestAuthorsToUserOnOffset(limit: Int, page: Int): PaginateUsers!
@@ -111,7 +112,6 @@ type Mutation {
   login(data: LoginInput): String!
     @rateLimit(window: "1m", max: 5, message: "Too many calls made by login")
   logout: ID!
-  token: String!
   resetPassword(oldPassword: String!, newPassword: String!): String!
     @rateLimit(
       window: "1m"

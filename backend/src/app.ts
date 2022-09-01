@@ -1,6 +1,7 @@
 import { IdentifyFn, useRateLimiter } from "@envelop/rate-limiter";
 import { createServer, renderGraphiQL } from "@graphql-yoga/node";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import { Server } from "http";
 import path from "path";
@@ -36,7 +37,7 @@ async function startServer() {
   };
 
   const server = createServer({
-    cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
+    // cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
     schema: {
       typeDefs,
       resolvers,
@@ -60,6 +61,7 @@ async function startServer() {
 
   // app.use(helmet());
   // app.use(compression());
+  app.use(cors({ origin: config.CLIENT_ENDPOINT, credentials: true }));
   app.use(cookieParser());
   app.use(express.static(path.join(process.cwd(), "public")));
   app.use("/images", express.static(path.join(process.cwd(), "images")));
