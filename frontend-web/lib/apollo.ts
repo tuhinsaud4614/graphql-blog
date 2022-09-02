@@ -3,7 +3,6 @@ import {
   ApolloLink,
   FetchResult,
   from,
-  fromPromise,
   InMemoryCache,
   NormalizedCacheObject,
   Operation,
@@ -12,12 +11,20 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { mergeDeep, Observable } from "@apollo/client/utilities";
+import { setAuthUser } from "@features";
 import { createUploadLink } from "apollo-upload-client";
 import { getOperationAST, print } from "graphql";
 import { useMemo } from "react";
 import { makeStore } from "store";
 // import { store } from "store";
-import { fetchRefreshToken, isDev, isServer } from "utils";
+import {
+  fetchRefreshToken,
+  getAccessToken,
+  getAuthUser,
+  isDev,
+  isServer,
+  setAccessToken,
+} from "utils";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -96,85 +103,66 @@ const errorLink = onError(
           err?.extensions?.code &&
           err.extensions.code === "UNAUTHENTICATED"
         ) {
-          return fromPromise(
-            fetchRefreshToken().catch((error) => {
-              return;
-            })
-          )
-            .filter((value) => Boolean(value))
-            .flatMap((accessToken?: string) => {
-              const oldHeaders = operation.getContext().headers;
-              operation.setContext({
-                headers: {
-                  ...oldHeaders,
-                  Authorization: accessToken ? `Bearer ${accessToken}` : "",
-                },
-              });
-              return forward(operation);
-            });
+          setAccessToken(null);
+          return forward(operation);
         }
       }
     }
   }
 );
 
-// const refreshLink = new TokenRefreshLink({
-//   accessTokenField: "accessToken",
-//   isTokenValidOrUndefined: () => {
-//     // const store = makeStore();
-//     // const { token, user } = store.getState().auth;
-
-//     // if (!token) {
-//     //   return false;
-//     // }
-
-//     // if (user && user.exp * 1000 > Date.now()) {
-//     //   return true;
-//     // }
-
-//     return false;
-//   },
-//   fetchAccessToken: async () => {
-//     return fetchRefreshToken();
-//   },
-//   handleFetch(token) {
-//     const user = getAuthUser(token);
-//     const store = makeStore();
-//     store.dispatch(setAuthUser({ user, token }));
-//   },
-//   handleError: (error) => {
-//     isDev() && console.error("Cannot refresh access token:", error);
-//     if (
-//       !isServer() &&
-//       (!navigator.onLine ||
-//         (error instanceof TypeError &&
-//           error.message === "Network request failed"))
-//     ) {
-//       isDev() && console.log("Offline -> do nothing 🍵");
-//     } else {
-//       isDev() && console.log("Online -> log out 👋");
-//     }
-//   },
-// });
-
 export function createApolloClient(serverAccessToken?: string) {
   const authLink = setContext(async (_, { headers }) => {
-    const token = isServer()
-      ? serverAccessToken
-      : makeStore().getState().auth.token;
+    if (isServer()) {
+      const token = serverAccessToken ? `Bearer ${serverAccessToken}` : "";
 
-    // return the headers to the context so httpLink can read them
-    return {
-      headers: {
-        ...headers,
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    };
+      return {
+        headers: {
+          ...headers,
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      };
+    }
+
+    const user = getAuthUser(getAccessToken() || undefined);
+    if (user && user.exp * 1000 < Date.now()) {
+      return {
+        headers: {
+          ...headers,
+          Authorization: getAccessToken() ? `Bearer ${getAccessToken()}` : "",
+        },
+      };
+    }
+
+    try {
+      const token = await fetchRefreshToken();
+      setAccessToken(token);
+      if (token) {
+        const user = getAuthUser(token);
+        makeStore().dispatch(setAuthUser({ token, user }));
+      } else {
+        makeStore().dispatch(setAuthUser({ token: null, user: null }));
+      }
+      return {
+        headers: {
+          ...headers,
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      };
+    } catch (error) {
+      makeStore().dispatch(setAuthUser({ token: null, user: null }));
+      return {
+        headers: {
+          ...headers,
+          Authorization: "",
+        },
+      };
+    }
   });
   return new ApolloClient({
     connectToDevTools: isDev(),
     ssrMode: isServer(),
-    link: from([authLink, errorLink, link]),
+    link: from([errorLink, authLink, link]),
     cache: new InMemoryCache(),
     credentials: "include",
   });

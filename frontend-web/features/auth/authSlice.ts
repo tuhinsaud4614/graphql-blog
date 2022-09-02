@@ -5,7 +5,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { RootState } from "store";
 import {
-  getAuthUser,
   readLocalStorageValue,
   removeLocalStorageValue,
   setLocalStorageValue,
@@ -18,12 +17,8 @@ export interface AuthState {
 
 const getUser = () => {
   const user = readLocalStorageValue<IUser>(USER_KEY);
-  const user1 = getAuthUser(undefined, "refresh");
-  if (!user1) {
-    removeLocalStorageValue(USER_KEY);
-    return null;
-  }
-  return user || user1;
+
+  return user;
 };
 
 const initialState: AuthState = {

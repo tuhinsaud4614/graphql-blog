@@ -10,9 +10,9 @@ import _ from "lodash";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useEffect, useRef } from "react";
 import { BiError } from "react-icons/bi";
-import { gplErrorHandler } from "utils";
+import { gplErrorHandler, isDev } from "utils";
 import { withSSRAuth } from "utils/ssr";
 
 const className = {
@@ -27,35 +27,34 @@ interface Props {
 }
 
 const VerifyResetPassword: NextPage<Props> = ({ query }) => {
+  const effectRan = useRef(false);
   const { replace } = useRouter();
-  const [verifyResetPassword, { error, data }] = useVerifyResetPasswordMutation(
-    {
+  const [verifyResetPassword, { error, loading, data }] =
+    useVerifyResetPasswordMutation({
       fetchPolicy: "network-only",
-    }
-  );
+    });
 
   const code = "code" in query ? query.code : "";
 
   useEffect(() => {
-    const handler = async () => {
-      try {
-        await verifyResetPassword({
-          variables: { code: code },
-        });
-      } catch (error) {}
-    };
-    if (code) {
+    if ((effectRan.current || !isDev()) && code) {
+      const handler = async () => {
+        try {
+          const { data } = await verifyResetPassword({
+            variables: { code: code },
+          });
+          if (data?.verifyResetPassword) {
+            replace(ROUTES.accountSettings);
+          }
+        } catch (error) {}
+      };
       handler();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code]);
 
-  useEffect(() => {
-    if (data?.verifyResetPassword) {
-      replace(ROUTES.accountSettings);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+    return () => {
+      effectRan.current = true;
+    };
+  }, [code, replace, verifyResetPassword]);
 
   const errors = gplErrorHandler(error);
 
@@ -94,6 +93,18 @@ const VerifyResetPassword: NextPage<Props> = ({ query }) => {
               Go to settings
             </LinkButton>
           </div>
+        </div>
+      </Wrapper>
+    );
+  }
+
+  if (!loading && data?.verifyResetPassword) {
+    return (
+      <Wrapper>
+        <div className={className.container}>
+          <p className="text-success dark:text-success-dark">
+            {data?.verifyResetPassword}
+          </p>
         </div>
       </Wrapper>
     );

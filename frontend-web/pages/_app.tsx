@@ -8,11 +8,12 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { nextReduxWrapper } from "store";
+import { nextReduxWrapper, useAppSelector } from "store";
 // import { store } from "store";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { isDev, setAccessToken } from "utils";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -63,6 +64,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <SubscriptionContainer />
         </ClientOnly>
       </ApolloProvider>
+      <AccessToken />
       {/* </Provider> */}
       <ToastContainer
         theme={
@@ -76,6 +78,22 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       />
     </React.Fragment>
   );
+}
+
+function AccessToken() {
+  const effectRan = React.useRef(false);
+  const token = useAppSelector((state) => state.auth.token);
+
+  React.useEffect(() => {
+    if (effectRan.current || !isDev()) {
+      setAccessToken(token);
+    }
+    return () => {
+      effectRan.current = true;
+    };
+  }, [token]);
+
+  return null;
 }
 
 export default nextReduxWrapper.withRedux(MyApp);

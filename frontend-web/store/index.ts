@@ -68,6 +68,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-export const nextReduxWrapper = createWrapper(
-  makeStore /*,{ debug: isDev() }*/
-);
+export const nextReduxWrapper = createWrapper(makeStore, { debug: isDev() });

@@ -1,12 +1,10 @@
 import { ApolloError } from "@apollo/client";
 import { Value } from "@types";
 import axios from "axios";
-import { getCookie } from "cookies-next";
 import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
 import { IncomingMessage } from "http";
 import jwtDecode from "jwt-decode";
-import _ from "lodash";
 import {
   BaseEditor,
   Descendant,
@@ -20,6 +18,7 @@ import {
 import { ReactEditor } from "slate-react";
 import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
 import { IAnchorOrigin, IUser, SlateLinkElement } from "./interfaces";
+import { isIUser } from "./isType";
 
 const ARROW_SIZE = 14;
 export const getPositions = (
@@ -377,23 +376,17 @@ export const gplErrorHandler = (error: ApolloError | undefined) => {
   return error.message;
 };
 
-export const getAuthUser = (
-  token?: string,
-  mode: "access" | "refresh" = "access"
-) => {
-  const newToken = token || getCookie(`${mode}Token`);
-
-  if (!newToken || typeof newToken !== "string") {
+export const getAuthUser = (token?: string) => {
+  if (!token) {
     return null;
   }
 
-  const decoded = jwtDecode<any>(newToken);
-  const user = _.omit(decoded, ["followers", "followings"]) as IUser;
-  if (!_.has(user, "email")) {
+  const decoded = jwtDecode<any>(token);
+  if (!isIUser(decoded)) {
     return null;
   }
 
-  return user;
+  return decoded;
 };
 
 export const isServer = () => typeof window === "undefined";
@@ -460,3 +453,8 @@ export function followConvert(count: number, text: string) {
     maximumFractionDigits: 1,
   }).format(count)} ${text}${count > 1 ? "s" : ""}`;
 }
+
+let accessToken: string | null = null;
+
+export const getAccessToken = () => accessToken;
+export const setAccessToken = (token: string | null) => (accessToken = token);
