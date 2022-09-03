@@ -40,12 +40,25 @@ class SSELink extends ApolloLink {
   public request(operation: Operation): Observable<FetchResult> {
     const url = new URL(this.options.uri);
     url.searchParams.append("query", print(operation.query));
-    url.searchParams.append(
-      "extensions",
-      JSON.stringify(operation.operationName)
-    );
-    url.searchParams.append("variables", JSON.stringify(operation.variables));
+
+    // if (operation.operationName) {
+    //   url.searchParams.append(
+    //     "operationName",
+    //     JSON.stringify(operation.operationName)
+    //   );
+    // }
+
+    if (operation.variables) {
+      url.searchParams.append("variables", JSON.stringify(operation.variables));
+    }
+
     if (operation.extensions) {
+      if (getAccessToken()) {
+        operation.extensions.headers = {
+          ...operation.extensions.headers,
+          Authorization: `Bearer ${getAccessToken()}`,
+        };
+      }
       url.searchParams.append(
         "extensions",
         JSON.stringify(operation.extensions)

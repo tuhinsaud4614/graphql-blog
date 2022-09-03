@@ -93,5 +93,6 @@ export const {
   updateUserAbout,
 } = authSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
+export const selectAccessToken = (state: RootState) => state.auth.token;
 const authReducer = authSlice.reducer;
 export default authReducer;

@@ -8,7 +8,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useAppSelector } from "store";
-import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
+import {
+  generateFileUrl,
+  getUserName,
+  serializeOnlyTextSlateValue,
+} from "utils";
 import { itemInVariants } from "utils/framer-variants";
 import ClientOnly from "./ClientOnly";
 import UserLink from "./UserLink";
@@ -71,12 +75,12 @@ export default function PostItem({ classes, post }: Props) {
             {post.title}
           </a>
         </Link>
-        <Link href={ROUTES.post("1234")} passHref>
+        <Link href={ROUTES.post(post.id)} passHref>
           <a
             aria-label={post.title}
             className={classNames(className.body, classes?.body)}
           >
-            {serializeSlateValue(JSON.parse(post.content))}
+            {serializeOnlyTextSlateValue(JSON.parse(post.content))}
           </a>
         </Link>
         <div className={classNames(className.timeBox, classes?.timeBox)}>
@@ -127,6 +131,8 @@ export default function PostItem({ classes, post }: Props) {
           loader={({ src, width, quality }) =>
             `${src}?w=${width}&q=${quality || 75}`
           }
+          layout="responsive"
+          priority
           src={generateFileUrl(post.image.url)!}
           alt={post.title}
           width={(148 / 9) * 16}

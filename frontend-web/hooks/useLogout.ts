@@ -1,19 +1,19 @@
 import { setAuthUser } from "@features";
 import { useLogoutMutation } from "graphql/generated/schema";
 import { useAppDispatch } from "store";
-import { isDev } from "utils";
+import { isDev, setAccessToken } from "utils";
 
 export default function useLogout() {
   const rdxDispatch = useAppDispatch();
-  const [logout, { loading, error, reset, client }] = useLogoutMutation({
+  const [logout, { loading, error, reset }] = useLogoutMutation({
     errorPolicy: "all",
   });
 
   async function logoutHandler() {
     try {
       await logout();
+      setAccessToken(null);
       rdxDispatch(setAuthUser({ user: null, token: null }));
-      await client.resetStore();
     } catch (error) {
       isDev() && console.log("Logout error", error);
     }

@@ -5,8 +5,6 @@ import { useGetSuggestAuthorsOnOffsetQuery } from "graphql/generated/schema";
 import { gplErrorHandler, isDev } from "utils";
 
 const className = {
-  items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",
-  item: "text-sm first:mt-3 first:ml-3 !rounded-full",
   skeleton: "flex flex-col space-y-4",
 };
 
@@ -14,6 +12,7 @@ export default function Authors() {
   const { data, loading, refetch, error } = useGetSuggestAuthorsOnOffsetQuery({
     notifyOnNetworkStatusChange: true,
     variables: { limit: 4, page: 1 },
+    fetchPolicy: "network-only",
   });
 
   if (loading) {
@@ -59,7 +58,7 @@ export default function Authors() {
           ? "See more suggestions"
           : undefined
       }
-      classes={{ items: "pb-8" }}
+      classes={{ items: "pb-8 overflow-x-hidden" }}
     >
       {data.suggestAuthorsToUserOnOffset.data.map((user) => (
         <FollowItem key={user.id} user={user} />

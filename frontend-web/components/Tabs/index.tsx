@@ -6,8 +6,9 @@ import TabPanel from "./TabPanel";
 const className = {
   list: "flex border-b dark:border-base-dark-300 space-x-4 relative overflow-x-auto scrollbar-hide",
   tabItem:
-    "text-neutral dark:text-neutral-dark hover:text-accent-focus dark:hover:text-accent-dark border-none outline-none py-3 shrink-0 capitalize",
-  slider: "h-0.5 rounded-tr-lg rounded-tl-lg mx-1 absolute bottom-0 bg-accent",
+    "text-neutral dark:text-neutral-dark hover:text-primary-focus dark:hover:text-accent-dark border-none outline-none py-3 shrink-0 capitalize",
+  slider:
+    "rounded-full border-b border-[1.5px] border-primary dark:border-accent-dark absolute bottom-0 !m-0",
 };
 
 interface Props {
@@ -57,7 +58,7 @@ export default function Tabs({
           <button
             className={classNames(
               className.tabItem,
-              index === selectedTab && "!text-accent !dark:text-accent-content"
+              index === selectedTab && "!text-primary dark:!text-accent-dark"
             )}
             key={index}
             onClick={() => {
@@ -72,7 +73,7 @@ export default function Tabs({
         {slider.hasValue && (
           <motion.span
             transition={{ bounceDamping: 3 }}
-            className="border-b border-[1.5px] border-neutral dark:border-base-dark-300 absolute bottom-0 !m-0"
+            className={className.slider}
             style={{ left: slider.left, width: slider.width }}
           />
         )}

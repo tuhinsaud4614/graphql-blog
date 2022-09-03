@@ -2,18 +2,19 @@ import { Button, LinkButton } from "@component";
 import { ROUTES } from "@constants";
 import { PostCreateContainer, PostCreateHeader } from "components/account";
 import { LoaderIcon } from "components/svg";
+import { getCookie } from "cookies-next";
 import {
   useResendActivationLinkMutation,
   useUserVerificationMutation,
 } from "graphql/generated/schema";
 import _ from "lodash";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, PropsWithChildren, useEffect } from "react";
+import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
 import { BiError } from "react-icons/bi";
 import { toast } from "react-toastify";
-import { gplErrorHandler } from "utils";
+import { gplErrorHandler, isDev } from "utils";
 
 const className = {
   container: "flex flex-col items-center justify-center min-h-[40vh]",
@@ -22,36 +23,39 @@ const className = {
   text: "text-warning dark:text-warning-dark text-lg font-medium",
 };
 
-const VerifyUser: NextPage = () => {
-  const { query, replace } = useRouter();
+interface Props {
+  query: { [key: string]: any };
+}
+
+const VerifyUser: NextPage<Props> = ({ query }) => {
+  const effectRan = useRef(false);
+  const { replace } = useRouter();
   const [verifyUser, { loading, data, error }] = useUserVerificationMutation({
     errorPolicy: "all",
     fetchPolicy: "network-only",
   });
+  const code = "code" in query ? query.code : "";
+  const userId = "userId" in query ? query.userId : "";
 
   useEffect(() => {
-    (async () => {
-      if (
-        "userId" in query &&
-        "code" in query &&
-        typeof query.userId === "string" &&
-        typeof query.code === "string"
-      ) {
-        await verifyUser({
-          variables: { code: query.code, userId: query.userId },
-        });
-      }
-    })();
+    if ((effectRan.current || !isDev()) && code && userId) {
+      const handler = async () => {
+        try {
+          const { data } = await verifyUser({
+            variables: { code: query.code, userId: query.userId },
+          });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-
-  useEffect(() => {
-    if (!loading && data && query && data.verifyUser === query["userId"]) {
-      replace(ROUTES.login);
+          if (data?.verifyUser && data.verifyUser === userId) {
+            replace(ROUTES.login);
+          }
+        } catch (error) {}
+      };
+      handler();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, data, query]);
+    return () => {
+      effectRan.current = true;
+    };
+  }, [code, query.code, query.userId, replace, userId, verifyUser]);
 
   const errors = gplErrorHandler(error);
 
@@ -63,8 +67,7 @@ const VerifyUser: NextPage = () => {
     );
   }
 
-  if (!loading && errors) {
-    const errors = gplErrorHandler(error);
+  if (errors) {
     return (
       <Wrapper>
         <div className={className.container}>
@@ -102,6 +105,18 @@ const VerifyUser: NextPage = () => {
     );
   }
 
+  if (!loading && data?.verifyUser) {
+    return (
+      <Wrapper>
+        <div className={className.container}>
+          <p className="text-success dark:text-success-dark">
+            {data.verifyUser} verified successfully.
+          </p>
+        </div>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       <div className={className.container}>
@@ -121,7 +136,10 @@ function ResendButton({ userId }: { userId: string }) {
 
   useEffect(() => {
     if (error) {
-      toast.error(error.message);
+      toast.error(error.message, {
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
     }
   }, [error]);
 
@@ -131,6 +149,7 @@ function ResendButton({ userId }: { userId: string }) {
         position: "top-center",
         autoClose: 500,
         hideProgressBar: false,
+        pauseOnHover: false,
         closeOnClick: true,
       });
       replace(ROUTES.login);
@@ -162,10 +181,26 @@ function Wrapper({ children }: PropsWithChildren) {
       <Head>
         <title>The RAT Diary | User Verification</title>
       </Head>
-      <PostCreateHeader />
+      <PostCreateHeader hideAvatar />
       <PostCreateContainer>{children}</PostCreateContainer>
     </Fragment>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  query,
+}) => {
+  const token = getCookie("jwt", { req, res });
+
+  if (token) {
+    return {
+      redirect: { destination: ROUTES.myHome, permanent: false },
+      props: {},
+    };
+  }
+  return { props: { query } };
+};
 
 export default VerifyUser;

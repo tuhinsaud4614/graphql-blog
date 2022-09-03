@@ -9,7 +9,11 @@ const className = {
   homeLink: "flex items-center justify-center h-[3.125rem] w-[3.125rem]",
 };
 
-export default function Header() {
+interface Props {
+  hideAvatar?: boolean;
+}
+
+export default function Header({ hideAvatar = false }: Props) {
   return (
     <header className={className.root}>
       <nav className={className.nav}>
@@ -24,9 +28,11 @@ export default function Header() {
             />
           </a>
         </Link>
-        <UserAvatarBtn
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        />
+        {!hideAvatar && (
+          <UserAvatarBtn
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          />
+        )}
       </nav>
     </header>
   );

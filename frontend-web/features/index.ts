@@ -1,9 +1,9 @@
 export {
   authSlice,
   default as authReducer,
+  selectAccessToken,
   selectUser,
   setAuthUser,
-  setToken,
   updateUserAvatar,
   updateUserName,
 } from "./auth/authSlice";

@@ -103,7 +103,7 @@ const VerifyResetPassword: NextPage<Props> = ({ query }) => {
       <Wrapper>
         <div className={className.container}>
           <p className="text-success dark:text-success-dark">
-            {data?.verifyResetPassword}
+            {data.verifyResetPassword}
           </p>
         </div>
       </Wrapper>

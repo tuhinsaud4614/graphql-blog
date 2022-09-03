@@ -427,6 +427,23 @@ export async function fetchRefreshToken(req?: IncomingMessage) {
   return data?.data?.token;
 }
 
+export const serializeOnlyTextSlateValue = (value: Descendant[]) => {
+  return (
+    value
+      // Return the string content of each paragraph in the value's children.
+      .map((n) => {
+        return ("type" in n &&
+          ["heading-one", "heading-two"].includes(n["type"])) ||
+          "bold" in n ||
+          "italic" in n ||
+          "underline" in n
+          ? Node.string(n)
+          : " ";
+      })
+      .join("\n")
+  );
+};
+
 export const serializeSlateValue = (value: Descendant[]) => {
   return (
     value

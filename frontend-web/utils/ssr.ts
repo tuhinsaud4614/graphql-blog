@@ -11,7 +11,6 @@ import { fetchRefreshToken, getAuthUser } from "utils";
 
 export const withSSRAuth = (
   redirectTo: string,
-
   cb?: (
     store: Store,
     ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,

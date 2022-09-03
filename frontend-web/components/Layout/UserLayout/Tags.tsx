@@ -7,7 +7,7 @@ import { gplErrorHandler, isDev } from "utils";
 
 const className = {
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",
-  item: "text-sm first:mt-3 first:ml-3 !rounded-full",
+  item: "text-sm !rounded-full inline-block",
   divider: "w-full border-b dark:border-base-dark-300 my-4",
 };
 
@@ -56,18 +56,19 @@ export default function Tags() {
         title="Recommended tags"
         classes={{ items: className.items }}
       >
-        {data.tagsOnOffset.results.map((tag, index) => (
-          <LinkButton
-            key={tag.id}
-            variant="neutral"
-            mode="outline"
-            className={className.item}
-            anchorProps={{ "aria-label": tag.title }}
-            passHref
-            href={ROUTES.postsByTag(tag.id)}
-          >
-            {tag.title}
-          </LinkButton>
+        {data.tagsOnOffset.results.map((tag) => (
+          <li className="first:mt-3 first:ml-3" key={tag.id}>
+            <LinkButton
+              variant="neutral"
+              mode="outline"
+              className={className.item}
+              anchorProps={{ "aria-label": tag.title }}
+              passHref
+              href={ROUTES.postsByTag(tag.id)}
+            >
+              {tag.title}
+            </LinkButton>
+          </li>
         ))}
       </SidebarContent>
       <hr className={className.divider} />

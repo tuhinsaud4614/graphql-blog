@@ -1,11 +1,11 @@
 import { ROUTES } from "@constants";
 import { UserLayout } from "components/Layout";
-import { getCookie } from "cookies-next";
 import { seenAll } from "features/notificationSlice/notificationSlice";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import { useAppDispatch } from "store";
+import { withSSRAuth } from "utils/ssr";
 
 const className = {
   title:
@@ -29,15 +29,7 @@ const NotificationsPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const token = getCookie("refreshToken", { req, res });
-  if (!token) {
-    return {
-      redirect: { destination: ROUTES.myHome, permanent: false },
-      props: {},
-    };
-  }
-
-  return { props: {} };
-};
+export const getServerSideProps: GetServerSideProps = withSSRAuth(
+  ROUTES.myHome
+);
 export default NotificationsPage;
