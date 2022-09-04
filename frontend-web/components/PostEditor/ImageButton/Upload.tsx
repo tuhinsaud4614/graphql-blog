@@ -1,10 +1,11 @@
 import { IMAGE_MIMES } from "@constants";
 import classNames from "classnames";
 import { Button } from "components";
+import { useUploadImageMutation } from "graphql/generated/schema";
 import _ from "lodash";
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
-import { maxFileSize } from "utils";
+import { generateFileUrl, maxFileSize } from "utils";
 import Loader from "./Loader";
 
 const className = {
@@ -32,23 +33,35 @@ export function Upload({ onAdd }: Props) {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  // const []
+  const [uploadImage] = useUploadImageMutation({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+
     const files = e.target.files;
     if (files?.length) {
       setError("");
       setLoading(true);
       try {
         const file = files[0];
-        const img = await promise(file);
+
         if (!_.has(IMAGE_MIMES, file.type)) {
           setError("File should be image (gif, svg, jpeg, jpg, png, webp)");
         } else if (file.size > maxFileSize(2)) {
-          setError("Image size should be less than 5mb");
+          setError("Image size should be less than 2mb");
         } else {
-          setImage(img);
+          const { data, errors } = await uploadImage({
+            variables: { image: file },
+          });
+
+          if (data?.uploadImage) {
+            const img = generateFileUrl(data.uploadImage);
+            img ? setImage(img) : setError("Image upload failed");
+          } else {
+            setError("Image upload failed");
+          }
         }
       } catch (error) {
         setError("Upload image failed");
@@ -81,6 +94,10 @@ export function Upload({ onAdd }: Props) {
           <div className={className.imgContainer}>
             <div className="absolute inset-0 z-10">
               <Image
+                loader={({ src, width, quality }) =>
+                  `${src}?w=${width}&q=${quality || 75}`
+                }
+                priority
                 src={image}
                 alt="Preview Image"
                 layout="fill"
