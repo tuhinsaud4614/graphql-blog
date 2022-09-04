@@ -10,6 +10,7 @@ import {
   PERSISTED_QUERY_NOT_FOUND,
   PERSISTED_QUERY_NOT_SUPPORTED,
   RATE_LIMIT_EXCEED,
+  UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
 } from "../utils/constants";
 import { IErrorResponse, ISuccessResponse } from "../utils/interfaces";
@@ -125,7 +126,10 @@ export class UserInputError extends GraphQLYogaError {
 
 // The server failed to authenticate with a required data source, such as a REST API.
 export class AuthenticationError extends GraphQLYogaError {
-  constructor(message: string, extensions?: GraphQLErrorExtensions) {
+  constructor(
+    message: string = UN_AUTH_ERR_MSG,
+    extensions?: GraphQLErrorExtensions
+  ) {
     super(message, { ...extensions, code: UN_AUTH_EXT_ERR_CODE });
 
     // this is for instanceof behave properly

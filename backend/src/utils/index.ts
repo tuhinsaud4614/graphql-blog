@@ -22,7 +22,11 @@ import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
 } from "./constants";
-import { IUserPayload, IVerifyResetPassword } from "./interfaces";
+import {
+  IExtensionsWithAuthorization,
+  IUserPayload,
+  IVerifyResetPassword,
+} from "./interfaces";
 import redisClient from "./redis";
 
 // Sub exports
@@ -95,6 +99,34 @@ export const verifyRefreshToken = async (token: string) => {
 export const verifyAccessTokenInContext = (request: Request) => {
   try {
     const authToken = request.headers.get("Authorization");
+    if (!authToken) {
+      return null;
+    }
+
+    const token = authToken.replace(/^Bearer\s/, "");
+    const decoded = verify(token, config.ACCESS_TOKEN_SECRET_KEY);
+    return getUserPayload(decoded);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const isExtensionsWithAuthorization = (
+  extensions: any
+): extensions is IExtensionsWithAuthorization =>
+  typeof extensions === "object" &&
+  "headers" in extensions &&
+  typeof extensions.headers === "object" &&
+  "Authorization" in extensions.headers;
+
+export const verifyAccessTokenFromExtensions = (extensions: any) => {
+  try {
+    if (!isExtensionsWithAuthorization(extensions)) {
+      return null;
+    }
+
+    const authToken = extensions.headers.Authorization;
+
     if (!authToken) {
       return null;
     }
@@ -199,7 +231,7 @@ export async function imageUpload(
       if (size > maxSize) {
         return cb(
           new CustomError(
-            TOO_LARGE_FILE_ERR_MSG("Image", "5 Mb"),
+            TOO_LARGE_FILE_ERR_MSG("Image", `${maxSize} Mb`),
             BAD_USER_INPUT
           )
         );

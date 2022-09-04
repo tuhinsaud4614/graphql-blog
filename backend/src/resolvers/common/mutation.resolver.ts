@@ -1,6 +1,10 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
-import { uploadFileCtrl } from "../../controller/common.controller";
+import {
+  uploadFileCtrl,
+  uploadImageCtrl,
+} from "../../controller/common.controller";
+import { AuthenticationError } from "../../model";
 import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
@@ -30,6 +34,19 @@ export const Mutation = {
     }
 
     const result = await uploadFileCtrl(file);
+    return result;
+  },
+  async uploadImage(
+    _: unknown,
+    { image }: { image: File },
+    { user }: YogaContextReturnType,
+    ___: GraphQLResolveInfo
+  ) {
+    if (user === null) {
+      return new AuthenticationError();
+    }
+
+    const result = await uploadImageCtrl(image);
     return result;
   },
 };

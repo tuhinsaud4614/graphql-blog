@@ -15,6 +15,7 @@ import {
   verifyUserCtrl,
 } from "../../controller/user.controller";
 import { AuthenticationError } from "../../model";
+import config from "../../utils/config";
 import {
   FOLLOW_OWN_ERR_MSG,
   UN_AUTH_ERR_MSG,
@@ -35,7 +36,7 @@ export const Mutation = {
     const result = await registerCtrl(
       prisma,
       data,
-      req.headers.origin || "http://localhost:4000"
+      req.headers.origin || config.CLIENT_ENDPOINT
     );
     return result;
   },
@@ -49,7 +50,7 @@ export const Mutation = {
     const result = await resendActivationCtrl(
       prisma,
       userId,
-      req.headers.origin || "http://localhost:4000"
+      req.headers.origin || config.CLIENT_ENDPOINT
     );
     return result;
   },

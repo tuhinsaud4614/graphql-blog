@@ -1,6 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import logger from "../../logger";
+import { verifyAccessTokenFromExtensions } from "../../utils";
 import {
   SUBSCRIPTION_FOLLOWING_ERR_MSG,
   SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
@@ -15,10 +16,12 @@ export const Subscription = {
     async subscribe(
       _: any,
       __: any,
-      { pubSub, user }: YogaContextReturnType,
+      { pubSub, extensions }: YogaContextReturnType,
       ___: GraphQLResolveInfo
     ) {
       try {
+        const user = verifyAccessTokenFromExtensions(extensions);
+
         if (user === null) {
           return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
             code: UN_AUTH_EXT_ERR_CODE,

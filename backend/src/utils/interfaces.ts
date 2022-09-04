@@ -208,3 +208,9 @@ export interface IVerifyResetPassword {
   code: string;
   hash: string;
 }
+
+export interface IExtensionsWithAuthorization {
+  headers: {
+    Authorization?: string;
+  };
+}
