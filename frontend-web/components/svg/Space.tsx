@@ -321,6 +321,7 @@ const Space = (props: SVGProps<SVGSVGElement>) => (
     </motion.g>
 
     {/* Start Small end */}
+    {/* Circle Big */}
     <g
       fill="none"
       className="stroke-[#0E0620] dark:stroke-base-100"
@@ -328,24 +329,116 @@ const Space = (props: SVGProps<SVGSVGElement>) => (
       strokeLinecap="round"
       strokeMiterlimit={10}
     >
-      <circle cx={588.977} cy={255.978} r={7.952} />
-      <circle cx={450.066} cy={320.259} r={7.952} />
-      <circle cx={168.303} cy={353.753} r={7.952} />
-      <circle cx={429.522} cy={201.185} r={7.952} />
-      <circle cx={200.67} cy={176.313} r={7.952} />
-      <circle cx={133.343} cy={477.014} r={7.952} />
-      <circle cx={283.521} cy={568.033} r={7.952} />
-      <circle cx={413.618} cy={482.387} r={7.952} />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={588.977}
+        cy={255.978}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={450.066}
+        cy={320.259}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={168.303}
+        cy={353.753}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={429.522}
+        cy={201.185}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={200.67}
+        cy={176.313}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={133.343}
+        cy={477.014}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={283.521}
+        cy={568.033}
+        r={7.952}
+      />
+      <motion.circle
+        animate={{ y: [0, -2] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={413.618}
+        cy={482.387}
+        r={7.952}
+      />
     </g>
+    {/* Circle small */}
     <g className="fill-[#0E0620] dark:fill-base-100">
-      <circle cx={549.879} cy={296.402} r={2.651} />
-      <circle cx={253.29} cy={229.24} r={2.651} />
-      <circle cx={434.824} cy={263.931} r={2.651} />
-      <circle cx={183.708} cy={544.176} r={2.651} />
-      <circle cx={382.515} cy={530.923} r={2.651} />
-      <circle cx={130.693} cy={305.608} r={2.651} />
-      <circle cx={480.296} cy={477.014} r={2.651} />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={549.879}
+        cy={296.402}
+        r={2.651}
+      />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={253.29}
+        cy={229.24}
+        r={2.651}
+      />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={434.824}
+        cy={263.931}
+        r={2.651}
+      />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={183.708}
+        cy={544.176}
+        r={2.651}
+      />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={382.515}
+        cy={530.923}
+        r={2.651}
+      />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={130.693}
+        cy={305.608}
+        r={2.651}
+      />
+      <motion.circle
+        animate={{ y: [0, -4] }}
+        transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.5 }}
+        cx={480.296}
+        cy={477.014}
+        r={2.651}
+      />
     </g>
+    {/* Space Man */}
     <motion.g
       clipPath="url(cordClip)"
       animate={{ y: 5, rotate: 1 }}
@@ -480,7 +573,7 @@ const Space = (props: SVGProps<SVGSVGElement>) => (
           transition={{
             repeat: Infinity,
             repeatType: "reverse",
-            repeatDelay: 8,
+            repeatDelay: 2,
             delay: 2,
             duration: 2,
           }}
