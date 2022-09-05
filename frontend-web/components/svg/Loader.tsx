@@ -3,6 +3,7 @@ import { ComponentPropsWithRef } from "react";
 export default function Loader(props: ComponentPropsWithRef<"svg">) {
   return (
     <svg
+      {...props}
       width="200px"
       height="200px"
       viewBox="0 0 100 100"

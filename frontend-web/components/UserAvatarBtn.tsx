@@ -78,6 +78,7 @@ export default function UserAvatarBtn({
           loader={({ src, width, quality }) =>
             `${src}?w=${width}&q=${quality || 75}`
           }
+          priority
           src={imgUrl}
           alt="Avatar"
           width={user.avatar?.width}

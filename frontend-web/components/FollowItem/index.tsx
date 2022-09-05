@@ -11,10 +11,10 @@ import UnFollowButton from "./UnFollowButton";
 
 const className = {
   root: "space-y-3 flex items-center",
-  avatar: "h-8 w-8 min-w-0 rounded-full overflow-hidden inline-block",
+  avatar: "h-8 w-8 min-w-0 rounded-full shrink-0 overflow-hidden inline-block",
   mid: "flex flex-col ml-2 mr-4 flex-1",
   title:
-    "font-bold text-neutral dark:text-neutral-dark line-clamp-2 text-ellipsis",
+    "font-bold text-neutral dark:text-neutral-dark line-clamp-2 text-ellipsis break-all",
   subtitle:
     "mt-1 text-sm text-neutral/60 dark:text-neutral-dark/60 line-clamp-2 text-ellipsis",
   btn: "text-sm py-1 px-3",

@@ -1,6 +1,6 @@
 import { ROUTES } from "@constants";
-import { UserAvatarBtn } from "components";
-import Image from "next/image";
+import { ClientOnly, UserAvatarBtn } from "components";
+import { LogoIcon } from "components/svg";
 import Link from "next/link";
 
 const className = {
@@ -19,20 +19,16 @@ export default function Header({ hideAvatar = false }: Props) {
       <nav className={className.nav}>
         <Link href={ROUTES.myHome} passHref>
           <a className={className.homeLink} aria-label="Home">
-            <Image
-              src="/logo.svg"
-              alt="The Rat Diary"
-              height={50}
-              width={50}
-              layout="fixed"
-            />
+            <LogoIcon className="h-[3.125rem] w-[3.125rem]" />
           </a>
         </Link>
-        {!hideAvatar && (
-          <UserAvatarBtn
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          />
-        )}
+        <ClientOnly>
+          {!hideAvatar && (
+            <UserAvatarBtn
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            />
+          )}
+        </ClientOnly>
       </nav>
     </header>
   );
