@@ -1,10 +1,9 @@
-import { ClientOnly, SlateViewer } from "@component";
+import { AuthComponentGuard, ClientOnly, SlateViewer } from "@component";
 import { LayoutContainer } from "components/Layout";
 import {
   PostDetailAuthorInfo,
-  PostDetailFloatingReactions,
+  PostDetailBottomReactions,
   PostDetailImage,
-  PostDetailReactions,
   PostDetailSuggestPosts,
 } from "components/post-detail";
 import { SidebarUserProfiler } from "components/Sidebar";
@@ -22,6 +21,7 @@ import moment from "moment";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { Fragment, useRef } from "react";
+import { getUserName } from "utils";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
@@ -91,6 +91,7 @@ const PostPage: NextPage<IParams> = ({ post }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const { author, ...rest } = post;
+  const username = getUserName(author);
 
   return (
     <LayoutContainer
@@ -104,22 +105,26 @@ const PostPage: NextPage<IParams> = ({ post }) => {
       }
     >
       <Head>
-        <title>{`${post.title} | The RAT Diary`}</title>
+        <title>{`${rest.title} | by ${username} | The RAT Diary`}</title>
       </Head>
       <article ref={contentRef}>
         <PostDetailAuthorInfo
-          author={post.author}
-          postDate={moment(+post.updatedAt)
+          author={author}
+          postDate={moment(+rest.updatedAt)
             .startOf("second")
             .fromNow()}
         />
-        <h1 className={className.title}>{post.title}</h1>
+        <h1 className={className.title}>{rest.title}</h1>
         <PostDetailImage alt={rest.title} image={rest.image} />
+        <br />
         <br />
         <SlateViewer value={JSON.parse(rest.content)} />
       </article>
-      <PostDetailFloatingReactions siblingRef={contentRef} />
-      <PostDetailReactions />
+      <ClientOnly>
+        <AuthComponentGuard>
+          <PostDetailBottomReactions siblingRef={contentRef} />
+        </AuthComponentGuard>
+      </ClientOnly>
     </LayoutContainer>
   );
 };

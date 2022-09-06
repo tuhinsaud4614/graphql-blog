@@ -9,7 +9,7 @@ import {
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Descendant } from "slate";
 import { useAppDispatch, useAppSelector } from "store";
-import { followConvert, serializeSlateValue } from "utils";
+import { countConvert, serializeSlateValue } from "utils";
 import AllFollowers from "../AllFollowers";
 import FollowButton from "./FollowButton";
 
@@ -70,7 +70,7 @@ export default function OtherInfo({ user, authenticated }: Props) {
           className="px-0"
           disabled={!authenticated || !count}
         >
-          {followConvert(count, "follower")}
+          {countConvert(count, "follower")}
         </Button>
       ) : (
         <span
@@ -100,7 +100,7 @@ export default function OtherInfo({ user, authenticated }: Props) {
       )}
       {authenticated && !!count && (
         <ReactorModal
-          title={followConvert(count, "follower")}
+          title={countConvert(count, "follower")}
           open={open}
           onHide={() => setOpen(false)}
         >

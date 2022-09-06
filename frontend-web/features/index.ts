@@ -17,3 +17,10 @@ export {
   setAuthorFollowerCount,
 } from "./authorFollowerCount";
 export type { AuthorFollowerState } from "./authorFollowerCount";
+export {
+  default as reactSliceReducer,
+  reactSlice,
+  selectReact,
+  setToggleReact,
+} from "./post/reactSlice";
+export type { ReactState } from "./post/reactSlice";

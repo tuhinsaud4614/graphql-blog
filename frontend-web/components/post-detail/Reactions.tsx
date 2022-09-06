@@ -13,7 +13,12 @@ const className = {
   favBtn: "p-2 active:scale-95 hover:text-secondary-focus",
 };
 
-export default function Reactions() {
+interface Props {
+  reactionCount: number;
+  isReacted: boolean;
+}
+
+export default function Reactions({ isReacted, reactionCount }: Props) {
   const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
 
@@ -24,10 +29,6 @@ export default function Reactions() {
       <section className={className.root}>
         <div className={className.left}>
           <LikeButton
-            onLike={() => {
-              console.log("Like Click");
-            }}
-            count={100}
             onLikeText={() => setOpenLikeBox(true)}
             className="py-2"
           />

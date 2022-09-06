@@ -6,7 +6,7 @@ import { useGetUserFollowingsQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
 import { Descendant } from "slate";
 import { useAppSelector } from "store";
-import { followConvert } from "utils";
+import { countConvert } from "utils";
 import BottomFollowers from "./BottomFollowers";
 import BottomFollowings from "./BottomFollowings";
 
@@ -103,7 +103,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
               }}
               mode="text"
             >
-              {followConvert(count, "Follower")}
+              {countConvert(count, "Follower")}
             </Button>
           )}
           <span className="mx-3 text-neutral dark:text-neutral-dark">·</span>
@@ -125,7 +125,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
               }}
               mode="text"
             >
-              {followConvert(data.userFollowings, "Following")}
+              {countConvert(data.userFollowings, "Following")}
             </Button>
           )}
         </div>
@@ -134,8 +134,8 @@ export default function OtherAboutTab({ userId, about }: Props) {
         <ReactorModal
           title={
             open === "follower"
-              ? followConvert(count, "follower")
-              : followConvert(data?.userFollowings ?? 0, "following")
+              ? countConvert(count, "follower")
+              : countConvert(data?.userFollowings ?? 0, "following")
           }
           open={!!open}
           onHide={() => setOpen(null)}

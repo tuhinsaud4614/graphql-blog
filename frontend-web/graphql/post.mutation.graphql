@@ -12,3 +12,9 @@ mutation CreatePost($data: CreatePostInput!) {
     ...GetPostItem
   }
 }
+
+mutation ReactToPost($toId: ID!) {
+  reactionToPost(toId: $toId) {
+    ...FGetUser
+  }
+}

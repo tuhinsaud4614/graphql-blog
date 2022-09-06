@@ -1,3 +1,4 @@
+export { default as AuthComponentGuard } from "./AuthComponentGuard";
 export { default as AuthGuard } from "./AuthGuard";
 export { default as Backdrop } from "./Backdrop";
 export { default as Badge } from "./Badge";

@@ -7,7 +7,7 @@ import {
 } from "graphql/generated/schema";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "store";
-import { followConvert } from "utils";
+import { countConvert } from "utils";
 import Skeleton from "./Skeleton";
 
 const className = {
@@ -66,7 +66,7 @@ export function Bottom({ id }: { id: string }) {
   return (
     <div className={className.menuBottom}>
       <span className={className.menuBottomLeft}>
-        {followConvert(count, "Follower")}
+        {countConvert(count, "Follower")}
       </span>
       <Button
         type="button"

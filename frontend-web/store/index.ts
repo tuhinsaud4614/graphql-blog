@@ -1,4 +1,8 @@
-import { authorFollowerCountReducer, authReducer } from "@features";
+import {
+  authorFollowerCountReducer,
+  authReducer,
+  reactSliceReducer,
+} from "@features";
 import {
   Action,
   combineReducers,
@@ -29,6 +33,7 @@ const combinedReducer = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
   authorFollowerCount: authorFollowerCountReducer,
+  react: reactSliceReducer,
 });
 
 // const reducer = (

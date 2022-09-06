@@ -1,25 +1,38 @@
+import { selectReact } from "@features";
 import { useLockBody, useMediaQuery } from "@hooks";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
 import { Fragment, RefObject, useEffect, useState } from "react";
+import { useAppSelector } from "store";
 import CommentButton from "./CommentButton";
 import FloatingComments from "./FloatingComments";
 import FloatingLikes from "./FloatingLikes";
 import LikeButton from "./LikeButton";
 
 const className = {
-  root: "sticky bottom-[4.5rem] lg:bottom-4 left-0 z-40 flex items-center justify-center",
+  container: "fixed left-0 right-0 bottom-[4.5rem] lg:bottom-4",
+  root: "mx-auto w-full max-w-[94rem] p-0 lg:pl-20 lg:pr-[17.5rem] xl:pr-96 flex items-center justify-center",
   reactBar:
     "shadow-mui bg-base-100 dark:bg-base-dark-200 px-3.5 py-2 rounded-full flex items-stretch",
-
   divide:
     "inline-block w-0.5 bg-neutral/60 dark:bg-neutral-dark/60 mx-4 rounded-sm",
 };
 
 interface Props {
   siblingRef: RefObject<Element>;
+  // reactionCount: number;
+  // isReacted: boolean;
 }
 
-export default function FloatingReactions({ siblingRef }: Props) {
+export default function FloatingReactions({
+  // isReacted,
+  // reactionCount,
+  siblingRef,
+}: Props) {
+  const {
+    query: { postId },
+  } = useRouter();
+  const { count, isReacted } = useAppSelector(selectReact);
   const [show, setShow] = useState<boolean>(true);
   const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
@@ -65,25 +78,22 @@ export default function FloatingReactions({ siblingRef }: Props) {
     <Fragment>
       <AnimatePresence>
         {show && (
-          <div className={className.root}>
-            <motion.div
-              className={className.reactBar}
-              initial={{ y: 200, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <LikeButton
-                count={100}
-                onLike={() => console.log("Like click")}
-                onLikeText={() => setOpenLikeBox(true)}
-              />
-
-              <span className={className.divide} />
-              <CommentButton
-                count={100}
-                onComment={() => setOpenCommentModal(true)}
-              />
-            </motion.div>
+          <div className={className.container}>
+            <div className={className.root}>
+              <motion.div
+                className={className.reactBar}
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <LikeButton onLikeText={() => setOpenLikeBox(true)} />
+                <span className={className.divide} />
+                <CommentButton
+                  count={100}
+                  onComment={() => setOpenCommentModal(true)}
+                />
+              </motion.div>
+            </div>
           </div>
         )}
       </AnimatePresence>

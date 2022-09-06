@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { ErrorBox, ReactorModal } from "components";
 import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
 import { Fragment, useState } from "react";
-import { followConvert, gplErrorHandler, isDev } from "utils";
+import { countConvert, gplErrorHandler, isDev } from "utils";
 import FollowingItem from "../FollowingItem";
 import FollowingItemSkeleton from "../FollowingItemSkeleton";
 import SeeMoreFollow from "./SeeMoreFollow";
@@ -96,7 +96,7 @@ function SeeAll({ total, authorId }: { authorId: string; total: number }) {
         See all ({total})
       </button>
       <ReactorModal
-        title={followConvert(total, "following")}
+        title={countConvert(total, "following")}
         open={open}
         onHide={() => setOpen(false)}
       >
