@@ -248,6 +248,19 @@ export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
   });
 }
 
+export function isFollowTheUser(
+  prisma: PrismaClient,
+  myId: string,
+  toId: string
+) {
+  return prisma.user.findFirst({
+    where: {
+      id: toId,
+      followers: { some: { id: myId } },
+    },
+  });
+}
+
 export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
   return prisma.user.update({
     where: { id: toId },

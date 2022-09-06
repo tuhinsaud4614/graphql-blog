@@ -181,6 +181,11 @@ export interface IResponseOnOffset<T> {
   pageInfo?: IOffsetPageInfo;
 }
 
+export interface IReactionsCount {
+  count: number;
+  reacted: boolean;
+}
+
 export interface IPostsByTagQueryParams {
   role: string;
   tag: string;

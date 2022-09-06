@@ -34,6 +34,11 @@ type CursorPostsResponse {
 }
 # Cursor types end
 
+type ReactionsCount {
+  count: Int!
+  reacted: Boolean!
+}
+
 input CreatePostInput {
   title: String!
   image: File!
@@ -66,6 +71,7 @@ type Query {
     limit: Int
     page: Int
   ): OffsetPostsResponse!
+  postReactionsCount(id: ID!): ReactionsCount!
 }
 
 type Mutation {

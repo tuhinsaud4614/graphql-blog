@@ -8,9 +8,11 @@ import {
   getAllPosts,
   getPostByIdForUser,
   getPostByIdWithReactions,
+  getPostReactionsCount,
   getPostsByTag,
   getPostsOnCursor,
   getPostsOnOffset,
+  isReactToThePost,
   reactionToPost,
   reactionWithdrawToPost,
   updatePost,
@@ -32,6 +34,7 @@ import {
   IOffsetPageInfo,
   IOffsetQueryParams,
   IPostsByTagQueryParams,
+  IReactionsCount,
   IUpdatePostInput,
   IUserPayload,
 } from "../utils/interfaces";
@@ -362,5 +365,26 @@ export async function getAllPostsByTagCtrl(
   } catch (error: any) {
     logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("Posts"));
+  }
+}
+
+export async function postReactionsCountCtrl(
+  prisma: PrismaClient,
+  userId: string,
+  postId: string
+) {
+  try {
+    const [count, isReacted] = await prisma.$transaction([
+      getPostReactionsCount(prisma, postId),
+      isReactToThePost(prisma, postId, userId),
+    ]);
+
+    return {
+      count: count?._count.reactionsBy ?? 0,
+      reacted: !!isReacted,
+    } as IReactionsCount;
+  } catch (error: any) {
+    logger.error(error);
+    return getGraphqlYogaError(error, "Post reactions counting failed");
   }
 }

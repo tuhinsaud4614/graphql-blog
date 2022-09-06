@@ -26,6 +26,7 @@ import {
   getUserFollowingsCount,
   getUsersOnCursor,
   getUsersOnOffset,
+  isFollowTheUser,
   sendResetPasswordVerificationCode,
   sendUserVerificationCode,
   unfollowTo,
@@ -722,12 +723,7 @@ export async function userResultCtrl(
     if (userId) {
       const [followerCount, hasFollow] = await prisma.$transaction([
         getUserFollowersCount(prisma, forUserId),
-        prisma.user.findFirst({
-          where: {
-            id: forUserId,
-            followers: { some: { id: userId } },
-          },
-        }),
+        isFollowTheUser(prisma, userId, forUserId),
       ]);
 
       return {

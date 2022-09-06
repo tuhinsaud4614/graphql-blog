@@ -6,6 +6,7 @@ import {
   reactionToCtrl,
   updatePostCtrl,
 } from "../../controller/post.controller";
+import { AuthenticationError } from "../../model";
 import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
@@ -85,9 +86,7 @@ export const Mutation = {
     ___: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError();
     }
     const result = await reactionToCtrl(prisma, pubSub, toId, user);
     return result;

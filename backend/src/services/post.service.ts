@@ -44,6 +44,23 @@ export function getPostsByTag(
   });
 }
 
+export function getPostReactionsCount(prisma: PrismaClient, id: string) {
+  return prisma.post.findUnique({
+    where: { id },
+    select: { _count: { select: { reactionsBy: true } } },
+  });
+}
+
+export function isReactToThePost(
+  prisma: PrismaClient,
+  postId: string,
+  userId: string
+) {
+  return prisma.post.findFirst({
+    where: { id: postId, reactionsBy: { some: { id: userId } } },
+  });
+}
+
 export function createPost(
   prisma: PrismaClient,
   authorId: string,
