@@ -1,22 +1,9 @@
 query GetUserWithPost($id: ID!) {
   user(id: $id) {
-    id
-    name
-    mobile
-    email
-    password
-    role
-    authorStatus
-    avatar {
-      id
-      url
-      height
-      width
-    }
+    ...FGetUser
     posts {
       ...GetPostItem
     }
-    about
     followings {
       id
       name

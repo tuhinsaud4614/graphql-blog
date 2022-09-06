@@ -1,9 +1,11 @@
 import { selectAuthorFollowerCount, setAuthorFollowerCount } from "@features";
 import { useLockBody } from "@hooks";
-import { IUser } from "@interfaces";
 import classNames from "classnames";
 import { Button, ReactorModal } from "components";
-import { useUserMentionTooltipStatsQuery } from "graphql/generated/schema";
+import {
+  FGetUserFragment,
+  useUserMentionTooltipStatsQuery,
+} from "graphql/generated/schema";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Descendant } from "slate";
 import { useAppDispatch, useAppSelector } from "store";
@@ -21,7 +23,7 @@ const className = {
 };
 
 interface Props {
-  user: IUser;
+  user: FGetUserFragment;
 }
 
 export default function OtherInfo({ user }: Props) {

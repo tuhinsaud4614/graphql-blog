@@ -1,8 +1,10 @@
 import { useEventListener, useLockBody } from "@hooks";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
+import { FImageFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import { useState } from "react";
+import { generateFileUrl } from "utils";
 
 const className = {
   root: "relative w-full",
@@ -20,7 +22,12 @@ const transition = {
   stiffness: 120,
 };
 
-const Img = () => {
+interface Props {
+  image: FImageFragment;
+  alt: string;
+}
+
+const Img = ({ image, alt }: Props) => {
   const [isOpen, setOpen] = useState(false);
 
   useEventListener("scroll", () => isOpen && setOpen(false));
@@ -56,26 +63,16 @@ const Img = () => {
           transition={transition}
         >
           <Image
-            src="/demo.png"
-            alt="Detail"
+            loader={({ src, width, quality }) =>
+              `${src}?w=${width}&q=${quality || 75}`
+            }
+            src={generateFileUrl(image.url)!}
+            alt={alt}
             layout="fill"
             objectFit="contain"
+            priority
           />
         </motion.div>
-
-        {/* <motion.img
-          src="/demo.png"
-          alt="Detail"
-          onClick={() => setOpen(!isOpen)}
-          className={classNames(
-            className.img,
-            isOpen ? className.imgOpen : className.imgClose
-          )}
-          // width={700}
-          // height={533}
-          layout
-          transition={transition}
-        /> */}
       </AnimatePresence>
     </div>
   );

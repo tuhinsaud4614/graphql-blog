@@ -147,32 +147,4 @@ export const getServerSideProps: GetServerSideProps = withSSRAuth(
   }
 );
 
-// export const getServerSideProps: GetServerSideProps = async ({
-//   query,
-//   req,
-//   res,
-// }) => {
-//   try {
-//     const accessToken = await ssrAuthorize(req, res);
-
-//     if (!accessToken) {
-//       return {
-//         redirect: { destination: ROUTES.home, permanent: false },
-//         props: {},
-//       };
-//     }
-
-//     const client = initializeApollo(undefined, accessToken);
-
-//     await client.query({
-//       query: GetUserWithPostDocument,
-//       variables: { id: query.authorId },
-//     });
-
-//     return addApolloState(client, { props: { query } });
-//   } catch (error) {
-//     return { props: {}, notFound: true };
-//   }
-// };
-
 export default AboutPage;

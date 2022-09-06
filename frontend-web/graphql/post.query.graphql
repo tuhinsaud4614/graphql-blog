@@ -31,6 +31,19 @@ query GetPosts($limit: Int!, $after: ID) {
     }
   }
 }
+
+query GetPostsOnOffset($limit: Int, $page: Int) {
+  postsOnOffset(limit: $limit, page: $page) {
+    total
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+    data {
+      ...GetPostItem
+    }
+  }
+}
+
 query GetFollowingAuthorPosts($limit: Int!, $after: ID) {
   followingAuthorPosts(limit: $limit, after: $after) {
     total
@@ -43,5 +56,11 @@ query GetFollowingAuthorPosts($limit: Int!, $after: ID) {
         ...GetPostItem
       }
     }
+  }
+}
+
+query GetPostById($id: ID!) {
+  post(id: $id) {
+    ...GetPostItem
   }
 }
