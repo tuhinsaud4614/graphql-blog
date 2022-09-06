@@ -24,9 +24,10 @@ const className = {
 
 interface Props {
   user: FGetUserFragment;
+  authenticated?: boolean;
 }
 
-export default function OtherInfo({ user }: Props) {
+export default function OtherInfo({ user, authenticated }: Props) {
   const { data } = useUserMentionTooltipStatsQuery({
     notifyOnNetworkStatusChange: true,
     variables: { id: user.id },
@@ -45,12 +46,17 @@ export default function OtherInfo({ user }: Props) {
     [about]
   );
 
+  const followerCount = data?.userResult.followerCount;
+
   useEffect(() => {
-    if (data?.userResult.followerCount) {
-      rdxDispatch(setAuthorFollowerCount(data.userResult.followerCount));
+    if (followerCount) {
+      rdxDispatch(setAuthorFollowerCount(followerCount));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.userResult.followerCount]);
+  }, [followerCount, rdxDispatch]);
+
+  const onCountClick = () => {
+    setOpen(true);
+  };
 
   return (
     <Fragment>
@@ -58,13 +64,11 @@ export default function OtherInfo({ user }: Props) {
         <Button
           aria-label="Followers"
           type="button"
-          onClick={() => {
-            !!count && setOpen(true);
-          }}
+          onClick={authenticated && !!count ? onCountClick : undefined}
           variant="neutral"
           mode="text"
           className="px-0"
-          disabled={!count}
+          disabled={!authenticated || !count}
         >
           {followConvert(count, "follower")}
         </Button>
@@ -77,14 +81,24 @@ export default function OtherInfo({ user }: Props) {
         />
       )}
       {aboutText && <p className={className.about}>{aboutText}</p>}
-      {data?.userResult ? (
-        <FollowButton isFollowed={data.userResult.hasFollow} toId={user.id} />
-      ) : (
-        <span
-          className={classNames(className.skeltonCommon, className.skeletonBtn)}
-        />
+      {authenticated && (
+        <Fragment>
+          {data?.userResult ? (
+            <FollowButton
+              isFollowed={data.userResult.hasFollow}
+              toId={user.id}
+            />
+          ) : (
+            <span
+              className={classNames(
+                className.skeltonCommon,
+                className.skeletonBtn
+              )}
+            />
+          )}
+        </Fragment>
       )}
-      {!!count && (
+      {authenticated && !!count && (
         <ReactorModal
           title={followConvert(count, "follower")}
           open={open}

@@ -71,16 +71,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
     });
     return {
       props: { post: data.post },
-      revalidate: 10,
+      revalidate: 60 * 5,
       notFound: !data.post,
     };
   } catch (error) {
-    return { props: { post: null }, revalidate: 10, notFound: false };
+    return { props: { post: null }, notFound: true };
   }
 };
 
 const className = {
-  skeleton: "flex flex-col space-y-4",
+  title: "my-5 text-3xl font-bold text-neutral dark:text-neutral-dark",
 };
 
 interface IParams {
@@ -91,6 +91,7 @@ const PostPage: NextPage<IParams> = ({ post }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const { author, ...rest } = post;
+
   return (
     <LayoutContainer
       sidebar={
@@ -103,7 +104,7 @@ const PostPage: NextPage<IParams> = ({ post }) => {
       }
     >
       <Head>
-        <title>Detail | The RAT Diary</title>
+        <title>{`${post.title} | The RAT Diary`}</title>
       </Head>
       <article ref={contentRef}>
         <PostDetailAuthorInfo
@@ -112,7 +113,9 @@ const PostPage: NextPage<IParams> = ({ post }) => {
             .startOf("second")
             .fromNow()}
         />
+        <h1 className={className.title}>{post.title}</h1>
         <PostDetailImage alt={rest.title} image={rest.image} />
+        <br />
         <SlateViewer value={JSON.parse(rest.content)} />
       </article>
       <PostDetailFloatingReactions siblingRef={contentRef} />

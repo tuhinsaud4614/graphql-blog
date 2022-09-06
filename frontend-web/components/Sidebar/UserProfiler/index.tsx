@@ -54,6 +54,7 @@ export default function UserProfiler({ classes, user }: Props) {
           {userName}
         </a>
       </Link>
+
       <ClientOnly>
         {user && rdxUser && user.id === rdxUser.id ? (
           <Link href={ROUTES.accountSettings}>
@@ -62,7 +63,7 @@ export default function UserProfiler({ classes, user }: Props) {
             </a>
           </Link>
         ) : (
-          <OtherInfo user={user} />
+          <OtherInfo user={user} authenticated={!!rdxUser} />
         )}
       </ClientOnly>
     </div>
