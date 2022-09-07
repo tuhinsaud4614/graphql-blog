@@ -21,9 +21,9 @@ export const reactSlice = createSlice({
       state.count = count;
       state.isReacted = isReacted;
     },
-    setToggleReact: (state) => {
-      state.count = state.isReacted ? --state.count : ++state.count;
-      state.isReacted = !state.isReacted;
+    setToggleReact: (state, action: PayloadAction<boolean>) => {
+      state.count = action.payload ? ++state.count : --state.count;
+      state.isReacted = action.payload;
     },
   },
 });

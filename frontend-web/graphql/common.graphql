@@ -17,23 +17,10 @@ fragment FImage on Picture {
   width
 }
 
-fragment FGetUser on User {
-  id
-  name
-  mobile
-  email
-  role
-  authorStatus
-  avatar {
-    ...FImage
-  }
-  about
-}
-
 fragment GetPostItem on Post {
   id
   author {
-    ...FGetUser
+    ...FUser
   }
   title
   categories {

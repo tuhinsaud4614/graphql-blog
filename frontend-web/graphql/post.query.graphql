@@ -71,3 +71,18 @@ query GetPostReactionsCount($id: ID!) {
     reacted
   }
 }
+
+query GetPostReactionsBy($id: ID!, $limit: Int!, $after: ID) {
+  postReactionsBy(id: $id, limit: $limit, after: $after) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...FUser
+      }
+    }
+  }
+}

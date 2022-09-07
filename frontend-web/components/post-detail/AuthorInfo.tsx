@@ -1,6 +1,6 @@
 import { ROUTES } from "@constants";
 import DemoAvatar from "components/DemoAvatar";
-import { FGetUserFragment } from "graphql/generated/schema";
+import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { generateFileUrl, getUserName } from "utils";
@@ -14,7 +14,7 @@ const className = {
 };
 
 interface Props {
-  author: FGetUserFragment;
+  author: FUserFragment;
   postDate: string;
 }
 

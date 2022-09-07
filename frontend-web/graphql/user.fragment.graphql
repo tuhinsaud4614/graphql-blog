@@ -6,10 +6,7 @@ fragment FUser on User {
   role
   authorStatus
   avatar {
-    id
-    url
-    height
-    width
+    ...FImage
   }
   about
 }

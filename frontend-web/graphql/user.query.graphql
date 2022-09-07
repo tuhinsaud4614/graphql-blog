@@ -1,6 +1,6 @@
 query GetUserWithPost($id: ID!) {
   user(id: $id) {
-    ...FGetUser
+    ...FUser
     posts {
       ...GetPostItem
     }

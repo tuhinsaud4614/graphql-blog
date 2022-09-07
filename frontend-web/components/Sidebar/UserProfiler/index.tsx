@@ -2,7 +2,7 @@ import { ROUTES } from "@constants";
 import { selectUser } from "@features";
 import classNames from "classnames";
 import { ClientOnly, DemoAvatar } from "components";
-import { FGetUserFragment } from "graphql/generated/schema";
+import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { useAppSelector } from "store";
@@ -22,7 +22,7 @@ interface Props {
     root?: string;
     img?: string;
   };
-  user: FGetUserFragment;
+  user: FUserFragment;
 }
 
 export default function UserProfiler({ classes, user }: Props) {

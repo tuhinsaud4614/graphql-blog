@@ -3,7 +3,7 @@ import { useLockBody } from "@hooks";
 import classNames from "classnames";
 import { Button, ReactorModal } from "components";
 import {
-  FGetUserFragment,
+  FUserFragment,
   useUserMentionTooltipStatsQuery,
 } from "graphql/generated/schema";
 import { Fragment, useEffect, useMemo, useState } from "react";
@@ -23,7 +23,7 @@ const className = {
 };
 
 interface Props {
-  user: FGetUserFragment;
+  user: FUserFragment;
   authenticated?: boolean;
 }
 

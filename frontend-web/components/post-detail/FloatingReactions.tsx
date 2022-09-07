@@ -1,9 +1,6 @@
-import { selectReact } from "@features";
 import { useLockBody, useMediaQuery } from "@hooks";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
 import { Fragment, RefObject, useEffect, useState } from "react";
-import { useAppSelector } from "store";
 import CommentButton from "./CommentButton";
 import FloatingComments from "./FloatingComments";
 import FloatingLikes from "./FloatingLikes";
@@ -29,10 +26,6 @@ export default function FloatingReactions({
   // reactionCount,
   siblingRef,
 }: Props) {
-  const {
-    query: { postId },
-  } = useRouter();
-  const { count, isReacted } = useAppSelector(selectReact);
   const [show, setShow] = useState<boolean>(true);
   const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
@@ -86,7 +79,7 @@ export default function FloatingReactions({
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <LikeButton onLikeText={() => setOpenLikeBox(true)} />
+                <LikeButton />
                 <span className={className.divide} />
                 <CommentButton
                   count={100}

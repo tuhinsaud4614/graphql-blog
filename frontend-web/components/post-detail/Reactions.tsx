@@ -3,7 +3,6 @@ import { Fragment, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import CommentButton from "./CommentButton";
 import FloatingComments from "./FloatingComments";
-import FloatingLikes from "./FloatingLikes";
 import LikeButton from "./LikeButton";
 
 const className = {
@@ -19,19 +18,15 @@ interface Props {
 }
 
 export default function Reactions({ isReacted, reactionCount }: Props) {
-  const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
 
-  useLockBody(openLikeModal || openCommentModal);
+  useLockBody(openCommentModal);
 
   return (
     <Fragment>
       <section className={className.root}>
         <div className={className.left}>
-          <LikeButton
-            onLikeText={() => setOpenLikeBox(true)}
-            className="py-2"
-          />
+          <LikeButton className="py-2" />
           <CommentButton
             count={100}
             className="py-2 ml-6"
@@ -55,10 +50,6 @@ export default function Reactions({ isReacted, reactionCount }: Props) {
           </button>
         </span>
       </section>
-      <FloatingLikes
-        onClose={() => setOpenLikeBox(false)}
-        open={openLikeModal}
-      />
       <FloatingComments
         onClose={() => setOpenCommentModal(false)}
         open={openCommentModal}

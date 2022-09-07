@@ -14,7 +14,5 @@ mutation CreatePost($data: CreatePostInput!) {
 }
 
 mutation ReactToPost($toId: ID!) {
-  reactionToPost(toId: $toId) {
-    ...FGetUser
-  }
+  reactionToPost(toId: $toId)
 }
