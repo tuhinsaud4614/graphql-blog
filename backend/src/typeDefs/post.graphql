@@ -39,6 +39,11 @@ type ReactionsCount {
   reacted: Boolean!
 }
 
+type ReactionToPostResult {
+  reactBy: User!
+  mutation: EReactionsMutationStatus!
+}
+
 input CreatePostInput {
   title: String!
   image: File!
@@ -72,13 +77,14 @@ type Query {
     page: Int
   ): OffsetPostsResponse!
   postReactionsCount(id: ID!): ReactionsCount!
+  postReactionsBy(id: ID!, limit: Int!, after: ID): CursorUserResponse!
 }
 
 type Mutation {
   createPost(data: CreatePostInput): Post!
   updatePost(data: UpdatePostInput): Post!
   deletePost(id: ID!): ID!
-  reactionToPost(toId: ID!): UserFollow!
+  reactionToPost(toId: ID!): EReactionsMutationStatus!
 }
 
 enum EReactionsMutationStatus {
@@ -86,11 +92,6 @@ enum EReactionsMutationStatus {
   WITHDRAW
 }
 
-type SubReaction {
-  reactBy: UserFollow!
-  mutation: EReactionsMutationStatus!
-}
-
 type Subscription {
-  reactions(postId: ID!): SubReaction!
+  reactions(postId: ID!): ReactionToPostResult!
 }

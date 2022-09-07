@@ -6,8 +6,9 @@ import {
   createPost,
   deletePost,
   getAllPosts,
+  getPostById,
   getPostByIdForUser,
-  getPostByIdWithReactions,
+  getPostReactionsByOnCursor,
   getPostReactionsCount,
   getPostsByTag,
   getPostsOnCursor,
@@ -158,47 +159,36 @@ export async function reactionToCtrl(
   user: IUserPayload
 ) {
   try {
-    const isExist = await getPostByIdWithReactions(prisma, toId);
+    const isExist = await getPostById(prisma, toId);
 
     if (!isExist) {
       return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
     }
+    const isReacted = await isReactToThePost(prisma, toId, user.id);
 
-    const index = isExist.reactionsBy.findIndex(
-      (reactor) => reactor.id === user.id
-    );
-
-    if (index === -1) {
+    if (!isReacted) {
       await reactionToPost(prisma, toId, user.id);
 
-      // pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
-      //   reactions: {
-      //     reactBy: user,
-      //     mutation: EReactionsMutationStatus.React,
-      //   },
-      // });
-      pubSub.publish("reactions", toId, {
+      const result = {
         reactBy: user,
         mutation: EReactionsMutationStatus.React,
-      });
+      };
 
-      return user;
+      pubSub.publish("reactions", toId, result);
+
+      return EReactionsMutationStatus.React;
     }
 
     await reactionWithdrawToPost(prisma, toId, user.id);
 
-    // pubSub.publish(SUBSCRIPTION_REACTIONS(toId), {
-    //   reactions: {
-    //     reactBy: user,
-    //     mutation: EReactionsMutationStatus.Withdraw,
-    //   },
-    // });
-    pubSub.publish("reactions", toId, {
+    const result = {
       reactBy: user,
       mutation: EReactionsMutationStatus.Withdraw,
-    });
+    };
 
-    return user;
+    pubSub.publish("reactions", toId, result);
+
+    return EReactionsMutationStatus.Withdraw;
   } catch (error) {
     logger.error(error);
     return getGraphqlYogaError(error, REACTIONS_ERR_MSG);
@@ -386,5 +376,22 @@ export async function postReactionsCountCtrl(
   } catch (error: any) {
     logger.error(error);
     return getGraphqlYogaError(error, "Post reactions counting failed");
+  }
+}
+
+export async function postReactionsByCtrl(
+  prisma: PrismaClient,
+  postId: string,
+  params: ICursorQueryParams
+) {
+  try {
+    await cursorQueryParamsSchema.validate(params, { abortEarly: false });
+
+    const result = await getPostReactionsByOnCursor(prisma, postId, params);
+
+    return result;
+  } catch (error: any) {
+    logger.error(error);
+    return getGraphqlYogaError(error, "Post reactors fetching failed");
   }
 }

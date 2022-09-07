@@ -5,6 +5,7 @@ import {
   getAllPostsOnOffsetCtrl,
   getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
+  postReactionsByCtrl,
   postReactionsCountCtrl,
 } from "../../controller/post.controller";
 import logger from "../../logger";
@@ -94,6 +95,19 @@ export const Query = {
       return new AuthenticationError();
     }
     const result = await postReactionsCountCtrl(prisma, user.id, id);
+    return result;
+  },
+
+  async postReactionsBy(
+    _: any,
+    { id, ...rest }: { id: string } & ICursorQueryParams,
+    { prisma, user }: YogaContextReturnType,
+    ___: any
+  ) {
+    if (user === null) {
+      return new AuthenticationError();
+    }
+    const result = await postReactionsByCtrl(prisma, id, rest);
     return result;
   },
 };

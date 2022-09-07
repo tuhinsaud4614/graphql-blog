@@ -1,4 +1,4 @@
-import { Post, Prisma, PrismaClient } from "@prisma/client";
+import { Post, Prisma, PrismaClient, User } from "@prisma/client";
 import {
   ICreatePostInput,
   ICursorQueryParams,
@@ -230,6 +230,77 @@ export async function getPostsOnCursor(
 
   return {
     total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
+}
+
+export async function getPostReactionsByOnCursor(
+  prisma: PrismaClient,
+  postId: string,
+  params: ICursorQueryParams
+): Promise<IResponseOnCursor<User>> {
+  const { limit, after } = params;
+  let results: User[] = [];
+
+  const condition = after
+    ? {
+        skip: 1,
+        take: limit,
+        cursor: { id: after },
+      }
+    : { take: limit };
+
+  const query = await prisma.post.findUnique({
+    where: { id: postId },
+    select: {
+      reactionsBy: {
+        ...condition,
+        orderBy: {
+          updatedAt: "desc",
+        },
+      },
+      _count: { select: { reactionsBy: true } },
+    },
+  });
+
+  results = query?.reactionsBy || [];
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastUser = results[resultsLen - 1];
+    const newResults = await prisma.post.findUnique({
+      where: { id: postId },
+      select: {
+        reactionsBy: {
+          ...condition,
+          cursor: {
+            id: lastUser.id,
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+        },
+      },
+    });
+
+    return {
+      total: query?._count.reactionsBy ?? 0,
+      pageInfo: {
+        hasNext: (newResults?.reactionsBy?.length ?? 0) >= limit,
+        endCursor: lastUser.id,
+      },
+      edges: results.map((user) => ({ cursor: user.id, node: user })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total: query?._count.reactionsBy ?? 0,
     pageInfo: {
       hasNext: false,
       endCursor: null,
