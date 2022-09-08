@@ -1,7 +1,8 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import _ from "lodash";
 import logger from "../logger";
+import { NoContentError } from "../model";
 import {
   countCommentsForPost,
   createComment,
@@ -9,6 +10,7 @@ import {
   deleteComment,
   getCommentForReply,
   getCommentForUser,
+  getCommentsOnCursor,
   getCommentsOnOffset,
   updateComment,
 } from "../services/comment.service";
@@ -20,10 +22,17 @@ import {
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "../utils/constants";
-import { IOffsetQueryParams, IUserPayload } from "../utils/interfaces";
+import {
+  ICursorQueryParams,
+  IOffsetQueryParams,
+  IUserPayload,
+} from "../utils/interfaces";
 import { getGraphqlYogaError } from "../validations";
 import { createCommentSchema } from "../validations/comment.validation";
-import { offsetQueryParamsSchema } from "../validations/post.validation";
+import {
+  cursorQueryParamsSchema,
+  offsetQueryParamsSchema,
+} from "../validations/post.validation";
 
 export async function createCommentCtrl(
   prisma: PrismaClient,
@@ -134,6 +143,44 @@ export async function getPostCommentsOnOffsetCtrl(
       orderBy: { updatedAt: "desc" },
       where: { postId },
     });
+    return result;
+  } catch (error: any) {
+    logger.error(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
+  }
+}
+
+export async function getPostCommentsOnCursorCtrl(
+  prisma: PrismaClient,
+  { postId, ...rest }: ICursorQueryParams & { postId: string }
+) {
+  try {
+    await cursorQueryParamsSchema.validate(rest, { abortEarly: false });
+
+    const isPostExist = await getPostById(prisma, postId);
+
+    if (!isPostExist) {
+      return new NoContentError(NOT_EXIST_ERR_MSG("Post"));
+    }
+
+    const args: Prisma.CommentFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      where: { postId },
+    };
+
+    const count = await countCommentsForPost(prisma, postId);
+    if (count === 0) {
+      return {
+        total: count,
+        pageInfo: {
+          hasNext: false,
+          endCursor: null,
+        },
+        edges: [],
+      };
+    }
+
+    const result = await getCommentsOnCursor(prisma, rest, args, count);
     return result;
   } catch (error: any) {
     logger.error(error);

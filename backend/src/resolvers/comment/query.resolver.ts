@@ -1,7 +1,9 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
-import { getPostCommentsOnOffsetCtrl } from "../../controller/comment.controller";
-import { UN_AUTH_ERR_MSG, UN_AUTH_EXT_ERR_CODE } from "../../utils/constants";
-import { IOffsetQueryParams } from "../../utils/interfaces";
+import {
+  getPostCommentsOnCursorCtrl,
+  getPostCommentsOnOffsetCtrl,
+} from "../../controller/comment.controller";
+import { AuthenticationError } from "../../model";
+import { ICursorQueryParams, IOffsetQueryParams } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Query = {
@@ -12,11 +14,21 @@ export const Query = {
     ___: any
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError();
     }
     const result = await getPostCommentsOnOffsetCtrl(prisma, params);
+    return result;
+  },
+  async postCommentsOnCursor(
+    _: any,
+    params: ICursorQueryParams & { postId: string },
+    { prisma, user }: YogaContextReturnType,
+    ___: any
+  ) {
+    if (user === null) {
+      return new AuthenticationError();
+    }
+    const result = await getPostCommentsOnCursorCtrl(prisma, params);
     return result;
   },
 };

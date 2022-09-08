@@ -19,14 +19,34 @@ input UpdateCommentInput {
   content: String!
 }
 
-type PaginateComments {
+type OffsetCommentsResponse {
   data: [Comment!]!
   total: Int!
   pageInfo: OffsetPageInfo
 }
 
+type CursorCommentEdge {
+  cursor: ID!
+  node: Comment!
+}
+
+type CursorCommentsResponse {
+  edges: [CursorCommentEdge!]!
+  pageInfo: CursorPageInfo!
+  total: Int!
+}
+
 type Query {
-  postCommentsOnOffset(postId: ID!, limit: Int, page: Int): PaginateComments!
+  postCommentsOnOffset(
+    postId: ID!
+    limit: Int
+    page: Int
+  ): OffsetCommentsResponse!
+  postCommentsOnCursor(
+    postId: ID!
+    limit: Int!
+    after: ID
+  ): CursorCommentsResponse!
 }
 
 type Mutation {

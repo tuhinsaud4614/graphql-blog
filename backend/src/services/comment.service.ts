@@ -1,5 +1,9 @@
 import { Comment, Prisma, PrismaClient } from "@prisma/client";
-import { IResponseOnOffset } from "../utils/interfaces";
+import {
+  ICursorQueryParams,
+  IResponseOnCursor,
+  IResponseOnOffset,
+} from "../utils/interfaces";
 
 export function getCommentForUser(
   prisma: PrismaClient,
@@ -114,4 +118,62 @@ export async function getCommentsOnOffset(
 
   const result = await prisma.comment.findMany(condition);
   return { data: result, total: count } as IResponseOnOffset<Comment>;
+}
+
+export async function getCommentsOnCursor(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  condition: Prisma.CommentFindManyArgs,
+  total: number
+): Promise<IResponseOnCursor<Comment>> {
+  const { limit, after } = params;
+  let results: Comment[] = [];
+  let newFindArgs = {
+    ...condition,
+  };
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+  results = await prisma.comment.findMany({
+    ...newFindArgs,
+  });
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastComment = results[resultsLen - 1];
+    const newResults = await prisma.comment.findMany({
+      ...condition,
+      take: limit,
+      cursor: {
+        id: lastComment.id,
+      },
+    });
+
+    return {
+      total,
+      pageInfo: {
+        hasNext: newResults.length >= limit,
+        endCursor: lastComment.id,
+      },
+      edges: results.map((comment) => ({ cursor: comment.id, node: comment })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }
