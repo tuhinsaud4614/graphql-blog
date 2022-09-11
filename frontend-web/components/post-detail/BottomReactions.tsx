@@ -1,5 +1,8 @@
 import { setReactCount } from "features/post/reactSlice";
-import { useGetPostReactionsCountQuery } from "graphql/generated/schema";
+import {
+  useGetPostCommentsCountQuery,
+  useGetPostReactionsCountQuery,
+} from "graphql/generated/schema";
 import { useRouter } from "next/router";
 import { Fragment, RefObject, useEffect, useRef } from "react";
 import { useAppDispatch } from "store";
@@ -16,11 +19,18 @@ export default function BottomReactions({ siblingRef }: Props) {
   const {
     query: { postId },
   } = useRouter();
+
   const { data } = useGetPostReactionsCountQuery({
     fetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,
     variables: { id: postId as string },
   });
+
+  const { data: commentCount } = useGetPostCommentsCountQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { id: postId as string },
+  });
+
   const rdDispatch = useAppDispatch();
 
   const reactionCount = data?.postReactionsCount.count ?? 0;
@@ -37,8 +47,11 @@ export default function BottomReactions({ siblingRef }: Props) {
 
   return (
     <Fragment>
-      <FloatingReactions siblingRef={siblingRef} />
-      <Reactions isReacted={isReacted} reactionCount={reactionCount} />
+      <FloatingReactions
+        siblingRef={siblingRef}
+        comments={commentCount?.postCommentsCount ?? 0}
+      />
+      <Reactions comments={commentCount?.postCommentsCount ?? 0} />
     </Fragment>
   );
 }

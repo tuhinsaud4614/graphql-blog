@@ -47,3 +47,16 @@ fragment TagItem on Tag {
   createdAt
   updatedAt
 }
+
+fragment FComment on Comment {
+  id
+  commenter {
+    ...FUser
+  }
+  content
+  parentComment {
+    id
+  }
+  createdAt
+  updatedAt
+}

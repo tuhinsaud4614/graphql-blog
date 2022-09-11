@@ -17,15 +17,10 @@ const className = {
 
 interface Props {
   siblingRef: RefObject<Element>;
-  // reactionCount: number;
-  // isReacted: boolean;
+  comments: number;
 }
 
-export default function FloatingReactions({
-  // isReacted,
-  // reactionCount,
-  siblingRef,
-}: Props) {
+export default function FloatingReactions({ comments, siblingRef }: Props) {
   const [show, setShow] = useState<boolean>(true);
   const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
@@ -82,7 +77,7 @@ export default function FloatingReactions({
                 <LikeButton />
                 <span className={className.divide} />
                 <CommentButton
-                  count={100}
+                  count={comments}
                   onComment={() => setOpenCommentModal(true)}
                 />
               </motion.div>

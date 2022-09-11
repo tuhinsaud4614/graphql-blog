@@ -13,11 +13,10 @@ const className = {
 };
 
 interface Props {
-  reactionCount: number;
-  isReacted: boolean;
+  comments: number;
 }
 
-export default function Reactions({ isReacted, reactionCount }: Props) {
+export default function Reactions({ comments }: Props) {
   const [openCommentModal, setOpenCommentModal] = useState(false);
 
   useLockBody(openCommentModal);
@@ -28,7 +27,7 @@ export default function Reactions({ isReacted, reactionCount }: Props) {
         <div className={className.left}>
           <LikeButton className="py-2" />
           <CommentButton
-            count={100}
+            count={comments}
             className="py-2 ml-6"
             onComment={() => setOpenCommentModal(true)}
           />
