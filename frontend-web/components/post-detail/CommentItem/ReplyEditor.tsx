@@ -5,9 +5,10 @@ import { commentSerialize } from "utils";
 
 interface Props {
   onHide?(): void;
+  parentId: string;
 }
 
-export default function ReplyEditor({ onHide }: Props) {
+export default function ReplyEditor({ onHide, parentId }: Props) {
   const [value, setValue] = useState<Descendant[]>([
     {
       children: [{ text: "" }],

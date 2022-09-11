@@ -1,8 +1,12 @@
 import { ROUTES } from "@constants";
 import classNames from "classnames";
+import { DemoAvatar } from "components";
+import { FUserFragment } from "graphql/generated/schema";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { generateFileUrl, getUserName } from "utils";
 
 const className = {
   header: "flex items-center justify-between",
@@ -10,7 +14,7 @@ const className = {
   headerImg: "w-8 h-8 inline-block rounded-full overflow-hidden mr-3",
   headerInfo: "flex flex-col justify-center min-w-0 flex-1",
   headerName:
-    "text-neutral dark:text-neutral-dark text-sm hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 line-clamp-1 text-ellipsis",
+    "text-neutral dark:text-neutral-dark text-sm hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 line-clamp-1 text-ellipsis break-all",
   headerTime:
     "text-neutral/60 dark:text-neutral-dark/60 text-sm line-clamp-1 text-ellipsis",
 };
@@ -18,29 +22,48 @@ const className = {
 interface Props {
   className?: string;
   children?: ReactNode;
+  user: FUserFragment;
+  modifyAt: number;
 }
 
-export default function Header({ className: cls, children }: Props) {
+export default function Header({
+  className: cls,
+  user,
+  modifyAt,
+  children,
+}: Props) {
+  const userName = getUserName(user);
+  const imgUrl = generateFileUrl(user.avatar?.url);
   return (
     <header className={classNames(className.header, cls)}>
       <div className={className.headerLeft}>
         <span className={className.headerImg}>
-          <Image
-            src="/demo.png"
-            alt="Avatar"
-            width={32}
-            height={32}
-            layout="responsive"
-            objectFit="cover"
-          />
+          {imgUrl ? (
+            <Image
+              loader={({ src, width, quality }) =>
+                `${src}?w=${width}&q=${quality || 75}`
+              }
+              priority
+              src={imgUrl}
+              alt={userName}
+              width={32}
+              height={32}
+              layout="responsive"
+              objectFit="cover"
+            />
+          ) : (
+            <DemoAvatar aria-label={userName} className="w-8 h-8" />
+          )}
         </span>
         <div className={className.headerInfo}>
-          <Link href={ROUTES.authorProfile("1")} passHref>
-            <a aria-label="User profile" className={className.headerName}>
-              My name
+          <Link href={ROUTES.authorProfile(user.id)} passHref>
+            <a aria-label={userName} className={className.headerName}>
+              {userName}
             </a>
           </Link>
-          <time className={className.headerTime}>about 5 hours ago</time>
+          <time className={className.headerTime}>
+            about {moment(modifyAt).startOf("second").fromNow()}
+          </time>
         </div>
       </div>
       {children}

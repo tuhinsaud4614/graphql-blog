@@ -91,13 +91,7 @@ query GetPostReactionsBy($id: ID!, $limit: Int!, $after: ID) {
   }
 }
 
-query GetPostCommentsOnCursor(
-  $postId: ID!
-  $limit: Int!
-  $after: ID
-  $repliesLimit: Int!
-  $repliesAfter: ID
-) {
+query GetPostCommentsOnCursor($postId: ID!, $limit: Int!, $after: ID) {
   postCommentsOnCursor(postId: $postId, limit: $limit, after: $after) {
     total
     pageInfo {
@@ -107,9 +101,23 @@ query GetPostCommentsOnCursor(
       cursor
       node {
         ...FComment
-        replies(limit: $repliesLimit, after: $repliesAfter) {
-          total
-        }
+        replies
+      }
+    }
+  }
+}
+
+query GetCommentRepliesOnCursor($commentId: ID!, $limit: Int!, $after: ID) {
+  commentRepliesOnCursor(commentId: $commentId, limit: $limit, after: $after) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...FComment
+        replies
       }
     }
   }

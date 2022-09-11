@@ -1,6 +1,5 @@
 import { SlateViewer } from "@component";
 import classNames from "classnames";
-import { ReactNode } from "react";
 import { BsChat } from "react-icons/bs";
 import { Descendant } from "slate";
 
@@ -15,21 +14,21 @@ const className = {
 };
 
 interface Props {
+  replyCount: number;
   className?: string;
   body: Descendant[];
-  children?: ReactNode;
   showReplies: boolean;
   toggleReplies?(): void;
   toggleReplyEditor?(): void;
 }
 
 export default function Body({
+  replyCount,
   className: cls,
   body,
   showReplies,
   toggleReplies,
   toggleReplyEditor,
-  children,
 }: Props) {
   return (
     <section className={cls}>
@@ -53,10 +52,10 @@ export default function Body({
       <div
         className={classNames(
           className.actionsBar,
-          children ? "justify-between" : "justify-end"
+          replyCount > 0 ? "justify-between" : "justify-end"
         )}
       >
-        {children && (
+        {replyCount > 0 && (
           <div className={className.actionsContainer}>
             <button
               type="button"
@@ -66,7 +65,11 @@ export default function Body({
             >
               <BsChat size={20} />
               <span className="ml-2">
-                {showReplies ? "Hide replies" : "2 replies"}
+                {showReplies
+                  ? "Hide replies"
+                  : replyCount > 1
+                  ? `${replyCount} replies`
+                  : `${replyCount} reply`}
               </span>
             </button>
           </div>

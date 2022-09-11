@@ -11,8 +11,12 @@ const initialValue: Descendant[] = [
   },
 ];
 
-export default function EditComment() {
-  const [value, setValue] = useState<Descendant[]>(initialValue);
+interface Props {
+  oldValue: Descendant[];
+}
+
+export default function EditComment({ oldValue = initialValue }: Props) {
+  const [value, setValue] = useState<Descendant[]>(oldValue);
   const closer = useEditorCloser();
   console.log("value", value);
   console.log("serialize", commentSerialize({ children: value }));
