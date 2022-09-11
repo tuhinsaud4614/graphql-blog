@@ -188,10 +188,20 @@ export async function getCommentsOnCursor(
   };
 }
 
+export async function getReplyCount(prisma: PrismaClient, commentId: string) {
+  return prisma.comment.findUnique({
+    where: { id: commentId },
+    select: {
+      _count: { select: { replies: true } },
+    },
+  });
+}
+
 export async function getCommentsRepliesOnCursor(
   prisma: PrismaClient,
   params: ICursorQueryParams,
-  commentId: string
+  commentId: string,
+  count: number
 ): Promise<IResponseOnCursor<Comment>> {
   const { limit, after } = params;
 
@@ -213,12 +223,11 @@ export async function getCommentsRepliesOnCursor(
   const temp = await prisma.comment.findUnique({
     where: { id: commentId },
     select: {
-      _count: { select: { replies: true } },
       replies: newFindArgs,
     },
   });
 
-  if (!temp || temp._count.replies === 0) {
+  if (!temp) {
     return {
       total: 0,
       pageInfo: {
@@ -229,7 +238,6 @@ export async function getCommentsRepliesOnCursor(
     };
   }
   const results: Comment[] = temp.replies;
-  const total = temp._count.replies;
 
   // This for has next page
   const resultsLen = results.length;
@@ -249,7 +257,7 @@ export async function getCommentsRepliesOnCursor(
     });
 
     return {
-      total: total,
+      total: count,
       pageInfo: {
         hasNext: (newResults?.replies.length ?? 0) >= limit,
         endCursor: lastComment.id,
@@ -260,7 +268,7 @@ export async function getCommentsRepliesOnCursor(
   // This for has next page end
 
   return {
-    total: total,
+    total: count,
     pageInfo: {
       hasNext: false,
       endCursor: null,

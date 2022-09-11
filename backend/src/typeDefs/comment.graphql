@@ -3,7 +3,7 @@ type Comment {
   commenter: User!
   content: String!
   parentComment: Comment
-  replies(limit: Int!, after: ID): CursorCommentsResponse!
+  replies: Int!
   createdAt: String!
   updatedAt: String!
 }
@@ -44,6 +44,11 @@ type Query {
   ): OffsetCommentsResponse!
   postCommentsOnCursor(
     postId: ID!
+    limit: Int!
+    after: ID
+  ): CursorCommentsResponse!
+  commentRepliesOnCursor(
+    commentId: ID!
     limit: Int!
     after: ID
   ): CursorCommentsResponse!

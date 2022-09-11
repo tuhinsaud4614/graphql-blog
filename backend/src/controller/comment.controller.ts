@@ -5,6 +5,7 @@ import logger from "../logger";
 import { NoContentError } from "../model";
 import {
   countCommentsForPost,
+  countReplies,
   createComment,
   createReply,
   deleteComment,
@@ -12,6 +13,7 @@ import {
   getCommentForUser,
   getCommentsOnCursor,
   getCommentsOnOffset,
+  getCommentsRepliesOnCursor,
   updateComment,
 } from "../services/comment.service";
 import { getPostById } from "../services/post.service";
@@ -185,5 +187,37 @@ export async function getPostCommentsOnCursorCtrl(
   } catch (error: any) {
     logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
+  }
+}
+
+export async function getCommentRepliesOnCursorCtrl(
+  prisma: PrismaClient,
+  { commentId, ...rest }: ICursorQueryParams & { commentId: string }
+) {
+  try {
+    await cursorQueryParamsSchema.validate(rest, { abortEarly: false });
+
+    const count = await countReplies(prisma, commentId);
+    if (count === 0) {
+      return {
+        total: count,
+        pageInfo: {
+          hasNext: false,
+          endCursor: null,
+        },
+        edges: [],
+      };
+    }
+
+    const result = await getCommentsRepliesOnCursor(
+      prisma,
+      rest,
+      commentId,
+      count
+    );
+    return result;
+  } catch (error: any) {
+    logger.error(error);
+    return getGraphqlYogaError(error, FETCH_ERR_MSG("replies"));
   }
 }
