@@ -5,6 +5,7 @@ import {
   getAllPostsOnOffsetCtrl,
   getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
+  postCommentsCountCtrl,
   postReactionsByCtrl,
   postReactionsCountCtrl,
 } from "../../controller/post.controller";
@@ -95,6 +96,19 @@ export const Query = {
       return new AuthenticationError();
     }
     const result = await postReactionsCountCtrl(prisma, user.id, id);
+    return result;
+  },
+
+  async postCommentsCount(
+    _: any,
+    { id }: { id: string },
+    { prisma, user }: YogaContextReturnType,
+    ___: any
+  ) {
+    if (user === null) {
+      return new AuthenticationError();
+    }
+    const result = await postCommentsCountCtrl(prisma, id);
     return result;
   },
 

@@ -1,6 +1,9 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+import logger from "../../logger";
+import { NoContentError } from "../../model";
+import { getCommentsRepliesOnCursor } from "../../services/comment.service";
 import { NOT_EXIST_FOR_ERR_MSG } from "../../utils/constants";
-import { IComment } from "../../utils/interfaces";
+import { IComment, ICursorQueryParams } from "../../utils/interfaces";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Comment = {
@@ -38,19 +41,25 @@ export const Comment = {
   },
   async replies(
     { id }: IComment,
-    _: any,
+    params: ICursorQueryParams,
     { prisma }: YogaContextReturnType,
     __: any
   ) {
     try {
-      const comments = await prisma.comment
-        .findUnique({
-          where: { id },
-        })
-        .replies();
+      const comments = await getCommentsRepliesOnCursor(prisma, params, id);
       return comments;
+      // const comments = await prisma.comment
+      //   .findUnique({
+      //     where: { id },
+      //   })
+      //   .replies();
+      // return comments;
     } catch (error) {
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Commenter", "user"));
+      logger.error(error);
+
+      return new NoContentError(
+        NOT_EXIST_FOR_ERR_MSG("Replies", `comment:${id}`)
+      );
     }
   },
 };

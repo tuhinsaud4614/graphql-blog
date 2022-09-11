@@ -40,6 +40,16 @@ export function countCommentsForPost(prisma: PrismaClient, postId: string) {
   return prisma.comment.count({ where: { postId } });
 }
 
+export function countReplies(
+  prisma: PrismaClient,
+  parentCommentId?: string | null
+) {
+  if (!parentCommentId) {
+    return 0;
+  }
+  return prisma.comment.count({ where: { parentCommentId: parentCommentId } });
+}
+
 export function createComment(
   prisma: PrismaClient,
   postId: string,
@@ -170,6 +180,87 @@ export async function getCommentsOnCursor(
 
   return {
     total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
+}
+
+export async function getCommentsRepliesOnCursor(
+  prisma: PrismaClient,
+  params: ICursorQueryParams,
+  commentId: string
+): Promise<IResponseOnCursor<Comment>> {
+  const { limit, after } = params;
+
+  let newFindArgs: Prisma.CommentFindManyArgs = {
+    orderBy: { updatedAt: "desc" },
+  };
+
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+
+  const temp = await prisma.comment.findUnique({
+    where: { id: commentId },
+    select: {
+      _count: { select: { replies: true } },
+      replies: newFindArgs,
+    },
+  });
+
+  if (!temp || temp._count.replies === 0) {
+    return {
+      total: 0,
+      pageInfo: {
+        hasNext: false,
+        endCursor: null,
+      },
+      edges: [],
+    };
+  }
+  const results: Comment[] = temp.replies;
+  const total = temp._count.replies;
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastComment = results[resultsLen - 1];
+    const newResults = await prisma.comment.findUnique({
+      where: { id: commentId },
+      select: {
+        replies: {
+          orderBy: { updatedAt: "desc" },
+          take: limit,
+          cursor: {
+            id: lastComment.id,
+          },
+        },
+      },
+    });
+
+    return {
+      total: total,
+      pageInfo: {
+        hasNext: (newResults?.replies.length ?? 0) >= limit,
+        endCursor: lastComment.id,
+      },
+      edges: results.map((comment) => ({ cursor: comment.id, node: comment })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total: total,
     pageInfo: {
       hasNext: false,
       endCursor: null,

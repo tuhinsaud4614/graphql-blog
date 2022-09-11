@@ -8,6 +8,7 @@ import {
   getAllPosts,
   getPostById,
   getPostByIdForUser,
+  getPostCommentsCount,
   getPostReactionsByOnCursor,
   getPostReactionsCount,
   getPostsByTag,
@@ -376,6 +377,19 @@ export async function postReactionsCountCtrl(
   } catch (error: any) {
     logger.error(error);
     return getGraphqlYogaError(error, "Post reactions counting failed");
+  }
+}
+
+export async function postCommentsCountCtrl(
+  prisma: PrismaClient,
+  postId: string
+) {
+  try {
+    const result = await getPostCommentsCount(prisma, postId);
+    return result?._count.comments ?? 0;
+  } catch (error: any) {
+    logger.error(error);
+    return getGraphqlYogaError(error, "Post comments counting failed");
   }
 }
 

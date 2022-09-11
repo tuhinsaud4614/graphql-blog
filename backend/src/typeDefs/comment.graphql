@@ -3,7 +3,7 @@ type Comment {
   commenter: User!
   content: String!
   parentComment: Comment
-  replies: [Comment!]!
+  replies(limit: Int!, after: ID): CursorCommentsResponse!
   createdAt: String!
   updatedAt: String!
 }

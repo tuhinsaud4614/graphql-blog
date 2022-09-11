@@ -51,6 +51,13 @@ export function getPostReactionsCount(prisma: PrismaClient, id: string) {
   });
 }
 
+export function getPostCommentsCount(prisma: PrismaClient, id: string) {
+  return prisma.post.findUnique({
+    where: { id },
+    select: { _count: { select: { comments: true } } },
+  });
+}
+
 export function isReactToThePost(
   prisma: PrismaClient,
   postId: string,
