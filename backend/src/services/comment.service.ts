@@ -23,6 +23,12 @@ export function getCommentForReply(
   });
 }
 
+export function getCommentById(prisma: PrismaClient, parentCommentId: string) {
+  return prisma.comment.findFirst({
+    where: { id: parentCommentId },
+  });
+}
+
 export function getPaginateComments(
   prisma: PrismaClient,
   page: number,

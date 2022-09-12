@@ -9,7 +9,7 @@ import {
   createComment,
   createReply,
   deleteComment,
-  getCommentForReply,
+  getCommentById,
   getCommentForUser,
   getCommentsOnCursor,
   getCommentsOnOffset,
@@ -51,7 +51,7 @@ export async function createCommentCtrl(
 
     // If parent comment is valid thats means it's a reply
     if (parentComment) {
-      const parent = await getCommentForReply(prisma, parentComment, postId);
+      const parent = await getCommentById(prisma, parentComment);
 
       if (!parent) {
         return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment"));
