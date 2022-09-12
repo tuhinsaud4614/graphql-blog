@@ -1,8 +1,12 @@
 import { NetworkStatus } from "@apollo/client";
 import { BottomSheet, ModalHeader } from "components";
+import { AnimatePresence } from "framer-motion";
 import { useGetPostCommentsOnCursorQuery } from "graphql/generated/schema";
+import _ from "lodash";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
+import { Waypoint } from "react-waypoint";
+import { isDev } from "utils";
 import CommentEditor from "./CommentEditor";
 import CommentItem from "./CommentItem";
 import CommentItemSkeleton from "./CommentItem/ItemSkeleton";
@@ -36,10 +40,15 @@ function Fetcher({ onClose }: { onClose(): void }) {
     query: { postId },
   } = useRouter();
 
-  const { data, networkStatus, loading } = useGetPostCommentsOnCursorQuery({
-    notifyOnNetworkStatusChange: true,
-    variables: { postId: postId as string, limit: 6 },
-  });
+  // const [containerRef, { width }] = useElementSize();
+  // console.log(width);
+
+  const { data, networkStatus, loading, fetchMore } =
+    useGetPostCommentsOnCursorQuery({
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: "network-only",
+      variables: { postId: postId as string, limit: 6 },
+    });
 
   let component = undefined;
 
@@ -56,21 +65,61 @@ function Fetcher({ onClose }: { onClose(): void }) {
     );
   }
 
+  const fetchMoreHandler = async (endCursor?: string | null) => {
+    try {
+      await fetchMore({
+        variables: {
+          limit: 6,
+          after: endCursor,
+        },
+        updateQuery(prev, { fetchMoreResult }) {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return {
+            postCommentsOnCursor: {
+              ...fetchMoreResult.postCommentsOnCursor,
+              edges: _.uniqBy(
+                [
+                  ...prev.postCommentsOnCursor.edges,
+                  ...fetchMoreResult.postCommentsOnCursor.edges,
+                ],
+                "cursor"
+              ),
+            },
+          };
+        },
+      });
+    } catch (error) {
+      isDev() && console.log(error);
+    }
+  };
+
   if (data) {
+    const { hasNext, endCursor } = data.postCommentsOnCursor.pageInfo;
+    const { edges } = data.postCommentsOnCursor;
+
     component = (
       <Fragment>
-        <CommentEditor userInfo="g" />
-        {data.postCommentsOnCursor.edges.map((comment) => (
-          <CommentItem
-            comment={comment.node}
-            key={comment.cursor}
-            body={JSON.parse(comment.node.content)}
-            classes={{
-              replyContainer: "w-fit",
-            }}
-            replyCount={comment.node.replies}
-          />
-        ))}
+        <CommentEditor />
+        <AnimatePresence initial={false}>
+          {edges.map((comment) => (
+            <CommentItem
+              comment={comment.node}
+              key={comment.cursor}
+              body={JSON.parse(comment.node.content)}
+              classes={{
+                root: "w-[inherit] mx-4",
+                replyContainer: "overflow-x-auto scrollbar-hide",
+              }}
+              replyCount={comment.node.replies}
+            />
+          ))}
+        </AnimatePresence>
+        {hasNext && <Waypoint onEnter={() => fetchMoreHandler(endCursor)} />}
+        {networkStatus === NetworkStatus.fetchMore && (
+          <CommentItemSkeleton classes={{ root: "py-4" }} />
+        )}
       </Fragment>
     );
   }
@@ -78,7 +127,9 @@ function Fetcher({ onClose }: { onClose(): void }) {
   return (
     <Fragment>
       <ModalHeader onClose={onClose} className={className.bottomHeader}>
-        Responses ({data?.postCommentsOnCursor.total ?? 0})
+        Responses{" "}
+        {data?.postCommentsOnCursor.total &&
+          `(${data.postCommentsOnCursor.total})`}
       </ModalHeader>
       <div className={className.bottomBody}>{component}</div>
     </Fragment>

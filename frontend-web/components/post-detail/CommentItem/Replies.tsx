@@ -1,6 +1,6 @@
 import { NetworkStatus } from "@apollo/client";
-import classNames from "classnames";
 import { Button } from "components";
+import { AnimatePresence } from "framer-motion";
 import { useGetCommentRepliesOnCursorQuery } from "graphql/generated/schema";
 import _ from "lodash";
 import { Fragment } from "react";
@@ -18,7 +18,7 @@ export default function Replies({ commentId }: Props) {
     fetchPolicy: "network-only",
     variables: {
       commentId: commentId,
-      limit: 1,
+      limit: 3,
     },
   });
 
@@ -45,6 +45,7 @@ export default function Replies({ commentId }: Props) {
       await fetchMore({
         variables: {
           after: endCursor,
+          limit: 3,
         },
         updateQuery(prev, { fetchMoreResult }) {
           if (!fetchMoreResult) {
@@ -80,21 +81,19 @@ export default function Replies({ commentId }: Props) {
 
   return (
     <Fragment>
-      {edges.map((reply) => (
-        <CommentItem
-          comment={reply.node}
-          key={reply.cursor}
-          body={JSON.parse(reply.node.content)}
-          classes={{
-            root: classNames(
-              "border-b last:border-none dark:border-base-dark-300",
-              "max-w-[20rem]"
-            ),
-            replyContainer: "overflow-x-auto scrollbar-hide",
-          }}
-          replyCount={reply.node.replies}
-        />
-      ))}
+      <AnimatePresence initial={false}>
+        {edges.map((reply) => (
+          <CommentItem
+            comment={reply.node}
+            key={reply.cursor}
+            body={JSON.parse(reply.node.content)}
+            classes={{
+              root: "ml-4",
+            }}
+            replyCount={reply.node.replies}
+          />
+        ))}
+      </AnimatePresence>
       {networkStatus === NetworkStatus.fetchMore && (
         <CommentItemSkeleton classes={{ root: "py-6 pb-4" }} />
       )}

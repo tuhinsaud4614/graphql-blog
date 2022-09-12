@@ -1,0 +1,26 @@
+input CreateCommentInput {
+  postId: ID!
+  parentComment: ID
+  content: String!
+}
+
+input UpdateCommentInput {
+  commentId: ID!
+  content: String!
+}
+
+mutation CreateComment($data: CreateCommentInput!) {
+  createComment(data: $data) {
+    ...FComment
+  }
+}
+
+mutation DeleteComment($commentId: ID!) {
+  deleteComment(commentId: $commentId)
+}
+
+mutation UpdateComment($data: UpdateCommentInput!) {
+  updateComment(data: $data) {
+    ...FComment
+  }
+}

@@ -112,7 +112,7 @@ export default function TabFollowing() {
           classes={{ root: className.item }}
         />
       ))}
-      {hasNext && <Waypoint onEnter={fetchMoreHandler} />}
+      {hasNext && endCursor && <Waypoint onEnter={fetchMoreHandler} />}
       {networkStatus === NetworkStatus.fetchMore && <PostItemSkeleton />}
     </TabBox>
   );

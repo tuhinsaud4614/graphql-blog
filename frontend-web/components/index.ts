@@ -50,6 +50,7 @@ export { default as Tabs } from "./Tabs";
 export { default as TabPanel } from "./Tabs/TabPanel";
 export { default as Tag } from "./Tag";
 export { default as Theme } from "./Theme";
+export { default as ToastErrorMessage } from "./ToastErrorMessage";
 export { default as UserAvatarBtn } from "./UserAvatarBtn";
 export { default as UserLink } from "./UserLink";
 export { default as UserLinkSkeleton } from "./UserLinkSkeleton";

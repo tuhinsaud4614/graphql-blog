@@ -1,7 +1,8 @@
 import classNames from "classnames";
 import { Button, SlateElement, SlateLeaf, SlateMarkButton } from "components";
+
 import { AnimatePresence, motion } from "framer-motion";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { BiBold, BiItalic } from "react-icons/bi";
 import { createEditor, Descendant, Editor, Transforms } from "slate";
 import { withHistory } from "slate-history";
@@ -34,7 +35,7 @@ interface Props {
   onChange?(value: Descendant[]): void;
   onSubmit?(): void;
   submitBtnText?: string;
-  onCancel?(): void;
+  onExpanded(value: boolean): void;
   loader?: boolean;
   placeholder?: string;
   disabled?: boolean;
@@ -59,13 +60,12 @@ export default function CommentBox({
   loader = false,
   placeholder = "What are your thoughts?",
   onSubmit,
+  onExpanded,
   submitBtnText = "Respond",
-  onCancel,
   disabled = false,
   classes,
   children,
 }: Props) {
-  const [expand, setExpand] = useState(expanded);
   const [editor] = useState(() =>
     withHistory(withReact(createEditor() as ReactEditor))
   );
@@ -80,10 +80,22 @@ export default function CommentBox({
     []
   );
 
+  useEffect(() => {
+    if (!expanded) {
+      Transforms.delete(editor, {
+        at: {
+          anchor: Editor.start(editor, []),
+          focus: Editor.end(editor, []),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expanded]);
+
   return (
     <motion.div
       animate={
-        expand
+        expanded
           ? {
               paddingTop: 14,
               paddingBottom: 14,
@@ -101,12 +113,12 @@ export default function CommentBox({
       }
       className={classNames(className.root, classes?.root)}
     >
-      <AnimatePresence>{expand && children}</AnimatePresence>
+      <AnimatePresence>{expanded && children}</AnimatePresence>
       <Slate editor={editor} value={value} onChange={onChange}>
         <section
           className={classNames(
             "duration-[400ms]",
-            expand ? className.editorBox : "min-h-[1rem]",
+            expanded ? className.editorBox : "min-h-[1rem]",
             classes?.editorBox
           )}
         >
@@ -115,7 +127,7 @@ export default function CommentBox({
               className.editorContainer,
               classes?.editorContainer
             )}
-            onClick={() => setExpand(true)}
+            onClick={() => onExpanded(true)}
           >
             <Editable
               placeholder={placeholder}
@@ -125,7 +137,7 @@ export default function CommentBox({
           </div>
         </section>
         <AnimatePresence>
-          {expand && (
+          {expanded && (
             <motion.div
               initial={{ maxHeight: 0, opacity: 0 }}
               animate={{
@@ -170,20 +182,12 @@ export default function CommentBox({
                   aria-label="Cancel"
                   className="!px-3 text-sm mr-1 !rounded-full"
                   onClick={() => {
-                    if (onCancel) {
-                      return onCancel();
-                    }
-                    setExpand(false);
+                    onExpanded(false);
                     onChange && onChange(initialValue);
-                    Transforms.delete(editor, {
-                      at: {
-                        anchor: Editor.start(editor, []),
-                        focus: Editor.end(editor, []),
-                      },
-                    });
                   }}
                   mode="text"
                   variant="neutral"
+                  disabled={loader}
                 >
                   Cancel
                 </Button>

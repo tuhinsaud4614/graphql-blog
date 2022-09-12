@@ -1,7 +1,16 @@
 import classNames from "classnames";
-import { BottomSheet, Button, Menu } from "components";
-import { Fragment, useState } from "react";
+import { BottomSheet, Button, Menu, ToastErrorMessage } from "components";
+import {
+  GetCommentRepliesOnCursorDocument,
+  GetPostCommentsCountDocument,
+  GetPostCommentsOnCursorDocument,
+  useDeleteCommentMutation,
+} from "graphql/generated/schema";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from "react";
 import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { gplErrorHandler } from "utils";
 import { useEditorOpener } from "./context";
 
 const className = {
@@ -16,10 +25,72 @@ const className = {
   deleteInfo: "text-sm text-neutral dark:text-neutral-dark text-center",
 };
 
-export default function MoreButton() {
+interface Props {
+  commentId: string;
+}
+
+export default function MoreButton({ commentId }: Props) {
+  const {
+    query: { postId },
+  } = useRouter();
   const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const opener = useEditorOpener();
+
+  const [deleteComment, { loading, error }] = useDeleteCommentMutation({
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const submitHandler = async () => {
+    try {
+      const { data } = await deleteComment({
+        variables: {
+          commentId,
+        },
+        refetchQueries: [
+          {
+            query: GetCommentRepliesOnCursorDocument,
+            variables: { commentId: commentId, limit: 3 },
+            fetchPolicy: "network-only",
+          },
+          {
+            query: GetPostCommentsOnCursorDocument,
+            variables: { postId: postId as string, limit: 6 },
+          },
+          {
+            query: GetPostCommentsCountDocument,
+            variables: { id: postId as string },
+          },
+        ],
+      });
+
+      if (data) {
+        toast.success("Comment deleted successfully!", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+        });
+      }
+
+      setConfirmDelete(false);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    const tempErrors = gplErrorHandler(error);
+    if (tempErrors) {
+      toast.error(<ToastErrorMessage error={tempErrors} />, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+      });
+    }
+  }, [error]);
+
   return (
     <Fragment>
       <button
@@ -92,6 +163,7 @@ export default function MoreButton() {
               mode="text"
               className="!rounded-full text-sm mr-2 !px-4 !py-2"
               onClick={() => setConfirmDelete(false)}
+              disabled={loading}
             >
               Cancel
             </Button>
@@ -101,7 +173,9 @@ export default function MoreButton() {
               aria-label="Delete Comment"
               variant="error"
               className="text-sm !px-4 !py-2"
-              onClick={() => setConfirmDelete(false)}
+              onClick={submitHandler}
+              loading={loading}
+              disabled={loading}
             >
               Delete Comment
             </Button>

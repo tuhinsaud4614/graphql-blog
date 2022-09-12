@@ -1,5 +1,6 @@
 export { default as useDarkMode } from "./useDarkMode";
 export { default as useDebounce } from "./useDebounce";
+export { default as useElementSize } from "./useElementSize";
 export { default as useEventCallback } from "./useEventCallback";
 export { default as useEventListener } from "./useEventListener";
 export { default as useIsFirstRender } from "./useIsFirstRender";

@@ -1,5 +1,6 @@
 import { selectUser } from "@features";
 import classNames from "classnames";
+import { motion } from "framer-motion";
 import { FCommentFragment } from "graphql/generated/schema";
 import { Fragment, ReactNode, useState } from "react";
 import { Descendant } from "slate";
@@ -14,8 +15,8 @@ import Replies from "./Replies";
 import ReplyEditor from "./ReplyEditor";
 
 const className = {
-  root: "mx-4 border-b last:border-none dark:border-base-dark-300",
-  container: "py-6 pb-4 min-w-[9.375rem]",
+  root: "border-b last:border-none dark:border-base-dark-300",
+  container: "py-6 pb-4 min-w-[14rem]",
   replyContainer: "ml-3 mb-6 border-l-[3px] dark:border-base-dark-300",
 };
 
@@ -32,7 +33,6 @@ interface Props {
   replyCount: number;
   body: Descendant[];
   classes?: ClassesType;
-  // children?: ReactNode;
 }
 
 export default function CommentItem({
@@ -46,16 +46,27 @@ export default function CommentItem({
   const [openReplyEditor, setOpenReplyEditor] = useState(false);
 
   return (
-    <section className={classNames(className.root, classes?.root)}>
+    <motion.section
+      initial={{ opacity: 0, height: 0, scale: 0.8 }}
+      animate={{ opacity: 1, height: "auto", scale: 1 }}
+      exit={{ opacity: 0, height: 0, scale: 0.8 }}
+      transition={{ opacity: { duration: 0.2 } }}
+      className={classNames(className.root, classes?.root)}
+    >
       <div className={classNames(className.container, classes?.container)}>
         <EditProvider>
-          <Wrapper oldCommentContent={JSON.parse(comment.content)}>
+          <Wrapper
+            commentId={comment.id}
+            oldCommentContent={JSON.parse(comment.content)}
+          >
             <Header
               user={comment.commenter}
               modifyAt={+comment.updatedAt}
               className={classes?.header}
             >
-              {rdxUser?.id === comment.commenter.id && <MoreButton />}
+              {rdxUser?.id === comment.commenter.id && (
+                <MoreButton commentId={comment.id} />
+              )}
             </Header>
             <Body
               replyCount={replyCount}
@@ -86,19 +97,20 @@ export default function CommentItem({
         </section>
       )}
       {/* Replies End */}
-    </section>
+    </motion.section>
   );
 }
 
 interface WrapperProps {
   children?: ReactNode;
   oldCommentContent: Descendant[];
+  commentId: string;
 }
 
-function Wrapper({ children, oldCommentContent }: WrapperProps) {
+function Wrapper({ children, oldCommentContent, commentId }: WrapperProps) {
   const open = useEditState();
   if (open) {
-    return <EditComment oldValue={oldCommentContent} />;
+    return <EditComment commentId={commentId} oldValue={oldCommentContent} />;
   }
 
   return <Fragment>{children}</Fragment>;

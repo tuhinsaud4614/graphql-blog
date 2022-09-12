@@ -12,6 +12,7 @@
     "eventsource",
     "extralight",
     "Formik",
+    "immer",
     "Loadbar",
     "prismjs",
     "reduxjs",
