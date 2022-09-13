@@ -1,5 +1,5 @@
 import { NetworkStatus } from "@apollo/client";
-import { BottomSheet, ModalHeader } from "components";
+import { ModalHeader } from "components";
 import { AnimatePresence } from "framer-motion";
 import { useGetPostCommentsOnCursorQuery } from "graphql/generated/schema";
 import _ from "lodash";
@@ -7,9 +7,9 @@ import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Waypoint } from "react-waypoint";
 import { isDev } from "utils";
-import CommentEditor from "./CommentEditor";
-import CommentItem from "./CommentItem";
-import CommentItemSkeleton from "./CommentItem/ItemSkeleton";
+import CommentEditor from "../CommentEditor";
+import CommentItem from "../CommentItem";
+import CommentItemSkeleton from "../CommentItem/ItemSkeleton";
 
 const className = {
   bottomHeader: "border-none text-neutral dark:text-neutral-dark",
@@ -18,35 +18,14 @@ const className = {
     "my-12 flex flex-col items-center justify-center text-neutral/60 dark:text-neutral-dark/60 font-extralight italic",
 };
 
-interface Props {
-  open: boolean;
-  onClose(): void;
-}
-
-export default function FloatingComments({ onClose, open }: Props) {
-  return (
-    <BottomSheet
-      open={open}
-      onHide={onClose}
-      classes={{ container: "overflow-y-auto" }}
-    >
-      <Fetcher onClose={onClose} />
-    </BottomSheet>
-  );
-}
-
-function Fetcher({ onClose }: { onClose(): void }) {
+export default function Fetcher({ onClose }: { onClose(): void }) {
   const {
     query: { postId },
   } = useRouter();
 
-  // const [containerRef, { width }] = useElementSize();
-  // console.log(width);
-
   const { data, networkStatus, loading, fetchMore } =
     useGetPostCommentsOnCursorQuery({
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: "network-only",
       variables: { postId: postId as string, limit: 6 },
     });
 
@@ -69,7 +48,6 @@ function Fetcher({ onClose }: { onClose(): void }) {
     try {
       await fetchMore({
         variables: {
-          limit: 6,
           after: endCursor,
         },
         updateQuery(prev, { fetchMoreResult }) {

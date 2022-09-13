@@ -62,7 +62,7 @@ export default function BottomSheet({
   classes,
   children,
 }: Props) {
-  const matches = useMediaQuery("(min-width: 768px)");
+  const matches = useMediaQuery("(min-width: 640px)");
   return (
     <Portal>
       <AnimatePresence>

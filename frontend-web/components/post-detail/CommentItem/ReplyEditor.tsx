@@ -1,9 +1,11 @@
 import { CommentBox, ToastErrorMessage } from "components";
 import {
-  GetCommentRepliesOnCursorDocument,
   GetPostCommentsOnCursorDocument,
+  GetPostCommentsOnCursorQuery,
+  GetPostCommentsOnCursorQueryVariables,
   useCreateCommentMutation,
 } from "graphql/generated/schema";
+import produce from "immer";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -12,7 +14,9 @@ import { gplErrorHandler } from "utils";
 
 interface Props {
   onHide?(): void;
+  onSuccess?(): void;
   parentId: string;
+  replyFor?: string;
 }
 
 const initialValue: Descendant[] = [
@@ -21,9 +25,12 @@ const initialValue: Descendant[] = [
   },
 ];
 
-export default function ReplyEditor({ onHide, parentId }: Props) {
-  console.log(parentId);
-
+export default function ReplyEditor({
+  onHide,
+  parentId,
+  onSuccess,
+  replyFor,
+}: Props) {
   const {
     query: { postId },
   } = useRouter();
@@ -44,70 +51,97 @@ export default function ReplyEditor({ onHide, parentId }: Props) {
             parentComment: parentId,
           },
         },
-        refetchQueries: [
-          {
-            query: GetCommentRepliesOnCursorDocument,
-            variables: { commentId: parentId, limit: 3 },
-            fetchPolicy: "network-only",
-          },
-          {
+        update(cache, { data }) {
+          if (!data) {
+            return;
+          }
+          const existingReplies = cache.readQuery<
+            GetPostCommentsOnCursorQuery,
+            GetPostCommentsOnCursorQueryVariables
+          >({
             query: GetPostCommentsOnCursorDocument,
-            variables: { postId: postId as string, limit: 6 },
-            fetchPolicy: "network-only",
-          },
-        ],
-        // update(cache, { data }) {
-        //   if (!data) {
-        //     return;
-        //   }
-        //   const existingComments = cache.readQuery<
-        //     GetPostCommentsOnCursorQuery,
-        //     GetPostCommentsOnCursorQueryVariables
-        //   >({
-        //     query: GetPostCommentsOnCursorDocument,
-        //     variables: { postId: postId as string, limit: 6 },
-        //   });
+            variables: { postId: postId as string, limit: 6, parentId },
+          });
 
-        //   const newComment = {
-        //     cursor: data.createComment.id,
-        //     node: { ...data.createComment, replies: 0 },
-        //   };
+          const newReply = {
+            cursor: data.createComment.id,
+            node: { ...data.createComment, replies: 0 },
+          };
 
-        //   let newComments: GetPostCommentsOnCursorQuery;
+          let newReplies: GetPostCommentsOnCursorQuery;
 
-        //   if (existingComments && existingComments.postCommentsOnCursor.total > 0) {
-        //     newComments = produce(existingComments, (draft) => {
-        //       draft.postCommentsOnCursor.edges = [
-        //         newComment,
-        //         ...draft.postCommentsOnCursor.edges,
-        //       ];
-        //       draft.postCommentsOnCursor.total += 1;
-        //     });
-        //   } else {
-        //     newComments = {
-        //       postCommentsOnCursor: {
-        //         edges: [newComment],
-        //         pageInfo: { hasNext: false },
-        //         total: 1,
-        //       },
-        //     };
-        //   }
+          if (
+            existingReplies &&
+            existingReplies.postCommentsOnCursor.total > 0
+          ) {
+            newReplies = produce(existingReplies, (draft) => {
+              draft.postCommentsOnCursor.edges = [
+                newReply,
+                ...draft.postCommentsOnCursor.edges,
+              ];
+              draft.postCommentsOnCursor.total += 1;
+            });
+          } else {
+            newReplies = {
+              postCommentsOnCursor: {
+                edges: [newReply],
+                pageInfo: { hasNext: false },
+                total: 1,
+              },
+            };
+          }
 
-        //   cache.writeQuery<GetPostCommentsOnCursorQuery>({
-        //     query: GetPostCommentsOnCursorDocument,
-        //     data: newComments,
-        //     variables: { postId: postId as string, limit: 6 },
-        //   });
+          cache.writeQuery<GetPostCommentsOnCursorQuery>({
+            query: GetPostCommentsOnCursorDocument,
+            data: newReplies,
+            variables: {
+              postId: postId as string,
+              parentId: parentId,
+              limit: 6,
+            },
+          });
 
-        //   cache.writeQuery<GetPostCommentsCountQuery>({
-        //     query: GetPostCommentsCountDocument,
-        //     data: { postCommentsCount: newComments.postCommentsOnCursor.total },
-        //     variables: { id: postId as string },
-        //   });
-        // },
+          const existingComments = cache.readQuery<
+            GetPostCommentsOnCursorQuery,
+            GetPostCommentsOnCursorQueryVariables
+          >({
+            query: GetPostCommentsOnCursorDocument,
+            variables: {
+              postId: postId as string,
+              limit: 6,
+              parentId: replyFor,
+            },
+          });
+
+          if (existingComments) {
+            const newComments = produce(existingComments, (draft) => {
+              const commentIndex = draft.postCommentsOnCursor.edges.findIndex(
+                (comment) =>
+                  comment.cursor === data.createComment.parentComment?.id
+              );
+
+              if (commentIndex !== -1) {
+                draft.postCommentsOnCursor.edges[
+                  commentIndex
+                ].node.replies += 1;
+              }
+            });
+
+            cache.writeQuery<GetPostCommentsOnCursorQuery>({
+              query: GetPostCommentsOnCursorDocument,
+              data: newComments,
+              variables: {
+                postId: postId as string,
+                limit: 6,
+                parentId: replyFor,
+              },
+            });
+          }
+        },
       });
       setValue(initialValue);
       setExpand(false);
+      onSuccess && onSuccess();
       onHide && onHide();
     } catch (error) {}
   };

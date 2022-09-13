@@ -16,7 +16,10 @@ mutation CreateComment($data: CreateCommentInput!) {
 }
 
 mutation DeleteComment($commentId: ID!) {
-  deleteComment(commentId: $commentId)
+  deleteComment(commentId: $commentId) {
+    id
+    parentId
+  }
 }
 
 mutation UpdateComment($data: UpdateCommentInput!) {

@@ -91,8 +91,18 @@ query GetPostReactionsBy($id: ID!, $limit: Int!, $after: ID) {
   }
 }
 
-query GetPostCommentsOnCursor($postId: ID!, $limit: Int!, $after: ID) {
-  postCommentsOnCursor(postId: $postId, limit: $limit, after: $after) {
+query GetPostCommentsOnCursor(
+  $postId: ID!
+  $parentId: ID
+  $limit: Int!
+  $after: ID
+) {
+  postCommentsOnCursor(
+    postId: $postId
+    parentId: $parentId
+    limit: $limit
+    after: $after
+  ) {
     total
     pageInfo {
       ...FCursorPageInfo

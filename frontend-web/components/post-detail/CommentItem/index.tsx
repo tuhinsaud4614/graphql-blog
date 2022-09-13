@@ -65,7 +65,10 @@ export default function CommentItem({
               className={classes?.header}
             >
               {rdxUser?.id === comment.commenter.id && (
-                <MoreButton commentId={comment.id} />
+                <MoreButton
+                  commentId={comment.id}
+                  replyFor={comment.parentComment?.id}
+                />
               )}
             </Header>
             <Body
@@ -91,6 +94,12 @@ export default function CommentItem({
             <ReplyEditor
               parentId={comment.id}
               onHide={() => setOpenReplyEditor(false)}
+              onSuccess={() => {
+                if (replyCount > 0) {
+                  setShowReplies(true);
+                }
+              }}
+              replyFor={comment.parentComment?.id}
             />
           )}
           {showReplies && replyCount > 0 && <Replies commentId={comment.id} />}

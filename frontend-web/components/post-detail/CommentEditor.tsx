@@ -5,9 +5,13 @@ import { selectUser } from "@features";
 import { CommentBox, CommentBoxCommenter, ToastErrorMessage } from "components";
 import {
   GetPostCommentsCountDocument,
+  GetPostCommentsCountQuery,
   GetPostCommentsOnCursorDocument,
+  GetPostCommentsOnCursorQuery,
+  GetPostCommentsOnCursorQueryVariables,
   useCreateCommentMutation,
 } from "graphql/generated/schema";
+import produce from "immer";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { useAppSelector } from "store";
@@ -48,65 +52,58 @@ export default function CommentEditor({
             postId: postId as string,
           },
         },
-        refetchQueries: [
-          {
+        update(cache, { data }) {
+          if (!data) {
+            return;
+          }
+          const existingComments = cache.readQuery<
+            GetPostCommentsOnCursorQuery,
+            GetPostCommentsOnCursorQueryVariables
+          >({
             query: GetPostCommentsOnCursorDocument,
             variables: { postId: postId as string, limit: 6 },
-          },
-          {
+          });
+
+          const newComment = {
+            cursor: data.createComment.id,
+            node: { ...data.createComment, replies: 0 },
+          };
+
+          let newComments: GetPostCommentsOnCursorQuery;
+
+          if (
+            existingComments &&
+            existingComments.postCommentsOnCursor.total > 0
+          ) {
+            newComments = produce(existingComments, (draft) => {
+              draft.postCommentsOnCursor.edges = [
+                newComment,
+                ...draft.postCommentsOnCursor.edges,
+              ];
+              draft.postCommentsOnCursor.total += 1;
+            });
+          } else {
+            newComments = {
+              postCommentsOnCursor: {
+                edges: [newComment],
+                pageInfo: { hasNext: false },
+                total: 1,
+              },
+            };
+          }
+
+          cache.writeQuery<GetPostCommentsOnCursorQuery>({
+            query: GetPostCommentsOnCursorDocument,
+            data: newComments,
+            variables: { postId: postId as string, limit: 6 },
+          });
+
+          cache.writeQuery<GetPostCommentsCountQuery>({
             query: GetPostCommentsCountDocument,
+            data: { postCommentsCount: newComments.postCommentsOnCursor.total },
             variables: { id: postId as string },
-          },
-        ],
-        // update(cache, { data }) {
-        //   if (!data) {
-        //     return;
-        //   }
-        //   const existingComments = cache.readQuery<
-        //     GetPostCommentsOnCursorQuery,
-        //     GetPostCommentsOnCursorQueryVariables
-        //   >({
-        //     query: GetPostCommentsOnCursorDocument,
-        //     variables: { postId: postId as string, limit: 6 },
-        //   });
-
-        //   const newComment = {
-        //     cursor: data.createComment.id,
-        //     node: { ...data.createComment, replies: 0 },
-        //   };
-
-        //   let newComments: GetPostCommentsOnCursorQuery;
-
-        //   if (existingComments && existingComments.postCommentsOnCursor.total > 0) {
-        //     newComments = produce(existingComments, (draft) => {
-        //       draft.postCommentsOnCursor.edges = [
-        //         newComment,
-        //         ...draft.postCommentsOnCursor.edges,
-        //       ];
-        //       draft.postCommentsOnCursor.total += 1;
-        //     });
-        //   } else {
-        //     newComments = {
-        //       postCommentsOnCursor: {
-        //         edges: [newComment],
-        //         pageInfo: { hasNext: false },
-        //         total: 1,
-        //       },
-        //     };
-        //   }
-
-        //   cache.writeQuery<GetPostCommentsOnCursorQuery>({
-        //     query: GetPostCommentsOnCursorDocument,
-        //     data: newComments,
-        //     variables: { postId: postId as string, limit: 6 },
-        //   });
-
-        //   cache.writeQuery<GetPostCommentsCountQuery>({
-        //     query: GetPostCommentsCountDocument,
-        //     data: { postCommentsCount: newComments.postCommentsOnCursor.total },
-        //     variables: { id: postId as string },
-        //   });
-        // },
+          });
+        },
       });
       setValue(initialValue);
       setExpand(false);

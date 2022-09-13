@@ -1,8 +1,9 @@
 import { NetworkStatus } from "@apollo/client";
 import { Button } from "components";
 import { AnimatePresence } from "framer-motion";
-import { useGetCommentRepliesOnCursorQuery } from "graphql/generated/schema";
+import { useGetPostCommentsOnCursorQuery } from "graphql/generated/schema";
 import _ from "lodash";
+import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { isDev } from "utils";
 import CommentItem from ".";
@@ -13,12 +14,15 @@ interface Props {
 }
 
 export default function Replies({ commentId }: Props) {
-  const { data, networkStatus, fetchMore } = useGetCommentRepliesOnCursorQuery({
+  const {
+    query: { postId },
+  } = useRouter();
+  const { data, networkStatus, fetchMore } = useGetPostCommentsOnCursorQuery({
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: "network-only",
     variables: {
-      commentId: commentId,
-      limit: 3,
+      postId: postId as string,
+      parentId: commentId,
+      limit: 6,
     },
   });
 
@@ -29,7 +33,7 @@ export default function Replies({ commentId }: Props) {
     return <CommentItemSkeleton classes={{ root: "w-[20rem]" }} />;
   }
 
-  if (!data || data.commentRepliesOnCursor.total === 0) {
+  if (!data || data.postCommentsOnCursor.total === 0) {
     return (
       <p className="flex flex-col items-center justify-center text-neutral/60 dark:text-neutral-dark/60 font-extralight italic">
         There are currently no reply for this comment.
@@ -37,36 +41,35 @@ export default function Replies({ commentId }: Props) {
     );
   }
 
-  const { hasNext, endCursor } = data.commentRepliesOnCursor.pageInfo;
-  const { edges } = data.commentRepliesOnCursor;
+  const { hasNext, endCursor } = data.postCommentsOnCursor.pageInfo;
+  const { edges } = data.postCommentsOnCursor;
 
   const fetchMoreHandler = async () => {
     try {
       await fetchMore({
         variables: {
           after: endCursor,
-          limit: 3,
         },
         updateQuery(prev, { fetchMoreResult }) {
           if (!fetchMoreResult) {
             return {
               ...prev,
-              commentRepliesOnCursor: {
-                ...prev.commentRepliesOnCursor,
+              postCommentsOnCursor: {
+                ...prev.postCommentsOnCursor,
                 pageInfo: {
-                  ...prev.commentRepliesOnCursor.pageInfo,
+                  ...prev.postCommentsOnCursor.pageInfo,
                   hasNext: false,
                 },
               },
             };
           }
           return {
-            commentRepliesOnCursor: {
-              ...fetchMoreResult.commentRepliesOnCursor,
+            postCommentsOnCursor: {
+              ...fetchMoreResult.postCommentsOnCursor,
               edges: _.uniqBy(
                 [
-                  ...prev.commentRepliesOnCursor.edges,
-                  ...fetchMoreResult.commentRepliesOnCursor.edges,
+                  ...prev.postCommentsOnCursor.edges,
+                  ...fetchMoreResult.postCommentsOnCursor.edges,
                 ],
                 "cursor"
               ),

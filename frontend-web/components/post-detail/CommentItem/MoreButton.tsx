@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import { BottomSheet, Button, Menu, ToastErrorMessage } from "components";
 import {
-  GetCommentRepliesOnCursorDocument,
-  GetPostCommentsCountDocument,
   GetPostCommentsOnCursorDocument,
+  GetPostCommentsOnCursorQuery,
+  GetPostCommentsOnCursorQueryVariables,
   useDeleteCommentMutation,
 } from "graphql/generated/schema";
+import produce from "immer";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
@@ -27,9 +28,10 @@ const className = {
 
 interface Props {
   commentId: string;
+  replyFor?: string;
 }
 
-export default function MoreButton({ commentId }: Props) {
+export default function MoreButton({ commentId, replyFor }: Props) {
   const {
     query: { postId },
   } = useRouter();
@@ -37,9 +39,23 @@ export default function MoreButton({ commentId }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const opener = useEditorOpener();
 
-  const [deleteComment, { loading, error }] = useDeleteCommentMutation({
+  const [deleteComment, { loading, error, client }] = useDeleteCommentMutation({
     notifyOnNetworkStatusChange: true,
   });
+  if (confirmDelete) {
+    const existingComments = client.cache.readQuery<
+      GetPostCommentsOnCursorQuery,
+      GetPostCommentsOnCursorQueryVariables
+    >({
+      query: GetPostCommentsOnCursorDocument,
+      variables: {
+        postId: postId as string,
+        limit: 6,
+        parentId: replyFor,
+      },
+    });
+    console.log(existingComments);
+  }
 
   const submitHandler = async () => {
     try {
@@ -47,21 +63,77 @@ export default function MoreButton({ commentId }: Props) {
         variables: {
           commentId,
         },
-        refetchQueries: [
-          {
-            query: GetCommentRepliesOnCursorDocument,
-            variables: { commentId: commentId, limit: 3 },
-            fetchPolicy: "network-only",
-          },
-          {
+        update(cache, { data }) {
+          if (!data) {
+            return;
+          }
+          const existingComments = cache.readQuery<
+            GetPostCommentsOnCursorQuery,
+            GetPostCommentsOnCursorQueryVariables
+          >({
             query: GetPostCommentsOnCursorDocument,
-            variables: { postId: postId as string, limit: 6 },
-          },
-          {
-            query: GetPostCommentsCountDocument,
-            variables: { id: postId as string },
-          },
-        ],
+            variables: {
+              postId: postId as string,
+              limit: 6,
+              parentId: replyFor,
+            },
+          });
+
+          if (
+            existingComments &&
+            existingComments.postCommentsOnCursor.total > 0
+          ) {
+            const newComments = produce(existingComments, (draft) => {
+              draft.postCommentsOnCursor.edges =
+                draft.postCommentsOnCursor.edges.filter((comment) => {
+                  if (comment.cursor === data.deleteComment.id) {
+                    return false;
+                  }
+                  return true;
+                });
+              draft.postCommentsOnCursor.total -= 1;
+            });
+
+            cache.writeQuery<GetPostCommentsOnCursorQuery>({
+              query: GetPostCommentsOnCursorDocument,
+              data: newComments,
+              variables: {
+                postId: postId as string,
+                limit: 6,
+                parentId: replyFor,
+              },
+            });
+          }
+        },
+        // refetchQueries: ({ data }) => {
+        //   // if (!data) {
+        //   //   return [];
+        //   // }
+
+        //   // if (data.deleteComment.parentId) {
+        //   //   return [
+        //   //     {
+        //   //       query: GetCommentRepliesOnCursorDocument,
+        //   //       variables: { commentId: commentId, limit: 3 },
+        //   //     },
+        //   //   ];
+        //   // }
+
+        //   return [
+        //     {
+        //       query: GetCommentRepliesOnCursorDocument,
+        //       variables: { commentId: commentId, limit: 3 },
+        //     },
+        //     {
+        //       query: GetPostCommentsOnCursorDocument,
+        //       variables: { postId: postId as string, limit: 6 },
+        //     },
+        //     {
+        //       query: GetPostCommentsCountDocument,
+        //       variables: { id: postId as string },
+        //     },
+        //   ];
+        // },
       });
 
       if (data) {
