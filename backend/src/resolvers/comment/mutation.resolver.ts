@@ -1,11 +1,10 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
 import {
   createCommentCtrl,
   deleteCommentCtrl,
   updateCommentCtrl,
 } from "../../controller/comment.controller";
-import { UN_AUTH_ERR_MSG, UN_AUTH_EXT_ERR_CODE } from "../../utils/constants";
+import { AuthenticationError } from "../../model";
 import { YogaContextReturnType } from "../../utils/types";
 
 export const Mutation = {
@@ -18,9 +17,7 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError();
     }
 
     const result = await createCommentCtrl(
@@ -42,9 +39,7 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError();
     }
 
     const result = await updateCommentCtrl(prisma, commentId, content, user);
@@ -58,9 +53,7 @@ export const Mutation = {
     __: GraphQLResolveInfo
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
-      });
+      return new AuthenticationError();
     }
 
     const result = await deleteCommentCtrl(prisma, commentId, user);

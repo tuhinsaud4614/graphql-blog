@@ -44,11 +44,7 @@ type Query {
   ): OffsetCommentsResponse!
   postCommentsOnCursor(
     postId: ID!
-    limit: Int!
-    after: ID
-  ): CursorCommentsResponse!
-  commentRepliesOnCursor(
-    commentId: ID!
+    parentId: ID
     limit: Int!
     after: ID
   ): CursorCommentsResponse!

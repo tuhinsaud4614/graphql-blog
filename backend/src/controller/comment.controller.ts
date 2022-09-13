@@ -154,10 +154,36 @@ export async function getPostCommentsOnOffsetCtrl(
 
 export async function getPostCommentsOnCursorCtrl(
   prisma: PrismaClient,
-  { postId, ...rest }: ICursorQueryParams & { postId: string }
+  {
+    postId,
+    parentId,
+    ...rest
+  }: ICursorQueryParams & { postId: string; parentId?: string }
 ) {
   try {
     await cursorQueryParamsSchema.validate(rest, { abortEarly: false });
+
+    if (parentId) {
+      const count = await countReplies(prisma, parentId);
+      if (count === 0) {
+        return {
+          total: count,
+          pageInfo: {
+            hasNext: false,
+            endCursor: null,
+          },
+          edges: [],
+        };
+      }
+
+      const result = await getCommentsRepliesOnCursor(
+        prisma,
+        rest,
+        parentId,
+        count
+      );
+      return result;
+    }
 
     const isPostExist = await getPostById(prisma, postId);
 
@@ -187,37 +213,5 @@ export async function getPostCommentsOnCursorCtrl(
   } catch (error: any) {
     logger.error(error);
     return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
-  }
-}
-
-export async function getCommentRepliesOnCursorCtrl(
-  prisma: PrismaClient,
-  { commentId, ...rest }: ICursorQueryParams & { commentId: string }
-) {
-  try {
-    await cursorQueryParamsSchema.validate(rest, { abortEarly: false });
-
-    const count = await countReplies(prisma, commentId);
-    if (count === 0) {
-      return {
-        total: count,
-        pageInfo: {
-          hasNext: false,
-          endCursor: null,
-        },
-        edges: [],
-      };
-    }
-
-    const result = await getCommentsRepliesOnCursor(
-      prisma,
-      rest,
-      commentId,
-      count
-    );
-    return result;
-  } catch (error: any) {
-    logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("replies"));
   }
 }

@@ -1,5 +1,4 @@
 import {
-  getCommentRepliesOnCursorCtrl,
   getPostCommentsOnCursorCtrl,
   getPostCommentsOnOffsetCtrl,
 } from "../../controller/comment.controller";
@@ -30,18 +29,6 @@ export const Query = {
       return new AuthenticationError();
     }
     const result = await getPostCommentsOnCursorCtrl(prisma, params);
-    return result;
-  },
-  async commentRepliesOnCursor(
-    _: any,
-    params: ICursorQueryParams & { commentId: string },
-    { prisma, user }: YogaContextReturnType,
-    ___: any
-  ) {
-    if (user === null) {
-      return new AuthenticationError();
-    }
-    const result = await getCommentRepliesOnCursorCtrl(prisma, params);
     return result;
   },
 };
