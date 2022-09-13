@@ -1,8 +1,9 @@
 import { CommentBox, ToastErrorMessage } from "components";
 import {
+  FCommentWithRepliesFragment,
+  FCommentWithRepliesFragmentDoc,
   GetPostCommentsOnCursorDocument,
   GetPostCommentsOnCursorQuery,
-  GetPostCommentsOnCursorQueryVariables,
   useCreateCommentMutation,
 } from "graphql/generated/schema";
 import produce from "immer";
@@ -10,7 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Descendant } from "slate";
-import { gplErrorHandler } from "utils";
+import { gplErrorHandler, isDev } from "utils";
 
 interface Props {
   onHide?(): void;
@@ -55,87 +56,61 @@ export default function ReplyEditor({
           if (!data) {
             return;
           }
-          const existingReplies = cache.readQuery<
-            GetPostCommentsOnCursorQuery,
-            GetPostCommentsOnCursorQueryVariables
-          >({
-            query: GetPostCommentsOnCursorDocument,
-            variables: { postId: postId as string, limit: 6, parentId },
-          });
 
-          const newReply = {
-            cursor: data.createComment.id,
-            node: { ...data.createComment, replies: 0 },
-          };
-
-          let newReplies: GetPostCommentsOnCursorQuery;
-
-          if (
-            existingReplies &&
-            existingReplies.postCommentsOnCursor.total > 0
-          ) {
-            newReplies = produce(existingReplies, (draft) => {
-              draft.postCommentsOnCursor.edges = [
-                newReply,
-                ...draft.postCommentsOnCursor.edges,
-              ];
-              draft.postCommentsOnCursor.total += 1;
-            });
-          } else {
-            newReplies = {
-              postCommentsOnCursor: {
-                edges: [newReply],
-                pageInfo: { hasNext: false },
-                total: 1,
+          try {
+            // Update the parent comment replies cache
+            cache.updateQuery<GetPostCommentsOnCursorQuery>(
+              {
+                query: GetPostCommentsOnCursorDocument,
+                variables: { postId: postId as string, limit: 6, parentId },
               },
-            };
-          }
+              (prevComments) => {
+                const newComment = {
+                  cursor: data.createComment.id,
+                  node: { ...data.createComment, replies: 0 },
+                };
 
-          cache.writeQuery<GetPostCommentsOnCursorQuery>({
-            query: GetPostCommentsOnCursorDocument,
-            data: newReplies,
-            variables: {
-              postId: postId as string,
-              parentId: parentId,
-              limit: 6,
-            },
-          });
+                if (
+                  !prevComments ||
+                  prevComments.postCommentsOnCursor.total === 0
+                ) {
+                  return {
+                    postCommentsOnCursor: {
+                      edges: [newComment],
+                      pageInfo: { hasNext: false },
+                      total: 1,
+                    },
+                  };
+                }
 
-          const existingComments = cache.readQuery<
-            GetPostCommentsOnCursorQuery,
-            GetPostCommentsOnCursorQueryVariables
-          >({
-            query: GetPostCommentsOnCursorDocument,
-            variables: {
-              postId: postId as string,
-              limit: 6,
-              parentId: replyFor,
-            },
-          });
-
-          if (existingComments) {
-            const newComments = produce(existingComments, (draft) => {
-              const commentIndex = draft.postCommentsOnCursor.edges.findIndex(
-                (comment) =>
-                  comment.cursor === data.createComment.parentComment?.id
-              );
-
-              if (commentIndex !== -1) {
-                draft.postCommentsOnCursor.edges[
-                  commentIndex
-                ].node.replies += 1;
+                const newComments = produce(prevComments, (draft) => {
+                  draft.postCommentsOnCursor.edges = [
+                    newComment,
+                    ...draft.postCommentsOnCursor.edges,
+                  ];
+                  draft.postCommentsOnCursor.total += 1;
+                });
+                return newComments;
               }
-            });
+            );
 
-            cache.writeQuery<GetPostCommentsOnCursorQuery>({
-              query: GetPostCommentsOnCursorDocument,
-              data: newComments,
-              variables: {
-                postId: postId as string,
-                limit: 6,
-                parentId: replyFor,
-              },
-            });
+            // Update the parent reply count cache
+            if (data.createComment.parentComment?.id) {
+              cache.updateFragment<FCommentWithRepliesFragment>(
+                {
+                  fragment: FCommentWithRepliesFragmentDoc,
+                  fragmentName: "FCommentWithReplies",
+                  id: `Comment:${parentId}`,
+                },
+                (prevFrag) => {
+                  return prevFrag
+                    ? { ...prevFrag, replies: prevFrag.replies + 1 }
+                    : undefined;
+                }
+              );
+            }
+          } catch (error) {
+            isDev() && console.log(error);
           }
         },
       });

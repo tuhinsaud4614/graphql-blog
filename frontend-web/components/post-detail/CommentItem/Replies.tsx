@@ -84,7 +84,7 @@ export default function Replies({ commentId }: Props) {
 
   return (
     <Fragment>
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {edges.map((reply) => (
           <CommentItem
             comment={reply.node}

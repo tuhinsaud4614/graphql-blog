@@ -14,7 +14,7 @@ import produce from "immer";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { useAppSelector } from "store";
-import { gplErrorHandler } from "utils";
+import { gplErrorHandler, isDev } from "utils";
 
 const initialValue: Descendant[] = [
   {
@@ -55,99 +55,58 @@ export default function CommentEditor({
           if (!data) {
             return;
           }
-          cache.updateQuery<GetPostCommentsOnCursorQuery>(
-            {
-              query: GetPostCommentsOnCursorDocument,
-              variables: { postId: postId as string, limit: 6 },
-            },
-            (prevComments) => {
-              const newComment = {
-                cursor: data.createComment.id,
-                node: { ...data.createComment, replies: 0 },
-              };
-
-              if (
-                !prevComments ||
-                prevComments.postCommentsOnCursor.total === 0
-              ) {
-                return {
-                  postCommentsOnCursor: {
-                    edges: [newComment],
-                    pageInfo: { hasNext: false },
-                    total: 1,
-                  },
+          try {
+            cache.updateQuery<GetPostCommentsOnCursorQuery>(
+              {
+                query: GetPostCommentsOnCursorDocument,
+                variables: { postId: postId as string, limit: 6 },
+              },
+              (prevComments) => {
+                const newComment = {
+                  cursor: data.createComment.id,
+                  node: { ...data.createComment, replies: 0 },
                 };
+
+                if (
+                  !prevComments ||
+                  prevComments.postCommentsOnCursor.total === 0
+                ) {
+                  return {
+                    postCommentsOnCursor: {
+                      edges: [newComment],
+                      pageInfo: { hasNext: false },
+                      total: 1,
+                    },
+                  };
+                }
+
+                const newComments = produce(prevComments, (draft) => {
+                  draft.postCommentsOnCursor.edges = [
+                    newComment,
+                    ...draft.postCommentsOnCursor.edges,
+                  ];
+                  draft.postCommentsOnCursor.total += 1;
+                });
+                return newComments;
               }
+            );
 
-              const newComments = produce(prevComments, (draft) => {
-                draft.postCommentsOnCursor.edges = [
-                  newComment,
-                  ...draft.postCommentsOnCursor.edges,
-                ];
-                draft.postCommentsOnCursor.total += 1;
-              });
-              return newComments;
-            }
-          );
-          // const existingComments = cache.readQuery<
-          //   GetPostCommentsOnCursorQuery,
-          //   GetPostCommentsOnCursorQueryVariables
-          // >({
-          //   query: GetPostCommentsOnCursorDocument,
-          //   variables: { postId: postId as string, limit: 6 },
-          // });
-
-          // const newComment = {
-          //   cursor: data.createComment.id,
-          //   node: { ...data.createComment, replies: 0 },
-          // };
-
-          // let newComments: GetPostCommentsOnCursorQuery;
-
-          // if (
-          //   existingComments &&
-          //   existingComments.postCommentsOnCursor.total > 0
-          // ) {
-          //   newComments = produce(existingComments, (draft) => {
-          //     draft.postCommentsOnCursor.edges = [
-          //       newComment,
-          //       ...draft.postCommentsOnCursor.edges,
-          //     ];
-          //     draft.postCommentsOnCursor.total += 1;
-          //   });
-          // } else {
-          //   newComments = {
-          //     postCommentsOnCursor: {
-          //       edges: [newComment],
-          //       pageInfo: { hasNext: false },
-          //       total: 1,
-          //     },
-          //   };
-          // }
-
-          // cache.writeQuery<GetPostCommentsOnCursorQuery>({
-          //   query: GetPostCommentsOnCursorDocument,
-          //   data: newComments,
-          //   variables: { postId: postId as string, limit: 6 },
-          // });
-          cache.updateQuery<GetPostCommentsCountQuery>(
-            {
-              query: GetPostCommentsCountDocument,
-              variables: { id: postId as string },
-            },
-            (prevCount) => {
-              return prevCount
-                ? {
-                    postCommentsCount: prevCount.postCommentsCount + 1,
-                  }
-                : undefined;
-            }
-          );
-          // cache.writeQuery<GetPostCommentsCountQuery>({
-          //   query: GetPostCommentsCountDocument,
-          //   data: { postCommentsCount: newComments.postCommentsOnCursor.total },
-          //   variables: { id: postId as string },
-          // });
+            cache.updateQuery<GetPostCommentsCountQuery>(
+              {
+                query: GetPostCommentsCountDocument,
+                variables: { id: postId as string },
+              },
+              (prevCount) => {
+                return prevCount
+                  ? {
+                      postCommentsCount: prevCount.postCommentsCount + 1,
+                    }
+                  : undefined;
+              }
+            );
+          } catch (error) {
+            isDev() && console.log(error);
+          }
         },
       });
       setValue(initialValue);

@@ -76,7 +76,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
                 const newComments = produce(prevComments, (draft) => {
                   draft.postCommentsOnCursor.edges =
                     draft.postCommentsOnCursor.edges.filter(
-                      (comment) => comment.cursor !== data.deleteComment.id
+                      (comment) => comment.cursor !== data.deleteComment
                     );
                   draft.postCommentsOnCursor.total -= 1;
                 });

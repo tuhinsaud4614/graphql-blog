@@ -115,19 +115,3 @@ query GetPostCommentsOnCursor(
     }
   }
 }
-
-query GetCommentRepliesOnCursor($commentId: ID!, $limit: Int!, $after: ID) {
-  commentRepliesOnCursor(commentId: $commentId, limit: $limit, after: $after) {
-    total
-    pageInfo {
-      ...FCursorPageInfo
-    }
-    edges {
-      cursor
-      node {
-        ...FComment
-        replies
-      }
-    }
-  }
-}

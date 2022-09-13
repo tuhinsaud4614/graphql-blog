@@ -90,6 +90,7 @@ export default function CommentItem({
         </EditProvider>
       </div>
       {/* Replies start */}
+
       {(showReplies || openReplyEditor) && (
         <section
           className={classNames(
@@ -102,9 +103,7 @@ export default function CommentItem({
               parentId={comment.id}
               onHide={() => setOpenReplyEditor(false)}
               onSuccess={() => {
-                if (replyCount > 0) {
-                  setShowReplies(true);
-                }
+                setShowReplies(true);
               }}
               replyFor={comment.parentComment?.id}
             />
