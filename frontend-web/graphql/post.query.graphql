@@ -110,8 +110,7 @@ query GetPostCommentsOnCursor(
     edges {
       cursor
       node {
-        ...FComment
-        replies
+        ...FCommentWithReplies
       }
     }
   }

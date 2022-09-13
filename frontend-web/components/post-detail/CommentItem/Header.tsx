@@ -1,6 +1,6 @@
 import { ROUTES } from "@constants";
 import classNames from "classnames";
-import { DemoAvatar } from "components";
+import { Badge, DemoAvatar } from "components";
 import { FUserFragment } from "graphql/generated/schema";
 import moment from "moment";
 import Image from "next/image";
@@ -24,12 +24,14 @@ interface Props {
   children?: ReactNode;
   user: FUserFragment;
   modifyAt: number;
+  own?: boolean;
 }
 
 export default function Header({
   className: cls,
   user,
   modifyAt,
+  own = false,
   children,
 }: Props) {
   const userName = getUserName(user);
@@ -56,11 +58,18 @@ export default function Header({
           )}
         </span>
         <div className={className.headerInfo}>
-          <Link href={ROUTES.authorProfile(user.id)} passHref>
-            <a aria-label={userName} className={className.headerName}>
-              {userName}
-            </a>
-          </Link>
+          <div className="flex items-center">
+            <Link href={ROUTES.authorProfile(user.id)} passHref>
+              <a aria-label={userName} className={className.headerName}>
+                {userName}
+              </a>
+            </Link>
+            {own && (
+              <Badge variant="primary" className="ml-2 shrink-0" float={false}>
+                You
+              </Badge>
+            )}
+          </div>
           <time className={className.headerTime}>
             about {moment(modifyAt).startOf("second").fromNow()}
           </time>

@@ -1,9 +1,12 @@
 import classNames from "classnames";
 import { BottomSheet, Button, Menu, ToastErrorMessage } from "components";
 import {
+  FCommentWithRepliesFragment,
+  FCommentWithRepliesFragmentDoc,
+  GetPostCommentsCountDocument,
+  GetPostCommentsCountQuery,
   GetPostCommentsOnCursorDocument,
   GetPostCommentsOnCursorQuery,
-  GetPostCommentsOnCursorQueryVariables,
   useDeleteCommentMutation,
 } from "graphql/generated/schema";
 import produce from "immer";
@@ -11,7 +14,7 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
 import { toast } from "react-toastify";
-import { gplErrorHandler } from "utils";
+import { gplErrorHandler, isDev } from "utils";
 import { useEditorOpener } from "./context";
 
 const className = {
@@ -42,20 +45,6 @@ export default function MoreButton({ commentId, replyFor }: Props) {
   const [deleteComment, { loading, error, client }] = useDeleteCommentMutation({
     notifyOnNetworkStatusChange: true,
   });
-  if (confirmDelete) {
-    const existingComments = client.cache.readQuery<
-      GetPostCommentsOnCursorQuery,
-      GetPostCommentsOnCursorQueryVariables
-    >({
-      query: GetPostCommentsOnCursorDocument,
-      variables: {
-        postId: postId as string,
-        limit: 6,
-        parentId: replyFor,
-      },
-    });
-    console.log(existingComments);
-  }
 
   const submitHandler = async () => {
     try {
@@ -67,73 +56,65 @@ export default function MoreButton({ commentId, replyFor }: Props) {
           if (!data) {
             return;
           }
-          const existingComments = cache.readQuery<
-            GetPostCommentsOnCursorQuery,
-            GetPostCommentsOnCursorQueryVariables
-          >({
-            query: GetPostCommentsOnCursorDocument,
-            variables: {
-              postId: postId as string,
-              limit: 6,
-              parentId: replyFor,
-            },
-          });
-
-          if (
-            existingComments &&
-            existingComments.postCommentsOnCursor.total > 0
-          ) {
-            const newComments = produce(existingComments, (draft) => {
-              draft.postCommentsOnCursor.edges =
-                draft.postCommentsOnCursor.edges.filter((comment) => {
-                  if (comment.cursor === data.deleteComment.id) {
-                    return false;
-                  }
-                  return true;
-                });
-              draft.postCommentsOnCursor.total -= 1;
-            });
-
-            cache.writeQuery<GetPostCommentsOnCursorQuery>({
-              query: GetPostCommentsOnCursorDocument,
-              data: newComments,
-              variables: {
-                postId: postId as string,
-                limit: 6,
-                parentId: replyFor,
+          try {
+            cache.updateQuery<GetPostCommentsOnCursorQuery>(
+              {
+                query: GetPostCommentsOnCursorDocument,
+                variables: {
+                  postId: postId as string,
+                  limit: 6,
+                  parentId: replyFor,
+                },
               },
-            });
+              (prevComments) => {
+                if (
+                  !prevComments ||
+                  prevComments.postCommentsOnCursor.total === 0
+                ) {
+                  return;
+                }
+                const newComments = produce(prevComments, (draft) => {
+                  draft.postCommentsOnCursor.edges =
+                    draft.postCommentsOnCursor.edges.filter(
+                      (comment) => comment.cursor !== data.deleteComment.id
+                    );
+                  draft.postCommentsOnCursor.total -= 1;
+                });
+                return newComments;
+              }
+            );
+            if (replyFor) {
+              cache.updateFragment<FCommentWithRepliesFragment>(
+                {
+                  fragment: FCommentWithRepliesFragmentDoc,
+                  fragmentName: "FCommentWithReplies",
+                  id: `Comment:${replyFor}`,
+                },
+                (prevFrag) => {
+                  return prevFrag
+                    ? { ...prevFrag, replies: prevFrag.replies - 1 }
+                    : undefined;
+                }
+              );
+            } else {
+              cache.updateQuery<GetPostCommentsCountQuery>(
+                {
+                  query: GetPostCommentsCountDocument,
+                  variables: { id: postId as string },
+                },
+                (prevCount) => {
+                  return prevCount && prevCount.postCommentsCount > 0
+                    ? {
+                        postCommentsCount: prevCount.postCommentsCount - 1,
+                      }
+                    : undefined;
+                }
+              );
+            }
+          } catch (error) {
+            isDev() && console.log(error);
           }
         },
-        // refetchQueries: ({ data }) => {
-        //   // if (!data) {
-        //   //   return [];
-        //   // }
-
-        //   // if (data.deleteComment.parentId) {
-        //   //   return [
-        //   //     {
-        //   //       query: GetCommentRepliesOnCursorDocument,
-        //   //       variables: { commentId: commentId, limit: 3 },
-        //   //     },
-        //   //   ];
-        //   // }
-
-        //   return [
-        //     {
-        //       query: GetCommentRepliesOnCursorDocument,
-        //       variables: { commentId: commentId, limit: 3 },
-        //     },
-        //     {
-        //       query: GetPostCommentsOnCursorDocument,
-        //       variables: { postId: postId as string, limit: 6 },
-        //     },
-        //     {
-        //       query: GetPostCommentsCountDocument,
-        //       variables: { id: postId as string },
-        //     },
-        //   ];
-        // },
       });
 
       if (data) {

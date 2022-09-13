@@ -60,3 +60,17 @@ fragment FComment on Comment {
   createdAt
   updatedAt
 }
+
+fragment FCommentWithReplies on Comment {
+  id
+  commenter {
+    ...FUser
+  }
+  content
+  parentComment {
+    id
+  }
+  createdAt
+  updatedAt
+  replies
+}

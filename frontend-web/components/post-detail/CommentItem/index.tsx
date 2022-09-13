@@ -2,7 +2,7 @@ import { selectUser } from "@features";
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import { FCommentFragment } from "graphql/generated/schema";
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import { Descendant } from "slate";
 import { useAppSelector } from "store";
 
@@ -45,6 +45,12 @@ export default function CommentItem({
   const [showReplies, setShowReplies] = useState(false);
   const [openReplyEditor, setOpenReplyEditor] = useState(false);
 
+  useEffect(() => {
+    if (replyCount === 0) {
+      setShowReplies(false);
+    }
+  }, [replyCount]);
+
   return (
     <motion.section
       initial={{ opacity: 0, height: 0, scale: 0.8 }}
@@ -63,6 +69,7 @@ export default function CommentItem({
               user={comment.commenter}
               modifyAt={+comment.updatedAt}
               className={classes?.header}
+              own={rdxUser?.id === comment.commenter.id}
             >
               {rdxUser?.id === comment.commenter.id && (
                 <MoreButton

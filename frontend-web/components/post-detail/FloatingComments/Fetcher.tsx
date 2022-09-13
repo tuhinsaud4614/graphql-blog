@@ -105,9 +105,9 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
   return (
     <Fragment>
       <ModalHeader onClose={onClose} className={className.bottomHeader}>
-        Responses{" "}
-        {data?.postCommentsOnCursor.total &&
-          `(${data.postCommentsOnCursor.total})`}
+        Responses
+        {!!data?.postCommentsOnCursor.total &&
+          `  (${data.postCommentsOnCursor.total})`}
       </ModalHeader>
       <div className={className.bottomBody}>{component}</div>
     </Fragment>

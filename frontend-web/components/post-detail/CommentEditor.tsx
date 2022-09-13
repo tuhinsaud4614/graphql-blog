@@ -8,7 +8,6 @@ import {
   GetPostCommentsCountQuery,
   GetPostCommentsOnCursorDocument,
   GetPostCommentsOnCursorQuery,
-  GetPostCommentsOnCursorQueryVariables,
   useCreateCommentMutation,
 } from "graphql/generated/schema";
 import produce from "immer";
@@ -56,53 +55,99 @@ export default function CommentEditor({
           if (!data) {
             return;
           }
-          const existingComments = cache.readQuery<
-            GetPostCommentsOnCursorQuery,
-            GetPostCommentsOnCursorQueryVariables
-          >({
-            query: GetPostCommentsOnCursorDocument,
-            variables: { postId: postId as string, limit: 6 },
-          });
+          cache.updateQuery<GetPostCommentsOnCursorQuery>(
+            {
+              query: GetPostCommentsOnCursorDocument,
+              variables: { postId: postId as string, limit: 6 },
+            },
+            (prevComments) => {
+              const newComment = {
+                cursor: data.createComment.id,
+                node: { ...data.createComment, replies: 0 },
+              };
 
-          const newComment = {
-            cursor: data.createComment.id,
-            node: { ...data.createComment, replies: 0 },
-          };
+              if (
+                !prevComments ||
+                prevComments.postCommentsOnCursor.total === 0
+              ) {
+                return {
+                  postCommentsOnCursor: {
+                    edges: [newComment],
+                    pageInfo: { hasNext: false },
+                    total: 1,
+                  },
+                };
+              }
 
-          let newComments: GetPostCommentsOnCursorQuery;
+              const newComments = produce(prevComments, (draft) => {
+                draft.postCommentsOnCursor.edges = [
+                  newComment,
+                  ...draft.postCommentsOnCursor.edges,
+                ];
+                draft.postCommentsOnCursor.total += 1;
+              });
+              return newComments;
+            }
+          );
+          // const existingComments = cache.readQuery<
+          //   GetPostCommentsOnCursorQuery,
+          //   GetPostCommentsOnCursorQueryVariables
+          // >({
+          //   query: GetPostCommentsOnCursorDocument,
+          //   variables: { postId: postId as string, limit: 6 },
+          // });
 
-          if (
-            existingComments &&
-            existingComments.postCommentsOnCursor.total > 0
-          ) {
-            newComments = produce(existingComments, (draft) => {
-              draft.postCommentsOnCursor.edges = [
-                newComment,
-                ...draft.postCommentsOnCursor.edges,
-              ];
-              draft.postCommentsOnCursor.total += 1;
-            });
-          } else {
-            newComments = {
-              postCommentsOnCursor: {
-                edges: [newComment],
-                pageInfo: { hasNext: false },
-                total: 1,
-              },
-            };
-          }
+          // const newComment = {
+          //   cursor: data.createComment.id,
+          //   node: { ...data.createComment, replies: 0 },
+          // };
 
-          cache.writeQuery<GetPostCommentsOnCursorQuery>({
-            query: GetPostCommentsOnCursorDocument,
-            data: newComments,
-            variables: { postId: postId as string, limit: 6 },
-          });
+          // let newComments: GetPostCommentsOnCursorQuery;
 
-          cache.writeQuery<GetPostCommentsCountQuery>({
-            query: GetPostCommentsCountDocument,
-            data: { postCommentsCount: newComments.postCommentsOnCursor.total },
-            variables: { id: postId as string },
-          });
+          // if (
+          //   existingComments &&
+          //   existingComments.postCommentsOnCursor.total > 0
+          // ) {
+          //   newComments = produce(existingComments, (draft) => {
+          //     draft.postCommentsOnCursor.edges = [
+          //       newComment,
+          //       ...draft.postCommentsOnCursor.edges,
+          //     ];
+          //     draft.postCommentsOnCursor.total += 1;
+          //   });
+          // } else {
+          //   newComments = {
+          //     postCommentsOnCursor: {
+          //       edges: [newComment],
+          //       pageInfo: { hasNext: false },
+          //       total: 1,
+          //     },
+          //   };
+          // }
+
+          // cache.writeQuery<GetPostCommentsOnCursorQuery>({
+          //   query: GetPostCommentsOnCursorDocument,
+          //   data: newComments,
+          //   variables: { postId: postId as string, limit: 6 },
+          // });
+          cache.updateQuery<GetPostCommentsCountQuery>(
+            {
+              query: GetPostCommentsCountDocument,
+              variables: { id: postId as string },
+            },
+            (prevCount) => {
+              return prevCount
+                ? {
+                    postCommentsCount: prevCount.postCommentsCount + 1,
+                  }
+                : undefined;
+            }
+          );
+          // cache.writeQuery<GetPostCommentsCountQuery>({
+          //   query: GetPostCommentsCountDocument,
+          //   data: { postCommentsCount: newComments.postCommentsOnCursor.total },
+          //   variables: { id: postId as string },
+          // });
         },
       });
       setValue(initialValue);
