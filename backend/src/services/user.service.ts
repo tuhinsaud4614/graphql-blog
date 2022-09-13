@@ -138,7 +138,8 @@ export async function getUsersOnCursor(
     const lastPost = results[resultsLen - 1];
     const newResults = await prisma.user.findMany({
       ...condition,
-      take: limit,
+      skip: 1,
+      take: 1,
       cursor: {
         id: lastPost.id,
       },
@@ -147,7 +148,7 @@ export async function getUsersOnCursor(
     return {
       total,
       pageInfo: {
-        hasNext: newResults.length >= limit,
+        hasNext: !!newResults.length,
         endCursor: lastPost.id,
       },
       edges: results.map((post) => ({ cursor: post.id, node: post })),

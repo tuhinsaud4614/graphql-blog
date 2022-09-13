@@ -142,11 +142,16 @@ export async function getCommentsOnCursor(
   condition: Prisma.CommentFindManyArgs,
   total: number
 ): Promise<IResponseOnCursor<Comment>> {
-  const { limit, after } = params;
+  const { after } = params;
+
+  const limit = Math.abs(params.limit);
+
   let results: Comment[] = [];
+
   let newFindArgs = {
     ...condition,
   };
+
   if (after) {
     newFindArgs = {
       ...newFindArgs,
@@ -157,6 +162,7 @@ export async function getCommentsOnCursor(
   } else {
     newFindArgs = { ...newFindArgs, take: limit };
   }
+
   results = await prisma.comment.findMany({
     ...newFindArgs,
   });
@@ -167,7 +173,8 @@ export async function getCommentsOnCursor(
     const lastComment = results[resultsLen - 1];
     const newResults = await prisma.comment.findMany({
       ...condition,
-      take: limit,
+      skip: 1,
+      take: 1,
       cursor: {
         id: lastComment.id,
       },
@@ -176,7 +183,7 @@ export async function getCommentsOnCursor(
     return {
       total,
       pageInfo: {
-        hasNext: newResults.length >= limit,
+        hasNext: !!newResults.length,
         endCursor: lastComment.id,
       },
       edges: results.map((comment) => ({ cursor: comment.id, node: comment })),
@@ -254,7 +261,8 @@ export async function getCommentsRepliesOnCursor(
       select: {
         replies: {
           orderBy: { updatedAt: "desc" },
-          take: limit,
+          skip: 1,
+          take: 1,
           cursor: {
             id: lastComment.id,
           },
@@ -265,7 +273,7 @@ export async function getCommentsRepliesOnCursor(
     return {
       total: count,
       pageInfo: {
-        hasNext: (newResults?.replies.length ?? 0) >= limit,
+        hasNext: !!newResults?.replies.length,
         endCursor: lastComment.id,
       },
       edges: results.map((comment) => ({ cursor: comment.id, node: comment })),

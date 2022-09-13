@@ -218,7 +218,8 @@ export async function getPostsOnCursor(
     const lastPost = results[resultsLen - 1];
     const newResults = await getAllPosts(prisma, {
       ...condition,
-      take: limit,
+      skip: 1,
+      take: 1,
       cursor: {
         id: lastPost.id,
       },
@@ -227,7 +228,7 @@ export async function getPostsOnCursor(
     return {
       total,
       pageInfo: {
-        hasNext: newResults.length >= limit,
+        hasNext: !!newResults.length,
         endCursor: lastPost.id,
       },
       edges: results.map((post) => ({ cursor: post.id, node: post })),
@@ -284,7 +285,8 @@ export async function getPostReactionsByOnCursor(
       where: { id: postId },
       select: {
         reactionsBy: {
-          ...condition,
+          skip: 1,
+          take: 1,
           cursor: {
             id: lastUser.id,
           },
@@ -298,7 +300,7 @@ export async function getPostReactionsByOnCursor(
     return {
       total: query?._count.reactionsBy ?? 0,
       pageInfo: {
-        hasNext: (newResults?.reactionsBy?.length ?? 0) >= limit,
+        hasNext: !!newResults?.reactionsBy?.length,
         endCursor: lastUser.id,
       },
       edges: results.map((user) => ({ cursor: user.id, node: user })),
