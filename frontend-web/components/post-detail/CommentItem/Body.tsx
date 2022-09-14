@@ -62,7 +62,7 @@ export default function Body({
           variant="success"
           type="button"
           aria-label="Read More"
-          className="!px-1.5 text-sm"
+          className="!px-1.5 text-sm -mt-1.5 -ml-1.5"
           onClick={() => {
             // globalShow = true;
             setShow(true);
