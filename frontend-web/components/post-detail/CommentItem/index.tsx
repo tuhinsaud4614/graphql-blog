@@ -1,6 +1,6 @@
 import { selectUser } from "@features";
 import classNames from "classnames";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { FCommentFragment } from "graphql/generated/schema";
 import { Fragment, ReactNode, useEffect, useState } from "react";
 import { Descendant } from "slate";
@@ -18,6 +18,19 @@ const className = {
   root: "border-b last:border-none dark:border-base-dark-300",
   container: "py-6 pb-4 min-w-[14rem]",
   replyContainer: "ml-3 mb-6 border-l-[3px] dark:border-base-dark-300",
+};
+
+const variants: Variants = {
+  show: {
+    opacity: 1,
+    height: "auto",
+    scale: 1,
+  },
+  hide: {
+    opacity: 0,
+    height: 0,
+    scale: 0.8,
+  },
 };
 
 type ClassesType = {
@@ -53,9 +66,10 @@ export default function CommentItem({
 
   return (
     <motion.section
-      initial={{ opacity: 0, height: 0, scale: 0.8 }}
-      animate={{ opacity: 1, height: "auto", scale: 1 }}
-      exit={{ opacity: 0, height: 0, scale: 0.8 }}
+      variants={variants}
+      initial="hide"
+      animate="show"
+      exit="hide"
       transition={{ opacity: { duration: 0.2 } }}
       className={classNames(className.root, classes?.root)}
     >

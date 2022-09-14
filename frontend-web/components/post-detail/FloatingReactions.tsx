@@ -8,8 +8,8 @@ import LikeButton from "./LikeButton";
 
 const className = {
   container:
-    "fixed left-0 right-0 bottom-[4.5rem] lg:left-20 lg:right-[17.5rem] lg:bottom-4 z-40",
-  root: "mx-auto w-full max-w-[94rem] p-0 xl:pr-96 flex items-center justify-center",
+    "fixed left-0 right-0 bottom-[4.5rem] lg:left-20 lg:right-[17.5rem] lg:bottom-4 xl:left-[calc((100vw-94rem)/2+5rem)] xl:right-[calc((100vw-94rem)/2+24rem)] z-40",
+  root: "mx-auto w-full max-w-[94rem] p-0 flex items-center justify-center",
   reactBar:
     "shadow-mui bg-base-100 dark:bg-base-dark-200 px-3.5 py-2 rounded-full flex items-stretch",
   divide:

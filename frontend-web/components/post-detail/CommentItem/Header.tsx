@@ -65,7 +65,7 @@ export default function Header({
               </a>
             </Link>
             {own && (
-              <Badge variant="primary" className="ml-2 shrink-0" float={false}>
+              <Badge variant="info" className="ml-2 shrink-0" float={false}>
                 You
               </Badge>
             )}

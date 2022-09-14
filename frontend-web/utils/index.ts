@@ -464,12 +464,20 @@ export const deserializeSlateValue = (str: string) => {
   });
 };
 
-export function countConvert(count: number, text?: string) {
+export function countConvert(count: number, text?: string, plural?: string) {
   const num = Intl.NumberFormat("en-US", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(count);
-  return text ? `${num} ${text}${count > 1 ? "s" : ""}` : num;
+  if (!text) {
+    return num;
+  }
+
+  if (count <= 1) {
+    return `${num} ${text}`;
+  }
+
+  return `${num} ${plural || text + "s"}`;
 }
 
 let accessToken: string | null = null;

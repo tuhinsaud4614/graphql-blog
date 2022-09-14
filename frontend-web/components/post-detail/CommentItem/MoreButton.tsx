@@ -74,10 +74,25 @@ export default function MoreButton({ commentId, replyFor }: Props) {
                   return;
                 }
                 const newComments = produce(prevComments, (draft) => {
+                  const secondLastComment =
+                    draft.postCommentsOnCursor.edges[
+                      draft.postCommentsOnCursor.edges.length - 2
+                    ];
                   draft.postCommentsOnCursor.edges =
-                    draft.postCommentsOnCursor.edges.filter(
-                      (comment) => comment.cursor !== data.deleteComment
-                    );
+                    draft.postCommentsOnCursor.edges.filter((comment) => {
+                      if (comment.cursor === data.deleteComment) {
+                        if (
+                          secondLastComment &&
+                          draft.postCommentsOnCursor.pageInfo.endCursor ===
+                            data.deleteComment
+                        ) {
+                          draft.postCommentsOnCursor.pageInfo.endCursor =
+                            secondLastComment.cursor;
+                        }
+                        return false;
+                      }
+                      return true;
+                    });
                   draft.postCommentsOnCursor.total -= 1;
                 });
                 return newComments;
