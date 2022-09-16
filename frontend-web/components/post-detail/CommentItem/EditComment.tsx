@@ -1,9 +1,5 @@
 import { CommentBox, ToastErrorMessage } from "components";
-import {
-  GetCommentRepliesOnCursorDocument,
-  GetPostCommentsOnCursorDocument,
-  useUpdateCommentMutation,
-} from "graphql/generated/schema";
+import { useUpdateCommentMutation } from "graphql/generated/schema";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -36,18 +32,6 @@ export default function EditComment({
 
   const [updateComment, { loading, error }] = useUpdateCommentMutation({
     notifyOnNetworkStatusChange: true,
-    refetchQueries: [
-      {
-        query: GetCommentRepliesOnCursorDocument,
-        variables: { commentId: commentId, limit: 3 },
-        fetchPolicy: "network-only",
-      },
-      {
-        query: GetPostCommentsOnCursorDocument,
-        variables: { postId: postId as string, limit: 6 },
-        fetchPolicy: "network-only",
-      },
-    ],
   });
 
   const submitHandler = async () => {

@@ -1,6 +1,5 @@
 import { ROUTES } from "@constants";
 import { useDarkMode } from "@hooks";
-import classNames from "classnames";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -34,7 +33,7 @@ export default function Header() {
 
   return (
     <motion.header
-      className={classNames(className.root)}
+      className={className.root}
       style={{ backgroundColor: rootBG }}
     >
       <nav className={className.main}>

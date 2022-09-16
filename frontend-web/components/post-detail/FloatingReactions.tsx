@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function FloatingReactions({ comments, siblingRef }: Props) {
-  const [show, setShow] = useState<boolean>(true);
+  const [show, setShow] = useState<boolean>(false);
   const [openLikeModal, setOpenLikeBox] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
   const matches = useMediaQuery("(min-width: 1024px)");
@@ -37,7 +37,9 @@ export default function FloatingReactions({ comments, siblingRef }: Props) {
 
     const { height } = sibling.getBoundingClientRect();
 
-    if (height <= window.innerHeight - (matches ? 32 : 144)) return;
+    if (height <= window.innerHeight - (matches ? 32 : 144)) {
+      return;
+    }
 
     const onScrolling = () => {
       const isShow =

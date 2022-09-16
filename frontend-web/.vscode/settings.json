@@ -23,5 +23,8 @@
     "unhang",
     "unoptimized",
     "webp"
-  ]
+  ],
+  "docwriter.style": "Auto-detect",
+  "docwriter.progress.trackClasses": true,
+  "docwriter.progress.trackTypes": false
 }
