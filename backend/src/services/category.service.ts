@@ -1,5 +1,6 @@
 import { Category, Prisma, PrismaClient } from "@prisma/client";
-import { IResponseOnOffset } from "../utils/interfaces";
+
+import { IResponseOnOffset } from "@/utils/interfaces";
 
 export function getCategoryById(prisma: PrismaClient, id: string) {
   return prisma.category.findUnique({ where: { id } });

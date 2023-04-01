@@ -1,20 +1,21 @@
 import type { Prisma, PrismaClient, User } from "@prisma/client";
 import path from "path";
-import logger from "../logger";
-import { nanoid } from "../utils";
+
+import logger from "@/logger";
+import { nanoid } from "@/utils";
 import {
   RESET_PASSWORD_VERIFICATION_KEY_NAME,
   USER_VERIFICATION_KEY_NAME,
-} from "../utils/constants";
-import { EAuthorStatus, EUserRole } from "../utils/enums";
+} from "@/utils/constants";
+import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import {
   ICursorQueryParams,
   IRegisterInput,
   IResponseOnCursor,
   IResponseOnOffset,
-} from "../utils/interfaces";
-import sendMail from "../utils/mailer";
-import redisClient from "../utils/redis";
+} from "@/utils/interfaces";
+import sendMail from "@/utils/mailer";
+import redisClient from "@/utils/redis";
 
 export function getUserById(prisma: PrismaClient, id: string) {
   return prisma.user.findUnique({ where: { id } });

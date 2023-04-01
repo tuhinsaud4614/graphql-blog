@@ -1,6 +1,7 @@
-import { ErrorRequestHandler } from "express";
-import logger from "../logger";
-import { HttpError } from "../model";
+import type { ErrorRequestHandler } from "express";
+
+import logger from "@/logger";
+import { HttpError } from "@/model";
 
 export const errorHandler: ErrorRequestHandler = (err, _, res, next) => {
   if (res.headersSent) {

@@ -1,23 +1,24 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
-import logger from "../logger";
+
+import logger from "@/logger";
 import {
   createCategory,
   deleteCategory,
   getCategoriesOnOffset,
   getCategoryById,
   updateCategory,
-} from "../services/category.service";
+} from "@/services/category.service";
 import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
   FETCH_ERR_MSG,
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
-} from "../utils/constants";
-import { IOffsetQueryParams } from "../utils/interfaces";
-import { getGraphqlYogaError } from "../validations";
-import { offsetQueryParamsSchema } from "../validations/post.validation";
+} from "@/utils/constants";
+import { IOffsetQueryParams } from "@/utils/interfaces";
+import { getGraphqlYogaError } from "@/validations";
+import { offsetQueryParamsSchema } from "@/validations/post.validation";
 
 export async function getCategoriesOnOffsetCtrl(
   prisma: PrismaClient,

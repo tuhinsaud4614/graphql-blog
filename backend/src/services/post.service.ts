@@ -1,11 +1,12 @@
 import { Post, Prisma, PrismaClient, User } from "@prisma/client";
+
 import {
   ICreatePostInput,
   ICursorQueryParams,
   IResponseOnCursor,
   IResponseOnOffset,
   IUpdatePostInput,
-} from "../utils/interfaces";
+} from "@/utils/interfaces";
 
 export function getPostById(prisma: PrismaClient, id: string) {
   return prisma.post.findUnique({ where: { id } });

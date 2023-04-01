@@ -1,8 +1,9 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import _ from "lodash";
-import logger from "../logger";
-import { NoContentError } from "../model";
+
+import logger from "@/logger";
+import { NoContentError } from "@/model";
 import {
   countCommentsForPost,
   countReplies,
@@ -15,22 +16,22 @@ import {
   getCommentsOnOffset,
   getCommentsRepliesOnCursor,
   updateComment,
-} from "../services/comment.service";
-import { getPostById } from "../services/post.service";
+} from "@/services/comment.service";
+import { getPostById } from "@/services/post.service";
 import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
   FETCH_ERR_MSG,
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
-} from "../utils/constants";
+} from "@/utils/constants";
 import {
   ICursorQueryParams,
   IOffsetQueryParams,
   IUserPayload,
-} from "../utils/interfaces";
-import { getGraphqlYogaError } from "../validations";
-import { createCommentSchema } from "../validations/comment.validation";
+} from "@/utils/interfaces";
+import { getGraphqlYogaError } from "@/validations";
+import { createCommentSchema } from "@/validations/comment.validation";
 import {
   cursorQueryParamsSchema,
   offsetQueryParamsSchema,

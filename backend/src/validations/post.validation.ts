@@ -1,6 +1,7 @@
 import { has } from "lodash";
 import * as yup from "yup";
-import { maxFileSize } from "../utils";
+
+import { maxFileSize } from "@/utils";
 
 import {
   ARRAY_LENGTH_ERR_MSG,
@@ -10,8 +11,8 @@ import {
   NOT_NUM_ERR_MSG,
   REQUIRED_ERR_MSG,
   TOO_LARGE_FILE_ERR_MSG,
-} from "../utils/constants";
-import { EUserRole } from "../utils/enums";
+} from "@/utils/constants";
+import { EUserRole } from "@/utils/enums";
 
 export const createPostSchema = yup.object().shape({
   title: yup.string().required(REQUIRED_ERR_MSG("Title")),

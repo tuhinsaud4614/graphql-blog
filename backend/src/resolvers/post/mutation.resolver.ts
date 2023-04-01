@@ -1,20 +1,21 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
+
 import {
   createPostCtrl,
   deletePostCtrl,
   reactionToCtrl,
   updatePostCtrl,
-} from "../../controller/post.controller";
-import { AuthenticationError } from "../../model";
+} from "@/controller/post.controller";
+import { AuthenticationError } from "@/model";
 import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
   VERIFIED_AUTHOR_ERR_MSG,
-} from "../../utils/constants";
-import { EAuthorStatus, EUserRole } from "../../utils/enums";
-import { ICreatePostInput, IUpdatePostInput } from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
+} from "@/utils/constants";
+import { EAuthorStatus, EUserRole } from "@/utils/enums";
+import { ICreatePostInput, IUpdatePostInput } from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const Mutation = {
   async createPost(

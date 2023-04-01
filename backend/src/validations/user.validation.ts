@@ -10,7 +10,7 @@ import {
   REQUIRED_ERR_MSG,
   VALID_EMAIL_REGEX,
   VALID_MOBILE_REGEX,
-} from "../utils/constants";
+} from "@/utils/constants";
 
 export const registerSchema = yup.object().shape({
   email: yup.string().required(REQUIRED_ERR_MSG("Email")).email(INVALID_EMAIL),

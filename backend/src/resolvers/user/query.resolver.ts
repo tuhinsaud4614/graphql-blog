@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import {
   authorFollowersOnCursorCtrl,
   authorFollowingsOnCursorCtrl,
@@ -9,16 +10,16 @@ import {
   userFollowersCtrl,
   userFollowingsCtrl,
   userResultCtrl,
-} from "../../controller/user.controller";
-import { getUserById } from "../../services/user.service";
+} from "@/controller/user.controller";
+import { getUserById } from "@/services/user.service";
 import {
   NOT_EXIST_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
-} from "../../utils/constants";
-import { ICursorQueryParams, IOffsetQueryParams } from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
-import { getGraphqlYogaError } from "../../validations";
+} from "@/utils/constants";
+import { ICursorQueryParams, IOffsetQueryParams } from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
+import { getGraphqlYogaError } from "@/validations";
 
 export const Query = {
   async token(

@@ -1,7 +1,8 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import { NOT_EXIST_FOR_ERR_MSG } from "../../utils/constants";
-import { IUser } from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
+
+import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
+import { IUser } from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const User = {
   password() {

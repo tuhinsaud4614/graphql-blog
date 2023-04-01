@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import {
   getAllPostsByTagCtrl,
   getAllPostsCtrl,
@@ -8,17 +9,17 @@ import {
   postCommentsCountCtrl,
   postReactionsByCtrl,
   postReactionsCountCtrl,
-} from "../../controller/post.controller";
-import logger from "../../logger";
-import { AuthenticationError } from "../../model";
-import { getPostById } from "../../services/post.service";
-import { NOT_EXIST_ERR_MSG } from "../../utils/constants";
+} from "@/controller/post.controller";
+import logger from "@/logger";
+import { AuthenticationError } from "@/model";
+import { getPostById } from "@/services/post.service";
+import { NOT_EXIST_ERR_MSG } from "@/utils/constants";
 import {
   ICursorQueryParams,
   IOffsetQueryParams,
   IPostsByTagQueryParams,
-} from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
+} from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const Query = {
   async postsOnOffset(

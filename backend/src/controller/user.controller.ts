@@ -6,13 +6,14 @@ import { IncomingMessage, ServerResponse } from "http";
 import { pick } from "lodash";
 import ms from "ms";
 import path from "path";
-import logger from "../logger";
+
+import logger from "@/logger";
 import {
   AuthenticationError,
   NoContentError,
   UserInputError,
   ValidationError,
-} from "../model";
+} from "@/model";
 import {
   createUser,
   followTo,
@@ -34,15 +35,15 @@ import {
   updateUserName,
   userResetPassword,
   verifyAuthorStatus,
-} from "../services/user.service";
+} from "@/services/user.service";
 import {
   generateToken,
   imageUpload,
   isVerifyResetPassword,
   nanoid,
   verifyRefreshToken,
-} from "../utils";
-import config from "../utils/config";
+} from "@/utils";
+import config from "@/utils/config";
 import {
   ALREADY_FOLLOWED_ERR_MSG,
   ALREADY_UN_FOLLOWED_ERR_MSG,
@@ -59,28 +60,28 @@ import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
   USER_VERIFICATION_KEY_NAME,
-} from "../utils/constants";
-import { EAuthorStatus, EUserRole } from "../utils/enums";
+} from "@/utils/constants";
+import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import {
   ICursorQueryParams,
   ILoginInput,
   IOffsetQueryParams,
   IRegisterInput,
   IUserPayload,
-} from "../utils/interfaces";
-import redisClient from "../utils/redis";
-import { getGraphqlYogaError } from "../validations";
+} from "@/utils/interfaces";
+import redisClient from "@/utils/redis";
+import { getGraphqlYogaError } from "@/validations";
 import {
   cursorQueryParamsSchema,
   offsetQueryParamsSchema,
-} from "../validations/post.validation";
+} from "@/validations/post.validation";
 import {
   loginSchema,
   registerSchema,
   resendActivationSchema,
   resetPasswordSchema,
   verifyUserSchema,
-} from "../validations/user.validation";
+} from "@/validations/user.validation";
 
 async function generateTokens(user: IUserPayload) {
   const accessToken = await generateToken(

@@ -1,7 +1,8 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
-import logger from "../logger";
+
+import logger from "@/logger";
 import {
   createPost,
   deletePost,
@@ -18,8 +19,8 @@ import {
   reactionToPost,
   reactionWithdrawToPost,
   updatePost,
-} from "../services/post.service";
-import { imageUpload, nanoid, removeFile } from "../utils";
+} from "@/services/post.service";
+import { imageUpload, nanoid, removeFile } from "@/utils";
 import {
   CREATION_ERR_MSG,
   DELETE_ERR_MSG,
@@ -27,9 +28,9 @@ import {
   NOT_EXIST_ERR_MSG,
   REACTIONS_ERR_MSG,
   UPDATE_ERR_MSG,
-} from "../utils/constants";
-import { YogaPubSubType } from "../utils/context";
-import { EReactionsMutationStatus } from "../utils/enums";
+} from "@/utils/constants";
+import { YogaPubSubType } from "@/utils/context";
+import { EReactionsMutationStatus } from "@/utils/enums";
 import {
   ICreatePostInput,
   ICursorQueryParams,
@@ -39,15 +40,15 @@ import {
   IReactionsCount,
   IUpdatePostInput,
   IUserPayload,
-} from "../utils/interfaces";
-import { getGraphqlYogaError } from "../validations";
+} from "@/utils/interfaces";
+import { getGraphqlYogaError } from "@/validations";
 import {
   createPostSchema,
   cursorQueryParamsSchema,
   getAllPostsByTagSchema,
   offsetQueryParamsSchema,
   updatePostSchema,
-} from "../validations/post.validation";
+} from "@/validations/post.validation";
 
 export async function createPostCtrl(
   prisma: PrismaClient,

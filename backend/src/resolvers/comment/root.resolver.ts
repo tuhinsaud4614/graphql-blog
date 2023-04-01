@@ -1,10 +1,11 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
-import logger from "../../logger";
-import { UnknownError } from "../../model";
-import { getReplyCount } from "../../services/comment.service";
-import { NOT_EXIST_FOR_ERR_MSG } from "../../utils/constants";
-import { IComment } from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
+
+import logger from "@/logger";
+import { UnknownError } from "@/model";
+import { getReplyCount } from "@/services/comment.service";
+import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
+import { IComment } from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const Comment = {
   async commenter(

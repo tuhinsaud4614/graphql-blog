@@ -1,10 +1,10 @@
 import {
   getPostCommentsOnCursorCtrl,
   getPostCommentsOnOffsetCtrl,
-} from "../../controller/comment.controller";
-import { AuthenticationError } from "../../model";
-import { ICursorQueryParams, IOffsetQueryParams } from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
+} from "@/controller/comment.controller";
+import { AuthenticationError } from "@/model";
+import { ICursorQueryParams, IOffsetQueryParams } from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const Query = {
   async postCommentsOnOffset(

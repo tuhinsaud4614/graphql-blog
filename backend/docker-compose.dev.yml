@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      target: development
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - db
+      - cache
+    ports:
+      - "${PORT}:${PORT}"
+      # Prisma Studio port
+      - 5555:5555
+    networks:
+      - shared-network
+    command: bash -c 'npx prisma db push --schema prisma/schema.prisma && npx prisma generate --schema prisma/schema.prisma && npm run dev'
+
+  db:
+    image: postgres:15.2-alpine
+    restart: always
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    env_file:
+      - ./.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - shared-network
+
+  cache:
+    image: redis:7.0.8-alpine
+    env_file:
+      - ./.env
+    restart: always
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - rediscache:/data
+    networks:
+      - shared-network
+
+volumes:
+  pgdata:
+  rediscache:
+
+networks:
+  shared-network:
+
+  # client:
+  #   build:
+  #     context: ./frontend-web
+  #     target: development
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   env_file:
+  #     - ./frontend-web/.env
+  #   volumes:
+  #     - ./frontend-web:/app/client
+  #     - /app/client/node_modules
+  #   depends_on:
+  #     - api
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - shared-network
+  #   command: bash -c 'npm run dev'

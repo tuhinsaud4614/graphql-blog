@@ -1,8 +1,9 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { has } from "lodash";
 import * as yup from "yup";
-import { CustomError, UserInputError } from "../model";
-import { formatYupError, maxFileSize } from "../utils";
+
+import { CustomError, UserInputError } from "@/model";
+import { formatYupError, maxFileSize } from "@/utils";
 import {
   IMAGE_MIMES,
   INTERNAL_SERVER_ERROR,
@@ -10,7 +11,7 @@ import {
   REQUIRED_ERR_MSG,
   TOO_LARGE_FILE_ERR_MSG,
   VALIDATION_ERR_MSG,
-} from "../utils/constants";
+} from "@/utils/constants";
 
 export function getGraphqlYogaError(
   error: any,

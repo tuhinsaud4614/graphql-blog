@@ -1,5 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
+
 import {
   followRequestCtrl,
   loginCtrl,
@@ -13,18 +14,18 @@ import {
   uploadAvatar,
   verifyResetPasswordCtrl,
   verifyUserCtrl,
-} from "../../controller/user.controller";
-import { AuthenticationError } from "../../model";
-import config from "../../utils/config";
+} from "@/controller/user.controller";
+import { AuthenticationError } from "@/model";
+import config from "@/utils/config";
 import {
   FOLLOW_OWN_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
   UN_FOLLOW_OWN_ERR_MSG,
-} from "../../utils/constants";
-import { EAuthorStatus, EFollowingMutationStatus } from "../../utils/enums";
-import { ILoginInput, IRegisterInput } from "../../utils/interfaces";
-import { YogaContextReturnType } from "../../utils/types";
+} from "@/utils/constants";
+import { EAuthorStatus, EFollowingMutationStatus } from "@/utils/enums";
+import { ILoginInput, IRegisterInput } from "@/utils/interfaces";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const Mutation = {
   async register(

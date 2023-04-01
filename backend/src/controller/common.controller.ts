@@ -1,12 +1,13 @@
 import path from "path";
-import logger from "../logger";
-import { fileUpload, imageUpload, nanoid, removeFile } from "../utils";
-import { CREATION_ERR_MSG } from "../utils/constants";
+
+import logger from "@/logger";
+import { fileUpload, imageUpload, nanoid, removeFile } from "@/utils";
+import { CREATION_ERR_MSG } from "@/utils/constants";
 import {
   getGraphqlYogaError,
   uploadFileSchema,
   uploadImageSchema,
-} from "../validations";
+} from "@/validations";
 
 export async function uploadFileCtrl(file: File) {
   let newFilePath;

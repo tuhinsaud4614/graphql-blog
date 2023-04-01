@@ -5,15 +5,16 @@ import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import { Server } from "http";
 import path from "path";
-import logger from "./logger";
-import { errorHandler } from "./middleware";
-import { HttpError, RateLimitError } from "./model";
-import resolvers from "./resolvers";
-import typeDefs from "./typeDefs";
-import { createContext } from "./utils";
-import config from "./utils/config";
-import { SIGNALS } from "./utils/constants";
-import redisClient from "./utils/redis";
+
+import logger from "@/logger";
+import { errorHandler } from "@/middleware";
+import { HttpError, RateLimitError } from "@/model";
+import resolvers from "@/resolvers";
+import typeDefs from "@/typeDefs";
+import { createContext } from "@/utils";
+import config from "@/utils/config";
+import { SIGNALS } from "@/utils/constants";
+import redisClient from "@/utils/redis";
 
 async function shutdown({
   signal,

@@ -1,10 +1,11 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import logger from "../logger";
-import { getManyTags } from "../services/tag.service";
-import { FETCH_ERR_MSG } from "../utils/constants";
-import { IOffsetPageInfo, IOffsetQueryParams } from "../utils/interfaces";
-import { getGraphqlYogaError } from "../validations";
-import { offsetQueryParamsSchema } from "../validations/post.validation";
+
+import logger from "@/logger";
+import { getManyTags } from "@/services/tag.service";
+import { FETCH_ERR_MSG } from "@/utils/constants";
+import { IOffsetPageInfo, IOffsetQueryParams } from "@/utils/interfaces";
+import { getGraphqlYogaError } from "@/validations";
+import { offsetQueryParamsSchema } from "@/validations/post.validation";
 
 // Offset based pagination start
 export async function getTagsOnOffsetCtrl(

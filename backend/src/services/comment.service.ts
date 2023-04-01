@@ -1,9 +1,10 @@
 import { Comment, Prisma, PrismaClient } from "@prisma/client";
+
 import {
   ICursorQueryParams,
   IResponseOnCursor,
   IResponseOnOffset,
-} from "../utils/interfaces";
+} from "@/utils/interfaces";
 
 export function getCommentForUser(
   prisma: PrismaClient,

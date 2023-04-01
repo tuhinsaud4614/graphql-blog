@@ -1,5 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLErrorExtensions } from "graphql";
+
 import {
   BAD_USER_INPUT,
   FORBIDDEN,
@@ -12,8 +13,8 @@ import {
   RATE_LIMIT_EXCEED,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
-} from "../utils/constants";
-import { IErrorResponse, ISuccessResponse } from "../utils/interfaces";
+} from "@/utils/constants";
+import { IErrorResponse, ISuccessResponse } from "@/utils/interfaces";
 
 export class HttpError extends Error {
   constructor(message: string, public code: number, public detail?: string) {

@@ -3,7 +3,7 @@ import logger from "../logger";
 import config from "./config";
 
 const redisClient = createClient({
-  url: config.REDIS_URI,
+  url: `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`,
 });
 
 redisClient.on("connect", () => {

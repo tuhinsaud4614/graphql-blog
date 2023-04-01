@@ -12,8 +12,11 @@ const properties = {
   DATABASE_URL: {
     type: "string",
   },
-  REDIS_URI: {
+  REDIS_HOST: {
     type: "string",
+  },
+  REDIS_PORT: {
+    type: "number",
   },
   SMTP_USER: {
     type: "string",
@@ -51,7 +54,8 @@ type ENV = {
   PORT: number;
   HOST: string;
   DATABASE_URL: string;
-  REDIS_URI: string;
+  REDIS_HOST: string;
+  REDIS_PORT: number;
   SMTP_USER: string;
   SMTP_PASSWORD: string;
   SMTP_HOST: string;

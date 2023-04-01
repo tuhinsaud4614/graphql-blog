@@ -1,11 +1,12 @@
 import { GraphQLResolveInfo } from "graphql";
+
 import {
   createCommentCtrl,
   deleteCommentCtrl,
   updateCommentCtrl,
-} from "../../controller/comment.controller";
-import { AuthenticationError } from "../../model";
-import { YogaContextReturnType } from "../../utils/types";
+} from "@/controller/comment.controller";
+import { AuthenticationError } from "@/model";
+import { YogaContextReturnType } from "@/utils/types";
 
 export const Mutation = {
   async createComment(

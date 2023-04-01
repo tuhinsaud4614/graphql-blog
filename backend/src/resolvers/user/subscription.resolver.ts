@@ -1,15 +1,16 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { GraphQLResolveInfo } from "graphql";
-import logger from "../../logger";
-import { verifyAccessTokenFromExtensions } from "../../utils";
+
+import logger from "@/logger";
+import { verifyAccessTokenFromExtensions } from "@/utils";
 import {
   SUBSCRIPTION_FOLLOWING_ERR_MSG,
   SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
-} from "../../utils/constants";
-import { YogaContextReturnType } from "../../utils/types";
-import { getGraphqlYogaError } from "../../validations";
+} from "@/utils/constants";
+import { YogaContextReturnType } from "@/utils/types";
+import { getGraphqlYogaError } from "@/validations";
 
 export const Subscription = {
   following: {
