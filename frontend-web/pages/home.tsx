@@ -38,7 +38,7 @@ interface Props {
 
 const MyHome: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
-    queryChecking(query, tabs, "tab", 1)
+    queryChecking(query, tabs, "tab", 1),
   );
   const { replace } = useRouter();
 
@@ -110,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = withSSRAuth(
       isDev() && console.log(error);
       return addApolloState(client, { props: { query } });
     }
-  }
+  },
 );
 
 export default MyHome;

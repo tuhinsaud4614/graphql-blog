@@ -59,14 +59,14 @@ const Register: NextPage = () => {
   const passwordId = useId();
   const confirmPasswordId = useId();
   const [registerAuthor, { loading, data, error, reset }] = useRegisterMutation(
-    { errorPolicy: "all", fetchPolicy: "network-only" }
+    { errorPolicy: "all", fetchPolicy: "network-only" },
   );
 
   const { replace } = useRouter();
 
   const onSubmit = async (
     values: IValues,
-    { resetForm }: FormikHelpers<IValues>
+    { resetForm }: FormikHelpers<IValues>,
   ) => {
     await registerAuthor({ variables: values });
     resetForm();
@@ -194,7 +194,7 @@ const Register: NextPage = () => {
               />
               <div className="flex justify-center py-3">
                 <Button
-                  className="w-[14.125rem] px-5 !py-2 "
+                  className="w-[14.125rem] !py-2 px-5 "
                   type="submit"
                   aria-label="Register"
                   loading={isSubmitting || loading}

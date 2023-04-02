@@ -27,7 +27,7 @@ interface Props {
 
 const MySuggestionsPage: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
-    queryChecking(query, tabs, "tab", 2)
+    queryChecking(query, tabs, "tab", 2),
   );
 
   const { replace } = useRouter();
@@ -70,7 +70,7 @@ const MySuggestionsPage: NextPage<Props> = ({ query }) => {
           replace(
             index === 2
               ? ROUTES.mySuggestions
-              : `${ROUTES.mySuggestions}?tab=${encodeURI(key)}`
+              : `${ROUTES.mySuggestions}?tab=${encodeURI(key)}`,
           );
         }}
         selectedTab={currentTab}

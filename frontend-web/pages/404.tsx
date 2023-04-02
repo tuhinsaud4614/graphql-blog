@@ -34,7 +34,7 @@ const PageNotFound: NextPage = () => {
             <LinkButton
               href={ROUTES.myHome}
               variant="secondary"
-              className="w-32 text-xl flex justify-center uppercase"
+              className="flex w-32 justify-center text-xl uppercase"
               passHref
             >
               Home

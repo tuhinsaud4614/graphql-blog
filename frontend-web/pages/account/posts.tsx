@@ -23,7 +23,7 @@ interface Props {
 
 const MyPostsPage: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
-    queryChecking(query, MY_POSTS_TABS, "tab", 0)
+    queryChecking(query, MY_POSTS_TABS, "tab", 0),
   );
   const { replace } = useRouter();
 

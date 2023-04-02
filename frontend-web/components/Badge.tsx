@@ -39,10 +39,10 @@ export default function Badge({
   return (
     <span
       className={classNames(
-        "inline-flex justify-center items-center text-xs leading-none font-bold rounded-full border-2 border-white dark:border-base-dark-300 px-1.5 min-h-[1.5rem] min-w-[1.5rem]",
+        "inline-flex min-h-[1.25rem] min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-xs font-bold leading-none ring-2 ring-base-100 dark:ring-base-dark-100",
         className(variant),
-        float && "absolute top-0 right-0 translate-x-1/2 -translate-y-1/2",
-        cls
+        float && "absolute right-0 top-0 -translate-y-1/2 translate-x-1/2",
+        cls,
       )}
     >
       {children}

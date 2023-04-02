@@ -1,4 +1,5 @@
 import {
+  adminSidebarSliceReducer,
   authorFollowerCountReducer,
   authReducer,
   reactSliceReducer,
@@ -34,6 +35,7 @@ const combinedReducer = combineReducers({
   notification: notificationReducer,
   authorFollowerCount: authorFollowerCountReducer,
   react: reactSliceReducer,
+  adminSidebar: adminSidebarSliceReducer,
 });
 
 // const reducer = (

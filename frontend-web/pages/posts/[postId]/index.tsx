@@ -110,9 +110,7 @@ const PostPage: NextPage<IParams> = ({ post }) => {
       <article ref={contentRef}>
         <PostDetailAuthorInfo
           author={author}
-          postDate={moment(+rest.updatedAt)
-            .startOf("second")
-            .fromNow()}
+          postDate={moment(+rest.updatedAt).startOf("second").fromNow()}
         />
         <h1 className={className.title}>{rest.title}</h1>
         <PostDetailImage alt={rest.title} image={rest.image} />

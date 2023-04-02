@@ -6,6 +6,7 @@
     "source.fixAll.tslint": true,
     "source.organizeImports": true
   },
+  "eslint.validate": ["typescript", "javascript"],
   "cSpell.words": [
     "atrule",
     "codegen",

@@ -36,7 +36,7 @@ const schema = yup.object().shape({
           !!value &&
           (VALID_MOBILE_REGEX.test(value) || VALID_EMAIL_REGEX.test(value))
         );
-      }
+      },
     ),
   password: yup.string().required("Password is required."),
 });
@@ -58,7 +58,7 @@ const Login: NextPage = () => {
 
   const onSubmit = async (
     { emailMobile, password }: IValues,
-    { resetForm }: FormikHelpers<IValues>
+    { resetForm }: FormikHelpers<IValues>,
   ) => {
     try {
       await client.resetStore();
@@ -112,7 +112,7 @@ const Login: NextPage = () => {
                 name="emailMobile"
                 aria-label="email"
                 aria-invalid={Boolean(
-                  touched.emailMobile && errors.emailMobile
+                  touched.emailMobile && errors.emailMobile,
                 )}
                 type="text"
                 valid={!(touched.emailMobile && errors.emailMobile)}
@@ -139,7 +139,7 @@ const Login: NextPage = () => {
               />
               <div className="flex justify-center py-3">
                 <Button
-                  className="w-[14.125rem] px-5 !py-2 "
+                  className="w-[14.125rem] !py-2 px-5 "
                   type="submit"
                   aria-label="Login"
                   loading={isSubmitting || loading}

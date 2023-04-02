@@ -30,6 +30,6 @@ const NotificationsPage: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSSRAuth(
-  ROUTES.myHome
+  ROUTES.myHome,
 );
 export default NotificationsPage;

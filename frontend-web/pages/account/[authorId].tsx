@@ -41,7 +41,7 @@ interface Props {
 
 const AboutPage: NextPage<Props> = ({ query }) => {
   const [currentTab, setCurrentTab] = useState(() =>
-    queryChecking(query, tabs, "tab")
+    queryChecking(query, tabs, "tab"),
   );
   const matches = useMediaQuery("(min-width: 1024px)");
   const { replace } = useRouter();
@@ -96,7 +96,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
               />
             </span>
           ) : (
-            <DemoAvatar className="w-8 h-8 mr-5 md:hidden" size={32 / 1.8} />
+            <DemoAvatar className="mr-5 h-8 w-8 md:hidden" size={32 / 1.8} />
           )}
           <h1 className={className.titleText}>{userName}</h1>
         </div>
@@ -107,7 +107,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
             replace(
               index === 0
                 ? ROUTES.authorProfile(authorId)
-                : ROUTES.authorProfile(authorId) + "?tab=about"
+                : ROUTES.authorProfile(authorId) + "?tab=about",
             );
           }}
           selectedTab={currentTab}
@@ -144,7 +144,7 @@ export const getServerSideProps: GetServerSideProps = withSSRAuth(
     } catch (error) {
       return { props: {}, notFound: true };
     }
-  }
+  },
 );
 
 export default AboutPage;

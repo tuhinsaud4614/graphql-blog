@@ -83,7 +83,7 @@ const VerifyUser: NextPage<Props> = ({ query }) => {
           ) : (
             <Fragment>
               <p className={className.item}>{errors}!</p>
-              <div className="flex items-center justify-center space-x-3 mt-4">
+              <div className="mt-4 flex items-center justify-center space-x-3">
                 <LinkButton
                   href={ROUTES.home}
                   replace

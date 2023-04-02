@@ -83,7 +83,7 @@ const VerifyResetPassword: NextPage<Props> = ({ query }) => {
             )}
           </ul>
 
-          <div className="flex items-center justify-center space-x-3 mt-4">
+          <div className="mt-4 flex items-center justify-center space-x-3">
             <LinkButton
               href={ROUTES.accountSettings}
               replace
@@ -134,7 +134,7 @@ function Wrapper({ children }: PropsWithChildren) {
 
 export const getServerSideProps: GetServerSideProps = withSSRAuth(
   ROUTES.accountSettings,
-  async (_, { query }) => ({ props: { query } })
+  async (_, { query }) => ({ props: { query } }),
 );
 
 export default VerifyResetPassword;

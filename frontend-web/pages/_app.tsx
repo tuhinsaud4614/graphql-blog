@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
       {progress && (
-        <ProgressBar className="fixed z-[999] top-0 left-0 right-0" />
+        <ProgressBar className="fixed left-0 right-0 top-0 z-[999]" />
       )}
       {/* <Provider store={store}> */}
       <ApolloProvider client={apolloClient}>
@@ -76,7 +76,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }
         newestOnTop
       />
-    </React.Fragment>
+    </React.Fragment>,
   );
 }
 

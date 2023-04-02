@@ -48,7 +48,7 @@ const schema = yup.object().shape({
       yup.object().shape({
         name: yup.string().required("Option name is required"),
         value: yup.string().required("Option value is required"),
-      })
+      }),
     )
     .min(1, "At least one category required"),
   tags: yup
@@ -57,7 +57,7 @@ const schema = yup.object().shape({
       yup.object().shape({
         name: yup.string().required("Tag name is required"),
         value: yup.string().required("Tag value is required"),
-      })
+      }),
     )
     .min(1, "At least one tag required"),
   image: yup
@@ -69,7 +69,7 @@ const schema = yup.object().shape({
       (value) => {
         if (value === undefined) return true;
         return !!value && _.has(IMAGE_MIMES, value.type);
-      }
+      },
     )
     .test("fileSize", "Image size should be less than 5mb", (value) => {
       if (value === undefined) return true;
@@ -95,7 +95,7 @@ const EditPost: NextPageWithLayout = () => {
 
   const onSubmit = async (
     values: IValues,
-    formikHelpers: FormikHelpers<IValues>
+    formikHelpers: FormikHelpers<IValues>,
   ) => {};
 
   const {
@@ -220,7 +220,7 @@ const EditPost: NextPageWithLayout = () => {
         value={values.body}
         onChange={(value) => setFieldValue("body", value)}
       />
-      <div className="w-52 mt-3">
+      <div className="mt-3 w-52">
         <CheckInput
           label="Published"
           id={publishedId}
@@ -231,9 +231,9 @@ const EditPost: NextPageWithLayout = () => {
           onChange={(e) => setFieldValue("published", e.target.checked)}
         />
       </div>
-      <div className="flex justify-center pt-5 pb-3">
+      <div className="flex justify-center pb-3 pt-5">
         <Button
-          className="w-[14.125rem] px-5 !py-2 "
+          className="w-[14.125rem] !py-2 px-5 "
           type="submit"
           aria-label="Save"
           loading={isSubmitting}

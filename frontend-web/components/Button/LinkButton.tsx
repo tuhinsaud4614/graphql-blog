@@ -1,8 +1,8 @@
+import STYLES from "@styles";
 import { ButtonModeType, ColorVariantType } from "@types";
 import classNames from "classnames";
 import Link, { LinkProps } from "next/link";
 import { HTMLAttributes, ReactNode } from "react";
-import { buttonClassName } from "./util";
 
 interface Props extends LinkProps {
   children?: ReactNode;
@@ -19,21 +19,21 @@ export default function LinkButton({
   mode = "fill",
   ...rest
 }: Props) {
-  let style = classNames(buttonClassName.fill, buttonClassName.fillEnabled);
+  let style = classNames(STYLES.btn.fill, STYLES.btn.fillEnabled);
   if (mode === "outline") {
     style = "border";
   } else if (mode === "text") {
-    style = buttonClassName.text;
+    style = STYLES.btn.text;
   }
   return (
     <Link {...rest}>
       <a
         {...anchorProps}
         className={classNames(
-          buttonClassName.root,
-          buttonClassName.dynamic(variant, mode),
+          STYLES.btn.root,
+          STYLES.btn.dynamic(variant, mode),
           style,
-          rest.className
+          rest.className,
         )}
       >
         {children}

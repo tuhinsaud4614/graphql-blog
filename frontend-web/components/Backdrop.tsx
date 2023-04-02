@@ -21,8 +21,8 @@ export default function Backdrop({ className, ...rest }: Props) {
       animate="end"
       exit="start"
       className={classNames(
-        "fixed inset-0 bg-[#1a2027]/70 backdrop-blur-sm bg-opacity-75",
-        className
+        "fixed inset-0 bg-[#1a2027]/70 bg-opacity-75 backdrop-blur-sm",
+        className,
       )}
     />
   );

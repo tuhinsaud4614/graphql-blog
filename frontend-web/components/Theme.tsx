@@ -2,11 +2,13 @@ import { useDarkMode } from "@hooks";
 import { IAnchorOrigin } from "@interfaces";
 import classNames from "classnames";
 import { Fragment, ReactNode, useState } from "react";
+
+import STYLES from "@styles";
+import Button from "./Button";
 import Menu from "./Menu";
 import { DarkIcon, LightIcon, SystemIcon } from "./svg";
 
 const className = {
-  root: "outline-none border-none flex items-center justify-center",
   items: "w-24 list-none m-0 py-1",
   item: "w-full border-none outline-none flex items-center px-2 py-1 hover:bg-base-200 dark:hover:bg-base-dark-100",
   itemIcon: "h-6 w-6",
@@ -26,24 +28,25 @@ export default function Theme({ anchorOrigin, classes }: Props) {
   const { isDarkMode, setTernaryDarkMode, ternaryDarkMode } = useDarkMode();
   return (
     <Fragment>
-      <button
+      <Button
         type="button"
         aria-label="Theme"
-        className={classNames(className.root, classes?.root)}
+        className={classNames(STYLES.btn.circle, classes?.root)}
+        mode="outline"
         onClick={(e) => setAnchorEle(e.currentTarget)}
       >
         {ternaryDarkMode === "system" ? (
           isDarkMode ? (
-            <DarkIcon className="h-6 w-6 [&_path]:fill-slate-400 dark:[&_path]:fill-slate-500" />
+            <DarkIcon className="h-6 w-6 [&_path]:fill-current" />
           ) : (
-            <LightIcon className="h-6 w-6 [&_path]:stroke-slate-400 dark:[&_path]:stroke-slate-500" />
+            <LightIcon className="h-6 w-6 [&_path]:stroke-current" />
           )
         ) : ternaryDarkMode === "light" ? (
-          <LightIcon className="h-6 w-6 [&_path]:stroke-accent dark:[&_path]:stroke-accent-dark" />
+          <LightIcon className="h-6 w-6 [&_path]:stroke-current" />
         ) : (
-          <DarkIcon className="h-6 w-6 [&_path]:fill-accent dark:[&_path]:fill-accent-dark" />
+          <DarkIcon className="h-6 w-6 [&_path]:fill-current" />
         )}
-      </button>
+      </Button>
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}
@@ -66,7 +69,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
                 className.itemIcon,
                 ternaryDarkMode === "light"
                   ? "[&_path]:stroke-accent dark:[&_path]:stroke-accent-dark"
-                  : "[&_path]:stroke-slate-400 dark:[&_path]:stroke-slate-500"
+                  : "[&_path]:stroke-neutral dark:[&_path]:stroke-neutral-dark",
               )}
             />
           </Item>
@@ -83,7 +86,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
                 className.itemIcon,
                 ternaryDarkMode === "dark"
                   ? "[&_path]:fill-accent dark:[&_path]:fill-accent-dark"
-                  : "[&_path]:fill-slate-400 dark:[&_path]:fill-slate-500"
+                  : "[&_path]:fill-neutral dark:[&_path]:fill-neutral-dark",
               )}
             />
           </Item>
@@ -100,7 +103,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
                 className.itemIcon,
                 ternaryDarkMode === "system"
                   ? "[&_path]:fill-accent dark:[&_path]:fill-accent-dark"
-                  : "[&_path]:fill-slate-400 dark:[&_path]:fill-slate-500"
+                  : "[&_path]:fill-neutral dark:[&_path]:fill-neutral-dark",
               )}
             />
           </Item>
@@ -132,7 +135,7 @@ function Item({ active, children, onClick, text }: ItemProps) {
             className.itemText,
             active
               ? "text-accent dark:text-accent-dark"
-              : "text-slate-400 dark:text-slate-500"
+              : "text-neutral dark:text-neutral-dark",
           )}
         >
           {text}

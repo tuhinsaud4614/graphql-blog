@@ -1,8 +1,9 @@
-import { ButtonModeType, ColorVariantType } from "@types";
 import classNames from "classnames";
-import { ComponentPropsWithRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { ImSpinner2 } from "react-icons/im";
-import { buttonClassName } from "./util";
+
+import STYLES from "@styles";
+import { ButtonModeType, ColorVariantType } from "@types";
 
 interface Props extends ComponentPropsWithRef<"button"> {
   mode?: ButtonModeType;
@@ -18,29 +19,29 @@ export default function Button({
   ...rest
 }: Props) {
   let style = classNames(
-    buttonClassName.fill,
-    !rest.disabled && buttonClassName.fillEnabled
+    STYLES.btn.fill,
+    !rest.disabled && STYLES.btn.fillEnabled,
   );
   if (mode === "outline") {
     style = "border";
   } else if (mode === "text") {
-    style = buttonClassName.text;
+    style = STYLES.btn.text;
   }
   return (
     <button
       {...rest}
       className={classNames(
-        buttonClassName.root,
+        STYLES.btn.root,
         rest.disabled
-          ? buttonClassName.disabled(mode)
-          : buttonClassName.dynamic(variant, mode),
+          ? STYLES.btn.disabled(mode)
+          : STYLES.btn.dynamic(variant, mode),
         style,
-        loading && buttonClassName.loading,
-        rest.className
+        loading && STYLES.btn.loading,
+        rest.className,
       )}
     >
       {children}
-      {loading && <ImSpinner2 className={buttonClassName.spin} />}
+      {loading && <ImSpinner2 className={STYLES.btn.spin} />}
     </button>
   );
 }
