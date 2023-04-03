@@ -11,28 +11,27 @@ import {
 } from "@component";
 import STYLES from "@styles";
 import Hamburger from "./Hamburger";
-import Wrapper from "./Wrapper";
 
 export default function Header() {
   return (
-    <Wrapper>
+    <header className="sticky left-auto top-0 z-[1100] bg-base-200 py-4 shadow-mui dark:bg-base-dark-200">
       <section className="max-w-screen-xl px-4 md:px-6 xl:mx-auto">
         <nav className="flex items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-4">
             <ClientOnly>
               <Hamburger />
             </ClientOnly>
             <LinkButton
               href="/"
               variant="accent"
-              className="flex min-h-[2.5rem] items-center gap-2 !py-0 text-sm font-semibold capitalize"
+              className="hidden min-h-[2.5rem] items-center gap-2 !py-0 text-sm font-semibold capitalize sm:flex"
               passHref
             >
               <BiGlobe size={24} />
               Browse Website
             </LinkButton>
           </div>
-          <div className="ml-auto flex items-center gap-4 rounded-full">
+          <div className="ml-auto flex flex-wrap items-center gap-4 rounded-full">
             <Button mode="outline" className="h-9 w-9 rounded-full !p-0">
               <span className={STYLES.indicator.root}>
                 <Badge
@@ -59,6 +58,6 @@ export default function Header() {
           </div>
         </nav>
       </section>
-    </Wrapper>
+    </header>
   );
 }
