@@ -8,7 +8,7 @@ export interface SidebarState {
 }
 
 const initialState: SidebarState = {
-  value: true,
+  value: false,
 };
 
 export const sidebarSlice = createSlice({

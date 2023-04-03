@@ -1,18 +1,27 @@
 import classNames from "classnames";
 import { BiBell, BiGlobe } from "react-icons/bi";
 
-import { Badge, Button, LinkButton, Theme, UserAvatarBtn } from "@component";
+import {
+  Badge,
+  Button,
+  ClientOnly,
+  LinkButton,
+  Theme,
+  UserAvatarBtn,
+} from "@component";
 import STYLES from "@styles";
-import Container from "./Container";
-import Hamburger from "./hamburger";
+import Hamburger from "./Hamburger";
+import Wrapper from "./Wrapper";
 
 export default function Header() {
   return (
-    <Container>
+    <Wrapper>
       <section className="max-w-screen-xl px-4 md:px-6 xl:mx-auto">
         <nav className="flex items-center">
           <div className="flex items-center gap-4">
-            <Hamburger />
+            <ClientOnly>
+              <Hamburger />
+            </ClientOnly>
             <LinkButton
               href="/"
               variant="accent"
@@ -37,17 +46,19 @@ export default function Header() {
                 <BiBell size={24} />
               </span>
             </Button>
-            <UserAvatarBtn
-              anchorOrigin={{ horizontal: "left", vertical: "top" }}
-              hideOnSmallDevice
-            />
-            <Theme
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              classes={{ menuRoot: "mt-6" }}
-            />
+            <ClientOnly>
+              <UserAvatarBtn
+                anchorOrigin={{ horizontal: "left", vertical: "top" }}
+                hideOnSmallDevice
+              />
+              <Theme
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                classes={{ menuRoot: "mt-6" }}
+              />
+            </ClientOnly>
           </div>
         </nav>
       </section>
-    </Container>
+    </Wrapper>
   );
 }

@@ -11,7 +11,7 @@ import { DarkIcon, LightIcon, SystemIcon } from "./svg";
 const className = {
   items: "w-24 list-none m-0 py-1",
   item: "w-full border-none outline-none flex items-center px-2 py-1 hover:bg-base-200 dark:hover:bg-base-dark-100",
-  itemIcon: "h-6 w-6",
+  itemIcon: "h-6 w-6 [&_path]:stroke-current",
   itemText: "ml-2 text-sm font-semibold",
 };
 
@@ -35,16 +35,15 @@ export default function Theme({ anchorOrigin, classes }: Props) {
         mode="outline"
         onClick={(e) => setAnchorEle(e.currentTarget)}
       >
-        {ternaryDarkMode === "system" ? (
-          isDarkMode ? (
-            <DarkIcon className="h-6 w-6 [&_path]:fill-current" />
-          ) : (
-            <LightIcon className="h-6 w-6 [&_path]:stroke-current" />
-          )
-        ) : ternaryDarkMode === "light" ? (
-          <LightIcon className="h-6 w-6 [&_path]:stroke-current" />
+        {ternaryDarkMode === "light" || !isDarkMode ? (
+          <LightIcon className={className.itemIcon} />
         ) : (
-          <DarkIcon className="h-6 w-6 [&_path]:fill-current" />
+          <DarkIcon
+            className={classNames(
+              className.itemIcon,
+              "[&>path:nth-last-child(2)]:fill-current",
+            )}
+          />
         )}
       </Button>
       <Menu
@@ -64,14 +63,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
               setAnchorEle(null);
             }}
           >
-            <LightIcon
-              className={classNames(
-                className.itemIcon,
-                ternaryDarkMode === "light"
-                  ? "[&_path]:stroke-accent dark:[&_path]:stroke-accent-dark"
-                  : "[&_path]:stroke-neutral dark:[&_path]:stroke-neutral-dark",
-              )}
-            />
+            <LightIcon className={className.itemIcon} />
           </Item>
           <Item
             text="Dark"
@@ -84,9 +76,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
             <DarkIcon
               className={classNames(
                 className.itemIcon,
-                ternaryDarkMode === "dark"
-                  ? "[&_path]:fill-accent dark:[&_path]:fill-accent-dark"
-                  : "[&_path]:fill-neutral dark:[&_path]:fill-neutral-dark",
+                "[&>path:nth-last-child(2)]:fill-current",
               )}
             />
           </Item>
@@ -98,14 +88,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
               setAnchorEle(null);
             }}
           >
-            <SystemIcon
-              className={classNames(
-                className.itemIcon,
-                ternaryDarkMode === "system"
-                  ? "[&_path]:fill-accent dark:[&_path]:fill-accent-dark"
-                  : "[&_path]:fill-neutral dark:[&_path]:fill-neutral-dark",
-              )}
-            />
+            <SystemIcon className={className.itemIcon} />
           </Item>
         </ul>
       </Menu>
@@ -126,18 +109,16 @@ function Item({ active, children, onClick, text }: ItemProps) {
       <button
         aria-label={text}
         type="button"
-        className={className.item}
+        className={classNames(
+          className.item,
+          active
+            ? "text-accent dark:text-accent-dark"
+            : "text-neutral dark:text-neutral-dark",
+        )}
         onClick={onClick}
       >
         {children}
-        <span
-          className={classNames(
-            className.itemText,
-            active
-              ? "text-accent dark:text-accent-dark"
-              : "text-neutral dark:text-neutral-dark",
-          )}
-        >
+        <span className={classNames(className.itemText, "text-current")}>
           {text}
         </span>
       </button>

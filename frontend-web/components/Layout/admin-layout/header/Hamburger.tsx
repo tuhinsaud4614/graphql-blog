@@ -1,11 +1,23 @@
 import classNames from "classnames";
+import type { SVGMotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 
 import { Button } from "@component";
 import { adminToggleSidebar, selectAdminSidebar } from "@features";
 import { useMediaQuery } from "@hooks";
 import STYLES from "@styles";
 import { useAppDispatch, useAppSelector } from "store";
-import Path from "./Path";
+
+function Path(props: SVGMotionProps<SVGPathElement>) {
+  return (
+    <motion.path
+      fill="transparent"
+      strokeWidth="3"
+      strokeLinecap="round"
+      {...props}
+    />
+  );
+}
 
 export default function Hamburger() {
   const matches = useMediaQuery("(min-width: 1280px)");

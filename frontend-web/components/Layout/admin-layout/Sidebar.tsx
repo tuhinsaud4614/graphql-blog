@@ -43,6 +43,7 @@ export default function Sidebar() {
         >
           <Image
             src="/logo.svg"
+            priority
             alt="The Rat Diary"
             height={50}
             width={50}
@@ -55,7 +56,7 @@ export default function Sidebar() {
           mode="text"
           className={classNames(
             "!p-2 text-base-100",
-            matches && !visible && "hidden group-hover:flex",
+            !visible && "hidden group-hover:flex",
           )}
           onClick={() => rdxDispatch(adminToggleSidebar())}
         >
@@ -77,7 +78,7 @@ export default function Sidebar() {
         className={classNames(
           className.root,
           "group duration-200 ease-in",
-          matches && visible ? "w-[17.5rem]" : "w-[5.375rem] hover:w-[17.5rem]",
+          visible ? "w-[17.5rem]" : "w-[5.375rem] hover:w-[17.5rem]",
         )}
       >
         {content}

@@ -12,7 +12,7 @@ export default function Wrapper({ children }: React.PropsWithChildren) {
     <div
       className={classNames(
         "transition-all duration-300",
-        matches && visible && "ml-[17.5rem]",
+        matches && visible && "xl:ml-[17.5rem]",
       )}
     >
       {children}
