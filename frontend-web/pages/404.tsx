@@ -18,9 +18,9 @@ const className = {
 };
 
 const PageNotFound: NextPage = () => {
-  const router = useRouter();
+  const { asPath } = useRouter();
 
-  const isAdmin = router.asPath.startsWith("/admin");
+  const isAdmin = asPath.startsWith("/admin");
 
   const content = (
     <div className={className.root}>

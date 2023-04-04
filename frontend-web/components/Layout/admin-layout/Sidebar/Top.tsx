@@ -1,9 +1,8 @@
 import classNames from "classnames";
 import Image from "next/image";
-import Link from "next/link";
 import { BiChevronRight } from "react-icons/bi";
 
-import Button from "components/Button";
+import { Button } from "@component";
 
 interface Props {
   visible: boolean;
@@ -13,21 +12,16 @@ interface Props {
 export default function Top({ visible, onToggle }: Props) {
   return (
     <div className="flex items-center justify-between overflow-hidden p-4">
-      <Link href="/dashboard" passHref>
-        <a
-          className="flex h-[3.125rem] w-[3.125rem] items-center justify-center"
-          aria-label="Home"
-        >
-          <Image
-            src="/logo.svg"
-            priority
-            alt="The Rat Diary"
-            height={50}
-            width={50}
-            layout="fixed"
-          />
-        </a>
-      </Link>
+      <span className="flex h-[3.125rem] w-[3.125rem] items-center justify-center">
+        <Image
+          src="/logo.svg"
+          priority
+          alt="The Rat Diary"
+          height={50}
+          width={50}
+          layout="fixed"
+        />
+      </span>
       <Button
         mode="text"
         className={classNames(

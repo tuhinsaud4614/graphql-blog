@@ -12,7 +12,7 @@ export default function SubItem({ href, children }: ItemProps) {
     <LinkButton
       className={classNames(
         "!justify-start",
-        active ? "capitalize !text-base-100" : "!text-base-300",
+        active && "capitalize !text-base-100",
       )}
       mode="text"
       href={href}
@@ -20,8 +20,8 @@ export default function SubItem({ href, children }: ItemProps) {
     >
       <span
         className={classNames(
-          "ml-2.5 mr-4 h-1 w-1 rounded-full",
-          active ? "ring ring-base-100/40" : "bg-current",
+          "ml-2.5 mr-4 h-1 w-1 rounded-full bg-current",
+          active && "ring ring-base-100/40",
         )}
       />
       {children}

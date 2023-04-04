@@ -1,20 +1,22 @@
 import classNames from "classnames";
 import * as React from "react";
-import { BiCategory, BiChevronDown } from "react-icons/bi";
+import { BiChevronDown } from "react-icons/bi";
 
 import { Accordion, AccordionDetails, AccordionSummary } from "@component";
 
 interface Props {
   visible: boolean;
+  expanded?: boolean;
   children: React.ReactNode;
   title: React.ReactNode;
 }
 
-export default function List({ visible, children, title }: Props) {
+export default function List({ expanded, visible, children, title }: Props) {
   return (
     <li className="w-auto max-w-full">
       <Accordion>
         <AccordionSummary
+          expanded={expanded}
           className="w-full justify-between !shadow-none"
           expandIcon={(expand) => (
             <BiChevronDown
@@ -27,18 +29,17 @@ export default function List({ visible, children, title }: Props) {
             />
           )}
         >
-          <div className="flex items-center gap-2 capitalize">
-            <BiCategory size={24} className="[&_path]:fill-current" />
-            {title}
-          </div>
+          {title}
         </AccordionSummary>
-        <AccordionDetails
-          className={classNames(
-            "mt-2 gap-2",
-            !visible && "xl:hidden xl:group-hover:block",
-          )}
-        >
-          {children}
+        <AccordionDetails>
+          <div
+            className={classNames(
+              "mt-2 gap-2",
+              !visible && "xl:hidden xl:group-hover:block",
+            )}
+          >
+            {children}
+          </div>
         </AccordionDetails>
       </Accordion>
     </li>
