@@ -29,7 +29,12 @@ export const ROUTES = {
   myPostsQuery: (tab: string) => `/account/posts?tab=${tab}`,
   notifications: "/account/notifications",
   accountSettings: "/account/settings",
-};
+  admin: {
+    dashboard: "/admin",
+    categories: "/admin/categories",
+    createCategory: "/admin/categories/create",
+  },
+} as const;
 
 export const IMAGE_MIMES = {
   "image/gif": "gif",

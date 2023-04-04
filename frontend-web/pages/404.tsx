@@ -1,9 +1,12 @@
+import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { Fragment } from "react";
+
 import { LinkButton } from "@component";
 import { ROUTES } from "@constants";
+import { AdminLayout } from "components/Layout";
 import { PostCreateContainer, PostCreateHeader } from "components/account";
 import { SpaceIcon } from "components/svg";
-import { NextPage } from "next";
-import { Fragment } from "react";
 
 const className = {
   root: "flex flex-col sm:flex-row sm:space-x-2",
@@ -15,33 +18,46 @@ const className = {
 };
 
 const PageNotFound: NextPage = () => {
+  const router = useRouter();
+
+  const isAdmin = router.asPath.startsWith("/admin");
+
+  const content = (
+    <div className={className.root}>
+      <div className={className.left}>
+        <SpaceIcon />
+      </div>
+      <div className={className.right}>
+        <h1 className={className.title}>404</h1>
+        <h2 className={className.subtitle}>{"UH OH! You're lost."}</h2>
+        <p className={className.text}>
+          The page you are looking for does not exist. How you got here is a
+          mystery. But you can click the button below to go back to the{" "}
+          {isAdmin ? "dashboard" : "homepage"}.
+        </p>
+        <LinkButton
+          href={isAdmin ? ROUTES.admin.dashboard : ROUTES.myHome}
+          anchorProps={{
+            "aria-label": isAdmin ? "Got to Dashboard" : "Go to Home",
+          }}
+          variant="secondary"
+          className="flex w-fit justify-center text-xl uppercase"
+          passHref
+        >
+          {isAdmin ? "Dashboard" : "Home"}
+        </LinkButton>
+      </div>
+    </div>
+  );
+
+  if (isAdmin) {
+    return <AdminLayout>{content}</AdminLayout>;
+  }
+
   return (
     <Fragment>
       <PostCreateHeader />
-      <PostCreateContainer>
-        <div className={className.root}>
-          <div className={className.left}>
-            <SpaceIcon />
-          </div>
-          <div className={className.right}>
-            <h1 className={className.title}>404</h1>
-            <h2 className={className.subtitle}>{"UH OH! You're lost."}</h2>
-            <p className={className.text}>
-              The page you are looking for does not exist. How you got here is a
-              mystery. But you can click the button below to go back to the
-              homepage.
-            </p>
-            <LinkButton
-              href={ROUTES.myHome}
-              variant="secondary"
-              className="flex w-32 justify-center text-xl uppercase"
-              passHref
-            >
-              Home
-            </LinkButton>
-          </div>
-        </div>
-      </PostCreateContainer>
+      <PostCreateContainer>{content}</PostCreateContainer>
     </Fragment>
   );
 };

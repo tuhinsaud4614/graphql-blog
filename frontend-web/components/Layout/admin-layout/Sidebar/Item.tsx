@@ -26,7 +26,7 @@ export default function Item({
     >
       <div className="flex items-center gap-2 capitalize">
         {icon}
-        <span className="xl:hidden xl:group-hover:block">{children}</span>
+        {children}
       </div>
     </LinkButton>
   );

@@ -33,21 +33,19 @@ export default function MobileView({
     <Portal>
       <AnimatePresence initial={false}>
         {visible && (
-          <Backdrop className="z-[1102] cursor-pointer" onClick={onClose} />
-        )}
-      </AnimatePresence>
-      <AnimatePresence exitBeforeEnter initial={false}>
-        {visible && (
-          <motion.aside
-            className={className}
-            variants={Variants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            transition={{ type: "spring", stiffness: 400, damping: 40 }}
-          >
-            {children}
-          </motion.aside>
+          <>
+            <Backdrop className="z-[1102] cursor-pointer" onClick={onClose} />
+            <motion.aside
+              className={className}
+              variants={Variants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              transition={{ type: "spring", stiffness: 400, damping: 40 }}
+            >
+              {children}
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </Portal>

@@ -1,29 +1,26 @@
 import classNames from "classnames";
-import type { LinkProps } from "next/link";
 import * as React from "react";
 import { BiCategory, BiChevronDown } from "react-icons/bi";
 
 import { Accordion, AccordionDetails, AccordionSummary } from "@component";
-import ListItem from "./ListItem";
 
 interface Props {
-  items: {
-    href: LinkProps["href"];
-    title: string;
-  }[];
+  visible: boolean;
   children: React.ReactNode;
+  title: React.ReactNode;
 }
 
-export default function ListItems({ items, children }: Props) {
+export default function List({ visible, children, title }: Props) {
   return (
     <li className="w-auto max-w-full">
-      <Accordion className="">
+      <Accordion>
         <AccordionSummary
-          className="w-full justify-between"
+          className="w-full justify-between !shadow-none"
           expandIcon={(expand) => (
             <BiChevronDown
               className={classNames(
-                "du transition-transform duration-300 xl:hidden xl:group-hover:block",
+                "transition-transform duration-300",
+                !visible && "xl:hidden xl:group-hover:block",
                 expand && "-rotate-90",
               )}
               size={24}
@@ -32,17 +29,16 @@ export default function ListItems({ items, children }: Props) {
         >
           <div className="flex items-center gap-2 capitalize">
             <BiCategory size={24} className="[&_path]:fill-current" />
-            <span className="duration-300 xl:hidden xl:group-hover:block">
-              {children}
-            </span>
+            {title}
           </div>
         </AccordionSummary>
-        <AccordionDetails className="duration-300 xl:hidden xl:group-hover:block">
-          {items.map((item) => (
-            <ListItem key={item.title} href={item.href}>
-              {item.title}
-            </ListItem>
-          ))}
+        <AccordionDetails
+          className={classNames(
+            "mt-2 gap-2",
+            !visible && "xl:hidden xl:group-hover:block",
+          )}
+        >
+          {children}
         </AccordionDetails>
       </Accordion>
     </li>

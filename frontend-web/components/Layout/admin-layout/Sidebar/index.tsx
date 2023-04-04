@@ -1,6 +1,8 @@
 import classNames from "classnames";
+import * as React from "react";
 import { BiGridAlt } from "react-icons/bi";
 
+import { ROUTES } from "@constants";
 import {
   adminSetSidebar,
   adminToggleSidebar,
@@ -8,66 +10,61 @@ import {
 } from "@features";
 import { useMediaQuery } from "@hooks";
 import { useAppDispatch, useAppSelector } from "store";
+import Container from "./Container";
 import Item from "./Item";
-import ListItems from "./ListItems";
-import MobileView from "./MobileView";
+import List from "./List";
+import SubItem from "./SubItem";
 import Top from "./Top";
 
-const className = {
-  root: "fixed left-0 top-0 z-[1103] h-screen bg-primary",
-};
+function Title({
+  visible,
+  children,
+}: React.PropsWithChildren<{ visible: boolean }>) {
+  return (
+    <span
+      className={classNames(
+        "duration-300",
+        !visible && "xl:hidden xl:group-hover:block",
+      )}
+    >
+      {children}
+    </span>
+  );
+}
 
 export default function Sidebar() {
   const matches = useMediaQuery("(min-width: 1280px)");
   const visible = useAppSelector(selectAdminSidebar);
   const rdxDispatch = useAppDispatch();
 
-  const content = (
-    <>
-      <Top
-        visible={visible}
-        onToggle={() => rdxDispatch(adminToggleSidebar())}
-      />
-      <ul className="flex flex-col gap-2 overflow-hidden px-4">
-        <Item
-          href="/admin"
-          icon={<BiGridAlt size={24} className="[&_path]:fill-current" />}
-        >
-          Dashboard
-        </Item>
-        <ListItems
-          items={[
-            { href: "/admin/categories", title: "List" },
-            { href: "/admin/categories/create", title: "Create" },
-          ]}
-        >
-          Categories
-        </ListItems>
-      </ul>
-    </>
-  );
+  const handleToggle = () => rdxDispatch(adminToggleSidebar());
 
-  if (matches) {
-    return (
-      <aside
-        className={classNames(
-          className.root,
-          "group duration-200 ease-in",
-          visible ? "w-[17.5rem]" : "w-[5.375rem] hover:w-[17.5rem]",
-        )}
-      >
-        {content}
-      </aside>
-    );
-  }
+  const handleClose = () => rdxDispatch(adminSetSidebar(false));
 
   return (
-    <MobileView
-      visible={visible}
-      className={classNames(className.root, "w-[17.5rem]")}
-      onClose={() => rdxDispatch(adminSetSidebar(false))}
-    >
-      {content}
-    </MobileView>
+    <Container onClose={handleClose} matches={matches} visible={visible}>
+      <Top visible={visible} onToggle={handleToggle} />
+      <ul className="flex flex-col gap-2 overflow-hidden px-4">
+        <Item
+          href={ROUTES.admin.dashboard}
+          icon={<BiGridAlt size={24} className="[&_path]:fill-current" />}
+        >
+          <Title visible={visible}>Dashboard</Title>
+        </Item>
+        <List
+          visible={visible}
+          title={<Title visible={visible}>Categories</Title>}
+        >
+          {[
+            { href: ROUTES.admin.categories, title: "List" },
+            { href: ROUTES.admin.createCategory, title: "Create" },
+          ].map((item) => (
+            <SubItem key={item.title} href={item.href}>
+              {item.title}
+            </SubItem>
+          ))}
+        </List>
+      </ul>
+    </Container>
   );
 }

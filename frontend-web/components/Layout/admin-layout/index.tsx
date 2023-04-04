@@ -17,7 +17,7 @@ export default function AdminLayout({ children }: Props) {
       </ClientOnly>
       <Wrapper>
         <Header />
-        <main className="max-w-screen-lg bg-base-100 px-4 duration-300 dark:bg-base-dark-100 md:px-6 lg:mx-auto">
+        <main className="max-w-screen-lg p-4 duration-300 md:p-6 lg:mx-auto">
           {children}
         </main>
       </Wrapper>

@@ -55,7 +55,7 @@ export default function UserAvatarBtn({
         as="button"
         aria-label="Demo avatar"
         type="button"
-        className="w-9 h-9"
+        className="h-9 w-9 border-secondary dark:border-secondary-dark"
         onClick={() => Router.push(ROUTES.login)}
       />
     );
@@ -90,7 +90,7 @@ export default function UserAvatarBtn({
           as="button"
           aria-label="Demo avatar"
           type="button"
-          className="w-9 h-9"
+          className="h-9 w-9 border-secondary dark:border-secondary-dark"
           onClick={(e: MouseEvent<HTMLButtonElement>) =>
             setAnchorEle(e.currentTarget)
           }
@@ -119,7 +119,7 @@ export default function UserAvatarBtn({
               </Link>
             </li>
           </ul>
-          <hr className="border-t my-2" />
+          <hr className="my-2 border-t" />
           <Link href={ROUTES.authorProfile(user.id)} passHref>
             <a aria-label={userName} className={className.avatarInfo}>
               {imgUrl ? (
@@ -137,7 +137,7 @@ export default function UserAvatarBtn({
                   />
                 </span>
               ) : (
-                <DemoAvatar className="h-8 w-8 shrink-0 mr-3" size={32 / 1.8} />
+                <DemoAvatar className="mr-3 h-8 w-8 shrink-0" size={32 / 1.8} />
               )}
               <div className={className.avatarInfoDetail}>
                 <p className={className.name}>{userName}</p>

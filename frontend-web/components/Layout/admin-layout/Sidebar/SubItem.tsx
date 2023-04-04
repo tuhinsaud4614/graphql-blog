@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { LinkButton } from "@component";
 import type { ItemProps } from "./Item";
 
-export default function ListItem({ href, children }: ItemProps) {
+export default function SubItem({ href, children }: ItemProps) {
   const { pathname } = useRouter();
   const active = pathname === href;
 
@@ -12,7 +12,7 @@ export default function ListItem({ href, children }: ItemProps) {
     <LinkButton
       className={classNames(
         "!justify-start",
-        active && "capitalize !text-base-100",
+        active ? "capitalize !text-base-100" : "!text-base-300",
       )}
       mode="text"
       href={href}

@@ -4,7 +4,6 @@ import { useDarkMode } from "@hooks";
 import type { AppPropsWithLayout } from "@types";
 import { useApollo } from "lib/apollo";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,21 +15,15 @@ import "swiper/css/pagination";
 import { isDev, setAccessToken } from "utils";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
-  const { events } = useRouter();
   const apolloClient = useApollo(pageProps);
   const { isDarkMode, ternaryDarkMode } = useDarkMode();
 
-  const getLayout = Component.getLayout ?? ((page) => page);
-
   React.useEffect(() => {
-    const handleStart = () => {
-      setProgress(true);
-    };
-    const handleComplete = () => {
-      setProgress(false);
-    };
+    const handleStart = () => setProgress(true);
+    const handleComplete = () => setProgress(false);
+    const { events } = router;
     events.on("routeChangeStart", handleStart);
     events.on("routeChangeComplete", handleComplete);
 
@@ -38,7 +31,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       events.off("routeChangeStart", handleStart);
       events.off("routeChangeComplete", handleComplete);
     };
-  }, [events]);
+  }, [router]);
+
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return getLayout(
     <React.Fragment>
