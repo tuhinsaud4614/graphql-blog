@@ -32,7 +32,6 @@ export const ROUTES = {
   admin: {
     dashboard: "/admin",
     categories: "/admin/categories",
-    createCategory: "/admin/categories/create",
   },
 } as const;
 

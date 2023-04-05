@@ -1,12 +1,37 @@
 import type { NextPage } from "next";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 
 import { LinkButton } from "@component";
 import { ROUTES } from "@constants";
-import { AdminLayout } from "components/Layout";
-import { PostCreateContainer, PostCreateHeader } from "components/account";
+// import { AdminLayout } from "components/Layout";
+// import { PostCreateContainer, PostCreateHeader } from "components/account";
 import { SpaceIcon } from "components/svg";
+
+const AdminLayout = dynamic(
+  () =>
+    import(/* webpackChunkName: "AdminLayout" */ "components/Layout").then(
+      ({ AdminLayout }) => AdminLayout,
+    ),
+  { ssr: false },
+);
+
+const PostCreateContainer = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "PostCreateContainer" */ "components/account"
+    ).then(({ PostCreateContainer }) => PostCreateContainer),
+  { ssr: false },
+);
+
+const PostCreateHeader = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "PostCreateHeader" */ "components/account"
+    ).then(({ PostCreateHeader }) => PostCreateHeader),
+  { ssr: false },
+);
 
 const className = {
   root: "flex flex-col sm:flex-row sm:space-x-2",

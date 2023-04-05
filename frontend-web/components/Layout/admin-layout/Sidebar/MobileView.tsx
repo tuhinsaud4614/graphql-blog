@@ -1,9 +1,10 @@
+import classNames from "classnames";
 import type { Variants } from "framer-motion";
 import { AnimatePresence, motion } from "framer-motion";
 import * as React from "react";
 
-import Backdrop from "components/Backdrop";
-import Portal from "components/Portal";
+import { Backdrop, Portal } from "@component";
+import STYLES from "@styles";
 
 const Variants: Variants = {
   hidden: {
@@ -34,7 +35,13 @@ export default function MobileView({
       <AnimatePresence initial={false}>
         {visible && (
           <>
-            <Backdrop className="z-[1102] cursor-pointer" onClick={onClose} />
+            <Backdrop
+              className={classNames(
+                STYLES.zIndex.sidebarBackdrop,
+                "cursor-pointer",
+              )}
+              onClick={onClose}
+            />
             <motion.aside
               className={className}
               variants={Variants}

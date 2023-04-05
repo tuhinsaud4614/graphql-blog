@@ -1,26 +1,37 @@
 import classNames from "classnames";
+import dynamic from "next/dynamic";
 import { BiBell, BiGlobe } from "react-icons/bi";
 
-import {
-  Badge,
-  Button,
-  ClientOnly,
-  LinkButton,
-  Theme,
-  UserAvatarBtn,
-} from "@component";
+import { Badge, Button, LinkButton } from "@component";
 import STYLES from "@styles";
-import Hamburger from "./Hamburger";
+
+const Hamburger = dynamic(() => import("./Hamburger"), {
+  ssr: false,
+});
+
+const Theme = dynamic(() =>
+  import(/* webpackChunkName: "Theme" */ "@component").then(
+    ({ Theme }) => Theme,
+  ),
+);
+const UserAvatarBtn = dynamic(() =>
+  import(/* webpackChunkName: "UserAvatarBtn" */ "@component").then(
+    ({ UserAvatarBtn }) => UserAvatarBtn,
+  ),
+);
 
 export default function Header() {
   return (
-    <header className="sticky left-auto top-0 z-[1100] bg-base-200 py-4 shadow-mui dark:bg-base-dark-200">
+    <header
+      className={classNames(
+        "sticky left-auto top-0 bg-base-200 py-4 shadow-mui dark:bg-base-dark-200",
+        STYLES.zIndex.header,
+      )}
+    >
       <section className="max-w-screen-xl px-4 md:px-6 xl:mx-auto">
         <nav className="flex items-center">
           <div className="flex shrink-0 items-center gap-4">
-            <ClientOnly>
-              <Hamburger />
-            </ClientOnly>
+            <Hamburger />
             <LinkButton
               href="/"
               variant="accent"
@@ -45,16 +56,14 @@ export default function Header() {
                 <BiBell size={24} />
               </span>
             </Button>
-            <ClientOnly>
-              <UserAvatarBtn
-                anchorOrigin={{ horizontal: "left", vertical: "top" }}
-                hideOnSmallDevice
-              />
-              <Theme
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                classes={{ menuRoot: "mt-6" }}
-              />
-            </ClientOnly>
+            <UserAvatarBtn
+              anchorOrigin={{ horizontal: "left", vertical: "top" }}
+              hideOnSmallDevice
+            />
+            <Theme
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              classes={{ menuRoot: "mt-6" }}
+            />
           </div>
         </nav>
       </section>

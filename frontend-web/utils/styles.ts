@@ -121,6 +121,15 @@ const className = {
     star2:
       "[mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTkyJyBoZWlnaHQ9JzE4MCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cGF0aCBmaWxsPSdibGFjaycgZD0nbTk2IDE1My4wNDQtNTguNzc5IDI2LjI0MyA3LjAyLTYzLjUxM0wuODk0IDY4LjQ4MWw2My4xMTctMTMuMDFMOTYgMGwzMS45ODkgNTUuNDcyIDYzLjExNyAxMy4wMS00My4zNDcgNDcuMjkyIDcuMDIgNjMuNTEzeicgZmlsbC1ydWxlPSdldmVub2RkJy8+PC9zdmc+)]",
   },
+  zIndex: {
+    header: "z-[500]",
+    sidebarBackdrop: "z-[501]",
+    sidebar: "z-[502]",
+    backdrop: "z-[901]",
+    modal: "z-[902]",
+    menuBackdrop: "z-[950]",
+    menu: "z-[951]",
+  },
 } as const;
 
 const STYLES = className;

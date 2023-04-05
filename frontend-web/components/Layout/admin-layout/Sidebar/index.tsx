@@ -14,8 +14,6 @@ import { BiCategory } from "react-icons/bi";
 import { useAppDispatch, useAppSelector } from "store";
 import Container from "./Container";
 import Item from "./Item";
-import List from "./List";
-import SubItem from "./SubItem";
 import Top from "./Top";
 
 function Title({
@@ -59,28 +57,14 @@ export default function Sidebar() {
         >
           <Title visible={visible}>Dashboard</Title>
         </Item>
-        <List
-          title={
-            <div className="flex items-center gap-2 capitalize">
-              <BiCategory
-                size={24}
-                className="shrink-0 [&_path]:fill-current"
-              />
-              <Title visible={visible}>Categories</Title>
-            </div>
+        <Item
+          href={ROUTES.admin.categories}
+          icon={
+            <BiCategory size={24} className="shrink-0 [&_path]:fill-current" />
           }
-          expanded={asPath.startsWith(ROUTES.admin.categories)}
-          visible={visible}
         >
-          {[
-            { href: ROUTES.admin.categories, title: "List" },
-            { href: ROUTES.admin.createCategory, title: "Create" },
-          ].map((item) => (
-            <SubItem key={item.title} href={item.href}>
-              {item.title}
-            </SubItem>
-          ))}
-        </List>
+          <Title visible={visible}>Categories</Title>
+        </Item>
       </ul>
     </Container>
   );

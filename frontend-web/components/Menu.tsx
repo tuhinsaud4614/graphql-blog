@@ -1,9 +1,11 @@
-import { useIsomorphicLayoutEffect } from "@hooks";
-import { IAnchorOrigin } from "@interfaces";
 import classNames from "classnames";
 import { motion, Variants } from "framer-motion";
 import { useRouter } from "next/router";
 import * as React from "react";
+
+import { useIsomorphicLayoutEffect } from "@hooks";
+import { IAnchorOrigin } from "@interfaces";
+import STYLES from "@styles";
 import { getPositions } from "utils";
 import Portal from "./Portal";
 
@@ -34,8 +36,8 @@ const arrowVariants: Variants = {
 };
 
 const className = {
-  backdrop: "fixed z-[950] inset-0",
-  root: "fixed z-[951] bg-base-100 dark:bg-base-dark-200 shadow-mui rounded",
+  backdrop: "fixed inset-0",
+  root: "fixed bg-base-100 dark:bg-base-dark-200 shadow-mui rounded",
   arrow:
     "fixed block bg-base-100 dark:bg-base-dark-200 transform rotate-45 shadow-mui w-3.5 h-3.5",
   container:
@@ -119,7 +121,7 @@ const Menu = ({
     selfRect,
     anchorOrigin,
     fraction,
-    hideArrow
+    hideArrow,
   );
 
   return (
@@ -127,7 +129,11 @@ const Menu = ({
       {!!onClose && (
         <div
           onClick={onClose}
-          className={classNames(className.backdrop, classes?.backdrop)}
+          className={classNames(
+            className.backdrop,
+            STYLES.zIndex.menuBackdrop,
+            classes?.backdrop,
+          )}
         />
       )}
       <motion.section
@@ -136,7 +142,11 @@ const Menu = ({
         initial="hidden"
         animate="visible"
         exit="hidden"
-        className={classNames(className.root, classes?.root)}
+        className={classNames(
+          className.root,
+          STYLES.zIndex.menu,
+          classes?.root,
+        )}
         style={{
           left: selfLeft,
           top: selfTop,
