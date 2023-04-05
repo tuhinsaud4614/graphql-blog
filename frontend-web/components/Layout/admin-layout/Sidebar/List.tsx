@@ -14,9 +14,8 @@ interface Props {
 export default function List({ expanded, visible, children, title }: Props) {
   return (
     <li className="w-auto max-w-full">
-      <Accordion>
+      <Accordion expanded={expanded}>
         <AccordionSummary
-          expanded={expanded}
           className="w-full justify-between !shadow-none"
           expandIcon={(expand) => (
             <BiChevronDown

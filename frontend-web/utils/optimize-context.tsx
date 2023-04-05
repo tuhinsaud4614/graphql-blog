@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from "react";
 
 type UseDataReturnType<T> = {
@@ -12,8 +12,8 @@ export default function createOptimizeContext<T>(
   initialState: T,
   name?: string,
 ) {
-  function useStoreData(): UseDataReturnType<T> {
-    const store = React.useRef(initialState);
+  function useStoreData(defaultValue?: T): UseDataReturnType<T> {
+    const store = React.useRef(defaultValue || initialState);
     const subscribers = React.useRef(new Set<() => void>());
 
     const get = React.useCallback(() => store.current, []);
@@ -39,9 +39,15 @@ export default function createOptimizeContext<T>(
     typeof useStoreData
   > | null>(null);
 
-  function Provider({ children }: { children: ReactNode }) {
+  function Provider({
+    defaultValue,
+    children,
+  }: {
+    defaultValue?: T;
+    children: React.ReactNode;
+  }) {
     return (
-      <StoreContext.Provider value={useStoreData()}>
+      <StoreContext.Provider value={useStoreData(defaultValue)}>
         {children}
       </StoreContext.Provider>
     );
@@ -50,13 +56,12 @@ export default function createOptimizeContext<T>(
   function userStore<U>(
     selector: (store: T) => U,
   ): [U, (value: Partial<T>) => void] {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const store = React.useContext(StoreContext);
 
     if (!store) {
       throw new Error(`${name || "Optimize"} context store not found!`);
     }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+
     const state = React.useSyncExternalStore(
       store.subscribe,
       () => selector(store.get()),

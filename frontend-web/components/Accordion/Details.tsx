@@ -11,7 +11,7 @@ export default function Details({
   const [expanded] = useAccordionStore((state) => state.expand);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {expanded && (
         <motion.div
           initial={{ height: 0 }}

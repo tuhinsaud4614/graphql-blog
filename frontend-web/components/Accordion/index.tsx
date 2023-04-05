@@ -2,13 +2,17 @@ import * as React from "react";
 
 import { AccordionProvider } from "./context";
 
-export default function Accordion({
-  children,
-  ...rest
-}: React.HTMLAttributes<HTMLDivElement>) {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  expanded?: boolean;
+}
+
+export default function Accordion({ expanded, children, ...rest }: Props) {
+  const defaultValue = expanded ? { expand: expanded } : undefined;
   return (
     <div {...rest}>
-      <AccordionProvider>{children}</AccordionProvider>
+      <AccordionProvider defaultValue={defaultValue}>
+        {children}
+      </AccordionProvider>
     </div>
   );
 }
