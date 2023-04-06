@@ -1,23 +1,23 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import * as React from "react";
+
+import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
 import useLocalStorage from "./useLocalStorage";
 import useMediaQuery from "./useMediaQuery";
 import useUpdateEffect from "./useUpdateEffect";
-
-const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 
 type TernaryDarkMode = "system" | "dark" | "light";
 interface UseTernaryDarkModeOutput {
   isDarkMode: boolean;
   ternaryDarkMode: TernaryDarkMode;
-  setTernaryDarkMode: Dispatch<SetStateAction<TernaryDarkMode>>;
+  setTernaryDarkMode: React.Dispatch<React.SetStateAction<TernaryDarkMode>>;
   toggleTernaryDarkMode: () => void;
 }
 
 export default function useDarkMode(): UseTernaryDarkModeOutput {
-  const isDarkOS = useMediaQuery(COLOR_SCHEME_QUERY);
+  const isDarkOS = useMediaQuery("(prefers-color-scheme: dark)");
+  const [isDarkMode, setDarkMode] = React.useState<boolean>(isDarkOS);
   const [ternaryDarkMode, setTernaryDarkMode] =
     useLocalStorage<TernaryDarkMode>("theme", "system");
-  const [isDarkMode, setDarkMode] = useState<boolean>(isDarkOS);
 
   // Update darkMode if os prefers changes
   useUpdateEffect(() => {
@@ -26,7 +26,7 @@ export default function useDarkMode(): UseTernaryDarkModeOutput {
     }
   }, [isDarkOS]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     switch (ternaryDarkMode) {
       case "light":
         setDarkMode(false);
@@ -40,7 +40,7 @@ export default function useDarkMode(): UseTernaryDarkModeOutput {
     }
   }, [ternaryDarkMode, isDarkOS]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
     } else {

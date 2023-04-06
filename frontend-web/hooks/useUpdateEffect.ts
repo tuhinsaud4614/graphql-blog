@@ -3,7 +3,7 @@ import useIsFirstRender from "./useIsFirstRender";
 
 export default function useUpdateEffect(
   effect: EffectCallback,
-  deps?: DependencyList
+  deps?: DependencyList,
 ) {
   const isFirst = useIsFirstRender();
 

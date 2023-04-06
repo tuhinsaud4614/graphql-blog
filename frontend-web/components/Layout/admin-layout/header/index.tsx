@@ -2,18 +2,13 @@ import classNames from "classnames";
 import dynamic from "next/dynamic";
 import { BiBell, BiGlobe } from "react-icons/bi";
 
-import { Badge, Button, LinkButton } from "@component";
+import { Badge, Button, ClientOnly, LinkButton, Theme } from "@component";
 import STYLES from "@styles";
 
 const Hamburger = dynamic(() => import("./Hamburger"), {
   ssr: false,
 });
 
-const Theme = dynamic(() =>
-  import(/* webpackChunkName: "Theme" */ "@component").then(
-    ({ Theme }) => Theme,
-  ),
-);
 const UserAvatarBtn = dynamic(() =>
   import(/* webpackChunkName: "UserAvatarBtn" */ "@component").then(
     ({ UserAvatarBtn }) => UserAvatarBtn,
@@ -60,10 +55,12 @@ export default function Header() {
               anchorOrigin={{ horizontal: "left", vertical: "top" }}
               hideOnSmallDevice
             />
-            <Theme
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              classes={{ menuRoot: "mt-6" }}
-            />
+            <ClientOnly>
+              <Theme
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                classes={{ menuRoot: "mt-6" }}
+              />
+            </ClientOnly>
           </div>
         </nav>
       </section>
