@@ -2,11 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
 @layer components {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    @apply m-0 appearance-none;
+  }
+
   .scrollbar::-webkit-scrollbar {
     @apply w-2;
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-scrollbar dark:bg-scrollbar-dark rounded-md;
+    @apply rounded-md bg-scrollbar dark:bg-scrollbar-dark;
   }
 }

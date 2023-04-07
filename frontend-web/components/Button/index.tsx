@@ -9,12 +9,14 @@ interface Props extends ComponentPropsWithRef<"button"> {
   mode?: ButtonModeType;
   variant?: ColorVariantType;
   loading?: boolean;
+  circle?: boolean;
 }
 
 export default function Button({
   variant = "accent",
   mode = "fill",
   loading = false,
+  circle = false,
   children,
   ...rest
 }: Props) {
@@ -37,6 +39,7 @@ export default function Button({
           : STYLES.btn.dynamic(variant, mode),
         style,
         loading && STYLES.btn.loading,
+        circle && STYLES.btn.circle,
         rest.className,
       )}
     >
