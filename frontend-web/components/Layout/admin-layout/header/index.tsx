@@ -1,16 +1,17 @@
-import classNames from "classnames";
 import dynamic from "next/dynamic";
+
+import classNames from "classnames";
 import { BiBell, BiGlobe } from "react-icons/bi";
 
-import { Badge, Button, ClientOnly, LinkButton, Theme } from "@component";
-import STYLES from "@styles";
+import { Badge, Button, ClientOnly, LinkButton, Theme } from "@/components";
+import STYLES from "@/utils/styles";
 
 const Hamburger = dynamic(() => import("./Hamburger"), {
   ssr: false,
 });
 
 const UserAvatarBtn = dynamic(() =>
-  import(/* webpackChunkName: "UserAvatarBtn" */ "@component").then(
+  import(/* webpackChunkName: "UserAvatarBtn" */ "@/components").then(
     ({ UserAvatarBtn }) => UserAvatarBtn,
   ),
 );

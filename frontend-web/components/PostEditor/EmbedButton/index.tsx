@@ -1,9 +1,12 @@
-import { useTooltip } from "@hooks";
-import { Menu, SlateButton } from "components";
-import { Fragment, useState } from "react";
+import * as React from "react";
+
 import { ImEmbed } from "react-icons/im";
 import { Transforms } from "slate";
 import { ReactEditor, useSlateStatic } from "slate-react";
+
+import { Menu, SlateButton } from "@/components";
+import { useTooltip } from "@/hooks";
+
 import { Url } from "./Url";
 
 const className = {
@@ -11,7 +14,9 @@ const className = {
 };
 
 export default function EmbedButton() {
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
   const editor = useSlateStatic() as ReactEditor;
   const { onHoverEnd, onHoverStart } = useTooltip();
 
@@ -36,7 +41,7 @@ export default function EmbedButton() {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <SlateButton
         aria-label="Insert embeds"
         onClick={(e) => setAnchorEle(e.currentTarget)}
@@ -61,12 +66,12 @@ export default function EmbedButton() {
         hideArrow
       >
         <div className={className.content}>
-          <h3 className="text-base text-neutral dark:text-neutral-dark text-center mb-3 font-medium">
+          <h3 className="mb-3 text-center text-base font-medium text-neutral dark:text-neutral-dark">
             EMBEDS URL
           </h3>
           <Url onAdd={onAdd} />
         </div>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }

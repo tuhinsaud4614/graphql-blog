@@ -1,17 +1,20 @@
-import { CommentBox, ToastErrorMessage } from "components";
+import * as React from "react";
+
+import { useRouter } from "next/router";
+
+import produce from "immer";
+import { toast } from "react-toastify";
+import { Descendant } from "slate";
+
+import { CommentBox, ToastErrorMessage } from "@/components";
 import {
   FCommentWithRepliesFragment,
   FCommentWithRepliesFragmentDoc,
   GetPostCommentsOnCursorDocument,
   GetPostCommentsOnCursorQuery,
   useCreateCommentMutation,
-} from "graphql/generated/schema";
-import produce from "immer";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { Descendant } from "slate";
-import { gplErrorHandler, isDev } from "utils";
+} from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
 
 interface Props {
   onHide?(): void;
@@ -35,8 +38,8 @@ export default function ReplyEditor({
   const {
     query: { postId },
   } = useRouter();
-  const [value, setValue] = useState<Descendant[]>(initialValue);
-  const [expand, setExpand] = useState(true);
+  const [value, setValue] = React.useState<Descendant[]>(initialValue);
+  const [expand, setExpand] = React.useState(true);
 
   const [createComment, { loading, error }] = useCreateCommentMutation({
     notifyOnNetworkStatusChange: true,
@@ -91,7 +94,7 @@ export default function ReplyEditor({
                   draft.postCommentsOnCursor.total += 1;
                 });
                 return newComments;
-              }
+              },
             );
 
             // Update the parent reply count cache
@@ -106,7 +109,7 @@ export default function ReplyEditor({
                   return prevFrag
                     ? { ...prevFrag, replies: prevFrag.replies + 1 }
                     : undefined;
-                }
+                },
               );
             }
           } catch (error) {
@@ -121,7 +124,7 @@ export default function ReplyEditor({
     } catch (error) {}
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const tempErrors = gplErrorHandler(error);
     if (tempErrors) {
       toast.error(<ToastErrorMessage error={tempErrors} />, {

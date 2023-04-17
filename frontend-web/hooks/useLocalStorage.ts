@@ -1,10 +1,5 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import * as React from "react";
+
 import useEventCallback from "./useEventCallback";
 import useEventListener from "./useEventListener";
 
@@ -14,12 +9,12 @@ declare global {
   }
 }
 
-type SetValue<T> = Dispatch<SetStateAction<T>>;
+type SetValue<T> = React.Dispatch<React.SetStateAction<T>>;
 
 function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
   // Get from local storage then
   // parse stored json or return initialValue
-  const readValue = useCallback((): T => {
+  const readValue = React.useCallback((): T => {
     // Prevent build error "window is undefined" but keep keep working
     if (typeof window === "undefined") {
       return initialValue;
@@ -36,7 +31,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
 
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState<T>(readValue);
+  const [storedValue, setStoredValue] = React.useState<T>(readValue);
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
@@ -44,7 +39,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     // Prevent build error "window is undefined" but keeps working
     if (typeof window == "undefined") {
       console.warn(
-        `Tried setting localStorage key “${key}” even though environment is not a client`
+        `Tried setting localStorage key “${key}” even though environment is not a client`,
       );
     }
 
@@ -65,19 +60,19 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     }
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     setStoredValue(readValue());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleStorageChange = useCallback(
+  const handleStorageChange = React.useCallback(
     (event: StorageEvent | CustomEvent) => {
       if ((event as StorageEvent)?.key && (event as StorageEvent).key !== key) {
         return;
       }
       setStoredValue(readValue());
     },
-    [key, readValue]
+    [key, readValue],
   );
 
   // this only works for other documents, not the current one

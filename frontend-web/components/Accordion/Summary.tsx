@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { Button } from "@component";
+import { Button } from "@/components";
+
 import { useAccordionStore } from "./context";
 
 interface Props {

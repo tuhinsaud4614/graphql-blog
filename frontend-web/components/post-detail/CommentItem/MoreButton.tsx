@@ -1,5 +1,13 @@
+import * as React from "react";
+
+import { useRouter } from "next/router";
+
 import classNames from "classnames";
-import { BottomSheet, Button, Menu, ToastErrorMessage } from "components";
+import produce from "immer";
+import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
+
+import { BottomSheet, Button, Menu, ToastErrorMessage } from "@/components";
 import {
   FCommentWithRepliesFragment,
   FCommentWithRepliesFragmentDoc,
@@ -8,13 +16,9 @@ import {
   GetPostCommentsOnCursorDocument,
   GetPostCommentsOnCursorQuery,
   useDeleteCommentMutation,
-} from "graphql/generated/schema";
-import produce from "immer";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
-import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
-import { toast } from "react-toastify";
-import { gplErrorHandler, isDev } from "utils";
+} from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+
 import { useEditorOpener } from "./context";
 
 const className = {
@@ -38,8 +42,10 @@ export default function MoreButton({ commentId, replyFor }: Props) {
   const {
     query: { postId },
   } = useRouter();
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
+  const [confirmDelete, setConfirmDelete] = React.useState(false);
   const opener = useEditorOpener();
 
   const [deleteComment, { loading, error, client }] = useDeleteCommentMutation({
@@ -96,7 +102,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
                   draft.postCommentsOnCursor.total -= 1;
                 });
                 return newComments;
-              }
+              },
             );
             if (replyFor) {
               cache.updateFragment<FCommentWithRepliesFragment>(
@@ -109,7 +115,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
                   return prevFrag
                     ? { ...prevFrag, replies: prevFrag.replies - 1 }
                     : undefined;
-                }
+                },
               );
             } else {
               cache.updateQuery<GetPostCommentsCountQuery>(
@@ -123,7 +129,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
                         postCommentsCount: prevCount.postCommentsCount - 1,
                       }
                     : undefined;
-                }
+                },
               );
             }
           } catch (error) {
@@ -146,7 +152,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
     } catch (error) {}
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const tempErrors = gplErrorHandler(error);
     if (tempErrors) {
       toast.error(<ToastErrorMessage error={tempErrors} />, {
@@ -160,7 +166,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
   }, [error]);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <button
         type="button"
         aria-label="More"
@@ -229,7 +235,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
               aria-label="Cancel"
               variant="neutral"
               mode="text"
-              className="!rounded-full text-sm mr-2 !px-4 !py-2"
+              className="mr-2 !rounded-full !px-4 !py-2 text-sm"
               onClick={() => setConfirmDelete(false)}
               disabled={loading}
             >
@@ -240,7 +246,7 @@ export default function MoreButton({ commentId, replyFor }: Props) {
               type="button"
               aria-label="Delete Comment"
               variant="error"
-              className="text-sm !px-4 !py-2"
+              className="!px-4 !py-2 text-sm"
               onClick={submitHandler}
               loading={loading}
               disabled={loading}
@@ -250,6 +256,6 @@ export default function MoreButton({ commentId, replyFor }: Props) {
           </div>
         </div>
       </BottomSheet>
-    </Fragment>
+    </React.Fragment>
   );
 }

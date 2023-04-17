@@ -1,4 +1,3 @@
-import { SlateBlockButton, SlateMarkButton } from "@component";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import {
   BiBold,
@@ -14,6 +13,9 @@ import {
   MdFormatAlignLeft,
   MdFormatAlignRight,
 } from "react-icons/md";
+
+import { SlateBlockButton, SlateMarkButton } from "@/components";
+
 import EmbedButton from "./EmbedButton";
 import ImageButton from "./ImageButton";
 import LinkButton from "./LinkButton";
@@ -26,7 +28,7 @@ const className = {
 export default function Toolbar() {
   return (
     <header className={className.root}>
-      <div className="flex items-center flex-wrap space-x-2 space-y-2 -ml-2 -mt-2">
+      <div className="-ml-2 -mt-2 flex flex-wrap items-center space-x-2 space-y-2">
         <SlateMarkButton
           aria-label="Mark bold"
           hotKey="mod+b"

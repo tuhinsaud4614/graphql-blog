@@ -1,16 +1,19 @@
-import { Button, ErrorModal } from "@component";
-import { ROUTES, VALID_MOBILE_REGEX } from "@constants";
-import { Form, FormContainer, FormControl } from "components/account";
-import { getCookie } from "cookies-next";
-import { Formik, FormikHelpers } from "formik";
-import { useRegisterMutation } from "graphql/generated/schema";
-import { GetServerSideProps, NextPage } from "next";
+import { Fragment, useEffect, useId } from "react";
+
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useId } from "react";
+
+import { getCookie } from "cookies-next";
+import { Formik, FormikHelpers } from "formik";
 import { toast } from "react-toastify";
-import { gplErrorHandler } from "utils";
 import * as yup from "yup";
+
+import { Button, ErrorModal } from "@/components";
+import { Form, FormContainer, FormControl } from "@/components/account";
+import { useRegisterMutation } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
+import { ROUTES, VALID_MOBILE_REGEX } from "@/utils/constants";
 
 const className = {
   control: "mb-4",

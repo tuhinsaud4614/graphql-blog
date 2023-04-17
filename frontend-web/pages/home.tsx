@@ -1,11 +1,18 @@
-import { AuthGuard, ClientOnly, Tabs } from "@component";
-import { ROUTES } from "@constants";
-import { UserLayout } from "components/Layout";
+import { Fragment, useEffect, useState } from "react";
+
+import { GetServerSideProps, NextPage } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { BsPlusLg } from "react-icons/bs";
+
+import { AuthGuard, ClientOnly, Tabs } from "@/components";
+import { UserLayout } from "@/components/Layout";
 import {
   UserHomeFollowList,
   UserHomeTabFollowing,
   UserHomeTabRecommended,
-} from "components/user-home";
+} from "@/components/user-home";
 import {
   GetFollowingAuthorPostsDocument,
   GetFollowingAuthorPostsQuery,
@@ -14,15 +21,11 @@ import {
   GetPostsQuery,
   GetPostsQueryVariables,
   UserRole,
-} from "graphql/generated/schema";
-import { addApolloState, initializeApollo } from "lib/apollo";
-import { GetServerSideProps, NextPage } from "next";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { isDev, queryChecking } from "utils";
-import { withSSRAuth } from "utils/ssr";
+} from "@/graphql/generated/schema";
+import { addApolloState, initializeApollo } from "@/lib/apollo";
+import { isDev, queryChecking } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+import { withSSRAuth } from "@/utils/ssr";
 
 const className = {
   top: "flex items-center text-neutral-focus dark:text-neutral-dark-focus my-6",

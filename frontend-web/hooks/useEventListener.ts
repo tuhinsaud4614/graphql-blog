@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useRef } from "react";
+import * as React from "react";
+
 import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
 
 // Window Event based useEventListener interface
@@ -6,48 +7,48 @@ function useEventListener<K extends keyof WindowEventMap>(
   eventName: K,
   handler: (event: WindowEventMap[K]) => void,
   element?: undefined,
-  options?: boolean | AddEventListenerOptions
+  options?: boolean | AddEventListenerOptions,
 ): void;
 
 // Element Event based useEventListener interface
 function useEventListener<
   K extends keyof HTMLElementEventMap,
-  T extends HTMLElement = HTMLDivElement
+  T extends HTMLElement = HTMLDivElement,
 >(
   eventName: K,
   handler: (event: HTMLElementEventMap[K]) => void,
-  element: RefObject<T>,
-  options?: boolean | AddEventListenerOptions
+  element: React.RefObject<T>,
+  options?: boolean | AddEventListenerOptions,
 ): void;
 
 // Document Event based useEventListener interface
 function useEventListener<K extends keyof DocumentEventMap>(
   eventName: K,
   handler: (event: DocumentEventMap[K]) => void,
-  element: RefObject<Document>,
-  options?: boolean | AddEventListenerOptions
+  element: React.RefObject<Document>,
+  options?: boolean | AddEventListenerOptions,
 ): void;
 
 function useEventListener<
   KW extends keyof WindowEventMap,
   KH extends keyof HTMLElementEventMap,
-  T extends HTMLElement | void = void
+  T extends HTMLElement | void = void,
 >(
   eventName: KW | KH,
   handler: (
-    event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event
+    event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event,
   ) => void,
-  element?: RefObject<T>,
-  options?: boolean | AddEventListenerOptions
+  element?: React.RefObject<T>,
+  options?: boolean | AddEventListenerOptions,
 ) {
   // Create a ref that stores handler
-  const savedHandler = useRef(handler);
+  const savedHandler = React.useRef(handler);
 
   useIsomorphicLayoutEffect(() => {
     savedHandler.current = handler;
   }, [handler]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Define the listening target
     const targetElement: T | Window = element?.current || window;
     if (!(targetElement && targetElement.addEventListener)) {

@@ -1,8 +1,11 @@
-import classNames from "classnames";
-import LinkButton from "components/Button/LinkButton";
+import * as React from "react";
+
 import type { LinkProps } from "next/link";
 import { useRouter } from "next/router";
-import * as React from "react";
+
+import classNames from "classnames";
+
+import { LinkButton } from "@/components";
 
 export interface ItemProps {
   href: LinkProps["href"];

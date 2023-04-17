@@ -1,15 +1,18 @@
+import * as React from "react";
+
 import { NetworkStatus } from "@apollo/client";
+import _ from "lodash";
+import { Waypoint } from "react-waypoint";
+
 import {
   ErrorBox,
   NoResultFound,
   PostItem,
   PostItemSkeleton,
-} from "components";
-import { useGetPostsQuery } from "graphql/generated/schema";
-import _ from "lodash";
-import { Fragment, PropsWithChildren } from "react";
-import { Waypoint } from "react-waypoint";
-import { gplErrorHandler } from "utils";
+} from "@/components";
+import { useGetPostsQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
+
 import Sidebar from "./Sidebar";
 
 const className = {
@@ -29,10 +32,10 @@ export default function Content() {
     return (
       <Wrapper>
         <ul className={className.items}>
-          <Fragment>
+          <React.Fragment>
             <PostItemSkeleton />
             <PostItemSkeleton />
-          </Fragment>
+          </React.Fragment>
         </ul>
       </Wrapper>
     );
@@ -96,7 +99,7 @@ export default function Content() {
               ...fetchMoreResult.posts,
               edges: _.uniqBy(
                 [...prev.posts.edges, ...fetchMoreResult.posts.edges],
-                "cursor"
+                "cursor",
               ),
             },
           };
@@ -120,7 +123,7 @@ export default function Content() {
   );
 }
 
-function Wrapper({ children }: PropsWithChildren) {
+function Wrapper({ children }: React.PropsWithChildren) {
   return (
     <section className={className.root}>
       <Sidebar />

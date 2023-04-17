@@ -1,7 +1,8 @@
-import { ROUTES } from "@constants";
-import { ClientOnly, UserAvatarBtn } from "components";
-import { LogoIcon } from "components/svg";
 import Link from "next/link";
+
+import { ClientOnly, UserAvatarBtn } from "@/components";
+import { LogoIcon } from "@/components/svg";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:bg-base-dark-200 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-dark-200/50 backdrop-blur-sm border-b border-secondary dark:border-secondary-dark fixed top-0 left-0 right-0 z-50",

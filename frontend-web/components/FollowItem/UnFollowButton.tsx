@@ -1,7 +1,8 @@
-import { Button, ErrorModal } from "components";
-import { useSendUnFollowRequestMutation } from "graphql/generated/schema";
-import { Fragment } from "react";
-import { gplErrorHandler } from "utils";
+import * as React from "react";
+
+import { Button, ErrorModal } from "@/components";
+import { useSendUnFollowRequestMutation } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
 
 export default function UnFollowButton({
   className,
@@ -17,7 +18,7 @@ export default function UnFollowButton({
     errorPolicy: "all",
   });
   return (
-    <Fragment>
+    <React.Fragment>
       <Button
         type="button"
         aria-label="Following"
@@ -39,6 +40,6 @@ export default function UnFollowButton({
         title="Send un-follow request errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

@@ -1,9 +1,10 @@
 import { NetworkStatus } from "@apollo/client";
-import { ROUTES } from "@constants";
-import { useSynchronizeAnimation } from "@hooks";
-import { ClientOnly, ErrorBox, LinkButton } from "components";
-import { useGetTagsOnOffsetQuery } from "graphql/generated/schema";
-import { gplErrorHandler } from "utils";
+
+import { ClientOnly, ErrorBox, LinkButton } from "@/components";
+import { useGetTagsOnOffsetQuery } from "@/graphql/generated/schema";
+import { useSynchronizeAnimation } from "@/hooks";
+import { gplErrorHandler } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "border-b md1:border-0 md1:min-w-[17.75rem] md1:max-w-[18rem] relative px-4 md1:pl-0",
@@ -73,7 +74,7 @@ function Result() {
           key={tag.id}
           variant="neutral"
           mode="outline"
-          className="!rounded first:mt-2 first:ml-2 text-sm"
+          className="!rounded text-sm first:ml-2 first:mt-2"
           anchorProps={{ "aria-label": tag.title }}
           passHref
           href={ROUTES.postsByTag(tag.id)}

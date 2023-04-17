@@ -5,6 +5,7 @@ export {
   toggleSidebar as adminToggleSidebar,
   selectAdminSidebar,
 } from "./adminSidebarSlice";
+
 export {
   default as authReducer,
   authSlice,
@@ -13,8 +14,9 @@ export {
   setAuthUser,
   updateUserAvatar,
   updateUserName,
-} from "./auth/authSlice";
-export type { AuthState } from "./auth/authSlice";
+} from "./authSlice";
+export type { AuthState } from "./authSlice";
+
 export {
   default as authorFollowerCountReducer,
   authorFollowerCountSlice,
@@ -24,10 +26,15 @@ export {
   setAuthorFollowerCount,
 } from "./authorFollowerCount";
 export type { AuthorFollowerState } from "./authorFollowerCount";
+
 export {
   reactSlice,
   default as reactSliceReducer,
   selectReact,
   setToggleReact,
+  setReactCount,
 } from "./post/reactSlice";
+
 export type { ReactState } from "./post/reactSlice";
+export * from "./notificationSlice";
+export { default as notificationReducer } from "./notificationSlice";

@@ -1,3 +1,14 @@
+import { useId } from "react";
+
+import { NextPage } from "next";
+import Head from "next/head";
+
+import { FormikHelpers, useFormik } from "formik";
+import _ from "lodash";
+import { toast } from "react-toastify";
+import { Descendant } from "slate";
+import * as yup from "yup";
+
 import {
   AuthGuard,
   Button,
@@ -7,33 +18,25 @@ import {
   ImagePicker,
   PostEditor,
   Select,
-} from "@component";
-import { CREATE_POST_KEY, IMAGE_MIMES } from "@constants";
+} from "@/components";
 import {
   FormControl,
   PostCreateContainer,
   PostCreateHeader,
-} from "components/account";
-import { FormikHelpers, useFormik } from "formik";
+} from "@/components/account";
 import {
+  UserRole,
   useCreatePostMutation,
   useGetCategoriesByTextOnOffsetLazyQuery,
   useGetTagsByTextOnOffsetLazyQuery,
-  UserRole,
-} from "graphql/generated/schema";
-import _ from "lodash";
-import { NextPage } from "next";
-import Head from "next/head";
-import { useId } from "react";
-import { toast } from "react-toastify";
-import { Descendant } from "slate";
+} from "@/graphql/generated/schema";
 import {
   gplErrorHandler,
   maxFileSize,
   readLocalStorageValue,
   removeLocalStorageValue,
-} from "utils";
-import * as yup from "yup";
+} from "@/utils";
+import { CREATE_POST_KEY, IMAGE_MIMES } from "@/utils/constants";
 
 const className = {
   control: "mb-4",

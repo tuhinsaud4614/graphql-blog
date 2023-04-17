@@ -1,10 +1,12 @@
-import { Form, Formik, FormikHelpers } from "formik";
-import Head from "next/head";
 import * as React from "react";
+
+import Head from "next/head";
+
+import { Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 
-import { Button } from "@component";
-import { FormControl } from "components/account";
+import { Button } from "@/components";
+import { FormControl } from "@/components/account";
 
 const className = {
   control: "mb-4",

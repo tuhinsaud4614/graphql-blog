@@ -1,10 +1,11 @@
-import { useCallback, useRef } from "react";
+import * as React from "react";
+
 import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
 
 export default function useEventCallback<Args extends unknown[], R>(
-  fn: (...args: Args) => R
+  fn: (...args: Args) => R,
 ) {
-  const ref = useRef<typeof fn>(() => {
+  const ref = React.useRef<typeof fn>(() => {
     throw new Error("Cannot call an event handler while rendering.");
   });
 
@@ -12,5 +13,5 @@ export default function useEventCallback<Args extends unknown[], R>(
     ref.current = fn;
   }, [fn]);
 
-  return useCallback((...args: Args) => ref.current(...args), [ref]);
+  return React.useCallback((...args: Args) => ref.current(...args), [ref]);
 }

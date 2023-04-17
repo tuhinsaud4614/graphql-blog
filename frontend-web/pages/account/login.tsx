@@ -1,18 +1,25 @@
-import { useApolloClient } from "@apollo/client";
-import { Button, ErrorModal } from "@component";
-import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "@constants";
-import { setAuthUser } from "@features";
-import { Form, FormContainer, FormControl } from "components/account";
-import { getCookie } from "cookies-next";
-import { Formik, FormikHelpers } from "formik";
-import { useLoginMutation } from "graphql/generated/schema";
-import { GetServerSideProps, NextPage } from "next";
+import * as React from "react";
+
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, useId } from "react";
-import { useAppDispatch } from "store";
-import { getAuthUser, gplErrorHandler } from "utils";
+
+import { useApolloClient } from "@apollo/client";
+import { getCookie } from "cookies-next";
+import { Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
+
+import { Button, ErrorModal } from "@/components";
+import { Form, FormContainer, FormControl } from "@/components/account";
+import { setAuthUser } from "@/features";
+import { useLoginMutation } from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
+import { getAuthUser, gplErrorHandler } from "@/utils";
+import {
+  ROUTES,
+  VALID_EMAIL_REGEX,
+  VALID_MOBILE_REGEX,
+} from "@/utils/constants";
 
 const className = {
   control: "mb-4",
@@ -47,8 +54,8 @@ const initialValues: IValues = {
 };
 
 const Login: NextPage = () => {
-  const emailId = useId();
-  const passwordId = useId();
+  const emailId = React.useId();
+  const passwordId = React.useId();
   const { replace } = useRouter();
   const [login, { loading, error, reset }] = useLoginMutation({
     errorPolicy: "all",
@@ -78,7 +85,7 @@ const Login: NextPage = () => {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <FormContainer title="Sign in with email or mobile">
         <Formik
           onSubmit={onSubmit}
@@ -157,7 +164,7 @@ const Login: NextPage = () => {
         title="Login Errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 };
 

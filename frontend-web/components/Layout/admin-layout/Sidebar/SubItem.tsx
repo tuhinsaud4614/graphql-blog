@@ -1,7 +1,9 @@
-import classNames from "classnames";
 import { useRouter } from "next/router";
 
-import { LinkButton } from "@component";
+import classNames from "classnames";
+
+import { LinkButton } from "@/components";
+
 import type { ItemProps } from "./Item";
 
 export default function SubItem({ href, children }: ItemProps) {

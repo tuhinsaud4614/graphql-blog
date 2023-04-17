@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import * as React from "react";
 
 import Container from "../Container";
 import Authors from "./Authors";
@@ -7,7 +7,7 @@ import Tags from "./Tags";
 
 interface Props {
   hideSidebar?: boolean;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 const className = {
@@ -20,11 +20,11 @@ export default function UserLayout({ hideSidebar = false, children }: Props) {
     <Container
       sidebar={
         hideSidebar ? null : (
-          <Fragment>
+          <React.Fragment>
             <Categories />
             <Tags />
             <Authors />
-          </Fragment>
+          </React.Fragment>
         )
       }
     >

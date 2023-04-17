@@ -1,8 +1,10 @@
-import { IUser } from "@interfaces";
-import { DemoAvatar } from "components";
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { generateFileUrl, getUserName } from "utils";
+
+import { motion } from "framer-motion";
+
+import { DemoAvatar } from "@/components";
+import { generateFileUrl, getUserName } from "@/utils";
+import type { IUser } from "@/utils/interfaces";
 
 const className = {
   header: "px-3.5 mb-1.5 flex items-center",
@@ -55,7 +57,7 @@ export default function Commenter({ user }: Props) {
             objectFit="cover"
           />
         ) : (
-          <DemoAvatar aria-label={userName} className="w-8 h-8" />
+          <DemoAvatar aria-label={userName} className="h-8 w-8" />
         )}
       </span>
       <p className={className.name}>{userName}</p>

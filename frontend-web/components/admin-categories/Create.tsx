@@ -1,7 +1,9 @@
 import * as React from "react";
+
 import { BiPlus } from "react-icons/bi";
 
-import { Button, Modal, ModalHeader } from "@component";
+import { Button, Modal, ModalHeader } from "@/components";
+
 import CreateForm from "./CreateForm";
 
 export default function CreateCategory() {

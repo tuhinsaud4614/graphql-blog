@@ -1,15 +1,19 @@
-import { selectReact, setToggleReact } from "@features";
-import { useTooltip } from "@hooks";
+import * as React from "react";
+
+import { useRouter } from "next/router";
+
 import classNames from "classnames";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+
+import { selectReact, setToggleReact } from "@/features";
 import {
   EReactionsMutationStatus,
   useReactToPostMutation,
-} from "graphql/generated/schema";
-import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
-import { AiFillLike, AiOutlineLike } from "react-icons/ai";
-import { useAppDispatch, useAppSelector } from "store";
-import { countConvert } from "utils";
+} from "@/graphql/generated/schema";
+import { useTooltip } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { countConvert } from "@/utils";
+
 import FloatingLikes from "./FloatingLikes";
 
 const className = {
@@ -25,7 +29,7 @@ interface Props {
 }
 
 export default function LikeButton({ className: cls }: Props) {
-  const [openLikeModal, setOpenLikeBox] = useState(false);
+  const [openLikeModal, setOpenLikeBox] = React.useState(false);
   const { count, isReacted } = useAppSelector(selectReact);
   const rdxDispatch = useAppDispatch();
   const {
@@ -44,14 +48,16 @@ export default function LikeButton({ className: cls }: Props) {
       });
       if (data?.reactionToPost) {
         rdxDispatch(
-          setToggleReact(data.reactionToPost === EReactionsMutationStatus.React)
+          setToggleReact(
+            data.reactionToPost === EReactionsMutationStatus.React,
+          ),
         );
       }
     } catch (error) {}
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <span
         className={classNames(cls, className.like)}
         onMouseEnter={(e) => {
@@ -75,7 +81,7 @@ export default function LikeButton({ className: cls }: Props) {
           {isReacted ? (
             <AiFillLike
               size={24}
-              className="text-secondary dark:text-secondary-dark hover:text-secondary-focus dark:hover:text-secondary"
+              className="text-secondary hover:text-secondary-focus dark:text-secondary-dark dark:hover:text-secondary"
             />
           ) : (
             <AiOutlineLike
@@ -98,6 +104,6 @@ export default function LikeButton({ className: cls }: Props) {
           open={openLikeModal}
         />
       )}
-    </Fragment>
+    </React.Fragment>
   );
 }

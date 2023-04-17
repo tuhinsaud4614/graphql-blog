@@ -1,17 +1,20 @@
-import classNames from "classnames";
-import { useRouter } from "next/router";
 import * as React from "react";
+
+import { useRouter } from "next/router";
+
+import classNames from "classnames";
+import { BiCategory } from "react-icons/bi";
 import { MdDashboard } from "react-icons/md";
 
-import { ROUTES } from "@constants";
 import {
   adminSetSidebar,
   adminToggleSidebar,
   selectAdminSidebar,
-} from "@features";
-import { useMediaQuery } from "@hooks";
-import { BiCategory } from "react-icons/bi";
-import { useAppDispatch, useAppSelector } from "store";
+} from "@/features";
+import { useMediaQuery } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { ROUTES } from "@/utils/constants";
+
 import Container from "./Container";
 import Item from "./Item";
 import Top from "./Top";

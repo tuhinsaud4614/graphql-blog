@@ -1,9 +1,10 @@
-import { ROUTES } from "@constants";
-import { ErrorBox, LinkButton } from "components";
-import { SidebarContent, SidebarSkeleton } from "components/Sidebar";
-import { useGetTagsOnOffsetQuery } from "graphql/generated/schema";
-import { Fragment } from "react";
-import { gplErrorHandler, isDev } from "utils";
+import * as React from "react";
+
+import { ErrorBox, LinkButton } from "@/components";
+import { SidebarContent, SidebarSkeleton } from "@/components/Sidebar";
+import { useGetTagsOnOffsetQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   items: "list-none m-0 flex flex-wrap space-x-3 space-y-3 -mt-3 -ml-3",
@@ -20,10 +21,10 @@ export default function Tags() {
 
   if (loading) {
     return (
-      <Fragment>
+      <React.Fragment>
         <SidebarSkeleton />
         <hr className={className.divider} />
-      </Fragment>
+      </React.Fragment>
     );
   }
   if (error) {
@@ -51,13 +52,13 @@ export default function Tags() {
   }
 
   return (
-    <Fragment>
+    <React.Fragment>
       <SidebarContent
         title="Recommended tags"
         classes={{ items: className.items }}
       >
         {data.tagsOnOffset.results.map((tag) => (
-          <li className="first:mt-3 first:ml-3" key={tag.id}>
+          <li className="first:ml-3 first:mt-3" key={tag.id}>
             <LinkButton
               variant="neutral"
               mode="outline"
@@ -72,6 +73,6 @@ export default function Tags() {
         ))}
       </SidebarContent>
       <hr className={className.divider} />
-    </Fragment>
+    </React.Fragment>
   );
 }

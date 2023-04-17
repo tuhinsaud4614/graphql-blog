@@ -1,21 +1,24 @@
-import { setAuthUser } from "@features";
-import { deleteCookie } from "cookies-next";
+import { ParsedUrlQuery } from "querystring";
+
 import {
   GetServerSidePropsContext,
   GetServerSidePropsResult,
   PreviewData,
 } from "next";
-import { ParsedUrlQuery } from "querystring";
-import { nextReduxWrapper, Store } from "store";
-import { fetchRefreshToken, getAuthUser } from "utils";
+
+import { deleteCookie } from "cookies-next";
+
+import { setAuthUser } from "@/features";
+import { Store, nextReduxWrapper } from "@/store";
+import { fetchRefreshToken, getAuthUser } from "@/utils";
 
 export const withSSRAuth = (
   redirectTo: string,
   cb?: (
     store: Store,
     ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
-    token?: string
-  ) => Promise<GetServerSidePropsResult<any>>
+    token?: string,
+  ) => Promise<GetServerSidePropsResult<any>>,
 ) =>
   nextReduxWrapper.getServerSideProps((store) => async (ctx) => {
     const { dispatch } = store;

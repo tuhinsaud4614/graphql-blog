@@ -1,14 +1,14 @@
-import { USER_KEY } from "@constants";
-import { IPicture, IUser } from "@interfaces";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import { RootState } from "store";
+
+import { RootState } from "@/store";
 import {
   readLocalStorageValue,
   removeLocalStorageValue,
   setLocalStorageValue,
-} from "utils";
+} from "@/utils";
+import { USER_KEY } from "@/utils/constants";
+import { IPicture, IUser } from "@/utils/interfaces";
 
 export interface AuthState {
   user: IUser | null;

@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import * as React from "react";
 
 export const HOTKEYS = {
   "mod+b": "bold",
@@ -11,9 +11,10 @@ export type EmptyText = {
   text: string;
 };
 export type HotKeyType = keyof typeof HOTKEYS;
-export type MarkType = typeof HOTKEYS[HotKeyType];
+export type MarkType = (typeof HOTKEYS)[HotKeyType];
 
-export interface MarkButtonProps extends ComponentPropsWithoutRef<"button"> {
+export interface MarkButtonProps
+  extends React.ComponentPropsWithoutRef<"button"> {
   mark: MarkType;
   hotKey: HotKeyType;
   tip?: string;

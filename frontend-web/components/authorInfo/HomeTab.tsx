@@ -1,5 +1,5 @@
-import { NoResultFound, PostItem, TabBox } from "components";
-import { GetUserWithPostQuery } from "graphql/generated/schema";
+import { NoResultFound, PostItem, TabBox } from "@/components";
+import { GetUserWithPostQuery } from "@/graphql/generated/schema";
 
 const className = {
   item: "border-b last:border-none py-5 last:pb-0",

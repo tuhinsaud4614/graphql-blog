@@ -1,11 +1,15 @@
-import { NetworkStatus } from "@apollo/client";
-import { Button } from "components";
-import { AnimatePresence } from "framer-motion";
-import { useGetPostCommentsOnCursorQuery } from "graphql/generated/schema";
-import _ from "lodash";
+import * as React from "react";
+
 import { useRouter } from "next/router";
-import { Fragment } from "react";
-import { isDev } from "utils";
+
+import { NetworkStatus } from "@apollo/client";
+import { AnimatePresence } from "framer-motion";
+import _ from "lodash";
+
+import { Button } from "@/components";
+import { useGetPostCommentsOnCursorQuery } from "@/graphql/generated/schema";
+import { isDev } from "@/utils";
+
 import CommentItem from ".";
 import CommentItemSkeleton from "./ItemSkeleton";
 
@@ -35,7 +39,7 @@ export default function Replies({ commentId }: Props) {
 
   if (!data || data.postCommentsOnCursor.total === 0) {
     return (
-      <p className="flex flex-col items-center justify-center text-neutral/60 dark:text-neutral-dark/60 font-extralight italic">
+      <p className="flex flex-col items-center justify-center font-extralight italic text-neutral/60 dark:text-neutral-dark/60">
         There are currently no reply for this comment.
       </p>
     );
@@ -71,7 +75,7 @@ export default function Replies({ commentId }: Props) {
                   ...prev.postCommentsOnCursor.edges,
                   ...fetchMoreResult.postCommentsOnCursor.edges,
                 ],
-                "cursor"
+                "cursor",
               ),
             },
           };
@@ -83,7 +87,7 @@ export default function Replies({ commentId }: Props) {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <AnimatePresence>
         {edges.map((reply) => (
           <CommentItem
@@ -105,6 +109,6 @@ export default function Replies({ commentId }: Props) {
           Show more replies
         </Button>
       )}
-    </Fragment>
+    </React.Fragment>
   );
 }

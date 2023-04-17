@@ -1,10 +1,14 @@
-import { ROUTES } from "@constants";
-import classNames from "classnames";
-import { FUserFragment } from "graphql/generated/schema";
+import * as React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { generateFileUrl, getUserName } from "utils";
+
+import classNames from "classnames";
+
+import { FUserFragment } from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+
 import DemoAvatar from "../DemoAvatar";
 import FollowButton from "./FollowButton";
 import UnFollowButton from "./UnFollowButton";
@@ -34,7 +38,7 @@ interface Props {
 }
 
 export default function FollowItem({ classes, user, followed = false }: Props) {
-  const [isFollowed, setFollowed] = useState(followed);
+  const [isFollowed, setFollowed] = React.useState(followed);
 
   const userName = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
@@ -64,7 +68,7 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
             as="a"
             aria-label={userName}
             type="button"
-            className="w-8 h-8"
+            className="h-8 w-8"
             size={32 / 1.8}
           />
         )}

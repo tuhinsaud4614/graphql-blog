@@ -1,11 +1,11 @@
-import { ErrorBox } from "components";
+import { ErrorBox } from "@/components";
 import {
   SidebarContent,
   SidebarPostItem,
   SidebarPostItemSkeleton,
-} from "components/Sidebar";
-import { useGetPostsOnOffsetQuery } from "graphql/generated/schema";
-import { gplErrorHandler, isDev } from "utils";
+} from "@/components/Sidebar";
+import { useGetPostsOnOffsetQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
 
 const className = {
   skeleton: "flex flex-col space-y-4",

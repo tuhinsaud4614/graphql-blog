@@ -1,8 +1,9 @@
-import classNames from "classnames";
 import * as React from "react";
+
+import classNames from "classnames";
 import { BiChevronDown } from "react-icons/bi";
 
-import { Accordion, AccordionDetails, AccordionSummary } from "@component";
+import { Accordion, AccordionDetails, AccordionSummary } from "@/components";
 
 interface Props {
   visible: boolean;

@@ -1,13 +1,15 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { Fragment, ReactNode } from "react";
+
 import BottomTab from "./BottomTab";
 import Header from "./Header";
-import Sidebar from "./Sidebar";
 import SideNav from "./SideNav";
+import Sidebar from "./Sidebar";
 
 interface Props {
-  children?: ReactNode;
-  sidebar?: ReactNode;
+  children?: React.ReactNode;
+  sidebar?: React.ReactNode;
   classes?: {
     container?: string;
     main?: string;
@@ -21,7 +23,7 @@ const className = {
 
 export default function Container({ sidebar, classes, children }: Props) {
   return (
-    <Fragment>
+    <React.Fragment>
       <Header />
       <section className={classNames(className.container, classes?.container)}>
         <SideNav />
@@ -31,6 +33,6 @@ export default function Container({ sidebar, classes, children }: Props) {
         {sidebar && <Sidebar>{sidebar}</Sidebar>}
       </section>
       <BottomTab />
-    </Fragment>
+    </React.Fragment>
   );
 }

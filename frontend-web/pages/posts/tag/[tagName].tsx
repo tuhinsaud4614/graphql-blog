@@ -1,18 +1,21 @@
-import { PostItem, Tag } from "@component";
-import { ROUTES } from "@constants";
-import { SearchLayout } from "components/Layout";
+import { Fragment } from "react";
+
+import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+
+import { AiFillTag } from "react-icons/ai";
+
+import { PostItem, Tag } from "@/components";
+import { SearchLayout } from "@/components/Layout";
+import { SidebarContent } from "@/components/Sidebar";
 import {
   PostByCounter,
   PostByHeader,
   PostByItems,
   PostBySidebarCounter,
   PostBySidebarTopAuthors,
-} from "components/posts-by";
-import { SidebarContent } from "components/Sidebar";
-import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
-import { Fragment } from "react";
-import { AiFillTag } from "react-icons/ai";
+} from "@/components/posts-by";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",

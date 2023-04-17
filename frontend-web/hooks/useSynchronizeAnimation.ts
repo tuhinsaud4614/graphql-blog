@@ -1,10 +1,11 @@
 import * as React from "react";
+
 import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
 
 let previousTime: number | null = null;
 
 export default function useSynchronizeAnimation<
-  T extends Element = HTMLDivElement
+  T extends Element = HTMLDivElement,
 >(animationName: string) {
   const ref = React.useRef<T | null>(null);
 
@@ -16,7 +17,7 @@ export default function useSynchronizeAnimation<
       .filter(
         (animation) =>
           animation instanceof CSSAnimation &&
-          animation.animationName === animationName
+          animation.animationName === animationName,
       ) as CSSAnimation[];
 
     if (animations.length === 0) return;
@@ -25,7 +26,7 @@ export default function useSynchronizeAnimation<
       (animation) =>
         animation.effect &&
         "target" in animation.effect &&
-        animation.effect["target"] === ref.current
+        animation.effect["target"] === ref.current,
     );
 
     if (!myAnimation) {

@@ -1,28 +1,31 @@
-import { AuthGuard, ClientOnly, DemoAvatar, Tabs } from "@component";
-import { ROUTES } from "@constants";
-import { useMediaQuery } from "@hooks";
-import { IUser } from "@interfaces";
+import * as React from "react";
+
+import { GetServerSideProps, NextPage } from "next";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
+import _ from "lodash";
+
+import { AuthGuard, ClientOnly, DemoAvatar, Tabs } from "@/components";
+import { LayoutContainer } from "@/components/Layout";
+import { SidebarUserProfiler } from "@/components/Sidebar";
 import {
   AuthorInfoAboutTab,
   AuthorInfoFollowerList,
   AuthorInfoFollowingList,
   AuthorInfoHomeTab,
-} from "components/authorInfo";
-import { LayoutContainer } from "components/Layout";
-import { SidebarUserProfiler } from "components/Sidebar";
+} from "@/components/authorInfo";
 import {
   GetUserWithPostDocument,
-  useGetUserWithPostQuery,
   UserRole,
-} from "graphql/generated/schema";
-import { addApolloState, initializeApollo } from "lib/apollo";
-import _ from "lodash";
-import { GetServerSideProps, NextPage } from "next";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
-import { generateFileUrl, getUserName, queryChecking } from "utils";
-import { withSSRAuth } from "utils/ssr";
+  useGetUserWithPostQuery,
+} from "@/graphql/generated/schema";
+import { useMediaQuery } from "@/hooks";
+import { addApolloState, initializeApollo } from "@/lib/apollo";
+import { generateFileUrl, getUserName, queryChecking } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+import { IUser } from "@/utils/interfaces";
+import { withSSRAuth } from "@/utils/ssr";
 
 const className = {
   title: "mb-4 mt-8 flex items-center",
@@ -40,7 +43,7 @@ interface Props {
 }
 
 const AboutPage: NextPage<Props> = ({ query }) => {
-  const [currentTab, setCurrentTab] = useState(() =>
+  const [currentTab, setCurrentTab] = React.useState(() =>
     queryChecking(query, tabs, "tab"),
   );
   const matches = useMediaQuery("(min-width: 1024px)");
@@ -71,13 +74,13 @@ const AboutPage: NextPage<Props> = ({ query }) => {
     <AuthGuard role={UserRole.Author}>
       <LayoutContainer
         sidebar={
-          <Fragment>
+          <React.Fragment>
             <SidebarUserProfiler user={user} classes={{ root: "mb-10" }} />
             <ClientOnly>
               {matches && <AuthorInfoFollowingList authorId={authorId} />}
               {matches && <AuthorInfoFollowerList authorId={authorId} />}
             </ClientOnly>
-          </Fragment>
+          </React.Fragment>
         }
       >
         <div className={className.title}>
@@ -115,14 +118,14 @@ const AboutPage: NextPage<Props> = ({ query }) => {
           {currentTab === 0 ? (
             <AuthorInfoHomeTab posts={data.user.posts} />
           ) : (
-            <Fragment />
+            <React.Fragment />
           )}
           {currentTab === 1 ? (
             <ClientOnly>
               {<AuthorInfoAboutTab user={user} userId={user.id || authorId} />}
             </ClientOnly>
           ) : (
-            <Fragment />
+            <React.Fragment />
           )}
         </Tabs>
       </LayoutContainer>

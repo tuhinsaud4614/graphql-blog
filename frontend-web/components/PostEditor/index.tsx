@@ -1,8 +1,7 @@
-import { SlateElement, SlateLeaf } from "@component";
-import { CREATE_POST_KEY } from "@constants";
+import * as React from "react";
+
 import pipe from "lodash/fp/pipe";
-import { useCallback, useState } from "react";
-import { createEditor, Descendant } from "slate";
+import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
@@ -12,7 +11,15 @@ import {
   Slate,
   withReact,
 } from "slate-react";
-import { setLocalStorageValue, withEmbeds, withImages, withLinks } from "utils";
+
+import { SlateElement, SlateLeaf } from "@/components";
+import {
+  setLocalStorageValue,
+  withEmbeds,
+  withImages,
+  withLinks,
+} from "@/utils";
+import { CREATE_POST_KEY } from "@/utils/constants";
 
 import Toolbar from "./Toolbar";
 
@@ -32,16 +39,18 @@ const withPlugins = pipe([
 ]);
 
 export default function PostEditor({ onChange, value }: Props) {
-  const [editor] = useState(() => withPlugins(createEditor() as ReactEditor));
-
-  const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <SlateLeaf {...props} />,
-    []
+  const [editor] = React.useState(() =>
+    withPlugins(createEditor() as ReactEditor),
   );
 
-  const renderElement = useCallback(
+  const renderLeaf = React.useCallback(
+    (props: RenderLeafProps) => <SlateLeaf {...props} />,
+    [],
+  );
+
+  const renderElement = React.useCallback(
     (props: RenderElementProps) => <SlateElement {...props} />,
-    []
+    [],
   );
 
   return (
@@ -51,7 +60,7 @@ export default function PostEditor({ onChange, value }: Props) {
         value={value}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
-            (op: any) => "set_selection" !== op.type
+            (op: any) => "set_selection" !== op.type,
           );
           if (isAstChange) {
             // Save the value to Local Storage.
@@ -62,7 +71,7 @@ export default function PostEditor({ onChange, value }: Props) {
         }}
       >
         <Toolbar />
-        <section className="px-4 py-2 overflow-x-auto min-h-[12rem]">
+        <section className="min-h-[12rem] overflow-x-auto px-4 py-2">
           <Editable
             placeholder="Post body"
             aria-label="Post body"

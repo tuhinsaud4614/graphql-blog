@@ -1,5 +1,7 @@
-import TabBox from "components/TabBox";
-import { Fragment } from "react";
+import * as React from "react";
+
+import { TabBox } from "@/components";
+
 import PostItem from "./PostItem";
 
 const className = {
@@ -16,11 +18,11 @@ export default function TabPublished() {
       classes={{ root: className.root }}
       notFound={
         isTrue && (
-          <Fragment>
+          <React.Fragment>
             <p className={className.notFound}>
               You haven’t published any public stories yet.
             </p>
-          </Fragment>
+          </React.Fragment>
         )
       }
     >

@@ -1,18 +1,21 @@
-import { PostItem } from "@component";
-import { ROUTES } from "@constants";
-import { SearchLayout } from "components/Layout";
+import * as React from "react";
+
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+
+import { BiCategoryAlt } from "react-icons/bi";
+
+import { PostItem } from "@/components";
+import { SearchLayout } from "@/components/Layout";
+import { SidebarCategory, SidebarContent } from "@/components/Sidebar";
 import {
   PostByCounter,
   PostByHeader,
   PostByItems,
   PostBySidebarCounter,
   PostBySidebarTopAuthors,
-} from "components/posts-by";
-import { SidebarCategory, SidebarContent } from "components/Sidebar";
-import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
-import { Fragment } from "react";
-import { BiCategoryAlt } from "react-icons/bi";
+} from "@/components/posts-by";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",
@@ -29,7 +32,7 @@ const PostsByCategoryPage: NextPage<Props> = ({ query }) => {
   return (
     <SearchLayout
       sidebar={
-        <Fragment>
+        <React.Fragment>
           <PostBySidebarCounter />
           <hr className={className.divider} />
           <SidebarContent
@@ -45,7 +48,7 @@ const PostsByCategoryPage: NextPage<Props> = ({ query }) => {
             ))}
           </SidebarContent>
           <PostBySidebarTopAuthors />
-        </Fragment>
+        </React.Fragment>
       }
     >
       <Head>

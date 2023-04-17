@@ -1,5 +1,6 @@
-import { Modal, ModalHeader } from "components";
-import { ReactNode } from "react";
+import * as React from "react";
+
+import { Modal, ModalHeader } from "@/components";
 
 const className = {
   modalBody: "overflow-y-auto scrollbar px-10 pb-10",
@@ -14,7 +15,7 @@ interface Props {
   title: string;
   open: boolean;
   onHide(): void;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function ReactorModal({ open, onHide, children, title }: Props) {

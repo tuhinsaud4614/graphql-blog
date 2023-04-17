@@ -1,9 +1,12 @@
-import { useLockBody } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
-import { ErrorBox, ReactorModal } from "components";
-import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
-import { Fragment, useState } from "react";
-import { countConvert, gplErrorHandler, isDev } from "utils";
+
+import { ErrorBox, ReactorModal } from "@/components";
+import { useGetAuthorFollowingsOnCursorQuery } from "@/graphql/generated/schema";
+import { useLockBody } from "@/hooks";
+import { countConvert, gplErrorHandler, isDev } from "@/utils";
+
 import FollowingItem from "../FollowingItem";
 import FollowingItemSkeleton from "../FollowingItemSkeleton";
 import SeeMoreFollow from "./SeeMoreFollow";
@@ -25,7 +28,7 @@ export default function FollowingList({ authorId }: Props) {
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "network-only",
       variables: { limit: 6, authorId },
-    }
+    },
   );
 
   if (loading) {
@@ -83,11 +86,11 @@ export default function FollowingList({ authorId }: Props) {
 }
 
 function SeeAll({ total, authorId }: { authorId: string; total: number }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   useLockBody(open);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <button
         type="button"
         aria-label="See all"
@@ -103,6 +106,6 @@ function SeeAll({ total, authorId }: { authorId: string; total: number }) {
       >
         <SeeMoreFollow authorId={authorId} />
       </ReactorModal>
-    </Fragment>
+    </React.Fragment>
   );
 }

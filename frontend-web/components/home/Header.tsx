@@ -1,12 +1,14 @@
-import { ROUTES } from "@constants";
-import { useDarkMode } from "@hooks";
-import { motion, useTransform, useViewportScroll } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const Theme = dynamic(() => import("components/Theme"), { ssr: false });
+import { motion, useTransform, useViewportScroll } from "framer-motion";
+
+import { useDarkMode } from "@/hooks";
+import { ROUTES } from "@/utils/constants";
+
+const Theme = dynamic(() => import("@/components/Theme"), { ssr: false });
 
 const className = {
   root: "fixed top-0 left-0 right-0 border-b border-secondary dark:border-secondary-dark h-16 z-50",
@@ -23,12 +25,12 @@ export default function Header() {
   const rootBG = useTransform(
     scrollY,
     [0, 250, 280],
-    ["#570DF8", "#570DF8", isDarkMode ? "#001e3c" : "#F2F2F2"]
+    ["#570DF8", "#570DF8", isDarkMode ? "#001e3c" : "#F2F2F2"],
   );
   const linkColor = useTransform(
     scrollY,
     [0, 250, 280],
-    ["#FFFFFF", "#FFFFFF", isDarkMode ? "#84d6a1" : "#37CDBE"]
+    ["#FFFFFF", "#FFFFFF", isDarkMode ? "#84d6a1" : "#37CDBE"],
   );
 
   return (

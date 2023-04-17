@@ -1,15 +1,17 @@
+import { Fragment } from "react";
+
 import { NetworkStatus } from "@apollo/client";
+import _ from "lodash";
+
 import {
   ErrorBox,
   NoResultFound,
   ReactorItemMoreBtn,
   ReactorItemSkeleton,
   ReactorModalItem,
-} from "@component";
-import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
-import _ from "lodash";
-import { Fragment } from "react";
-import { gplErrorHandler } from "utils";
+} from "@/components";
+import { useGetAuthorFollowersOnCursorQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
 
 const className = {
   btn: "text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95",
@@ -102,7 +104,7 @@ export default function BottomFollowers({ userId }: Props) {
                   ...prev.authorFollowersOnCursor.edges,
                   ...fetchMoreResult.authorFollowersOnCursor.edges,
                 ],
-                "cursor"
+                "cursor",
               ),
             },
           };

@@ -1,8 +1,9 @@
-import classNames from "classnames";
 import Image from "next/image";
+
+import classNames from "classnames";
 import { BiChevronRight } from "react-icons/bi";
 
-import { Button } from "@component";
+import { Button } from "@/components";
 
 interface Props {
   visible: boolean;

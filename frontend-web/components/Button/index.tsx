@@ -1,11 +1,12 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import type { ComponentPropsWithRef } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
-import STYLES from "@styles";
-import { ButtonModeType, ColorVariantType } from "@types";
+import STYLES from "@/utils/styles";
+import { ButtonModeType, ColorVariantType } from "@/utils/types";
 
-interface Props extends ComponentPropsWithRef<"button"> {
+interface Props extends React.ComponentPropsWithRef<"button"> {
   mode?: ButtonModeType;
   variant?: ColorVariantType;
   loading?: boolean;

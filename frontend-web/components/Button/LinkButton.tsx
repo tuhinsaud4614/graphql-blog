@@ -1,13 +1,16 @@
-import STYLES from "@styles";
-import { ButtonModeType, ColorVariantType } from "@types";
-import classNames from "classnames";
+import * as React from "react";
+
 import Link, { LinkProps } from "next/link";
-import { HTMLAttributes, ReactNode } from "react";
+
+import classNames from "classnames";
+
+import STYLES from "@/utils/styles";
+import type { ButtonModeType, ColorVariantType } from "@/utils/types";
 
 interface Props extends LinkProps {
-  children?: ReactNode;
+  children?: React.ReactNode;
   className?: string;
-  anchorProps?: Omit<HTMLAttributes<HTMLAnchorElement>, "className">;
+  anchorProps?: Omit<React.HTMLAttributes<HTMLAnchorElement>, "className">;
   mode?: ButtonModeType;
   variant?: ColorVariantType;
 }

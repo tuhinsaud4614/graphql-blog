@@ -1,12 +1,14 @@
-import classNames from "classnames";
+import * as React from "react";
+
 import Link from "next/link";
-import { ComponentPropsWithoutRef } from "react";
+
+import classNames from "classnames";
 
 const className = {
   root: "text-success dark:text-success-dark hover:text-success-focus dark:hover:text-success active:scale-95",
 };
 
-interface Props extends Omit<ComponentPropsWithoutRef<"a">, "href"> {
+interface Props extends Omit<React.ComponentPropsWithoutRef<"a">, "href"> {
   href: string;
 }
 

@@ -1,9 +1,10 @@
-import { ROUTES } from "@constants";
-import DemoAvatar from "components/DemoAvatar";
-import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
-import { generateFileUrl, getUserName } from "utils";
+
+import DemoAvatar from "@/components/DemoAvatar";
+import { FUserFragment } from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "my-8 flex items-center",
@@ -39,7 +40,7 @@ export default function AuthorInfo({ author, postDate }: Props) {
               priority
             />
           ) : (
-            <DemoAvatar className="w-12 h-12" size={48 / 1.8} />
+            <DemoAvatar className="h-12 w-12" size={48 / 1.8} />
           )}
         </a>
       </Link>

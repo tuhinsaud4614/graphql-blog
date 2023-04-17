@@ -1,12 +1,11 @@
 import classNames from "classnames";
-import type { SVGMotionProps } from "framer-motion";
-import { motion } from "framer-motion";
+import { motion, type SVGMotionProps } from "framer-motion";
 
-import { Button } from "@component";
-import { adminToggleSidebar, selectAdminSidebar } from "@features";
-import { useMediaQuery } from "@hooks";
-import STYLES from "@styles";
-import { useAppDispatch, useAppSelector } from "store";
+import { Button } from "@/components";
+import { adminToggleSidebar, selectAdminSidebar } from "@/features";
+import { useMediaQuery } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/store";
+import STYLES from "@/utils/styles";
 
 function Path(props: SVGMotionProps<SVGPathElement>) {
   return (

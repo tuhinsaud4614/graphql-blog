@@ -1,21 +1,22 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import { useMediaQuery } from "@hooks";
-import classNames from "classnames";
-import { Badge, ClientOnly, UserAvatarBtn } from "components";
-import { selectNotificationUnSeenCount } from "features/notificationSlice/notificationSlice";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
+import classNames from "classnames";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiEdit } from "react-icons/bi";
 import { CgLoadbarDoc } from "react-icons/cg";
 import { FaBell } from "react-icons/fa";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
-import { useAppSelector } from "store";
 
-const Theme = dynamic(() => import("components/Theme"), { ssr: false });
+import { Badge, ClientOnly, UserAvatarBtn } from "@/components";
+import { selectNotificationUnSeenCount, selectUser } from "@/features";
+import { useMediaQuery } from "@/hooks";
+import { useAppSelector } from "@/store";
+import { ROUTES } from "@/utils/constants";
+
+const Theme = dynamic(() => import("@/components/Theme"), { ssr: false });
 
 const className = {
   root: "hidden shrink-0 lg:block min-h-screen w-20 border-r dark:border-base-dark-300 relative",
@@ -52,7 +53,7 @@ export default function SideNav() {
                 className={classNames(
                   className.link,
                   pathname === ROUTES.myHome &&
-                    "!text-secondary dark:!text-secondary-dark"
+                    "!text-secondary dark:!text-secondary-dark",
                 )}
               >
                 {pathname === ROUTES.myHome ? (
@@ -70,7 +71,7 @@ export default function SideNav() {
                 className={classNames(
                   className.link,
                   pathname === ROUTES.notifications &&
-                    "!text-secondary dark:!text-secondary-dark"
+                    "!text-secondary dark:!text-secondary-dark",
                 )}
               >
                 <span className="relative">
@@ -93,7 +94,7 @@ export default function SideNav() {
                 className={classNames(
                   className.link,
                   pathname === ROUTES.favorite &&
-                    "!text-secondary dark:!text-secondary-dark"
+                    "!text-secondary dark:!text-secondary-dark",
                 )}
               >
                 {pathname === ROUTES.favorite ? (
@@ -111,7 +112,7 @@ export default function SideNav() {
                 className={classNames(
                   className.link,
                   pathname === ROUTES.myPosts &&
-                    "!text-secondary dark:!text-secondary-dark"
+                    "!text-secondary dark:!text-secondary-dark",
                 )}
               >
                 <CgLoadbarDoc size={24} />
@@ -125,7 +126,7 @@ export default function SideNav() {
                 className={classNames(
                   className.link,
                   pathname === ROUTES.createPost &&
-                    "!text-secondary dark:!text-secondary-dark"
+                    "!text-secondary dark:!text-secondary-dark",
                 )}
               >
                 <BiEdit size={24} />

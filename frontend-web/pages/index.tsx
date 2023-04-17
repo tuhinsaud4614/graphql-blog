@@ -1,16 +1,19 @@
-import { ROUTES } from "@constants";
-import { Banner, HomeContent, HomeHeader, Tending } from "components/home";
+import * as React from "react";
+
+import { GetServerSideProps, NextPage } from "next";
+
 import { getCookie } from "cookies-next";
+
+import { Banner, HomeContent, HomeHeader, Tending } from "@/components/home";
 import {
   GetPostsDocument,
   GetPostsQuery,
   GetPostsQueryVariables,
   GetTrendingPostsDocument,
-} from "graphql/generated/schema";
-import { addApolloState, initializeApollo } from "lib/apollo";
-import { GetServerSideProps, NextPage } from "next";
-import * as React from "react";
-import { isDev } from "utils";
+} from "@/graphql/generated/schema";
+import { addApolloState, initializeApollo } from "@/lib/apollo";
+import { isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   main: "bg-base-100 dark:bg-base-dark-100",

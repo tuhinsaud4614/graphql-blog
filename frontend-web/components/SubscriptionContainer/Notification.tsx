@@ -1,10 +1,12 @@
-import { notify } from "features/notificationSlice/notificationSlice";
+import { useEffect } from "react";
+
 import {
   FollowingMutationStatus,
   useFollowingSubscription,
 } from "graphql/generated/schema";
-import { useEffect } from "react";
 import { useAppDispatch } from "store";
+
+import { notify } from "@/features/notificationSlice";
 
 export default function Notification() {
   const { data } = useFollowingSubscription({
@@ -20,7 +22,7 @@ export default function Notification() {
           followedBy: data.following.followedBy,
           mutation: data.following.mutation,
           type: "FOLLOWING",
-        })
+        }),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

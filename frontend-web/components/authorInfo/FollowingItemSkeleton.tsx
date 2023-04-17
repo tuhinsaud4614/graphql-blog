@@ -1,5 +1,6 @@
-import { useSynchronizeAnimation } from "@hooks";
 import classNames from "classnames";
+
+import { useSynchronizeAnimation } from "@/hooks";
 
 const className = {
   root: "flex items-center justify-between",

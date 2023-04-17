@@ -1,6 +1,9 @@
-import { useLockBody, useMediaQuery } from "@hooks";
+import * as React from "react";
+
 import { AnimatePresence, motion } from "framer-motion";
-import { Fragment, RefObject, useEffect, useState } from "react";
+
+import { useLockBody, useMediaQuery } from "@/hooks";
+
 import CommentButton from "./CommentButton";
 import FloatingComments from "./FloatingComments";
 import FloatingLikes from "./FloatingLikes";
@@ -17,19 +20,19 @@ const className = {
 };
 
 interface Props {
-  siblingRef: RefObject<Element>;
+  siblingRef: React.RefObject<Element>;
   comments: number;
 }
 
 export default function FloatingReactions({ comments, siblingRef }: Props) {
-  const [show, setShow] = useState<boolean>(false);
-  const [openLikeModal, setOpenLikeBox] = useState(false);
-  const [openCommentModal, setOpenCommentModal] = useState(false);
+  const [show, setShow] = React.useState<boolean>(false);
+  const [openLikeModal, setOpenLikeBox] = React.useState(false);
+  const [openCommentModal, setOpenCommentModal] = React.useState(false);
   const matches = useMediaQuery("(min-width: 1024px)");
 
   useLockBody(openLikeModal || openCommentModal);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const sibling = siblingRef.current;
 
     if (typeof window === "undefined") return;
@@ -66,7 +69,7 @@ export default function FloatingReactions({ comments, siblingRef }: Props) {
   }, [show, matches]);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <AnimatePresence>
         {show && (
           <div className={className.container}>
@@ -96,6 +99,6 @@ export default function FloatingReactions({ comments, siblingRef }: Props) {
         onClose={() => setOpenCommentModal(false)}
         open={openCommentModal}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

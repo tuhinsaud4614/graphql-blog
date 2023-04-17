@@ -1,5 +1,6 @@
-import { RecentSearch, SearchResult } from "components/search";
 import { GetServerSideProps, NextPage } from "next";
+
+import { RecentSearch, SearchResult } from "@/components/search";
 
 interface Props {
   query: { [key: string]: any };

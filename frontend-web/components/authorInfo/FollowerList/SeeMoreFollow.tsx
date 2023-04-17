@@ -1,15 +1,17 @@
+import * as React from "react";
+
 import { NetworkStatus } from "@apollo/client";
+import _ from "lodash";
+
 import {
   ErrorBox,
   NoResultFound,
   ReactorItemMoreBtn,
   ReactorItemSkeleton,
   ReactorModalItem,
-} from "components";
-import { useGetAuthorFollowersOnCursorQuery } from "graphql/generated/schema";
-import _ from "lodash";
-import { Fragment } from "react";
-import { gplErrorHandler } from "utils";
+} from "@/components";
+import { useGetAuthorFollowersOnCursorQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
 
 const className = {
   more: "text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95 self-start",
@@ -28,11 +30,11 @@ export default function SeeMoreFollow({ authorId }: Props) {
 
   if (loading && networkStatus !== NetworkStatus.fetchMore) {
     return (
-      <Fragment>
+      <React.Fragment>
         <ReactorItemSkeleton />
         <ReactorItemSkeleton />
         <ReactorItemSkeleton />
-      </Fragment>
+      </React.Fragment>
     );
   }
 
@@ -98,7 +100,7 @@ export default function SeeMoreFollow({ authorId }: Props) {
                   ...prev.authorFollowersOnCursor.edges,
                   ...fetchMoreResult.authorFollowersOnCursor.edges,
                 ],
-                "cursor"
+                "cursor",
               ),
             },
           };
@@ -108,12 +110,12 @@ export default function SeeMoreFollow({ authorId }: Props) {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       {data?.authorFollowersOnCursor.edges.map(({ node }) => (
         <ReactorModalItem key={node.id} user={node} />
       ))}
       {networkStatus === NetworkStatus.fetchMore && <ReactorItemSkeleton />}
       {hasNext && <ReactorItemMoreBtn onClick={onMore} />}
-    </Fragment>
+    </React.Fragment>
   );
 }

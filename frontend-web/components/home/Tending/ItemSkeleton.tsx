@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import { UserLinkSkeleton } from "components";
+
+import { UserLinkSkeleton } from "@/components";
 
 const className = {
   root: "basis-full md:basis-1/2 md1:basis-1/3 px-3 md:px-4",

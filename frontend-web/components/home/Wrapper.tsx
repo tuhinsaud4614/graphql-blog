@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { ReactNode } from "react";
 
 const className = {
   content: "px-4 sm:mx-auto max-w-5xl pt-10 pb-4",
@@ -10,7 +11,7 @@ interface Props {
     root?: string;
     content?: string;
   };
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export default function Wrapper({ children, classes }: Props) {

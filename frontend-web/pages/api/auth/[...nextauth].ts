@@ -1,12 +1,14 @@
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+
 import {
   LoginDocument,
   LoginMutation,
   LoginMutationVariables,
-} from "graphql/generated/schema";
-import { initializeApollo } from "lib/apollo";
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { getAuthUser } from "utils";
+} from "@/graphql/generated/schema";
+import { initializeApollo } from "@/lib/apollo";
+import { getAuthUser } from "@/utils";
+
 export default NextAuth({
   providers: [
     CredentialsProvider({

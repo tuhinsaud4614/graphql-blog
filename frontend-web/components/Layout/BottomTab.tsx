@@ -1,26 +1,34 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import { useLogout, useMediaQuery } from "@hooks";
-import classNames from "classnames";
-import {
-  ClientOnly,
-  DemoAvatar,
-  ErrorModal,
-  Modal,
-  NavAvatar,
-} from "components";
+import * as React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+
+import classNames from "classnames";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
 import { CgLoadbarDoc } from "react-icons/cg";
 import { FiSearch } from "react-icons/fi";
 import { HiHome, HiOutlineHome } from "react-icons/hi";
-import { useAppSelector } from "store";
-import { generateFileUrl, getUserName, gplErrorHandler, isServer } from "utils";
+
+import {
+  ClientOnly,
+  DemoAvatar,
+  ErrorModal,
+  Modal,
+  NavAvatar,
+} from "@/components";
+import { selectUser } from "@/features";
+import { useLogout, useMediaQuery } from "@/hooks";
+import { useAppSelector } from "@/store";
+import {
+  generateFileUrl,
+  getUserName,
+  gplErrorHandler,
+  isServer,
+} from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "lg:hidden fixed bottom-0 left-0 right-0 h-14 z-40 bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:bg-base-dark-200 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-dark-200/50 backdrop-blur-sm px-4 shadow-top",
@@ -65,7 +73,7 @@ export default function BottomTab() {
               <FiSearch
                 className={
                   pathname === ROUTES.search
-                    ? "text-secondary dark:!text-secondary-dark font-bold"
+                    ? "font-bold text-secondary dark:!text-secondary-dark"
                     : "font-light"
                 }
                 size={pathname === ROUTES.search ? 24 : 22}
@@ -98,11 +106,11 @@ export default function BottomTab() {
 }
 
 function Avatar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const matches = useMediaQuery("(min-width: 1024px)");
   const user = useAppSelector(selectUser);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (matches) {
       setOpen(false);
     }
@@ -114,7 +122,7 @@ function Avatar() {
         as="button"
         aria-label="Demo avatar"
         type="button"
-        className="w-7 h-7"
+        className="h-7 w-7"
         size={28 / 1.8}
         onClick={() => Router.push(ROUTES.login)}
       />
@@ -122,7 +130,7 @@ function Avatar() {
   }
   const imgUrl = generateFileUrl(user.avatar?.url);
   return (
-    <Fragment>
+    <React.Fragment>
       {imgUrl ? (
         <NavAvatar
           btnProps={{
@@ -145,7 +153,7 @@ function Avatar() {
           as="button"
           aria-label={getUserName(user)}
           type="button"
-          className="w-7 h-7"
+          className="h-7 w-7"
           size={28 / 1.8}
           onClick={() => setOpen((prev) => !prev)}
         />
@@ -176,7 +184,7 @@ function Avatar() {
                 />
               </span>
             ) : (
-              <DemoAvatar className="h-8 w-8 mr-3" size={32 / 1.8} />
+              <DemoAvatar className="mr-3 h-8 w-8" size={32 / 1.8} />
             )}
             <div className={className.avatarInfoDetail}>
               <p className={className.name}>{getUserName(user)}</p>
@@ -219,14 +227,14 @@ function Avatar() {
           {!isServer() && <Logout onClose={() => setOpen(false)} />}
         </ul>
       </Modal>
-    </Fragment>
+    </React.Fragment>
   );
 }
 
 function Logout({ onClose }: { onClose(): void }) {
   const { error, loading, logoutHandler, reset } = useLogout();
   return (
-    <Fragment>
+    <React.Fragment>
       <li>
         <button
           type="button"
@@ -247,6 +255,6 @@ function Logout({ onClose }: { onClose(): void }) {
         title="Logout Errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

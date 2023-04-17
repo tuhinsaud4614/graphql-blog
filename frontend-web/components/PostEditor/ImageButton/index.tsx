@@ -1,10 +1,13 @@
-import { useTooltip } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
-import { Menu, SlateButton } from "components";
-import { Fragment, useState } from "react";
 import { BiImage } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
-import { insertImage } from "utils";
+
+import { Menu, SlateButton } from "@/components";
+import { useTooltip } from "@/hooks";
+import { insertImage } from "@/utils";
+
 import { Upload } from "./Upload";
 import { Url } from "./Url";
 
@@ -17,13 +20,15 @@ const className = {
 };
 
 export default function ImageButton() {
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
-  const [currentTab, setCurrentTab] = useState(0);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
+  const [currentTab, setCurrentTab] = React.useState(0);
   const editor = useSlateStatic();
   const { onHoverEnd, onHoverStart } = useTooltip();
 
   return (
-    <Fragment>
+    <React.Fragment>
       <SlateButton
         aria-label="Insert image"
         onClick={(e) => setAnchorEle(e.currentTarget)}
@@ -54,7 +59,7 @@ export default function ImageButton() {
               type="button"
               className={classNames(
                 className.tab,
-                currentTab === 0 && className.tabActive
+                currentTab === 0 && className.tabActive,
               )}
               onClick={() => setCurrentTab(0)}
             >
@@ -65,7 +70,7 @@ export default function ImageButton() {
               type="button"
               className={classNames(
                 className.tab,
-                currentTab === 1 && className.tabActive
+                currentTab === 1 && className.tabActive,
               )}
               onClick={() => setCurrentTab(1)}
             >
@@ -90,6 +95,6 @@ export default function ImageButton() {
           )}
         </div>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }

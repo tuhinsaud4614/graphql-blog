@@ -16,15 +16,16 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@component": ["components"],
-      "@types": ["utils/types"],
-      "@interfaces": ["utils/interfaces"],
-      "@enums": ["utils/enums"],
-      "@constants": ["utils/constants"],
-      "@styles": ["utils/styles.ts"],
-      "@lib": ["lib"],
-      "@hooks": ["hooks"],
-      "@features": ["features"]
+      "@/*": ["./*"]
+      // "@component": ["components"],
+      // "@types": ["utils/types"],
+      // "@interfaces": ["utils/interfaces"],
+      // "@enums": ["utils/enums"],
+      // "@constants": ["utils/constants"],
+      // "@styles": ["utils/styles.ts"],
+      // "@lib": ["lib"],
+      // "@hooks": ["hooks"],
+      // "@features": ["features"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

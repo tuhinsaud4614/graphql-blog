@@ -1,12 +1,12 @@
-import { NOTIFICATIONS_KEY } from "@constants";
-import { IFollowingNotification } from "@interfaces";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "store";
-import { readLocalStorageValue, setLocalStorageValue } from "utils";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+
+import { RootState } from "@/store";
+import { readLocalStorageValue, setLocalStorageValue } from "@/utils";
+import { NOTIFICATIONS_KEY } from "@/utils/constants";
+import { IFollowingNotification } from "@/utils/interfaces";
 
 export const isFollowingNotification = (
-  notification: IFollowingNotification
+  notification: IFollowingNotification,
 ): notification is IFollowingNotification => notification.type === "FOLLOWING";
 
 export type NotificationState = {
@@ -42,7 +42,7 @@ export const notificationSlice = createSlice({
 export const { notify, seenAll } = notificationSlice.actions;
 export const selectNotificationFollowing = (state: RootState) =>
   state.notification.items.filter((notification) =>
-    isFollowingNotification(notification)
+    isFollowingNotification(notification),
   );
 export const selectNotificationUnSeenCount = (state: RootState) =>
   state.notification.unseen;

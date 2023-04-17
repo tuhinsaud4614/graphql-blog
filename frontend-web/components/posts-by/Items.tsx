@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import * as React from "react";
 
 const className = {
   items: "list-none m-0 pt-3",
 };
 interface Props {
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Items({ children }: Props) {

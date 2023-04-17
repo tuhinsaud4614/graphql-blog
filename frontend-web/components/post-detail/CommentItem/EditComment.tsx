@@ -1,11 +1,16 @@
-import { CommentBox, ToastErrorMessage } from "components";
-import { useUpdateCommentMutation } from "graphql/generated/schema";
+import * as React from "react";
+
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+
 import { toast } from "react-toastify";
 import { Descendant } from "slate";
-import { gplErrorHandler } from "utils";
+
+import { CommentBox, ToastErrorMessage } from "@/components";
+import { useUpdateCommentMutation } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
+
 import { useEditorCloser } from "./context";
+
 // commentSerialize
 
 const initialValue: Descendant[] = [
@@ -26,8 +31,8 @@ export default function EditComment({
   const {
     query: { postId },
   } = useRouter();
-  const [value, setValue] = useState<Descendant[]>(oldValue);
-  const [expand, setExpand] = useState(true);
+  const [value, setValue] = React.useState<Descendant[]>(oldValue);
+  const [expand, setExpand] = React.useState(true);
   const closer = useEditorCloser();
 
   const [updateComment, { loading, error }] = useUpdateCommentMutation({
@@ -50,7 +55,7 @@ export default function EditComment({
     } catch (error) {}
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const tempErrors = gplErrorHandler(error);
     if (tempErrors) {
       toast.error(<ToastErrorMessage error={tempErrors} />, {

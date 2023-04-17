@@ -1,9 +1,12 @@
-import { useTooltip } from "@hooks";
-import { Menu, SlateButton } from "components";
-import { Fragment, useState } from "react";
+import * as React from "react";
+
 import { BiLink } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
-import { insertLink, isLinkActive } from "utils";
+
+import { Menu, SlateButton } from "@/components";
+import { useTooltip } from "@/hooks";
+import { insertLink, isLinkActive } from "@/utils";
+
 import { Url } from "./EmbedButton/Url";
 
 const className = {
@@ -11,7 +14,9 @@ const className = {
 };
 
 export default function LinkButton() {
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
   const editor = useSlateStatic() as ReactEditor;
   const { onHoverEnd, onHoverStart } = useTooltip();
 
@@ -21,7 +26,7 @@ export default function LinkButton() {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <SlateButton
         aria-label="Insert link"
         onClick={(e) => setAnchorEle(e.currentTarget)}
@@ -47,12 +52,12 @@ export default function LinkButton() {
         hideArrow
       >
         <div className={className.content}>
-          <h3 className="text-base text-neutral dark:text-neutral-dark text-center mb-3 font-medium">
+          <h3 className="mb-3 text-center text-base font-medium text-neutral dark:text-neutral-dark">
             INSERT LINK
           </h3>
           <Url onAdd={onAdd} title="Url" />
         </div>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }

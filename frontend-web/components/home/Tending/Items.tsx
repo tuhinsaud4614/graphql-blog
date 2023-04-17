@@ -1,7 +1,9 @@
 import { NetworkStatus } from "@apollo/client";
-import { ErrorBox, NoResultFound } from "components";
-import { useGetTrendingPostsQuery } from "graphql/generated/schema";
-import { gplErrorHandler } from "utils";
+
+import { ErrorBox, NoResultFound } from "@/components";
+import { useGetTrendingPostsQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
+
 import TrendingItem from "./Item";
 import TrendingItemSkeleton from "./ItemSkeleton";
 

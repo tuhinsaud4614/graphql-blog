@@ -1,6 +1,7 @@
+import * as React from "react";
+
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import * as React from "react";
 
 import { useAccordionStore } from "./context";
 

@@ -1,6 +1,9 @@
-import { useLockBody } from "@hooks";
-import { Fragment, useState } from "react";
+import * as React from "react";
+
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+
+import { useLockBody } from "@/hooks";
+
 import CommentButton from "./CommentButton";
 import FloatingComments from "./FloatingComments";
 import LikeButton from "./LikeButton";
@@ -17,18 +20,18 @@ interface Props {
 }
 
 export default function Reactions({ comments }: Props) {
-  const [openCommentModal, setOpenCommentModal] = useState(false);
+  const [openCommentModal, setOpenCommentModal] = React.useState(false);
 
   useLockBody(openCommentModal);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <section className={className.root}>
         <div className={className.left}>
           <LikeButton className="py-2" />
           <CommentButton
             count={comments}
-            className="py-2 ml-6"
+            className="ml-6 py-2"
             onComment={() => setOpenCommentModal(true)}
           />
         </div>
@@ -53,6 +56,6 @@ export default function Reactions({ comments }: Props) {
         onClose={() => setOpenCommentModal(false)}
         open={openCommentModal}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

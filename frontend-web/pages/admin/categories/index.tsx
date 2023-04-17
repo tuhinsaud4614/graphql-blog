@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import {
   ColumnDef,
   SortingState,
@@ -9,7 +11,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import classNames from "classnames";
-import * as React from "react";
 import {
   BiChevronDown,
   BiChevronLeft,
@@ -21,11 +22,11 @@ import {
   BiTrash,
 } from "react-icons/bi";
 
-import { Button } from "@component";
-import { AdminLayout } from "components/Layout";
-import { FormControl } from "components/account";
-import { AdminCreateCategory } from "components/admin-categories";
-import { Category } from "graphql/generated/schema";
+import { Button } from "@/components";
+import { AdminLayout } from "@/components/Layout";
+import { FormControl } from "@/components/account";
+import { AdminCreateCategory } from "@/components/admin-categories";
+import { Category } from "@/graphql/generated/schema";
 
 const className = {
   table:
@@ -231,7 +232,7 @@ export default function Categories() {
                   </p>
 
                   <select
-                    className="text-text-neutral focus:shadow-outline-indigo inline-flex flex-shrink-0 cursor-pointer select-none appearance-none items-center justify-center rounded-md border border-transparent bg-accent px-1 text-sm font-medium leading-5 shadow-sm transition duration-150 ease-in-out hover:bg-accent-focus focus:border-accent focus:outline-none dark:bg-accent-dark dark:text-neutral-dark sm:text-base sm:leading-6"
+                    className="text-text-neutral focus:shadow-outline-indigo inline-flex shrink-0 cursor-pointer select-none appearance-none items-center justify-center rounded-md border border-transparent bg-accent px-1 text-sm font-medium leading-5 shadow-sm transition duration-150 ease-in-out hover:bg-accent-focus focus:border-accent focus:outline-none dark:bg-accent-dark dark:text-neutral-dark sm:text-base sm:leading-6"
                     aria-label="rows per page"
                     value={getState().pagination.pageSize}
                     onChange={(e) => {

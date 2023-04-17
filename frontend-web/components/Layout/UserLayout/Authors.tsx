@@ -1,8 +1,8 @@
-import { ROUTES } from "@constants";
-import { ErrorBox, FollowItem, FollowItemSkeleton } from "components";
-import { SidebarContent } from "components/Sidebar";
-import { useGetSuggestAuthorsOnOffsetQuery } from "graphql/generated/schema";
-import { gplErrorHandler, isDev } from "utils";
+import { ErrorBox, FollowItem, FollowItemSkeleton } from "@/components";
+import { SidebarContent } from "@/components/Sidebar";
+import { useGetSuggestAuthorsOnOffsetQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   skeleton: "flex flex-col space-y-4",

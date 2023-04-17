@@ -1,19 +1,22 @@
-import { AuthGuard, LinkButton } from "@component";
-import { ROUTES } from "@constants";
-import { PostCreateContainer, PostCreateHeader } from "components/account";
-import { LoaderIcon } from "components/svg";
+import * as React from "react";
+
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+
+import _ from "lodash";
+import { BiError } from "react-icons/bi";
+
+import { AuthGuard, LinkButton } from "@/components";
+import { PostCreateContainer, PostCreateHeader } from "@/components/account";
+import { LoaderIcon } from "@/components/svg";
 import {
   UserRole,
   useVerifyResetPasswordMutation,
-} from "graphql/generated/schema";
-import _ from "lodash";
-import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { PropsWithChildren, useEffect, useRef } from "react";
-import { BiError } from "react-icons/bi";
-import { gplErrorHandler, isDev } from "utils";
-import { withSSRAuth } from "utils/ssr";
+} from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+import { withSSRAuth } from "@/utils/ssr";
 
 const className = {
   container: "flex flex-col items-center justify-center min-h-[40vh]",
@@ -27,7 +30,7 @@ interface Props {
 }
 
 const VerifyResetPassword: NextPage<Props> = ({ query }) => {
-  const effectRan = useRef(false);
+  const effectRan = React.useRef(false);
   const { replace } = useRouter();
   const [verifyResetPassword, { error, loading, data }] =
     useVerifyResetPasswordMutation({
@@ -36,7 +39,7 @@ const VerifyResetPassword: NextPage<Props> = ({ query }) => {
 
   const code = "code" in query ? query.code : "";
 
-  useEffect(() => {
+  React.useEffect(() => {
     if ((effectRan.current || !isDev()) && code) {
       const handler = async () => {
         try {
@@ -120,7 +123,7 @@ const VerifyResetPassword: NextPage<Props> = ({ query }) => {
   );
 };
 
-function Wrapper({ children }: PropsWithChildren) {
+function Wrapper({ children }: React.PropsWithChildren) {
   return (
     <AuthGuard role={UserRole.Author}>
       <Head>

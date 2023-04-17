@@ -1,12 +1,16 @@
-import { ROUTES } from "@constants";
-import { DemoAvatar, Menu } from "components";
-import { FUserFragment } from "graphql/generated/schema";
+import * as React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useMemo, useState } from "react";
+
 import { FiMoreHorizontal } from "react-icons/fi";
 import { Descendant } from "slate";
-import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
+
+import { DemoAvatar, Menu } from "@/components";
+import { FUserFragment } from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName, serializeSlateValue } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+
 import { Bottom } from "./Bottom";
 
 const className = {
@@ -26,19 +30,21 @@ interface Props {
 }
 
 export default function FollowingItemMore({ user }: Props) {
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
 
   const username = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
   const { about } = user;
-  const aboutText = useMemo(
+  const aboutText = React.useMemo(
     () =>
       about ? serializeSlateValue(JSON.parse(about) as Descendant[]) : null,
-    [about]
+    [about],
   );
 
   return (
-    <Fragment>
+    <React.Fragment>
       <button
         aria-label="More actions"
         type="button"
@@ -71,7 +77,7 @@ export default function FollowingItemMore({ user }: Props) {
                   />
                 </span>
               ) : (
-                <DemoAvatar className="w-8 h-8" size={32 / 1.8} />
+                <DemoAvatar className="h-8 w-8" size={32 / 1.8} />
               )}
               <span className={className.menuHeadText}>{username}</span>
             </a>
@@ -80,6 +86,6 @@ export default function FollowingItemMore({ user }: Props) {
           <Bottom id={user.id} />
         </div>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }

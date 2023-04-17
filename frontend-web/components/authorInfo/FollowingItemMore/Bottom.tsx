@@ -1,13 +1,15 @@
-import { selectUser } from "@features";
-import { Button } from "components";
+import * as React from "react";
+
+import { Button } from "@/components";
+import { selectUser } from "@/features";
 import {
   useSendFollowRequestMutation,
   useSendUnFollowRequestMutation,
   useUserMentionTooltipStatsQuery,
-} from "graphql/generated/schema";
-import { useEffect, useState } from "react";
-import { useAppSelector } from "store";
-import { countConvert } from "utils";
+} from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
+import { countConvert } from "@/utils";
+
 import Skeleton from "./Skeleton";
 
 const className = {
@@ -18,8 +20,8 @@ const className = {
 };
 
 export function Bottom({ id }: { id: string }) {
-  const [follow, setFollow] = useState(false);
-  const [count, setCount] = useState(0);
+  const [follow, setFollow] = React.useState(false);
+  const [count, setCount] = React.useState(0);
   const rdxUser = useAppSelector(selectUser);
 
   const { loading, error, data } = useUserMentionTooltipStatsQuery({
@@ -32,7 +34,7 @@ export function Bottom({ id }: { id: string }) {
     {
       notifyOnNetworkStatusChange: true,
       errorPolicy: "all",
-    }
+    },
   );
   const [sendUnFollow, { loading: unFollowLoading }] =
     useSendUnFollowRequestMutation({
@@ -40,7 +42,7 @@ export function Bottom({ id }: { id: string }) {
       errorPolicy: "all",
     });
 
-  useEffect(() => {
+  React.useEffect(() => {
     setFollow(!!data?.userResult.hasFollow);
     setCount(data?.userResult.followerCount ?? 0);
   }, [data?.userResult.hasFollow, data?.userResult.followerCount]);
@@ -72,7 +74,7 @@ export function Bottom({ id }: { id: string }) {
         type="button"
         aria-label={follow ? "Following" : "Follow"}
         mode={follow ? "outline" : "fill"}
-        className="text-sm !px-2 !py-0.5"
+        className="!px-2 !py-0.5 text-sm"
         onClick={rdxUser?.id !== id ? onClick : undefined}
         disabled={rdxUser?.id === id || loadingFollow || unFollowLoading}
         loading={loadingFollow || unFollowLoading}

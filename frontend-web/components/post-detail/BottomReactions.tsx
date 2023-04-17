@@ -1,21 +1,24 @@
-import { setReactCount } from "features/post/reactSlice";
+import * as React from "react";
+
+import { useRouter } from "next/router";
+
+import { setReactCount } from "@/features";
 import {
   useGetPostCommentsCountQuery,
   useGetPostReactionsCountQuery,
-} from "graphql/generated/schema";
-import { useRouter } from "next/router";
-import { Fragment, RefObject, useEffect, useRef } from "react";
-import { useAppDispatch } from "store";
-import { isDev } from "utils";
+} from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
+import { isDev } from "@/utils";
+
 import FloatingReactions from "./FloatingReactions";
 import Reactions from "./Reactions";
 
 interface Props {
-  siblingRef: RefObject<Element>;
+  siblingRef: React.RefObject<Element>;
 }
 
 export default function BottomReactions({ siblingRef }: Props) {
-  const effectRan = useRef(false);
+  const effectRan = React.useRef(false);
   const {
     query: { postId },
   } = useRouter();
@@ -36,7 +39,7 @@ export default function BottomReactions({ siblingRef }: Props) {
   const reactionCount = data?.postReactionsCount.count ?? 0;
   const isReacted = !!data?.postReactionsCount.reacted;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (effectRan.current || !isDev()) {
       rdDispatch(setReactCount({ count: reactionCount, isReacted }));
     }
@@ -46,12 +49,12 @@ export default function BottomReactions({ siblingRef }: Props) {
   }, [isReacted, rdDispatch, reactionCount]);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <FloatingReactions
         siblingRef={siblingRef}
         comments={commentCount?.postCommentsCount ?? 0}
       />
       <Reactions comments={commentCount?.postCommentsCount ?? 0} />
-    </Fragment>
+    </React.Fragment>
   );
 }

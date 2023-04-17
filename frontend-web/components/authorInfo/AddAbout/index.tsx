@@ -1,11 +1,12 @@
+import { Fragment, useCallback, useState } from "react";
+
+import dynamic from "next/dynamic";
+
 import { Button, ErrorModal, SlateElement, SlateLeaf } from "components";
-import { updateUserAbout } from "features/auth/authSlice";
 import { useUpdateAboutMutation } from "graphql/generated/schema";
 import pipe from "lodash/fp/pipe";
-import dynamic from "next/dynamic";
-import { Fragment, useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import { createEditor, Descendant } from "slate";
+import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
@@ -17,6 +18,8 @@ import {
 } from "slate-react";
 import { useAppDispatch } from "store";
 import { gplErrorHandler, withLinks } from "utils";
+
+import { updateUserAbout } from "@/features/authSlice";
 
 const HoveringToolbar = dynamic(() => import("./HoveringToolbar"), {
   ssr: false,
@@ -52,12 +55,12 @@ export default function AddAbout({ previousValue }: Props) {
 
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <SlateLeaf {...props} />,
-    []
+    [],
   );
 
   const renderElement = useCallback(
     (props: RenderElementProps) => <SlateElement {...props} />,
-    []
+    [],
   );
 
   const onSubmit = async () => {

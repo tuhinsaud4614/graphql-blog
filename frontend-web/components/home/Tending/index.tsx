@@ -1,4 +1,5 @@
 import { IoTrendingUpOutline } from "react-icons/io5";
+
 import { HomeWrapper } from "..";
 import TrendingItems from "./Items";
 

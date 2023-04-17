@@ -1,10 +1,9 @@
-import classNames from "classnames";
-import { Button, SlateElement, SlateLeaf, SlateMarkButton } from "components";
+import * as React from "react";
 
+import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { ReactNode, useCallback, useEffect, useState } from "react";
 import { BiBold, BiItalic } from "react-icons/bi";
-import { createEditor, Descendant, Editor, Transforms } from "slate";
+import { Descendant, Editor, Transforms, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
@@ -14,6 +13,8 @@ import {
   Slate,
   withReact,
 } from "slate-react";
+
+import { Button, SlateElement, SlateLeaf, SlateMarkButton } from "@/components";
 
 const className = {
   root: "shadow-mine mx-4 mb-5 bg-base-100 dark:bg-base-dark-200 rounded",
@@ -39,7 +40,7 @@ interface Props {
   loader?: boolean;
   placeholder?: string;
   disabled?: boolean;
-  children?: ReactNode;
+  children?: React.ReactNode;
   classes?: {
     root?: string;
     editorBox?: string;
@@ -66,21 +67,21 @@ export default function CommentBox({
   classes,
   children,
 }: Props) {
-  const [editor] = useState(() =>
-    withHistory(withReact(createEditor() as ReactEditor))
+  const [editor] = React.useState(() =>
+    withHistory(withReact(createEditor() as ReactEditor)),
   );
 
-  const renderLeaf = useCallback(
+  const renderLeaf = React.useCallback(
     (props: RenderLeafProps) => <SlateLeaf {...props} />,
-    []
+    [],
   );
 
-  const renderElement = useCallback(
+  const renderElement = React.useCallback(
     (props: RenderElementProps) => <SlateElement {...props} />,
-    []
+    [],
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!expanded) {
       Transforms.delete(editor, {
         at: {
@@ -119,13 +120,13 @@ export default function CommentBox({
           className={classNames(
             "duration-[400ms]",
             expanded ? className.editorBox : "min-h-[1rem]",
-            classes?.editorBox
+            classes?.editorBox,
           )}
         >
           <div
             className={classNames(
               className.editorContainer,
-              classes?.editorContainer
+              classes?.editorContainer,
             )}
             onClick={() => onExpanded(true)}
           >
@@ -151,7 +152,7 @@ export default function CommentBox({
               <div
                 className={classNames(
                   className.controlBoxContent,
-                  classes?.controlBoxContent
+                  classes?.controlBoxContent,
                 )}
               >
                 <SlateMarkButton
@@ -174,13 +175,13 @@ export default function CommentBox({
               <div
                 className={classNames(
                   className.controlBoxContent,
-                  classes?.controlBoxContent
+                  classes?.controlBoxContent,
                 )}
               >
                 <Button
                   type="button"
                   aria-label="Cancel"
-                  className="!px-3 text-sm mr-1 !rounded-full"
+                  className="mr-1 !rounded-full !px-3 text-sm"
                   onClick={() => {
                     onExpanded(false);
                     onChange && onChange(initialValue);

@@ -1,5 +1,7 @@
+import * as React from "react";
+
 import { useIsomorphicLayoutEffect } from "framer-motion";
-import { useCallback, useState } from "react";
+
 import useEventListener from "./useEventListener";
 
 interface Size {
@@ -9,15 +11,15 @@ interface Size {
 
 function useElementSize<T extends HTMLElement = HTMLDivElement>(): [
   (node: T | null) => void,
-  Size
+  Size,
 ] {
-  const [ref, setRef] = useState<T | null>(null);
-  const [size, setSize] = useState<Size>({
+  const [ref, setRef] = React.useState<T | null>(null);
+  const [size, setSize] = React.useState<Size>({
     width: 0,
     height: 0,
   });
 
-  const handleSize = useCallback(() => {
+  const handleSize = React.useCallback(() => {
     setSize({
       width: ref?.offsetWidth || 0,
       height: ref?.offsetHeight || 0,

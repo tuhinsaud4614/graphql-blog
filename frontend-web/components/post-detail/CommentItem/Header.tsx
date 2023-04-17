@@ -1,12 +1,15 @@
-import { ROUTES } from "@constants";
-import classNames from "classnames";
-import { Badge, DemoAvatar } from "components";
-import { FUserFragment } from "graphql/generated/schema";
-import moment from "moment";
+import * as React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
-import { generateFileUrl, getUserName } from "utils";
+
+import classNames from "classnames";
+import moment from "moment";
+
+import { Badge, DemoAvatar } from "@/components";
+import { FUserFragment } from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   header: "flex items-center justify-between",
@@ -21,7 +24,7 @@ const className = {
 
 interface Props {
   className?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
   user: FUserFragment;
   modifyAt: number;
   own?: boolean;
@@ -54,7 +57,7 @@ export default function Header({
               objectFit="cover"
             />
           ) : (
-            <DemoAvatar aria-label={userName} className="w-8 h-8" />
+            <DemoAvatar aria-label={userName} className="h-8 w-8" />
           )}
         </span>
         <div className={className.headerInfo}>

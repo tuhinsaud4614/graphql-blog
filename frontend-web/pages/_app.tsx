@@ -1,20 +1,24 @@
-import { ApolloProvider } from "@apollo/client";
-import Head from "next/head";
 import * as React from "react";
+
+import Head from "next/head";
+
+import { ApolloProvider } from "@apollo/client";
 import { ToastContainer } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 // import { store } from "store";
-import { ClientOnly, ProgressBar, SubscriptionContainer } from "@component";
-import { useDarkMode } from "@hooks";
-import type { AppPropsWithLayout } from "@types";
-import { useApollo } from "lib/apollo";
-import { nextReduxWrapper, useAppSelector } from "store";
-import { isDev, setAccessToken } from "utils";
-import "../styles/globals.css";
+import { ClientOnly, ProgressBar, SubscriptionContainer } from "@/components";
+import { useDarkMode } from "@/hooks";
+import { useApollo } from "@/lib/apollo";
+import { nextReduxWrapper, useAppSelector } from "@/store";
+import { isDev, setAccessToken } from "@/utils";
+import type { AppPropsWithLayout } from "@/utils/types";
+
+import "@/styles/globals.css";
 
 function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
   const [progress, setProgress] = React.useState(false);
@@ -50,9 +54,7 @@ function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
         />
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </Head>
-      {progress && (
-        <ProgressBar className="fixed left-0 right-0 top-0 z-[99999]" />
-      )}
+      {progress && <ProgressBar className="fixed inset-x-0 top-0 z-[99999]" />}
       {/* <Provider store={store}> */}
       <ApolloProvider client={apolloClient}>
         <Component {...pageProps} />

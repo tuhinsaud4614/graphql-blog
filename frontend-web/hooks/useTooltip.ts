@@ -1,6 +1,7 @@
-import { IAnchorOrigin } from "@interfaces";
-import React from "react";
-import { getPositions } from "utils";
+import * as React from "react";
+
+import { getPositions } from "@/utils";
+import { IAnchorOrigin } from "@/utils/interfaces";
 
 const className = {
   tip: "fixed select-none z-[999] w-auto px-1.5 py-1 min-w-max rounded-sm text-base-100 dark:text-base-dark-100 bg-neutral dark:bg-base-dark-300 text-xs font-bold",
@@ -46,7 +47,7 @@ export default function useTooltip() {
       anchorOrigin = { horizontal: "center", vertical: "bottom" },
       hideArrow = false,
       className: cls,
-    }: Props
+    }: Props,
   ) => {
     if (!tooltipEle.current) {
       tooltipEle.current = document.createElement("span");
@@ -68,7 +69,7 @@ export default function useTooltip() {
       tooltipEle.current.getBoundingClientRect(),
       anchorOrigin,
       false,
-      hideArrow
+      hideArrow,
     );
 
     tooltipEle.current.style.left = `${selfLeft}px`;
@@ -85,12 +86,12 @@ export default function useTooltip() {
     tooltipEle.current.classList.add(
       vertical && vertical === "top"
         ? "animate-toolTopTip"
-        : "animate-toolBottomTip"
+        : "animate-toolBottomTip",
     );
     arrowEle.current?.classList.add(
       vertical && vertical === "top"
         ? "animate-tooltipTopArrow"
-        : "animate-tooltipBottomArrow"
+        : "animate-tooltipBottomArrow",
     );
   };
 

@@ -1,9 +1,10 @@
-import { ReactNode } from "react";
+import * as React from "react";
+
 import Container from "./Container";
 
 interface Props {
-  children?: ReactNode;
-  sidebar?: ReactNode;
+  children?: React.ReactNode;
+  sidebar?: React.ReactNode;
 }
 
 export default function SearchLayout({ children, sidebar }: Props) {

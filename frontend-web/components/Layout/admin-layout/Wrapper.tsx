@@ -1,8 +1,9 @@
-import classNames from "classnames";
 import * as React from "react";
 
-import { selectAdminSidebar } from "@features";
-import { useAppSelector } from "store";
+import classNames from "classnames";
+
+import { selectAdminSidebar } from "@/features";
+import { useAppSelector } from "@/store";
 
 export default function Wrapper({ children }: React.PropsWithChildren) {
   const visible = useAppSelector(selectAdminSidebar);

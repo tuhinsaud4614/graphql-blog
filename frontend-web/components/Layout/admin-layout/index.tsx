@@ -1,5 +1,6 @@
-import dynamic from "next/dynamic";
 import * as React from "react";
+
+import dynamic from "next/dynamic";
 
 import Wrapper from "./Wrapper";
 import Header from "./header";

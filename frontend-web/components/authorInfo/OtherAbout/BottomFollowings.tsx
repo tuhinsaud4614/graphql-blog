@@ -1,15 +1,17 @@
+import * as React from "react";
+
 import { NetworkStatus } from "@apollo/client";
+import _ from "lodash";
+
 import {
   ErrorBox,
   NoResultFound,
   ReactorItemMoreBtn,
   ReactorItemSkeleton,
   ReactorModalItem,
-} from "@component";
-import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
-import _ from "lodash";
-import { Fragment } from "react";
-import { gplErrorHandler } from "utils";
+} from "@/components";
+import { useGetAuthorFollowingsOnCursorQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
 
 const className = {
   btn: "text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95",
@@ -32,11 +34,11 @@ export default function BottomFollowings({ userId }: Props) {
 
   if (loading && networkStatus !== NetworkStatus.fetchMore) {
     return (
-      <Fragment>
+      <React.Fragment>
         <ReactorItemSkeleton />
         <ReactorItemSkeleton />
         <ReactorItemSkeleton />
-      </Fragment>
+      </React.Fragment>
     );
   }
 
@@ -102,7 +104,7 @@ export default function BottomFollowings({ userId }: Props) {
                   ...prev.authorFollowingsOnCursor.edges,
                   ...fetchMoreResult.authorFollowingsOnCursor.edges,
                 ],
-                "cursor"
+                "cursor",
               ),
             },
           };
@@ -111,12 +113,12 @@ export default function BottomFollowings({ userId }: Props) {
     } catch (error) {}
   };
   return (
-    <Fragment>
+    <React.Fragment>
       {data?.authorFollowingsOnCursor.edges.map(({ node }) => (
         <ReactorModalItem key={node.id} user={node} />
       ))}
       {networkStatus === NetworkStatus.fetchMore && <ReactorItemSkeleton />}
       {hasNext && <ReactorItemMoreBtn onClick={onMore} />}
-    </Fragment>
+    </React.Fragment>
   );
 }

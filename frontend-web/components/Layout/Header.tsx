@@ -1,17 +1,18 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import { useMediaQuery } from "@hooks";
-import { Badge, ClientOnly } from "components";
-import { selectNotificationUnSeenCount } from "features/notificationSlice/notificationSlice";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 import { BiBell } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
-import { useAppSelector } from "store";
 
-const Theme = dynamic(() => import("components/Theme"), { ssr: false });
+import { Badge, ClientOnly } from "@/components";
+import { selectNotificationUnSeenCount, selectUser } from "@/features";
+import { useMediaQuery } from "@/hooks";
+import { useAppSelector } from "@/store";
+import { ROUTES } from "@/utils/constants";
+
+const Theme = dynamic(() => import("@/components/Theme"), { ssr: false });
 
 const className = {
   root: "lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:bg-base-dark-200 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-dark-200/50 backdrop-blur-sm shadow-mui px-4",

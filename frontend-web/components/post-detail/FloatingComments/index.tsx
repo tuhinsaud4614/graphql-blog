@@ -1,4 +1,5 @@
-import { BottomSheet } from "components";
+import { BottomSheet } from "@/components";
+
 import Fetcher from "./Fetcher";
 
 interface Props {

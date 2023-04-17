@@ -1,7 +1,9 @@
-import { IMAGE_URL_REGEX } from "@constants";
-import { Button } from "components";
-import { FormControl } from "components/account";
-import { ChangeEvent, useEffect, useId, useState } from "react";
+import * as React from "react";
+
+import { Button } from "@/components";
+import { FormControl } from "@/components/account";
+import { IMAGE_URL_REGEX } from "@/utils/constants";
+
 import Loader from "./Loader";
 
 interface Props {
@@ -14,23 +16,23 @@ const className = {
 };
 
 export function Url({ onAdd }: Props) {
-  const [url, setUrl] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [url, setUrl] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
-  const id = useId();
+  const id = React.useId();
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setUrl(value);
     if (value.match(IMAGE_URL_REGEX) === null) {
       return setError(
-        "Not contain the following ext. (gif, svg, jpeg, jpg, png, webp)"
+        "Not contain the following ext. (gif, svg, jpeg, jpg, png, webp)",
       );
     }
     setError("");
   };
-  useEffect(() => {
+  React.useEffect(() => {
     const controller = new AbortController();
     const fetching = async (imgUrl: string) => {
       try {
@@ -65,7 +67,7 @@ export function Url({ onAdd }: Props) {
     <div className={className.root}>
       <div className={className.container}>
         {loading && (
-          <div className="relative h-7 w-full mb-4">
+          <div className="relative mb-4 h-7 w-full">
             <Loader />
           </div>
         )}
@@ -88,7 +90,7 @@ export function Url({ onAdd }: Props) {
       <Button
         aria-label="Insert image"
         type="button"
-        className="mx-3 my-3 !px-2 !py-1.5 text-sm !rounded-md"
+        className="m-3 !rounded-md !px-2 !py-1.5 text-sm"
         variant="success"
         disabled={loading || !!error || !url}
         onClick={() => {

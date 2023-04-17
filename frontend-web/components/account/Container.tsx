@@ -1,5 +1,6 @@
-import { HomeHeader } from "components/home";
-import { ReactNode } from "react";
+import * as React from "react";
+
+import { HomeHeader } from "@/components/home";
 
 const className = {
   root: "h-screen w-screen pt-16 flex items-center justify-center bg-base-200 dark:bg-base-dark-200",
@@ -12,7 +13,7 @@ const className = {
 
 interface Props {
   title: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export default function Container({ children, title }: Props) {

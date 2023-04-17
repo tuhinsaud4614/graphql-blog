@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import * as React from "react";
+
 const className = {
   header: "flex items-center",
   tag: "w-7 h-7 bg-base-200 dark:bg-base-dark-200 text-neutral dark:text-neutral-dark flex items-center justify-center rounded-full",
@@ -8,7 +9,7 @@ const className = {
 
 interface Props {
   title: string;
-  icon: ReactNode;
+  icon: React.ReactNode;
 }
 export default function Header({ title, icon }: Props) {
   return (

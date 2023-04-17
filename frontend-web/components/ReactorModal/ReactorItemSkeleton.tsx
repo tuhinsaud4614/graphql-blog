@@ -1,5 +1,6 @@
-import { useSynchronizeAnimation } from "@hooks";
 import classNames from "classnames";
+
+import { useSynchronizeAnimation } from "@/hooks";
 
 const className = {
   common: "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20",
@@ -20,7 +21,7 @@ export default function ReactorItemSkeleton() {
           ref={rippleRef}
           className={classNames(className.common, className.tileImg)}
         />
-        <span className="flex flex-col min-w-0 flex-1 px-3">
+        <span className="flex min-w-0 flex-1 flex-col px-3">
           <span
             ref={rippleRef}
             className={classNames(className.common, className.tileName)}

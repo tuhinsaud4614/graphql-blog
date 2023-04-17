@@ -1,17 +1,18 @@
+import * as React from "react";
+
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
 
-import { LinkButton } from "@component";
-import { ROUTES } from "@constants";
+import { LinkButton } from "@/components";
 // import { AdminLayout } from "components/Layout";
 // import { PostCreateContainer, PostCreateHeader } from "components/account";
-import { SpaceIcon } from "components/svg";
+import { SpaceIcon } from "@/components/svg";
+import { ROUTES } from "@/utils/constants";
 
 const AdminLayout = dynamic(
   () =>
-    import(/* webpackChunkName: "AdminLayout" */ "components/Layout").then(
+    import(/* webpackChunkName: "AdminLayout" */ "@/components/Layout").then(
       ({ AdminLayout }) => AdminLayout,
     ),
   { ssr: false },
@@ -20,7 +21,7 @@ const AdminLayout = dynamic(
 const PostCreateContainer = dynamic(
   () =>
     import(
-      /* webpackChunkName: "PostCreateContainer" */ "components/account"
+      /* webpackChunkName: "PostCreateContainer" */ "@/components/account"
     ).then(({ PostCreateContainer }) => PostCreateContainer),
   { ssr: false },
 );
@@ -28,7 +29,7 @@ const PostCreateContainer = dynamic(
 const PostCreateHeader = dynamic(
   () =>
     import(
-      /* webpackChunkName: "PostCreateHeader" */ "components/account"
+      /* webpackChunkName: "PostCreateHeader" */ "@/components/account"
     ).then(({ PostCreateHeader }) => PostCreateHeader),
   { ssr: false },
 );
@@ -80,10 +81,10 @@ const PageNotFound: NextPage = () => {
   }
 
   return (
-    <Fragment>
+    <React.Fragment>
       <PostCreateHeader />
       <PostCreateContainer>{content}</PostCreateContainer>
-    </Fragment>
+    </React.Fragment>
   );
 };
 

@@ -1,12 +1,13 @@
-import { NotificationType } from "@types";
 import { EmptyText } from "components/PostEditor/utils";
 import {
   AuthorStatus,
-  FollowingMutationStatus,
   FUserFragment,
+  FollowingMutationStatus,
   UserRole,
 } from "graphql/generated/schema";
 import { Descendant } from "slate";
+
+import { NotificationType } from "@/utils/types";
 
 export interface IAnchorOrigin {
   horizontal?: "center" | "right" | "left";

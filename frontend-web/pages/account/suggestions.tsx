@@ -1,17 +1,19 @@
-import { FollowItem, Tabs } from "@component";
-import { ROUTES } from "@constants";
-import { LayoutContainer } from "components/Layout";
-import { SidebarContent } from "components/Sidebar";
+import * as React from "react";
+
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+
+import { FollowItem, Tabs } from "@/components";
+import { LayoutContainer } from "@/components/Layout";
+import { SidebarContent } from "@/components/Sidebar";
 import {
   SuggestionsFollowingTab,
   SuggestionsReadingHistoryTab,
   SuggestionsTab,
-} from "components/suggestions";
-import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
-import { queryChecking } from "utils";
+} from "@/components/suggestions";
+import { queryChecking } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   title:
@@ -26,20 +28,20 @@ interface Props {
 }
 
 const MySuggestionsPage: NextPage<Props> = ({ query }) => {
-  const [currentTab, setCurrentTab] = useState(() =>
+  const [currentTab, setCurrentTab] = React.useState(() =>
     queryChecking(query, tabs, "tab", 2),
   );
 
   const { replace } = useRouter();
 
-  useEffect(() => {
+  React.useEffect(() => {
     setCurrentTab(queryChecking(query, tabs, "tab", 2));
   }, [query]);
 
   return (
     <LayoutContainer
       sidebar={
-        <Fragment>
+        <React.Fragment>
           {currentTab !== 2 && (
             <SidebarContent
               moreLink={ROUTES.mySuggestions}
@@ -53,7 +55,7 @@ const MySuggestionsPage: NextPage<Props> = ({ query }) => {
               <FollowItem />
             </SidebarContent>
           )}
-        </Fragment>
+        </React.Fragment>
       }
     >
       <Head>
@@ -75,9 +77,13 @@ const MySuggestionsPage: NextPage<Props> = ({ query }) => {
         }}
         selectedTab={currentTab}
       >
-        {currentTab === 0 ? <SuggestionsFollowingTab /> : <Fragment />}
-        {currentTab === 1 ? <SuggestionsReadingHistoryTab /> : <Fragment />}
-        {currentTab === 2 ? <SuggestionsTab /> : <Fragment />}
+        {currentTab === 0 ? <SuggestionsFollowingTab /> : <React.Fragment />}
+        {currentTab === 1 ? (
+          <SuggestionsReadingHistoryTab />
+        ) : (
+          <React.Fragment />
+        )}
+        {currentTab === 2 ? <SuggestionsTab /> : <React.Fragment />}
       </Tabs>
     </LayoutContainer>
   );

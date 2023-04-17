@@ -1,15 +1,19 @@
-import { ROUTES } from "@constants";
+import * as React from "react";
+
+import Image from "next/image";
+import Link from "next/link";
+
 import classNames from "classnames";
-import { DemoAvatar } from "components";
+import { Descendant } from "slate";
+
+import { DemoAvatar } from "@/components";
 import {
   FUserFragment,
   useUserMentionTooltipStatsQuery,
-} from "graphql/generated/schema";
-import Image from "next/image";
-import Link from "next/link";
-import { useMemo } from "react";
-import { Descendant } from "slate";
-import { generateFileUrl, getUserName, serializeSlateValue } from "utils";
+} from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName, serializeSlateValue } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+
 import ReactorItemAction from "./ReactorItemAction";
 
 const className = {
@@ -35,10 +39,10 @@ export default function ReactorItem({ user }: Props) {
   const username = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
   const { about } = user;
-  const aboutText = useMemo(
+  const aboutText = React.useMemo(
     () =>
       about ? serializeSlateValue(JSON.parse(about) as Descendant[]) : null,
-    [about]
+    [about],
   );
 
   const { data, loading, error } = useUserMentionTooltipStatsQuery({
@@ -65,9 +69,9 @@ export default function ReactorItem({ user }: Props) {
             />
           </span>
         ) : (
-          <DemoAvatar className="w-10 h-10" size={40 / 1.8} />
+          <DemoAvatar className="h-10 w-10" size={40 / 1.8} />
         )}
-        <span className="flex flex-col min-w-0 flex-1 pr-3">
+        <span className="flex min-w-0 flex-1 flex-col pr-3">
           <Link href={ROUTES.authorProfile(user.id)} passHref>
             <a aria-label={username} className={className.userTileAuthorName}>
               {username}

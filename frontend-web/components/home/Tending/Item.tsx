@@ -1,10 +1,13 @@
-import { ROUTES } from "@constants";
-import UserLink from "components/UserLink";
-import { GetTrendingPostsQuery } from "graphql/generated/schema";
-import moment from "moment";
+import * as React from "react";
+
 import Link from "next/link";
-import { Fragment } from "react";
-import { getUserName } from "utils";
+
+import moment from "moment";
+
+import { UserLink } from "@/components";
+import type { GetTrendingPostsQuery } from "@/graphql/generated/schema";
+import { getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "basis-full md:basis-1/2 md1:basis-1/3 px-3 md:px-4",
@@ -43,17 +46,13 @@ export default function TrendingItem({ index, post }: Props) {
           </Link>
           <span className={className.timeBox}>
             {Math.abs(Date.now() - +post.updatedAt) / 31536000000 > 1 ? (
-              <Fragment>
+              <React.Fragment>
                 <time>{moment(+post.updatedAt).format("MMM Do YY")}</time>
                 <span className="px-1.5">·</span>
                 <time>{moment(+post.updatedAt).format("h:mm a")}</time>
-              </Fragment>
+              </React.Fragment>
             ) : (
-              <time>
-                {moment(+post.updatedAt)
-                  .startOf("second")
-                  .fromNow()}
-              </time>
+              <time>{moment(+post.updatedAt).startOf("second").fromNow()}</time>
             )}
           </span>
         </div>

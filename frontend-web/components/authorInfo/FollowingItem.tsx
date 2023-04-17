@@ -1,9 +1,11 @@
-import { ROUTES } from "@constants";
-import { DemoAvatar } from "components";
-import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
-import { generateFileUrl, getUserName } from "utils";
+
+import { DemoAvatar } from "@/components";
+import { FUserFragment } from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+
 import FollowingItemMore from "./FollowingItemMore";
 
 const className = {
@@ -39,7 +41,7 @@ export default function FollowingItem({ user }: Props) {
               />
             </span>
           ) : (
-            <DemoAvatar className="w-5 h-5" size={20 / 1.8} />
+            <DemoAvatar className="h-5 w-5" size={20 / 1.8} />
           )}
           <span className={className.text}>{username}</span>
         </a>

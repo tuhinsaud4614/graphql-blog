@@ -1,13 +1,14 @@
-import { ROUTES } from "@constants";
-import { ErrorBox } from "components";
+import * as React from "react";
+
+import { ErrorBox } from "@/components";
 import {
   SidebarCategory,
   SidebarContent,
   SidebarSkeleton,
-} from "components/Sidebar";
-import { useGetCategoriesOnOffsetQuery } from "graphql/generated/schema";
-import { Fragment } from "react";
-import { gplErrorHandler, isDev } from "utils";
+} from "@/components/Sidebar";
+import { useGetCategoriesOnOffsetQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   divider: "w-full border-b dark:border-base-dark-300 my-4",
@@ -22,10 +23,10 @@ export default function Categories() {
 
   if (loading) {
     return (
-      <Fragment>
+      <React.Fragment>
         <SidebarSkeleton />
         <hr className={className.divider} />
-      </Fragment>
+      </React.Fragment>
     );
   }
   if (error) {
@@ -53,7 +54,7 @@ export default function Categories() {
   }
 
   return (
-    <Fragment>
+    <React.Fragment>
       <SidebarContent
         title="Categories"
         moreLink={ROUTES.categories}
@@ -72,6 +73,6 @@ export default function Categories() {
         ))}
       </SidebarContent>
       <hr className={className.divider} />
-    </Fragment>
+    </React.Fragment>
   );
 }

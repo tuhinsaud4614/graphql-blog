@@ -1,6 +1,7 @@
-import { NextPageWithLayout } from "@types";
-import { UserLayout } from "components/Layout";
 import Head from "next/head";
+
+import { UserLayout } from "@/components/Layout";
+import { NextPageWithLayout } from "@/utils/types";
 
 const className = {
   title:

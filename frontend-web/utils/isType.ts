@@ -1,4 +1,4 @@
-import { IUser } from "@interfaces";
+import { IUser } from "@/utils/interfaces";
 
 export const isIUser = (data: any): data is IUser => {
   return (

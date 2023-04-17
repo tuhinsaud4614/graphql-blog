@@ -1,11 +1,12 @@
-import { selectUser } from "@features";
-import { Button } from "components";
+import * as React from "react";
+
+import { Button } from "@/components";
+import { selectUser } from "@/features";
 import {
   useSendFollowRequestMutation,
   useSendUnFollowRequestMutation,
-} from "graphql/generated/schema";
-import { useState } from "react";
-import { useAppSelector } from "store";
+} from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
 
 interface Props {
   userId: string;
@@ -13,13 +14,13 @@ interface Props {
 }
 
 export default function ReactorItemAction({ userId, isFollowed }: Props) {
-  const [follow, setFollow] = useState(isFollowed);
+  const [follow, setFollow] = React.useState(isFollowed);
   const rdxUser = useAppSelector(selectUser);
 
   const [sendFollow, { loading: loadingFollow }] = useSendFollowRequestMutation(
     {
       notifyOnNetworkStatusChange: true,
-    }
+    },
   );
   const [sendUnFollow, { loading: unFollowLoading }] =
     useSendUnFollowRequestMutation({

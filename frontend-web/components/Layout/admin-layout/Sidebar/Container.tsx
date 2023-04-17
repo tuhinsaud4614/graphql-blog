@@ -1,7 +1,9 @@
-import classNames from "classnames";
 import * as React from "react";
 
-import STYLES from "@styles";
+import classNames from "classnames";
+
+import STYLES from "@/utils/styles";
+
 import MobileView from "./MobileView";
 
 const className = {

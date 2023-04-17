@@ -1,5 +1,7 @@
-import TabBox from "components/TabBox";
-import { Fragment } from "react";
+import * as React from "react";
+
+import { TabBox } from "@/components";
+
 import PostItem from "./PostItem";
 
 const className = {
@@ -16,9 +18,9 @@ export default function TabDrafts() {
       classes={{ root: className.root }}
       notFound={
         isTrue && (
-          <Fragment>
+          <React.Fragment>
             <p className={className.notFound}>You have no drafts.</p>
-          </Fragment>
+          </React.Fragment>
         )
       }
     >

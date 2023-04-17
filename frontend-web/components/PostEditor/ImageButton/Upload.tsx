@@ -1,11 +1,15 @@
-import { IMAGE_MIMES } from "@constants";
-import classNames from "classnames";
-import { Button } from "components";
-import { useUploadImageMutation } from "graphql/generated/schema";
-import _ from "lodash";
+import * as React from "react";
+
 import Image from "next/image";
-import { ChangeEvent, useRef, useState } from "react";
-import { generateFileUrl, maxFileSize } from "utils";
+
+import classNames from "classnames";
+import _ from "lodash";
+
+import { Button } from "@/components";
+import { useUploadImageMutation } from "@/graphql/generated/schema";
+import { generateFileUrl, maxFileSize } from "@/utils";
+import { IMAGE_MIMES } from "@/utils/constants";
+
 import Loader from "./Loader";
 
 const className = {
@@ -28,16 +32,16 @@ interface Props {
 }
 
 export function Upload({ onAdd }: Props) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [image, setImage] = useState<string | null>(null);
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const [image, setImage] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string>("");
+  const [loading, setLoading] = React.useState(false);
 
   const [uploadImage] = useUploadImageMutation({
     notifyOnNetworkStatusChange: true,
   });
 
-  const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const files = e.target.files;
@@ -111,7 +115,7 @@ export function Upload({ onAdd }: Props) {
       <Button
         aria-label="Insert image"
         type="button"
-        className="mx-3 my-3 !px-2 !py-1.5 text-sm !rounded-md"
+        className="m-3 !rounded-md !px-2 !py-1.5 text-sm"
         variant="success"
         disabled={!image || loading}
         onClick={() => {

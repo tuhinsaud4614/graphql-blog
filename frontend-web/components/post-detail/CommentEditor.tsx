@@ -1,20 +1,26 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
+
+import { useRouter } from "next/router";
+
+import produce from "immer";
+import { toast } from "react-toastify";
 import { Descendant } from "slate";
 
-import { selectUser } from "@features";
-import { CommentBox, CommentBoxCommenter, ToastErrorMessage } from "components";
+import {
+  CommentBox,
+  CommentBoxCommenter,
+  ToastErrorMessage,
+} from "@/components";
+import { selectUser } from "@/features";
 import {
   GetPostCommentsCountDocument,
   GetPostCommentsCountQuery,
   GetPostCommentsOnCursorDocument,
   GetPostCommentsOnCursorQuery,
   useCreateCommentMutation,
-} from "graphql/generated/schema";
-import produce from "immer";
-import { useRouter } from "next/router";
-import { toast } from "react-toastify";
-import { useAppSelector } from "store";
-import { gplErrorHandler, isDev } from "utils";
+} from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
+import { gplErrorHandler, isDev } from "@/utils";
 
 const initialValue: Descendant[] = [
   {
@@ -35,8 +41,8 @@ export default function CommentEditor({
     query: { postId },
   } = useRouter();
   const rdxUser = useAppSelector(selectUser);
-  const [value, setValue] = useState<Descendant[]>(initialValue);
-  const [expand, setExpand] = useState(expanded);
+  const [value, setValue] = React.useState<Descendant[]>(initialValue);
+  const [expand, setExpand] = React.useState(expanded);
 
   const [createComment, { loading, error }] = useCreateCommentMutation({
     notifyOnNetworkStatusChange: true,
@@ -88,7 +94,7 @@ export default function CommentEditor({
                   draft.postCommentsOnCursor.total += 1;
                 });
                 return newComments;
-              }
+              },
             );
 
             cache.updateQuery<GetPostCommentsCountQuery>(
@@ -102,7 +108,7 @@ export default function CommentEditor({
                       postCommentsCount: prevCount.postCommentsCount + 1,
                     }
                   : undefined;
-              }
+              },
             );
           } catch (error) {
             isDev() && console.log(error);
@@ -114,7 +120,7 @@ export default function CommentEditor({
     } catch (error) {}
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const tempErrors = gplErrorHandler(error);
     if (tempErrors) {
       toast.error(<ToastErrorMessage error={tempErrors} />, {

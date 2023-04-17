@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import Link from "next/link";
-import { ComponentPropsWithoutRef, Fragment } from "react";
 
 const className = {
   form: "mt-8 w-full overflow-x-hidden",
@@ -8,7 +9,7 @@ const className = {
   link: "ml-2 text-success dark:text-success-dark hover:text-success-focus dark:hover:text-success active:scale-95",
 };
 
-interface Props extends ComponentPropsWithoutRef<"form"> {
+interface Props extends React.ComponentPropsWithoutRef<"form"> {
   changeText: string;
   changeLink: string;
   changeLinkText: string;
@@ -22,7 +23,7 @@ export default function Form({
   ...rest
 }: Props) {
   return (
-    <Fragment>
+    <React.Fragment>
       <form {...rest} className={className.form}>
         {children}
         <div className={className.linkText}>
@@ -34,6 +35,6 @@ export default function Form({
           </Link>
         </div>
       </form>
-    </Fragment>
+    </React.Fragment>
   );
 }

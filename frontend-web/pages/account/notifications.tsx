@@ -1,11 +1,14 @@
-import { ROUTES } from "@constants";
-import { UserLayout } from "components/Layout";
-import { seenAll } from "features/notificationSlice/notificationSlice";
+import { useEffect } from "react";
+
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useEffect } from "react";
+
+import { ROUTES } from "@constants";
+import { UserLayout } from "components/Layout";
 import { useAppDispatch } from "store";
 import { withSSRAuth } from "utils/ssr";
+
+import { seenAll } from "@/features/notificationSlice";
 
 const className = {
   title:

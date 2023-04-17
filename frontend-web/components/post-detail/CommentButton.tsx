@@ -1,6 +1,7 @@
-import { useTooltip } from "@hooks";
 import classNames from "classnames";
 import { BsChat } from "react-icons/bs";
+
+import { useTooltip } from "@/hooks";
 
 const className = {
   commentBtn:
@@ -38,7 +39,7 @@ export default function CommentButton({
     >
       <BsChat
         size={20}
-        className="text-accent dark:text-accent-dark hover:text-accent-focus dark:hover:text-accent"
+        className="text-accent hover:text-accent-focus dark:text-accent-dark dark:hover:text-accent"
       />
       <span className="ml-1">{count}</span>
     </button>

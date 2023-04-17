@@ -1,12 +1,15 @@
-import { selectAuthorFollowerCount } from "@features";
-import { useLockBody } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
-import { Button, ReactorModal, SlateViewer } from "components";
-import { useGetUserFollowingsQuery } from "graphql/generated/schema";
-import { Fragment, useState } from "react";
 import { Descendant } from "slate";
-import { useAppSelector } from "store";
-import { countConvert } from "utils";
+
+import { Button, ReactorModal, SlateViewer } from "@/components";
+import { selectAuthorFollowerCount } from "@/features";
+import { useGetUserFollowingsQuery } from "@/graphql/generated/schema";
+import { useLockBody } from "@/hooks";
+import { useAppSelector } from "@/store";
+import { countConvert } from "@/utils";
+
 import BottomFollowers from "./BottomFollowers";
 import BottomFollowings from "./BottomFollowings";
 
@@ -63,7 +66,7 @@ interface Props {
 }
 
 export default function OtherAboutTab({ userId, about }: Props) {
-  const [open, setOpen] = useState<"follower" | "following" | null>(null);
+  const [open, setOpen] = React.useState<"follower" | "following" | null>(null);
   useLockBody(!!open);
 
   const { loading, data, error } = useGetUserFollowingsQuery({
@@ -75,7 +78,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
   const count = useAppSelector(selectAuthorFollowerCount);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <div className={className.root}>
         <section className={className.content}>
           {about ? (
@@ -89,7 +92,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
             <span
               className={classNames(
                 className.skeltonCommon,
-                className.skeletonText
+                className.skeletonText,
               )}
             />
           ) : (
@@ -111,7 +114,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
             <span
               className={classNames(
                 className.skeltonCommon,
-                className.skeletonText
+                className.skeletonText,
               )}
             />
           ) : (
@@ -144,6 +147,6 @@ export default function OtherAboutTab({ userId, about }: Props) {
           {open === "following" && <BottomFollowings userId={userId} />}
         </ReactorModal>
       )}
-    </Fragment>
+    </React.Fragment>
   );
 }

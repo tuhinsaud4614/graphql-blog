@@ -1,18 +1,20 @@
-import { selectUser } from "@features";
+import * as React from "react";
+
 import classNames from "classnames";
-import { motion, Variants } from "framer-motion";
-import { FCommentFragment } from "graphql/generated/schema";
-import { Fragment, ReactNode, useEffect, useState } from "react";
+import { Variants, motion } from "framer-motion";
 import { Descendant } from "slate";
-import { useAppSelector } from "store";
+
+import { selectUser } from "@/features";
+import { FCommentFragment } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
 
 import Body from "./Body";
-import { EditProvider, useEditState } from "./context";
 import EditComment from "./EditComment";
 import Header from "./Header";
 import MoreButton from "./MoreButton";
 import Replies from "./Replies";
 import ReplyEditor from "./ReplyEditor";
+import { EditProvider, useEditState } from "./context";
 
 const className = {
   root: "border-b last:border-none dark:border-base-dark-300",
@@ -55,10 +57,10 @@ export default function CommentItem({
   replyCount,
 }: Props) {
   const rdxUser = useAppSelector(selectUser);
-  const [showReplies, setShowReplies] = useState(false);
-  const [openReplyEditor, setOpenReplyEditor] = useState(false);
+  const [showReplies, setShowReplies] = React.useState(false);
+  const [openReplyEditor, setOpenReplyEditor] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (replyCount === 0) {
       setShowReplies(false);
     }
@@ -109,7 +111,7 @@ export default function CommentItem({
         <section
           className={classNames(
             className.replyContainer,
-            classes?.replyContainer
+            classes?.replyContainer,
           )}
         >
           {openReplyEditor && (
@@ -131,7 +133,7 @@ export default function CommentItem({
 }
 
 interface WrapperProps {
-  children?: ReactNode;
+  children?: React.ReactNode;
   oldCommentContent: Descendant[];
   commentId: string;
 }
@@ -142,5 +144,5 @@ function Wrapper({ children, oldCommentContent, commentId }: WrapperProps) {
     return <EditComment commentId={commentId} oldValue={oldCommentContent} />;
   }
 
-  return <Fragment>{children}</Fragment>;
+  return <React.Fragment>{children}</React.Fragment>;
 }

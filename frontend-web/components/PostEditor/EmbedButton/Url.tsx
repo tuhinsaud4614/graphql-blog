@@ -1,7 +1,8 @@
-import { URL_REGEX } from "@constants";
-import { Button } from "components";
-import { FormControl } from "components/account";
-import { ChangeEvent, useId, useState } from "react";
+import * as React from "react";
+
+import { Button } from "@/components";
+import { FormControl } from "@/components/account";
+import { URL_REGEX } from "@/utils/constants";
 
 interface Props {
   title?: string;
@@ -13,12 +14,12 @@ const className = {
 };
 
 export function Url({ onAdd, title = "Embeds url" }: Props) {
-  const [url, setUrl] = useState("");
-  const [error, setError] = useState("");
+  const [url, setUrl] = React.useState("");
+  const [error, setError] = React.useState("");
 
-  const id = useId();
+  const id = React.useId();
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setUrl(value);
     if (!URL_REGEX.test(value)) {
@@ -47,7 +48,7 @@ export function Url({ onAdd, title = "Embeds url" }: Props) {
       <Button
         aria-label="Insert image"
         type="button"
-        className="mx-3 my-3 !px-2 !py-1.5 text-sm !rounded-md"
+        className="m-3 !rounded-md !px-2 !py-1.5 text-sm"
         variant="success"
         disabled={!!error || !url}
         onClick={() => {

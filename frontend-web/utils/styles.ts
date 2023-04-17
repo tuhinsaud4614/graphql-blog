@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import type { ButtonModeType, ColorVariantType } from "@types";
+import type { ButtonModeType, ColorVariantType } from "@/utils/types";
 
 const className = {
   btn: {

@@ -1,9 +1,8 @@
-import { ReactorModalItem } from "@component";
-import { useLockBody } from "@hooks";
-import FollowItem from "components/FollowItem";
-import ReactorModal from "components/ReactorModal";
-import { SidebarContent } from "components/Sidebar";
-import { Fragment, useState } from "react";
+import * as React from "react";
+
+import { FollowItem, ReactorModal, ReactorModalItem } from "@/components";
+import { SidebarContent } from "@/components/Sidebar";
+import { useLockBody } from "@/hooks";
 
 const className = {
   more: "mt-5 text-sm text-accent dark:text-accent-dark hover:text-neutral dark:hover:text-neutral-dark active:scale-95 self-start",
@@ -15,10 +14,10 @@ export default function SidebarTopAuthors() {
       title="Top Authors"
       classes={{ items: "pb-4", title: "mt-8" }}
     >
+      {/* <FollowItem />
       <FollowItem />
       <FollowItem />
-      <FollowItem />
-      <FollowItem />
+      <FollowItem /> */}
       <li>
         <SeeMore />
       </li>
@@ -27,10 +26,10 @@ export default function SidebarTopAuthors() {
 }
 
 function SeeMore() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   useLockBody(open);
   return (
-    <Fragment>
+    <React.Fragment>
       <button
         type="button"
         aria-label="See more"
@@ -44,10 +43,10 @@ function SeeMore() {
         open={open}
         onHide={() => setOpen(false)}
       >
-        {Array.from({ length: 15 }).map((_, index) => (
+        {/* {Array.from({ length: 15 }).map((_, index) => (
           <ReactorModalItem key={index} />
-        ))}
+        ))} */}
       </ReactorModal>
-    </Fragment>
+    </React.Fragment>
   );
 }

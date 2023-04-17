@@ -1,24 +1,27 @@
+import * as React from "react";
+
+import Head from "next/head";
+
+import { FormikHelpers, useFormik } from "formik";
+import _ from "lodash";
+import { Descendant } from "slate";
+import * as yup from "yup";
+
 import {
   Button,
   CheckInput,
   ImagePicker,
   PostEditor,
   Select,
-} from "@component";
-import { IMAGE_MIMES } from "@constants";
-import { NextPageWithLayout } from "@types";
+} from "@/components";
 import {
   FormControl,
   PostCreateContainer,
   PostCreateHeader,
-} from "components/account";
-import { FormikHelpers, useFormik } from "formik";
-import _ from "lodash";
-import Head from "next/head";
-import { Fragment, ReactElement, useId } from "react";
-import { Descendant } from "slate";
-import { maxFileSize } from "utils";
-import * as yup from "yup";
+} from "@/components/account";
+import { maxFileSize } from "@/utils";
+import { IMAGE_MIMES } from "@/utils/constants";
+import { NextPageWithLayout } from "@/utils/types";
 
 const className = {
   control: "mb-4",
@@ -88,10 +91,10 @@ const EditPost: NextPageWithLayout = () => {
     published: false,
   };
 
-  const titleId = useId();
-  const categoriesId = useId();
-  const tagsId = useId();
-  const publishedId = useId();
+  const titleId = React.useId();
+  const categoriesId = React.useId();
+  const tagsId = React.useId();
+  const publishedId = React.useId();
 
   const onSubmit = async (
     values: IValues,
@@ -246,12 +249,12 @@ const EditPost: NextPageWithLayout = () => {
   );
 };
 
-EditPost.getLayout = (page: ReactElement) => {
+EditPost.getLayout = (page: React.ReactElement) => {
   return (
-    <Fragment>
+    <React.Fragment>
       <PostCreateHeader />
       <PostCreateContainer>{page}</PostCreateContainer>
-    </Fragment>
+    </React.Fragment>
   );
 };
 export default EditPost;

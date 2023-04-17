@@ -1,5 +1,6 @@
-import { useSynchronizeAnimation } from "@hooks";
 import classNames from "classnames";
+
+import { useSynchronizeAnimation } from "@/hooks";
 
 const className = {
   root: "border-t dark:border-base-dark-300 pt-2.5 flex justify-between items-center",

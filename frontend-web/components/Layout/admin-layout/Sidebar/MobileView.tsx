@@ -1,10 +1,10 @@
-import classNames from "classnames";
-import type { Variants } from "framer-motion";
-import { AnimatePresence, motion } from "framer-motion";
 import * as React from "react";
 
-import { Backdrop, Portal } from "@component";
-import STYLES from "@styles";
+import classNames from "classnames";
+import { AnimatePresence, motion, type Variants, } from "framer-motion";
+
+import { Backdrop, Portal } from "@/components";
+import STYLES from "@/utils/styles";
 
 const Variants: Variants = {
   hidden: {

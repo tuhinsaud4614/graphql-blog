@@ -1,10 +1,12 @@
-import { Button, SlateViewer } from "@component";
-import { useElementSize } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
-import { useState } from "react";
 import { BsChat } from "react-icons/bs";
 import { Descendant } from "slate";
-import { countConvert } from "utils";
+
+import { Button, SlateViewer } from "@/components";
+import { useElementSize } from "@/hooks";
+import { countConvert } from "@/utils";
 
 const className = {
   body: "mt-1.5",
@@ -36,7 +38,7 @@ export default function Body({
   toggleReplyEditor,
 }: Props) {
   const [ref, { height }] = useElementSize();
-  const [show, setShow] = useState(false);
+  const [show, setShow] = React.useState(false);
   return (
     <section className={cls}>
       <div
@@ -62,7 +64,7 @@ export default function Body({
           variant="success"
           type="button"
           aria-label="Read More"
-          className="!px-1.5 text-sm -mt-1.5 -ml-1.5"
+          className="-ml-1.5 -mt-1.5 !px-1.5 text-sm"
           onClick={() => {
             // globalShow = true;
             setShow(true);
@@ -77,7 +79,7 @@ export default function Body({
       <div
         className={classNames(
           className.actionsBar,
-          replyCount > 0 ? "justify-between" : "justify-end"
+          replyCount > 0 ? "justify-between" : "justify-end",
         )}
       >
         {replyCount > 0 && (
@@ -91,7 +93,7 @@ export default function Body({
                   ? `Hide ${replyCount > 1 ? "replies" : "reply"}`
                   : countConvert(replyCount, "reply", "replies")
               }
-              className="!p-1 text-sm flex items-center"
+              className="flex items-center !p-1 text-sm"
               onClick={toggleReplies}
             >
               <BsChat size={20} />

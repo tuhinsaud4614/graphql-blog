@@ -1,5 +1,6 @@
-import { SidebarSearch } from "components";
-import { ReactNode } from "react";
+import * as React from "react";
+
+import { SidebarSearch } from "@/components";
 
 const className = {
   root: "hidden lg:block min-h-screen w-[17.5rem] xl:w-96 border-l dark:border-base-dark-300 relative",
@@ -7,7 +8,7 @@ const className = {
 };
 
 interface Props {
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Sidebar({ children }: Props) {

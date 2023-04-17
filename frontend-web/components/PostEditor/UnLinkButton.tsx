@@ -1,8 +1,9 @@
-import { useTooltip } from "@hooks";
-import { SlateButton } from "components";
 import { BiUnlink } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
-import { isLinkActive, unwrapLink } from "utils";
+
+import { SlateButton } from "@/components";
+import { useTooltip } from "@/hooks";
+import { isLinkActive, unwrapLink } from "@/utils";
 
 const className = {
   content: "bg-base-100 w-56 p-2",

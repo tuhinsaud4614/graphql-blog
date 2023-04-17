@@ -1,20 +1,23 @@
-import { Button, LinkButton } from "@component";
-import { ROUTES } from "@constants";
-import { PostCreateContainer, PostCreateHeader } from "components/account";
-import { LoaderIcon } from "components/svg";
-import { getCookie } from "cookies-next";
-import {
-  useResendActivationLinkMutation,
-  useUserVerificationMutation,
-} from "graphql/generated/schema";
-import _ from "lodash";
+import * as React from "react";
+
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
+
+import { getCookie } from "cookies-next";
+import _ from "lodash";
 import { BiError } from "react-icons/bi";
 import { toast } from "react-toastify";
-import { gplErrorHandler, isDev } from "utils";
+
+import { Button, LinkButton } from "@/components";
+import { PostCreateContainer, PostCreateHeader } from "@/components/account";
+import { LoaderIcon } from "@/components/svg";
+import {
+  useResendActivationLinkMutation,
+  useUserVerificationMutation,
+} from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   container: "flex flex-col items-center justify-center min-h-[40vh]",
@@ -28,7 +31,7 @@ interface Props {
 }
 
 const VerifyUser: NextPage<Props> = ({ query }) => {
-  const effectRan = useRef(false);
+  const effectRan = React.useRef(false);
   const { replace } = useRouter();
   const [verifyUser, { loading, data, error }] = useUserVerificationMutation({
     errorPolicy: "all",
@@ -37,7 +40,7 @@ const VerifyUser: NextPage<Props> = ({ query }) => {
   const code = "code" in query ? query.code : "";
   const userId = "userId" in query ? query.userId : "";
 
-  useEffect(() => {
+  React.useEffect(() => {
     if ((effectRan.current || !isDev()) && code && userId) {
       const handler = async () => {
         try {
@@ -81,7 +84,7 @@ const VerifyUser: NextPage<Props> = ({ query }) => {
               ))}
             </ul>
           ) : (
-            <Fragment>
+            <React.Fragment>
               <p className={className.item}>{errors}!</p>
               <div className="mt-4 flex items-center justify-center space-x-3">
                 <LinkButton
@@ -98,7 +101,7 @@ const VerifyUser: NextPage<Props> = ({ query }) => {
                     <ResendButton userId={query.userId} />
                   )}
               </div>
-            </Fragment>
+            </React.Fragment>
           )}
         </div>
       </Wrapper>
@@ -134,7 +137,7 @@ function ResendButton({ userId }: { userId: string }) {
     fetchPolicy: "network-only",
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (error) {
       toast.error(error.message, {
         hideProgressBar: true,
@@ -143,7 +146,7 @@ function ResendButton({ userId }: { userId: string }) {
     }
   }, [error]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (data?.resendActivation) {
       toast.success(data?.resendActivation, {
         position: "top-center",
@@ -158,7 +161,7 @@ function ResendButton({ userId }: { userId: string }) {
   }, [data]);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Button
         type="button"
         aria-label="Resend verification link"
@@ -171,19 +174,19 @@ function ResendButton({ userId }: { userId: string }) {
       >
         Resend verification link
       </Button>
-    </Fragment>
+    </React.Fragment>
   );
 }
 
-function Wrapper({ children }: PropsWithChildren) {
+function Wrapper({ children }: React.PropsWithChildren) {
   return (
-    <Fragment>
+    <React.Fragment>
       <Head>
         <title>The RAT Diary | User Verification</title>
       </Head>
       <PostCreateHeader hideAvatar />
       <PostCreateContainer>{children}</PostCreateContainer>
-    </Fragment>
+    </React.Fragment>
   );
 }
 

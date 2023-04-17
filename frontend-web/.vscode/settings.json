@@ -3,8 +3,8 @@
   "editor.codeActionsOnSave": {
     "source.addMissingImports": true,
     "source.fixAll.eslint": true,
-    "source.fixAll.tslint": true,
-    "source.organizeImports": true
+    "source.fixAll.tslint": true
+    // "source.organizeImports": true
   },
   "eslint.validate": ["typescript", "javascript"],
   "cSpell.words": [

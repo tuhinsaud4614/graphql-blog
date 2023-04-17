@@ -1,9 +1,9 @@
+import { IncomingMessage } from "http";
+
 import { ApolloError } from "@apollo/client";
-import { Value } from "@types";
 import axios from "axios";
 import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
-import { IncomingMessage } from "http";
 import jwtDecode from "jwt-decode";
 import {
   BaseEditor,
@@ -16,6 +16,9 @@ import {
   Transforms,
 } from "slate";
 import { ReactEditor } from "slate-react";
+
+import { Value } from "@/utils/types";
+
 import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
 import { IAnchorOrigin, IUser, SlateLinkElement } from "./interfaces";
 import { isIUser } from "./isType";
@@ -26,7 +29,7 @@ export const getPositions = (
   selfRect: DOMRect | null,
   anchorOrigin: IAnchorOrigin,
   fraction?: boolean | number,
-  hideArrow?: boolean
+  hideArrow?: boolean,
 ) => {
   let selfLeft = 0;
   let selfTop = 0;
@@ -204,7 +207,7 @@ export const isMarkActive = (editor: BaseEditor, format: string) => {
 export function isBlockActive(
   editor: BaseEditor,
   format: string,
-  blockType = "type"
+  blockType = "type",
 ) {
   const { selection } = editor;
   if (!selection) return false;
@@ -217,7 +220,7 @@ export function isBlockActive(
         Element.isElement(n) &&
         // @ts-ignore
         n[blockType] === format,
-    })
+    }),
   );
 
   return !!match;
@@ -340,7 +343,7 @@ export function queryChecking<T extends { [key: string]: any }>(
   query: T,
   tabs: string[] | Readonly<string[]>,
   queryName: keyof T,
-  defaultReturn = 0
+  defaultReturn = 0,
 ) {
   if (query && queryName in query && query[queryName]) {
     const tab = tabs.findIndex((t) => t === decodeURI(query[queryName]));
@@ -422,7 +425,7 @@ export async function fetchRefreshToken(req?: IncomingMessage) {
       withCredentials: true,
       headers:
         req && req.headers.cookie ? { cookie: req.headers.cookie } : undefined,
-    }
+    },
   );
   return data?.data?.token;
 }
@@ -433,7 +436,7 @@ export const serializeOnlyTextSlateValue = (value: Descendant[]) => {
       // Return the string content of each paragraph in the value's children.
       .map((n) => {
         return ("type" in n &&
-          ["heading-one", "heading-two"].includes(n["type"])) ||
+          ["heading-one", "heading-two"].includes(n["type"] as string)) ||
           "bold" in n ||
           "italic" in n ||
           "underline" in n

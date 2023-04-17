@@ -1,10 +1,13 @@
-import { useEventListener, useLockBody } from "@hooks";
+import * as React from "react";
+
+import Image from "next/image";
+
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { FImageFragment } from "graphql/generated/schema";
-import Image from "next/image";
-import { useState } from "react";
-import { generateFileUrl } from "utils";
+
+import { FImageFragment } from "@/graphql/generated/schema";
+import { useEventListener, useLockBody } from "@/hooks";
+import { generateFileUrl } from "@/utils";
 
 const className = {
   root: "relative w-full",
@@ -28,7 +31,7 @@ interface Props {
 }
 
 const Img = ({ image, alt }: Props) => {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = React.useState(false);
 
   useEventListener("scroll", () => isOpen && setOpen(false));
 
@@ -39,7 +42,7 @@ const Img = ({ image, alt }: Props) => {
       className={classNames(
         className.root,
         "pt-[56.25%]",
-        isOpen ? "cursor-zoom-out" : "cursor-zoom-in"
+        isOpen ? "cursor-zoom-out" : "cursor-zoom-in",
       )}
     >
       <motion.div
@@ -47,7 +50,7 @@ const Img = ({ image, alt }: Props) => {
         transition={transition}
         className={classNames(
           className.shade,
-          isOpen ? className.shadeOpen : className.shadeClose
+          isOpen ? className.shadeOpen : className.shadeClose,
         )}
         onClick={() => setOpen(false)}
       />
@@ -57,7 +60,7 @@ const Img = ({ image, alt }: Props) => {
           className={classNames(
             className.img,
             "scale-1",
-            isOpen ? className.imgOpen : className.imgClose
+            isOpen ? className.imgOpen : className.imgClose,
           )}
           layout
           transition={transition}

@@ -1,8 +1,9 @@
-import { Button } from "components";
-import { ComponentPropsWithoutRef } from "react";
+import * as React from "react";
+
+import { Button } from "@/components";
 
 export default function ReactorItemMoreBtn(
-  props: ComponentPropsWithoutRef<"button">
+  props: React.ComponentPropsWithoutRef<"button">,
 ) {
   return (
     <li className="!mx-6 !mt-6 flex items-center justify-center">

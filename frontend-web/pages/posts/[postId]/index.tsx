@@ -1,12 +1,19 @@
-import { AuthComponentGuard, ClientOnly, SlateViewer } from "@component";
-import { LayoutContainer } from "components/Layout";
+import * as React from "react";
+
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import Head from "next/head";
+
+import moment from "moment";
+
+import { AuthComponentGuard, ClientOnly, SlateViewer } from "@/components";
+import { LayoutContainer } from "@/components/Layout";
+import { SidebarUserProfiler } from "@/components/Sidebar";
 import {
   PostDetailAuthorInfo,
   PostDetailBottomReactions,
   PostDetailImage,
   PostDetailSuggestPosts,
-} from "components/post-detail";
-import { SidebarUserProfiler } from "components/Sidebar";
+} from "@/components/post-detail";
 import {
   GetPostByIdDocument,
   GetPostByIdQuery,
@@ -15,13 +22,9 @@ import {
   GetPostsOnOffsetDocument,
   GetPostsOnOffsetQuery,
   GetPostsOnOffsetQueryVariables,
-} from "graphql/generated/schema";
-import { initializeApollo } from "lib/apollo";
-import moment from "moment";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import Head from "next/head";
-import { Fragment, useRef } from "react";
-import { getUserName } from "utils";
+} from "@/graphql/generated/schema";
+import { initializeApollo } from "@/lib/apollo";
+import { getUserName } from "@/utils";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
@@ -88,7 +91,7 @@ interface IParams {
 }
 
 const PostPage: NextPage<IParams> = ({ post }) => {
-  const contentRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
 
   const { author, ...rest } = post;
   const username = getUserName(author);
@@ -96,12 +99,12 @@ const PostPage: NextPage<IParams> = ({ post }) => {
   return (
     <LayoutContainer
       sidebar={
-        <Fragment>
+        <React.Fragment>
           <SidebarUserProfiler user={author} classes={{ root: "mb-10" }} />
           <ClientOnly>
             <PostDetailSuggestPosts currentId={post.id} />
           </ClientOnly>
-        </Fragment>
+        </React.Fragment>
       }
     >
       <Head>

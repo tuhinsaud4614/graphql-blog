@@ -1,7 +1,7 @@
-import { setAuthUser } from "@features";
-import { useLogoutMutation } from "graphql/generated/schema";
-import { useAppDispatch } from "store";
-import { isDev, setAccessToken } from "utils";
+import { setAuthUser } from "@/features";
+import { useLogoutMutation } from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
+import { isDev, setAccessToken } from "@/utils";
 
 export default function useLogout() {
   const rdxDispatch = useAppDispatch();

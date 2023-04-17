@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
+
 import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
 
 type ReturnType = [boolean, (locked: boolean) => void];
 
 function useLockedBody(initialLocked = false): ReturnType {
-  const [locked, setLocked] = useState(initialLocked);
+  const [locked, setLocked] = React.useState(initialLocked);
 
   // Do the side effect before render
   useIsomorphicLayoutEffect(() => {
@@ -38,7 +39,7 @@ function useLockedBody(initialLocked = false): ReturnType {
   }, [locked]);
 
   // Update state if initialValue changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (locked !== initialLocked) {
       setLocked(initialLocked);
     }

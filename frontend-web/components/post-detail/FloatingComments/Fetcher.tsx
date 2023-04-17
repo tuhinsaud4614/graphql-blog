@@ -1,12 +1,16 @@
-import { NetworkStatus } from "@apollo/client";
-import { ModalHeader } from "components";
-import { AnimatePresence } from "framer-motion";
-import { useGetPostCommentsOnCursorQuery } from "graphql/generated/schema";
-import _ from "lodash";
+import * as React from "react";
+
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+
+import { NetworkStatus } from "@apollo/client";
+import { AnimatePresence } from "framer-motion";
+import _ from "lodash";
 import { Waypoint } from "react-waypoint";
-import { isDev } from "utils";
+
+import { ModalHeader } from "@/components";
+import { useGetPostCommentsOnCursorQuery } from "@/graphql/generated/schema";
+import { isDev } from "@/utils";
+
 import CommentEditor from "../CommentEditor";
 import CommentItem from "../CommentItem";
 import CommentItemSkeleton from "../CommentItem/ItemSkeleton";
@@ -62,7 +66,7 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
                   ...prev.postCommentsOnCursor.edges,
                   ...fetchMoreResult.postCommentsOnCursor.edges,
                 ],
-                "cursor"
+                "cursor",
               ),
             },
           };
@@ -78,7 +82,7 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
     const { edges } = data.postCommentsOnCursor;
 
     component = (
-      <Fragment>
+      <React.Fragment>
         <CommentEditor />
         <AnimatePresence initial={false}>
           {edges.map((comment) => (
@@ -98,18 +102,18 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
         {networkStatus === NetworkStatus.fetchMore && (
           <CommentItemSkeleton classes={{ root: "py-4" }} />
         )}
-      </Fragment>
+      </React.Fragment>
     );
   }
 
   return (
-    <Fragment>
+    <React.Fragment>
       <ModalHeader onClose={onClose} className={className.bottomHeader}>
         Responses
         {!!data?.postCommentsOnCursor.total &&
           `  (${data.postCommentsOnCursor.total})`}
       </ModalHeader>
       <div className={className.bottomBody}>{component}</div>
-    </Fragment>
+    </React.Fragment>
   );
 }

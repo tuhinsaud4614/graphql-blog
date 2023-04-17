@@ -1,10 +1,13 @@
-import { ROUTES } from "@constants";
-import classNames from "classnames";
-import { Button, Menu, Modal, ModalHeader } from "components";
+import * as React from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
+
+import classNames from "classnames";
 import { BiChevronDown } from "react-icons/bi";
+
+import { Button, Menu, Modal, ModalHeader } from "@/components";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "flex flex-col",
@@ -31,11 +34,13 @@ interface Props {
 
 export default function PostItem({ classes }: Props) {
   const { push } = useRouter();
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
-  const [openModel, setOpenModel] = useState(false);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
+  const [openModel, setOpenModel] = React.useState(false);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <li className={classNames(className.root, classes?.root)}>
         <Link href={ROUTES.editPost("1")} passHref>
           <a aria-label="New post" className={className.title}>
@@ -76,7 +81,7 @@ export default function PostItem({ classes }: Props) {
             type="button"
             className={classNames(
               className.actionsBtn,
-              "text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus"
+              "text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus",
             )}
             onClick={() => {
               push(ROUTES.editPost("1"));
@@ -89,7 +94,7 @@ export default function PostItem({ classes }: Props) {
             type="button"
             className={classNames(
               className.actionsBtn,
-              "text-error dark:text-error-dark hover:text-error-focus dark:hover:text-error"
+              "text-error dark:text-error-dark hover:text-error-focus dark:hover:text-error",
             )}
             onClick={() => {
               setAnchorEle(null);
@@ -120,7 +125,7 @@ export default function PostItem({ classes }: Props) {
               aria-label="Cancel"
               type="button"
               onClick={() => setOpenModel(false)}
-              className="!px-4 !py-1.5 text-sm mr-2"
+              className="mr-2 !px-4 !py-1.5 text-sm"
               variant="neutral"
               mode="outline"
             >
@@ -138,6 +143,6 @@ export default function PostItem({ classes }: Props) {
           </div>
         </div>
       </Modal>
-    </Fragment>
+    </React.Fragment>
   );
 }

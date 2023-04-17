@@ -1,15 +1,17 @@
+import { useRouter } from "next/router";
+
 import { NetworkStatus } from "@apollo/client";
+import _ from "lodash";
+
 import {
   ReactorItemMoreBtn,
   ReactorItemSkeleton,
   ReactorModal,
   ReactorModalItem,
-} from "@component";
-import { useLockBody } from "@hooks";
-import { useGetPostReactionsByQuery } from "graphql/generated/schema";
-import _ from "lodash";
-import { useRouter } from "next/router";
-import { countConvert, gplErrorHandler, isDev } from "utils";
+} from "@/components";
+import { useGetPostReactionsByQuery } from "@/graphql/generated/schema";
+import { useLockBody } from "@/hooks";
+import { countConvert, gplErrorHandler, isDev } from "@/utils";
 
 const className = {
   errorItem: "text-warning dark:text-warning-dark text-sm",
@@ -101,7 +103,7 @@ export default function FloatingLikes({ onClose, open }: Props) {
                   ...prev.postReactionsBy.edges,
                   ...fetchMoreResult.postReactionsBy.edges,
                 ],
-                "cursor"
+                "cursor",
               ),
             },
           };

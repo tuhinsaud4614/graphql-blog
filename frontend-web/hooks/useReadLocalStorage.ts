@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import * as React from "react";
+
 import useEventListener from "./useEventListener";
 
 type Value<T> = T | null;
@@ -6,7 +7,7 @@ type Value<T> = T | null;
 function useReadLocalStorage<T>(key: string): Value<T> {
   // Get from local storage then
   // parse stored json or return initialValue
-  const readValue = useCallback((): Value<T> => {
+  const readValue = React.useCallback((): Value<T> => {
     // Prevent build error "window is undefined" but keep keep working
     if (typeof window === "undefined") {
       return null;
@@ -23,22 +24,22 @@ function useReadLocalStorage<T>(key: string): Value<T> {
 
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState<Value<T>>(readValue);
+  const [storedValue, setStoredValue] = React.useState<Value<T>>(readValue);
 
   // Listen if localStorage changes
-  useEffect(() => {
+  React.useEffect(() => {
     setStoredValue(readValue());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleStorageChange = useCallback(
+  const handleStorageChange = React.useCallback(
     (event: StorageEvent | CustomEvent) => {
       if ((event as StorageEvent)?.key && (event as StorageEvent).key !== key) {
         return;
       }
       setStoredValue(readValue());
     },
-    [key, readValue]
+    [key, readValue],
   );
 
   // this only works for other documents, not the current one

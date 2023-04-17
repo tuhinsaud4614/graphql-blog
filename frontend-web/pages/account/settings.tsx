@@ -1,17 +1,18 @@
-import { AuthGuard } from "@component";
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import { LayoutContainer } from "components/Layout";
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+
+import { AuthGuard } from "@/components";
+import { LayoutContainer } from "@/components/Layout";
 import {
   SettingsAvatarEdit,
   SettingsNameEdit,
   SettingsPasswordChange,
-} from "components/settings";
-import { UserRole } from "graphql/generated/schema";
-import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
-import { useAppSelector } from "store";
-import { withSSRAuth } from "utils/ssr";
+} from "@/components/settings";
+import { selectUser } from "@/features";
+import { UserRole } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
+import { ROUTES } from "@/utils/constants";
+import { withSSRAuth } from "@/utils/ssr";
 
 const className = {
   title:

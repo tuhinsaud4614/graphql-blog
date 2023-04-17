@@ -1,19 +1,20 @@
 import {
-  adminSidebarSliceReducer,
-  authorFollowerCountReducer,
-  authReducer,
-  reactSliceReducer,
-} from "@features";
-import {
   Action,
+  ThunkAction,
   combineReducers,
   configureStore,
-  ThunkAction,
 } from "@reduxjs/toolkit";
-import notificationReducer from "features/notificationSlice/notificationSlice";
 import { createWrapper } from "next-redux-wrapper";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { isDev } from "utils";
+
+import {
+  adminSidebarSliceReducer,
+  authReducer,
+  authorFollowerCountReducer,
+  notificationReducer,
+  reactSliceReducer,
+} from "@/features";
+import { isDev } from "@/utils";
 
 // export const store = configureStore({
 //   reducer: {

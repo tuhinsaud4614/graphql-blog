@@ -1,6 +1,7 @@
-import { ROUTES } from "@constants";
-import { Button } from "components";
 import { useRouter } from "next/router";
+
+import { Button } from "@/components";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   banner:
