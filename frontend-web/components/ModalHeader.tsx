@@ -1,6 +1,8 @@
-import classNames from "classnames";
-import { useRouter } from "next/router";
 import * as React from "react";
+
+import { useRouter } from "next/router";
+
+import classNames from "classnames";
 import { BiX } from "react-icons/bi";
 
 const className = {
@@ -36,7 +38,7 @@ export default function ModalHeader({
         className.root,
         !children && "!justify-end",
         classes?.root,
-        rest.className
+        rest.className,
       )}
     >
       {children}
@@ -46,7 +48,7 @@ export default function ModalHeader({
           className={classNames(
             className.btn,
 
-            classes?.closeBtn
+            classes?.closeBtn,
           )}
           aria-label="Modal-Close"
         >

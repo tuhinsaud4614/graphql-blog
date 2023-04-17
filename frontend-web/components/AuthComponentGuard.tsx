@@ -1,11 +1,12 @@
-import { selectUser } from "@features";
-import { UserRole } from "graphql/generated/schema";
-import { Fragment, ReactNode } from "react";
-import { useAppSelector } from "store";
+import * as React from "react";
+
+import { selectUser } from "@/features";
+import { UserRole } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
 
 interface Props {
   role?: UserRole;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function AuthComponentGuard({ role, children }: Props) {
@@ -19,5 +20,5 @@ export default function AuthComponentGuard({ role, children }: Props) {
     return null;
   }
 
-  return <Fragment>{children}</Fragment>;
+  return <React.Fragment>{children}</React.Fragment>;
 }

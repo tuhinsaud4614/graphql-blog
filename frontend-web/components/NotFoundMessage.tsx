@@ -1,4 +1,4 @@
-import { LinkButton } from "components";
+import { LinkButton } from "@/components";
 
 const className = {
   root: "py-[1.875rem] flex flex-col items-center",

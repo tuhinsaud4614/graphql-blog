@@ -1,5 +1,6 @@
-import { NotFoundMessage, TabBox } from "components";
 import { ReactNode } from "react";
+
+import { NotFoundMessage, TabBox } from "@/components";
 
 interface Props {
   link: string;

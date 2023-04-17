@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { createPortal } from "react-dom";
 
 interface Props {
@@ -14,7 +15,7 @@ const Portal = ({ children }: Props) => {
 
   return createPortal(
     children,
-    document.getElementById("presentational") as HTMLElement
+    document.getElementById("presentational") as HTMLElement,
   );
 };
 

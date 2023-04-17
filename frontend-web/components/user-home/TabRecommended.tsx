@@ -1,16 +1,17 @@
 import { NetworkStatus } from "@apollo/client";
-import { ROUTES } from "@constants";
+import _ from "lodash";
+import { Waypoint } from "react-waypoint";
+
 import {
   ErrorBox,
   NotFoundMessage,
   PostItem,
   PostItemSkeleton,
   TabBox,
-} from "components";
-import { useGetPostsQuery } from "graphql/generated/schema";
-import _ from "lodash";
-import { Waypoint } from "react-waypoint";
-import { gplErrorHandler, isDev } from "utils";
+} from "@/components";
+import { useGetPostsQuery } from "@/graphql/generated/schema";
+import { gplErrorHandler, isDev } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",
@@ -88,7 +89,7 @@ export default function TabRecommended() {
               ...fetchMoreResult.posts,
               edges: _.uniqBy(
                 [...prev.posts.edges, ...fetchMoreResult.posts.edges],
-                "cursor"
+                "cursor",
               ),
             },
           };

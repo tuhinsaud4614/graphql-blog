@@ -1,8 +1,10 @@
-import { ROUTES } from "@constants";
-import classNames from "classnames";
-import { Button } from "components";
 import Image from "next/image";
 import Link from "next/link";
+
+import classNames from "classnames";
+
+import { Button } from "@/components";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "flex",

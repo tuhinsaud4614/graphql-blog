@@ -1,5 +1,6 @@
-import classNames from "classnames";
 import NextImage from "next/image";
+
+import classNames from "classnames";
 import { BiTrash } from "react-icons/bi";
 import { Transforms } from "slate";
 import {
@@ -35,7 +36,7 @@ export default function SlateImage({
         <div
           className={classNames(
             className.imgWrapper,
-            !isReadOnly && selected && focused && "shadow-mui"
+            !isReadOnly && selected && focused && "shadow-mui",
           )}
         >
           <NextImage
@@ -55,7 +56,7 @@ export default function SlateImage({
             onClick={() => Transforms.removeNodes(editor, { at: path })}
             className={classNames(
               className.btn,
-              selected && focused ? "inline" : "none"
+              selected && focused ? "inline" : "none",
             )}
           >
             <BiTrash size={20} />

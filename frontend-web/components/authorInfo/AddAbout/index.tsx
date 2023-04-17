@@ -1,9 +1,7 @@
-import { Fragment, useCallback, useState } from "react";
+import * as React from "react";
 
 import dynamic from "next/dynamic";
 
-import { Button, ErrorModal, SlateElement, SlateLeaf } from "components";
-import { useUpdateAboutMutation } from "graphql/generated/schema";
 import pipe from "lodash/fp/pipe";
 import { toast } from "react-toastify";
 import { Descendant, createEditor } from "slate";
@@ -16,10 +14,12 @@ import {
   Slate,
   withReact,
 } from "slate-react";
-import { useAppDispatch } from "store";
-import { gplErrorHandler, withLinks } from "utils";
 
+import { Button, ErrorModal, SlateElement, SlateLeaf } from "@/components";
 import { updateUserAbout } from "@/features/authSlice";
+import { useUpdateAboutMutation } from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
+import { gplErrorHandler, withLinks } from "@/utils";
 
 const HoveringToolbar = dynamic(() => import("./HoveringToolbar"), {
   ssr: false,
@@ -43,9 +43,11 @@ interface Props {
 }
 
 export default function AddAbout({ previousValue }: Props) {
-  const [editor] = useState(() => withPlugins(createEditor() as ReactEditor));
-  const [value, setValue] = useState(previousValue || initialValue);
-  const [editMode, setEditMode] = useState(false);
+  const [editor] = React.useState(() =>
+    withPlugins(createEditor() as ReactEditor),
+  );
+  const [value, setValue] = React.useState(previousValue || initialValue);
+  const [editMode, setEditMode] = React.useState(false);
 
   const rdxDispatch = useAppDispatch();
 
@@ -53,12 +55,12 @@ export default function AddAbout({ previousValue }: Props) {
     notifyOnNetworkStatusChange: true,
   });
 
-  const renderLeaf = useCallback(
+  const renderLeaf = React.useCallback(
     (props: RenderLeafProps) => <SlateLeaf {...props} />,
     [],
   );
 
-  const renderElement = useCallback(
+  const renderElement = React.useCallback(
     (props: RenderElementProps) => <SlateElement {...props} />,
     [],
   );
@@ -83,7 +85,7 @@ export default function AddAbout({ previousValue }: Props) {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <section className={className.root}>
         <div className={className.actions}>
           {!editMode ? (
@@ -97,7 +99,7 @@ export default function AddAbout({ previousValue }: Props) {
               Edit
             </Button>
           ) : (
-            <Fragment>
+            <React.Fragment>
               <Button
                 aria-label="Cancel"
                 type="button"
@@ -118,12 +120,12 @@ export default function AddAbout({ previousValue }: Props) {
               >
                 Save
               </Button>
-            </Fragment>
+            </React.Fragment>
           )}
         </div>
         <Slate editor={editor} value={value} onChange={(v) => setValue(v)}>
           <HoveringToolbar />
-          <section className="px-4 py-2 overflow-x-auto">
+          <section className="overflow-x-auto px-4 py-2">
             <Editable
               readOnly={!editMode}
               placeholder="Add bio"
@@ -149,6 +151,6 @@ export default function AddAbout({ previousValue }: Props) {
         title="User about update error"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

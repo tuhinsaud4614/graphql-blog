@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { forwardRef, HTMLAttributes, RefObject } from "react";
 import { BiSearch } from "react-icons/bi";
 
 const className = {
@@ -10,8 +11,8 @@ const className = {
     "bg-transparent border-none outline-none mr-5 text-sm text-neutral dark:text-neutral-dark w-full",
 };
 
-interface Props extends HTMLAttributes<HTMLInputElement> {
-  rootRef?: RefObject<HTMLDivElement>;
+interface Props extends React.HTMLAttributes<HTMLInputElement> {
+  rootRef?: React.RefObject<HTMLDivElement>;
   classes?: {
     root?: string;
     container?: string;
@@ -20,7 +21,7 @@ interface Props extends HTMLAttributes<HTMLInputElement> {
   };
 }
 
-const SearchBox = forwardRef<HTMLInputElement, Props>(
+const SearchBox = React.forwardRef<HTMLInputElement, Props>(
   ({ rootRef, classes, className: cls, ...rest }, ref) => {
     return (
       <div className={classNames(className.root, classes?.root)}>
@@ -41,7 +42,7 @@ const SearchBox = forwardRef<HTMLInputElement, Props>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 SearchBox.displayName = "SearchBox";

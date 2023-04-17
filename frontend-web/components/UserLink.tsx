@@ -1,7 +1,10 @@
-import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
-import { generateFileUrl } from "utils";
+
+import classNames from "classnames";
+
+import { generateFileUrl } from "@/utils";
+
 import DemoAvatar from "./DemoAvatar";
 
 interface Props {
@@ -47,7 +50,7 @@ export default function UserLink({ href, src, classes, children }: Props) {
           <DemoAvatar
             as="a"
             aria-label={children}
-            className="w-5 h-5"
+            className="h-5 w-5"
             size={20 / 1.8}
           />
         )}

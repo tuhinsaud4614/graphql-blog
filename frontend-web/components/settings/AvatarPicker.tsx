@@ -1,11 +1,14 @@
-import { IMAGE_MIMES } from "@constants";
-import classNames from "classnames";
-import DemoAvatar from "components/DemoAvatar";
-import _ from "lodash";
+import * as React from "react";
+
 import Image from "next/image";
-import { ChangeEvent, useRef } from "react";
+
+import classNames from "classnames";
+import _ from "lodash";
 import { AiOutlineCamera } from "react-icons/ai";
-import { maxFileSize } from "utils";
+
+import { DemoAvatar } from "@/components";
+import { maxFileSize } from "@/utils";
+import { IMAGE_MIMES } from "@/utils/constants";
 
 const className = {
   root: "ml-5 shrink-0",
@@ -28,8 +31,8 @@ export default function AvatarPicker({
   onImageChange,
   onEdit,
 }: Props) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const files = e.target.files;
     if (files?.length) {
@@ -88,7 +91,7 @@ export default function AvatarPicker({
           <button
             aria-label="Editable"
             type="button"
-            className="absolute z-10 inset-0 outline-none border-none w-full h-full block"
+            className="absolute inset-0 z-10 block h-full w-full border-none outline-none"
             onClick={onEdit}
           />
         )}

@@ -1,19 +1,21 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import { UserRole } from "graphql/generated/schema";
+import * as React from "react";
+
 import Router from "next/router";
-import { Fragment, ReactNode, useEffect } from "react";
-import { useAppSelector } from "store";
+
+import { selectUser } from "@/features";
+import { UserRole } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
+import { ROUTES } from "@/utils/constants";
 
 interface Props {
   role?: UserRole;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function AuthGuard({ role, children }: Props) {
   const rdxUser = useAppSelector(selectUser);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!rdxUser) {
       Router.replace(ROUTES.home);
       return;
@@ -24,5 +26,5 @@ export default function AuthGuard({ role, children }: Props) {
     }
   }, [rdxUser, role]);
 
-  return <Fragment>{children}</Fragment>;
+  return <React.Fragment>{children}</React.Fragment>;
 }

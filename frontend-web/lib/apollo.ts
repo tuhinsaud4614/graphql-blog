@@ -17,7 +17,8 @@ import { YogaLink } from "@graphql-yoga/apollo-link";
 import { createUploadLink } from "apollo-upload-client";
 import { getOperationAST, print } from "graphql";
 import { makeStore } from "store";
-// import { store } from "store";
+
+import { setAuthUser } from "@/features";
 import {
   fetchRefreshToken,
   getAccessToken,
@@ -25,18 +26,11 @@ import {
   isDev,
   isServer,
   setAccessToken,
-} from "utils";
-
-import { setAuthUser } from "@/features";
+} from "@/utils";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
 const uri = `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}/graphql`;
-
-const httpLink = createUploadLink({
-  uri,
-  credentials: "include",
-});
 
 const link = split(
   ({ query, operationName }) => {
@@ -48,8 +42,12 @@ const link = split(
     );
   },
   new YogaLink({ credentials: "include", endpoint: uri }),
-  httpLink,
+  createUploadLink({
+    uri,
+    credentials: "include",
+  }),
 );
+
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
 const errorLink = onError(
@@ -67,8 +65,6 @@ const errorLink = onError(
     }
   },
 );
-
-const x = new YogaLink({ credentials: "include", endpoint: uri });
 
 export function createApolloClient(serverAccessToken?: string) {
   const authLink = setContext(async (_, { headers }) => {

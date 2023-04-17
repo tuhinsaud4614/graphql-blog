@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import * as React from "react";
 
 const className = {
   root: "p-4",
@@ -10,14 +10,14 @@ const className = {
 
 interface Props {
   title: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export default function Result({ children, title }: Props) {
   return (
-    <Fragment>
+    <React.Fragment>
       <p className={className.title}>{title}</p>
       <ul className={className.items}>{children}</ul>
-    </Fragment>
+    </React.Fragment>
   );
 }

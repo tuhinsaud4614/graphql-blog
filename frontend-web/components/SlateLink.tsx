@@ -1,4 +1,5 @@
-import { Fragment, useRef } from "react";
+import * as React from "react";
+
 import { BiUnlink } from "react-icons/bi";
 import { FiExternalLink } from "react-icons/fi";
 import { Range } from "slate";
@@ -9,7 +10,9 @@ import {
   useSelected,
   useSlateStatic,
 } from "slate-react";
-import { unwrapLink } from "utils";
+
+import { unwrapLink } from "@/utils";
+
 import Menu from "./Menu";
 
 const className = {
@@ -26,7 +29,7 @@ export default function SlateLink({
   children,
   element,
 }: RenderElementProps) {
-  const ref = useRef<HTMLAnchorElement | null>(null);
+  const ref = React.useRef<HTMLAnchorElement | null>(null);
   const editor = useSlateStatic();
   const isReadOnly = useReadOnly();
   const selected = useSelected();
@@ -34,13 +37,13 @@ export default function SlateLink({
   const extra = isReadOnly ? { rel: "noreferrer", target: "_blank" } : {};
 
   return (
-    <Fragment>
+    <React.Fragment>
       <a
         {...attributes}
         ref={ref}
         //   @ts-ignore
         href={element.url}
-        className="underline text-neutral dark:text-neutral-dark"
+        className="text-neutral underline dark:text-neutral-dark"
         {...extra}
       >
         {children}
@@ -58,7 +61,7 @@ export default function SlateLink({
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
         <div
-          className="flex items-center py-1.5 px-2.5"
+          className="flex items-center px-2.5 py-1.5"
           onMouseDown={(e) => {
             e.preventDefault();
           }}
@@ -84,7 +87,7 @@ export default function SlateLink({
           </button>
         </div>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }
 // <div className={className.popup} contentEditable={false}>

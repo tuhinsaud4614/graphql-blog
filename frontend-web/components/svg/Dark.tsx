@@ -1,6 +1,6 @@
-import { ComponentPropsWithRef } from "react";
+import * as React from "react";
 
-export default function Dark(props: ComponentPropsWithRef<"svg">) {
+export default function Dark(props: React.ComponentPropsWithRef<"svg">) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none">
       <path

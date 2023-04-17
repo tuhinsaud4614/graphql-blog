@@ -1,5 +1,7 @@
-import { PostItem } from "components";
-import { ReactNode } from "react";
+import * as React from "react";
+
+import { PostItem } from "@/components";
+
 import TabContainer from "./TabContainer";
 
 const className = {
@@ -9,7 +11,7 @@ const className = {
 interface Props {
   link: string;
   linkText: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Posts({ link, linkText }: Props) {
@@ -19,9 +21,9 @@ export default function Posts({ link, linkText }: Props) {
       link={link}
       linkText={linkText}
     >
-      {Array.from({ length: 10 }).map((_, index) => (
+      {/* {Array.from({ length: 10 }).map((_, index) => (
         <PostItem key={index} classes={{ root: className.item }} />
-      ))}
+      ))} */}
     </TabContainer>
   );
 }

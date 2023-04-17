@@ -1,17 +1,13 @@
-import { useMediaQuery } from "@hooks";
+import * as React from "react";
+
+import Image from "next/image";
+
 import classNames from "classnames";
 import { motion, useAnimation } from "framer-motion";
-import Image from "next/image";
-import {
-  ChangeEvent,
-  ComponentPropsWithRef,
-  DragEvent,
-  Fragment,
-  ReactNode,
-  useRef,
-} from "react";
 import { BiX } from "react-icons/bi";
 import { FiUpload } from "react-icons/fi";
+
+import { useMediaQuery } from "@/hooks";
 
 const className = {
   container: "flex flex-col items-center",
@@ -29,7 +25,7 @@ const className = {
 
 interface Props
   extends Omit<
-    ComponentPropsWithRef<"input">,
+    React.ComponentPropsWithRef<"input">,
     "value" | "onChange" | "type" | "accept" | "className"
   > {
   title: string;
@@ -37,7 +33,7 @@ interface Props
   onFileChange(file: File | null): void;
   onTouched?(): void;
   valid?: boolean;
-  errorText?: ReactNode;
+  errorText?: React.ReactNode;
   classes?: {
     container?: string;
     label?: string;
@@ -60,10 +56,13 @@ export default function ImagePicker({
   ...rest
 }: Props) {
   const matches = useMediaQuery("(prefers-color-scheme: dark)");
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const animation = useAnimation();
 
-  const handleDrag = (e: DragEvent<HTMLButtonElement>, status: boolean) => {
+  const handleDrag = (
+    e: React.DragEvent<HTMLButtonElement>,
+    status: boolean,
+  ) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -80,7 +79,7 @@ export default function ImagePicker({
     });
   };
 
-  const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLButtonElement>) => {
     onTouched && onTouched();
     if (e.dataTransfer) {
       const file = e.dataTransfer.files[0];
@@ -88,7 +87,7 @@ export default function ImagePicker({
     }
   };
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const files = e.target.files;
     if (files?.length) {
@@ -102,7 +101,7 @@ export default function ImagePicker({
         className={classNames(
           className.label,
           classes?.label,
-          !valid && "text-error"
+          !valid && "text-error",
         )}
       >
         {title}
@@ -127,7 +126,7 @@ export default function ImagePicker({
             />
           </div>
         ) : (
-          <Fragment>
+          <React.Fragment>
             <input
               {...rest}
               ref={inputRef}
@@ -164,7 +163,7 @@ export default function ImagePicker({
                 SVG, PNG, JPG, JPEG, WEBP or GIF (MAX. SIZE 5MB)
               </p>
             </motion.button>
-          </Fragment>
+          </React.Fragment>
         )}
       </div>
       {!valid && errorText && (

@@ -1,12 +1,15 @@
-import classNames from "classnames";
-import { motion, Variants } from "framer-motion";
-import { useRouter } from "next/router";
 import * as React from "react";
 
-import { useIsomorphicLayoutEffect } from "@hooks";
-import { IAnchorOrigin } from "@interfaces";
-import STYLES from "@styles";
-import { getPositions } from "utils";
+import { useRouter } from "next/router";
+
+import classNames from "classnames";
+import { Variants, motion } from "framer-motion";
+
+import { useIsomorphicLayoutEffect } from "@/hooks";
+import { getPositions } from "@/utils";
+import { IAnchorOrigin } from "@/utils/interfaces";
+import STYLES from "@/utils/styles";
+
 import Portal from "./Portal";
 
 const variants: Variants = {

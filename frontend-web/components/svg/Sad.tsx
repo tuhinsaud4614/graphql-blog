@@ -1,8 +1,10 @@
-import type { Ref, SVGProps } from "react";
 import * as React from "react";
 
 /** Used for `No data to show` */
-function Root(props: SVGProps<SVGSVGElement>, ref: Ref<SVGSVGElement>) {
+function Root(
+  props: React.SVGProps<SVGSVGElement>,
+  ref: React.Ref<SVGSVGElement>,
+) {
   return (
     <svg
       viewBox="0 0 375 428"

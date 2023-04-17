@@ -1,19 +1,22 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import classNames from "classnames";
-import { motion } from "framer-motion";
-import { GetPostItemFragment } from "graphql/generated/schema";
-import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
+
+import classNames from "classnames";
+import { motion } from "framer-motion";
+import moment from "moment";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { useAppSelector } from "store";
+
+import { selectUser } from "@/features";
+import { GetPostItemFragment } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
 import {
   generateFileUrl,
   getUserName,
   serializeOnlyTextSlateValue,
-} from "utils";
-import { itemInVariants } from "utils/framer-variants";
+} from "@/utils";
+import { ROUTES } from "@/utils/constants";
+import { itemInVariants } from "@/utils/framer-variants";
+
 import ClientOnly from "./ClientOnly";
 import UserLink from "./UserLink";
 
@@ -84,11 +87,7 @@ export default function PostItem({ classes, post }: Props) {
           </a>
         </Link>
         <div className={classNames(className.timeBox, classes?.timeBox)}>
-          <time>
-            {moment(+post.updatedAt)
-              .startOf("second")
-              .fromNow()}
-          </time>
+          <time>{moment(+post.updatedAt).startOf("second").fromNow()}</time>
           <span className="px-1.5">·</span>
           <div className={className.tags}>
             {post.tags.slice(0, 3).map((tag) => (

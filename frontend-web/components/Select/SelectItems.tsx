@@ -1,5 +1,7 @@
+import * as React from "react";
+
 import { motion } from "framer-motion";
-import { forwardRef, ReactNode } from "react";
+
 import { UnSelectedItem } from "./SelectItem";
 
 const className = {
@@ -10,10 +12,10 @@ const className = {
 interface Props {
   loading?: boolean;
   length: number;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-const SelectItems = forwardRef<HTMLDivElement, Props>(
+const SelectItems = React.forwardRef<HTMLDivElement, Props>(
   ({ children, length, loading }, ref) => {
     let loadedItems = children;
     if (loading) {
@@ -33,7 +35,7 @@ const SelectItems = forwardRef<HTMLDivElement, Props>(
         <ul className={className.items}>{loadedItems}</ul>
       </motion.section>
     );
-  }
+  },
 );
 
 SelectItems.displayName = "SelectItems";

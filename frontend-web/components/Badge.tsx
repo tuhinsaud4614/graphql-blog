@@ -1,6 +1,8 @@
-import { ColorVariantType } from "@types";
+import * as React from "react";
+
 import classNames from "classnames";
-import { ReactNode } from "react";
+
+import { ColorVariantType } from "@/utils/types";
 
 const className = (variant: ColorVariantType) => {
   switch (variant) {
@@ -27,7 +29,7 @@ interface Props {
   variant?: ColorVariantType;
   float?: boolean;
   className?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Badge({

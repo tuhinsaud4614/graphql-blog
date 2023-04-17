@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import { motion } from "framer-motion";
-import React, { ReactNode } from "react";
 
 const className = {
   root: "flex flex-col overflow-hidden w-full",
@@ -8,7 +9,7 @@ const className = {
 };
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
   value: number;
 }
 

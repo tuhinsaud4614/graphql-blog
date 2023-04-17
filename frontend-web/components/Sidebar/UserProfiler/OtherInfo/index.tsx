@@ -1,15 +1,18 @@
-import { selectAuthorFollowerCount, setAuthorFollowerCount } from "@features";
-import { useLockBody } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
-import { Button, ReactorModal } from "components";
+import { Descendant } from "slate";
+
+import { Button, ReactorModal } from "@/components";
+import { selectAuthorFollowerCount, setAuthorFollowerCount } from "@/features";
 import {
   FUserFragment,
   useUserMentionTooltipStatsQuery,
-} from "graphql/generated/schema";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { Descendant } from "slate";
-import { useAppDispatch, useAppSelector } from "store";
-import { countConvert, serializeSlateValue } from "utils";
+} from "@/graphql/generated/schema";
+import { useLockBody } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { countConvert, serializeSlateValue } from "@/utils";
+
 import AllFollowers from "../AllFollowers";
 import FollowButton from "./FollowButton";
 
@@ -36,19 +39,19 @@ export default function OtherInfo({ user, authenticated }: Props) {
   const count = useAppSelector(selectAuthorFollowerCount);
   const rdxDispatch = useAppDispatch();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   useLockBody(open);
 
   const { about } = user;
-  const aboutText = useMemo(
+  const aboutText = React.useMemo(
     () =>
       about ? serializeSlateValue(JSON.parse(about) as Descendant[]) : null,
-    [about]
+    [about],
   );
 
   const followerCount = data?.userResult.followerCount;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (followerCount) {
       rdxDispatch(setAuthorFollowerCount(followerCount));
     }
@@ -59,7 +62,7 @@ export default function OtherInfo({ user, authenticated }: Props) {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       {data?.userResult ? (
         <Button
           aria-label="Followers"
@@ -76,13 +79,13 @@ export default function OtherInfo({ user, authenticated }: Props) {
         <span
           className={classNames(
             className.skeltonCommon,
-            className.skeletonText
+            className.skeletonText,
           )}
         />
       )}
       {aboutText && <p className={className.about}>{aboutText}</p>}
       {authenticated && (
-        <Fragment>
+        <React.Fragment>
           {data?.userResult ? (
             <FollowButton
               isFollowed={data.userResult.hasFollow}
@@ -92,11 +95,11 @@ export default function OtherInfo({ user, authenticated }: Props) {
             <span
               className={classNames(
                 className.skeltonCommon,
-                className.skeletonBtn
+                className.skeletonBtn,
               )}
             />
           )}
-        </Fragment>
+        </React.Fragment>
       )}
       {authenticated && !!count && (
         <ReactorModal
@@ -107,6 +110,6 @@ export default function OtherInfo({ user, authenticated }: Props) {
           <AllFollowers authorId={user.id} />
         </ReactorModal>
       )}
-    </Fragment>
+    </React.Fragment>
   );
 }

@@ -1,9 +1,10 @@
-import { ROUTES } from "@constants";
-import DemoAvatar from "components/DemoAvatar";
-import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
-import { generateFileUrl, getUserName } from "utils";
+
+import { DemoAvatar } from "@/components";
+import { FUserFragment } from "@/graphql/generated/schema";
+import { generateFileUrl, getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "w-12 h-12 inline-block rounded-full dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark",
@@ -38,7 +39,7 @@ export default function FollowItem({ user }: Props) {
         <DemoAvatar
           as="a"
           aria-label={username}
-          className="w-12 h-12"
+          className="h-12 w-12"
           size={48 / 1.8}
         />
       )}

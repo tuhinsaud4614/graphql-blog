@@ -1,5 +1,7 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { memo } from "react";
+
 import Button from "./Button";
 
 const className = {
@@ -83,5 +85,8 @@ function Component({ errors, onClose, title, classes, onRetry }: Props) {
   );
 }
 
-const ErrorBox = memo(Component, (prev, next) => prev.errors === next.errors);
+const ErrorBox = React.memo(
+  Component,
+  (prev, next) => prev.errors === next.errors,
+);
 export default ErrorBox;

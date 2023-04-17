@@ -1,9 +1,13 @@
-import { useLockBody } from "@hooks";
-import STYLES from "@styles";
+import * as React from "react";
+
+import { useRouter } from "next/router";
+
 import classNames from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
-import { useRouter } from "next/router";
-import * as React from "react";
+
+import { useLockBody } from "@/hooks";
+import STYLES from "@/utils/styles";
+
 import Backdrop from "./Backdrop";
 import Portal from "./Portal";
 

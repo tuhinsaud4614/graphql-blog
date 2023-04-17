@@ -1,11 +1,13 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { FollowItem, Tag } from "components";
+
+import { FollowItem, Tag } from "@/components";
 import {
   SidebarCategory,
   SidebarContent,
   SidebarPostItem,
-} from "components/Sidebar";
-import { Fragment } from "react";
+} from "@/components/Sidebar";
 
 const className = {
   divider: "bg-neutral dark:bg-base-dark-300 w-full border-b my-4",
@@ -20,25 +22,25 @@ interface Props {
 
 export default function PostsSidebarContent({ query, hide }: Props) {
   return (
-    <Fragment>
+    <React.Fragment>
       {hide !== "posts" && (
-        <Fragment>
+        <React.Fragment>
           <SidebarContent
             moreLink={`/search?q=${query}`}
             moreText="See all"
             title={`Posts matching ${query}`}
             classes={{ items: "space-y-4" }}
           >
+            {/* <SidebarPostItem  />
             <SidebarPostItem />
             <SidebarPostItem />
-            <SidebarPostItem />
-            <SidebarPostItem />
+            <SidebarPostItem /> */}
           </SidebarContent>
           <div className={className.divider} />
-        </Fragment>
+        </React.Fragment>
       )}
       {hide !== "tags" && (
-        <Fragment>
+        <React.Fragment>
           <SidebarContent
             moreLink={`/search?q=${query}&t=tags`}
             moreText="See more"
@@ -62,10 +64,10 @@ export default function PostsSidebarContent({ query, hide }: Props) {
             </Tag>
           </SidebarContent>
           <div className={className.divider} />
-        </Fragment>
+        </React.Fragment>
       )}
       {hide !== "categories" && (
-        <Fragment>
+        <React.Fragment>
           <SidebarContent
             moreLink={`/search?q=${query}&t=categories`}
             moreText="See more"
@@ -91,10 +93,10 @@ export default function PostsSidebarContent({ query, hide }: Props) {
           <div
             className={classNames(
               className.divider,
-              hide === "author" && "hidden"
+              hide === "author" && "hidden",
             )}
           />
-        </Fragment>
+        </React.Fragment>
       )}
       {hide !== "author" && (
         <SidebarContent
@@ -102,13 +104,13 @@ export default function PostsSidebarContent({ query, hide }: Props) {
           moreText="See more"
           title={`People matching ${query}`}
         >
+          {/* <FollowItem />
           <FollowItem />
           <FollowItem />
-          <FollowItem />
-          <FollowItem />
+          <FollowItem /> */}
         </SidebarContent>
       )}
       <div className="pt-8" />
-    </Fragment>
+    </React.Fragment>
   );
 }

@@ -1,13 +1,16 @@
-import { selectUser } from "@features";
+import * as React from "react";
+
 import classNames from "classnames";
-import { ErrorBox } from "components";
-import { useGetAuthorFollowingsOnCursorQuery } from "graphql/generated/schema";
-import { ComponentPropsWithoutRef } from "react";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
-import { useAppSelector } from "store";
 import { Navigation, Virtual } from "swiper";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-import { gplErrorHandler, isDev } from "utils";
+
+import { ErrorBox } from "@/components";
+import { selectUser } from "@/features";
+import { useGetAuthorFollowingsOnCursorQuery } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
+import { gplErrorHandler, isDev } from "@/utils";
+
 import FollowItem from "./Item";
 import FollowSkeleton from "./Skelton";
 
@@ -16,7 +19,7 @@ const className = {
     "h-full absolute top-2/4 -translate-y-1/2 z-10 flex items-center justify-center text-neutral dark:text-neutral-dark",
 };
 
-const PrevButton = (props: ComponentPropsWithoutRef<"button">) => {
+const PrevButton = (props: React.ComponentPropsWithoutRef<"button">) => {
   const swiper = useSwiper();
 
   return (
@@ -26,7 +29,7 @@ const PrevButton = (props: ComponentPropsWithoutRef<"button">) => {
       className={classNames(
         className.navBtn,
         "left-0 bg-base-right dark:bg-base-dark-right pr-5",
-        props.className
+        props.className,
       )}
     >
       <IoChevronBackOutline size={34} />
@@ -34,7 +37,7 @@ const PrevButton = (props: ComponentPropsWithoutRef<"button">) => {
   );
 };
 
-const NextButton = (props: ComponentPropsWithoutRef<"button">) => {
+const NextButton = (props: React.ComponentPropsWithoutRef<"button">) => {
   const swiper = useSwiper();
   return (
     <button
@@ -43,7 +46,7 @@ const NextButton = (props: ComponentPropsWithoutRef<"button">) => {
       className={classNames(
         className.navBtn,
         "right-0 bg-base-left dark:bg-base-dark-left pl-5",
-        props.className
+        props.className,
       )}
     >
       <IoChevronForwardOutline size={34} />
@@ -58,7 +61,7 @@ export default function FollowList() {
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "network-only",
       variables: { limit: 2 },
-    }
+    },
   );
 
   const prevId = "prev-btn";

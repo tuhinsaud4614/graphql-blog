@@ -1,4 +1,5 @@
-import { memo } from "react";
+import * as React from "react";
+
 import Button from "./Button";
 import Modal from "./Modal";
 import ModalHeader from "./ModalHeader";
@@ -43,7 +44,7 @@ function Component({ errors, onClose, title }: Props) {
           aria-label="Clear errors"
           variant="warning"
           mode="outline"
-          className="px-2 !py-1 text-sm"
+          className="!py-1 px-2 text-sm"
           onClick={onClose}
         >
           Clear errors
@@ -53,5 +54,8 @@ function Component({ errors, onClose, title }: Props) {
   );
 }
 
-const ErrorModal = memo(Component, (prev, next) => prev.errors === next.errors);
+const ErrorModal = React.memo(
+  Component,
+  (prev, next) => prev.errors === next.errors,
+);
 export default ErrorModal;

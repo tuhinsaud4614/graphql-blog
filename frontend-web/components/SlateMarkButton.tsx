@@ -1,8 +1,10 @@
-import { useEventListener, useTooltip } from "@hooks";
 import isHotkey from "is-hotkey";
 import { Editor, Transforms } from "slate";
 import { useSlate } from "slate-react";
-import { isBlockActive, isMarkActive } from "utils";
+
+import { useEventListener, useTooltip } from "@/hooks";
+import { isBlockActive, isMarkActive } from "@/utils";
+
 import { MarkButtonProps } from "./PostEditor/utils";
 import SlateButton from "./SlateButton";
 
@@ -32,7 +34,7 @@ export default function SlateMarkButton({
         // @ts-ignore
         type: match ? "paragraph" : "code",
       },
-      { match: (n) => Editor.isBlock(editor, n) }
+      { match: (n) => Editor.isBlock(editor, n) },
     );
   };
 

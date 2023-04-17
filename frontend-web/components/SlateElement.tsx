@@ -1,4 +1,5 @@
 import { RenderElementProps } from "slate-react";
+
 import SlateEmbed from "./SlateEmbed";
 import SlateImage from "./SlateImage";
 import SlateLink from "./SlateLink";
@@ -17,7 +18,7 @@ export default function SlateElement({
       return (
         <blockquote
           style={style}
-          className="border-l-2 dark:border-base-dark-300 pl-2.5 italic text-neutral/60 dark:text-neutral-dark/60"
+          className="border-l-2 pl-2.5 italic text-neutral/60 dark:border-base-dark-300 dark:text-neutral-dark/60"
           {...attributes}
         >
           {children}
@@ -27,7 +28,7 @@ export default function SlateElement({
       return (
         <ul
           style={style}
-          className="list-disc block pl-10 my-4"
+          className="my-4 block list-disc pl-10"
           {...attributes}
         >
           {children}
@@ -37,7 +38,7 @@ export default function SlateElement({
       return (
         <ol
           style={style}
-          className="list-decimal block pl-10 my-4"
+          className="my-4 block list-decimal pl-10"
           {...attributes}
         >
           {children}
@@ -78,7 +79,7 @@ export default function SlateElement({
         <pre
           {...attributes}
           style={style}
-          className="block text-base font-[monospace] bg-base-200 dark:bg-base-dark-300 text-[#292929] p-[0.1875rem] w-full whitespace-pre-wrap"
+          className="block w-full whitespace-pre-wrap bg-base-200 p-[0.1875rem] font-[monospace] text-base text-[#292929] dark:bg-base-dark-300"
         >
           <code className="text-[#292929]">{children}</code>
         </pre>

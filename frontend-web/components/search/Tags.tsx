@@ -1,6 +1,7 @@
-import { ROUTES } from "@constants";
-import { NotFoundMessage, TabBox, Tag } from "components";
 import { BiChevronDown } from "react-icons/bi";
+
+import { NotFoundMessage, TabBox, Tag } from "@/components";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   items: "flex flex-wrap space-x-3 space-y-3 -ml-3",

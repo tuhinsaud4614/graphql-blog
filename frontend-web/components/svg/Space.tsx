@@ -1,6 +1,7 @@
-import { motion, Variants } from "framer-motion";
+import * as React from "react";
+
+import { Variants, motion } from "framer-motion";
 import _ from "lodash";
-import { SVGProps } from "react";
 
 const smallStarVariants: Variants = {
   hidden: { opacity: 0 },
@@ -21,7 +22,7 @@ const smallStarItemVariants: Variants = {
   hidden: { scale: 0 },
 };
 
-const Space = (props: SVGProps<SVGSVGElement>) => (
+const Space = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" {...props}>
     <defs>
       {/* GlassClip */}
@@ -473,7 +474,7 @@ const Space = (props: SVGProps<SVGSVGElement>) => (
           d="m323.396 236.625-28.111 117.128"
         />
         <circle
-          className="fill-base-100 dark:fill-[#0E0620] stroke-[#0E0620] dark:stroke-base-100"
+          className="fill-base-100 stroke-[#0E0620] dark:fill-[#0E0620] dark:stroke-base-100"
           cx={323.666}
           cy={235.617}
           r={6.375}

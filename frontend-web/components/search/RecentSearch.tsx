@@ -1,10 +1,13 @@
-import { RECENT_SEARCHES_KEY } from "@constants";
-import { useIsomorphicLayoutEffect, useLocalStorage } from "@hooks";
-import classNames from "classnames";
-import { SearchLayout } from "components/Layout";
+import * as React from "react";
+
 import { useRouter } from "next/router";
-import { Fragment, useRef } from "react";
+
+import classNames from "classnames";
 import { BiX } from "react-icons/bi";
+
+import { SearchLayout } from "@/components/Layout";
+import { useIsomorphicLayoutEffect, useLocalStorage } from "@/hooks";
+import { RECENT_SEARCHES_KEY } from "@/utils/constants";
 
 const className = {
   root: "",
@@ -19,10 +22,10 @@ const className = {
 
 export default function RecentSearch() {
   const { replace } = useRouter();
-  const isRender = useRef(false);
+  const isRender = React.useRef(false);
   const [recentSearches, setRecentSearches] = useLocalStorage<string[] | null>(
     RECENT_SEARCHES_KEY,
-    null
+    null,
   );
   let result;
 
@@ -45,7 +48,7 @@ export default function RecentSearch() {
       <ul className={className.items}>
         {recentSearches.map((value, index) => {
           return (
-            <Fragment key={index}>
+            <React.Fragment key={index}>
               {index !== 0 && <li className={className.divider} />}
               <li className={className.item}>
                 <button
@@ -73,14 +76,14 @@ export default function RecentSearch() {
                   <BiX size={28} />
                 </button>
               </li>
-            </Fragment>
+            </React.Fragment>
           );
         })}
       </ul>
     );
   }
   return (
-    <SearchLayout sidebar={<Fragment />}>
+    <SearchLayout sidebar={<React.Fragment />}>
       <h1 className={className.title}>Recent searches</h1>
       {result}
     </SearchLayout>

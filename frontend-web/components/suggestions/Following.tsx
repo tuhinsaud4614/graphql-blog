@@ -1,6 +1,7 @@
-import { ROUTES } from "@constants";
-import { FollowItem, LinkTextButton } from "components";
-import { Fragment } from "react";
+import * as React from "react";
+
+import { FollowItem, LinkTextButton } from "@/components";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "mt-6",
@@ -20,16 +21,16 @@ export default function Following() {
   return (
     <div className={className.root}>
       {isTrue ? (
-        <Fragment>
+        <React.Fragment>
           <h2 className={className.title}>{`2 Author${
             count > 1 ? "s" : ""
           }`}</h2>
           <ul className={className.items}>
-            {Array.from({ length: 5 }).map((_, index) => (
+            {/* {Array.from({ length: 5 }).map((_, index) => (
               <FollowItem key={index} />
-            ))}
+            ))} */}
           </ul>
-        </Fragment>
+        </React.Fragment>
       ) : (
         <NotFound />
       )}

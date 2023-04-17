@@ -1,17 +1,19 @@
-import { URL_REGEX } from "@constants";
-import { useOnClickOutside } from "@hooks";
+import * as React from "react";
+
+import { BiBold, BiHeading, BiItalic, BiLink, BiX } from "react-icons/bi";
+import { CgFormatHeading } from "react-icons/cg";
+import { Editor, Range, Transforms } from "slate";
+import { ReactEditor, useSlate } from "slate-react";
+
 import {
   Portal,
   SlateBlockButton,
   SlateButton,
   SlateMarkButton,
-} from "components";
-import { useEffect, useRef, useState } from "react";
-import { BiBold, BiHeading, BiItalic, BiLink, BiX } from "react-icons/bi";
-import { CgFormatHeading } from "react-icons/cg";
-import { Editor, Range, Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
-import { insertLink, isLinkActive, unwrapLink } from "utils";
+} from "@/components";
+import { useOnClickOutside } from "@/hooks";
+import { insertLink, isLinkActive, unwrapLink } from "@/utils";
+import { URL_REGEX } from "@/utils/constants";
 
 const className = {
   root: "fixed z-10 -left-[-10000px] -top-[-10000px] bg-base-100 dark:bg-base-dark-200 px-2 py-1.5 rounded-md shadow-mui overflow-hidden",
@@ -23,13 +25,13 @@ const className = {
 };
 
 export default function HoveringToolbar() {
-  const [show, setShow] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [show, setShow] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const editor = useSlate() as ReactEditor;
   const { selection } = editor;
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handler = () => {
       const el = ref.current;
       if (!el) {
@@ -85,7 +87,7 @@ export default function HoveringToolbar() {
     <Portal>
       <div ref={ref} className={className.root}>
         {show && (
-          <div className="absolute z-10 inset-0">
+          <div className="absolute inset-0 z-10">
             <div className={className.inputBox}>
               <input
                 ref={inputRef}
@@ -118,7 +120,7 @@ export default function HoveringToolbar() {
         )}
         <div className={className.container}>
           <SlateMarkButton
-            className="first:mt-1.5 first:ml-1.5"
+            className="first:ml-1.5 first:mt-1.5"
             aria-label="Mark bold"
             hotKey="mod+b"
             mark="bold"

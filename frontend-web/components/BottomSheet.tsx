@@ -1,8 +1,10 @@
-import { useMediaQuery } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
-import { Backdrop, Portal } from "components";
-import { AnimatePresence, motion, Variants } from "framer-motion";
-import { ReactNode } from "react";
+import { AnimatePresence, Variants, motion } from "framer-motion";
+
+import { Backdrop, Portal } from "@/components";
+import { useMediaQuery } from "@/hooks";
 
 const className = {
   containerCommon:
@@ -52,7 +54,7 @@ interface Props {
     backdrop?: string;
     container?: string;
   };
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function BottomSheet({
@@ -86,7 +88,7 @@ export default function BottomSheet({
               classes?.container,
               matches
                 ? className.containerMatched
-                : className.containerNotMatched
+                : className.containerNotMatched,
             )}
           >
             {children}

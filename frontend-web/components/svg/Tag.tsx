@@ -1,6 +1,6 @@
-import { ComponentPropsWithRef } from "react";
+import * as React from "react";
 
-export default function Tag(props: ComponentPropsWithRef<"svg">) {
+export default function Tag(props: React.ComponentPropsWithRef<"svg">) {
   return (
     <svg
       {...props}

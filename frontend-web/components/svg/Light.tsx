@@ -1,6 +1,6 @@
-import { ComponentPropsWithRef } from "react";
+import * as React from "react";
 
-export default function Light(props: ComponentPropsWithRef<"svg">) {
+export default function Light(props: React.ComponentPropsWithRef<"svg">) {
   return (
     <svg
       {...props}

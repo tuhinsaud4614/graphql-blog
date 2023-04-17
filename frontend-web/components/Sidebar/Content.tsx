@@ -1,6 +1,8 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { LinkTextButton } from "components";
-import { Fragment, ReactNode } from "react";
+
+import { LinkTextButton } from "@/components";
 
 const className = {
   title: "text-neutral dark:text-neutral-dark mb-[1.375rem] font-medium",
@@ -14,7 +16,7 @@ interface Props {
   title?: string;
   moreLink?: string;
   moreText?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
   classes?: {
     title?: string;
     items?: string;
@@ -31,7 +33,7 @@ export default function Content({
   classes,
 }: Props) {
   return (
-    <Fragment>
+    <React.Fragment>
       <p className={classNames(className.title, classes?.title)}>{title}</p>
       <ul className={classNames(className.items, classes?.items)}>
         {children}
@@ -47,6 +49,6 @@ export default function Content({
           </li>
         )}
       </ul>
-    </Fragment>
+    </React.Fragment>
   );
 }

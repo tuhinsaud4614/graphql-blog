@@ -1,5 +1,7 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { motion, MotionProps, Variants } from "framer-motion";
+import { MotionProps, Variants, motion } from "framer-motion";
 
 const backdropVariants: Variants = {
   start: {

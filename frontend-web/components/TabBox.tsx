@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { Fragment, ReactNode } from "react";
 
 const className = {
   root: "pt-3",
@@ -7,8 +8,8 @@ const className = {
 };
 
 interface Props {
-  notFound?: ReactNode;
-  children?: ReactNode;
+  notFound?: React.ReactNode;
+  children?: React.ReactNode;
   classes?: {
     root?: string;
     items?: string;
@@ -24,10 +25,10 @@ export default function TabBox({ children, notFound, classes }: Props) {
     );
   }
   return (
-    <Fragment>
+    <React.Fragment>
       <ul className={classNames(className.items, classes?.items)}>
         {children}
       </ul>
-    </Fragment>
+    </React.Fragment>
   );
 }

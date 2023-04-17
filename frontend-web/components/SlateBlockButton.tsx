@@ -1,9 +1,11 @@
-import { SlateButton } from "@component";
-import { useTooltip } from "@hooks";
-import { ComponentPropsWithoutRef } from "react";
+import * as React from "react";
+
 import { BaseEditor, Editor, Element as SlateElement, Transforms } from "slate";
 import { useSlate } from "slate-react";
-import { isBlockActive } from "utils";
+
+import { SlateButton } from "@/components";
+import { useTooltip } from "@/hooks";
+import { isBlockActive } from "@/utils";
 
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
@@ -19,7 +21,7 @@ type FormatType =
   | "right"
   | "justify";
 
-interface Props extends ComponentPropsWithoutRef<"button"> {
+interface Props extends React.ComponentPropsWithoutRef<"button"> {
   format: FormatType;
   tip?: string;
 }
@@ -55,7 +57,7 @@ const toggleBlock = (editor: BaseEditor, format: FormatType) => {
   const isActive = isBlockActive(
     editor,
     format,
-    TEXT_ALIGN_TYPES.includes(format) ? "align" : "type"
+    TEXT_ALIGN_TYPES.includes(format) ? "align" : "type",
   );
   const isList = LIST_TYPES.includes(format);
 

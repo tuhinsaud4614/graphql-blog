@@ -1,6 +1,8 @@
+import * as React from "react";
+
 import classNames from "classnames";
 import { motion } from "framer-motion";
-import { Fragment, ReactNode, useEffect, useRef, useState } from "react";
+
 import TabPanel from "./TabPanel";
 
 const className = {
@@ -13,7 +15,7 @@ const className = {
 
 interface Props {
   tabs: string[] | Readonly<string[]>;
-  children?: ReactNode;
+  children?: React.ReactNode;
   onTab?(index: number, key: string): void;
   selectedTab?: number;
 }
@@ -24,16 +26,16 @@ export default function Tabs({
   onTab,
   selectedTab = 0,
 }: Props) {
-  const tabItemsRef = useRef(new Map<number, HTMLButtonElement | null>());
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [slider, setSlider] = useState({
+  const tabItemsRef = React.useRef(new Map<number, HTMLButtonElement | null>());
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [slider, setSlider] = React.useState({
     left: 0,
     right: 0,
     width: 0,
     hasValue: false,
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     const target = tabItemsRef.current.get(selectedTab);
     const container = containerRef.current;
     if (target && container) {
@@ -52,13 +54,13 @@ export default function Tabs({
   }, [selectedTab]);
 
   return (
-    <Fragment>
+    <React.Fragment>
       <div className={className.list} ref={containerRef}>
         {tabs.map((text, index) => (
           <button
             className={classNames(
               className.tabItem,
-              index === selectedTab && "!text-primary dark:!text-accent-dark"
+              index === selectedTab && "!text-primary dark:!text-accent-dark",
             )}
             key={index}
             onClick={() => {
@@ -79,6 +81,6 @@ export default function Tabs({
         )}
       </div>
       <TabPanel value={selectedTab}>{children}</TabPanel>
-    </Fragment>
+    </React.Fragment>
   );
 }

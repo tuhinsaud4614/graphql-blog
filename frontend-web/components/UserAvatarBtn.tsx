@@ -1,15 +1,19 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import { useLogout, useMediaQuery } from "@hooks";
-import { IAnchorOrigin } from "@interfaces";
+import * as React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
-import { Fragment, MouseEvent, useEffect, useState } from "react";
+
 import { BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
-import { useAppSelector } from "store";
-import { generateFileUrl, getUserName, gplErrorHandler } from "utils";
+
+import { selectUser } from "@/features";
+import { useLogout, useMediaQuery } from "@/hooks";
+import { useAppSelector } from "@/store";
+import { generateFileUrl, getUserName, gplErrorHandler } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+import { IAnchorOrigin } from "@/utils/interfaces";
+
 import ClientOnly from "./ClientOnly";
 import DemoAvatar from "./DemoAvatar";
 import ErrorModal from "./ErrorModal";
@@ -40,10 +44,12 @@ export default function UserAvatarBtn({
   anchorOrigin,
 }: Props) {
   const user = useAppSelector(selectUser);
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
   const matches = useMediaQuery("(min-width: 1024px)");
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (hideOnSmallDevice && !matches) {
       setAnchorEle(null);
     }
@@ -64,7 +70,7 @@ export default function UserAvatarBtn({
   const imgUrl = generateFileUrl(user.avatar?.url);
   const userName = getUserName(user);
   return (
-    <Fragment>
+    <React.Fragment>
       {imgUrl ? (
         <NavAvatar
           btnProps={{
@@ -91,7 +97,7 @@ export default function UserAvatarBtn({
           aria-label="Demo avatar"
           type="button"
           className="h-9 w-9 border-secondary dark:border-secondary-dark"
-          onClick={(e: MouseEvent<HTMLButtonElement>) =>
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
             setAnchorEle(e.currentTarget)
           }
         />
@@ -147,14 +153,14 @@ export default function UserAvatarBtn({
           </Link>
         </div>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }
 
 function Logout() {
   const { error, loading, logoutHandler, reset } = useLogout();
   return (
-    <Fragment>
+    <React.Fragment>
       <button
         type="button"
         aria-label="Logout"
@@ -170,6 +176,6 @@ function Logout() {
         title="Logout Errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

@@ -1,14 +1,17 @@
-import _ from "lodash";
-import Link from "next/link";
-import { Fragment, useState } from "react";
+import * as React from "react";
 
-import { ROUTES } from "@constants";
-import { selectUser, updateUserAvatar } from "@features";
-import { Button, ClientOnly, ErrorModal } from "components";
-import { useUploadAvatarMutation } from "graphql/generated/schema";
+import Link from "next/link";
+
+import _ from "lodash";
 import { toast } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "store";
-import { generateFileUrl, gplErrorHandler } from "utils";
+
+import { Button, ClientOnly, ErrorModal } from "@/components";
+import { selectUser, updateUserAvatar } from "@/features";
+import { useUploadAvatarMutation } from "@/graphql/generated/schema";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { generateFileUrl, gplErrorHandler } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+
 import AvatarPicker from "./AvatarPicker";
 
 const className = {
@@ -21,8 +24,8 @@ const className = {
 };
 
 export default function AvatarEdit() {
-  const [editable, setEditable] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
+  const [editable, setEditable] = React.useState(false);
+  const [image, setImage] = React.useState<File | null>(null);
   const user = useAppSelector(selectUser);
   const rdxDispatch = useAppDispatch();
   const [uploadMutation, { error, loading, reset }] = useUploadAvatarMutation({
@@ -42,7 +45,7 @@ export default function AvatarEdit() {
             closeOnClick: true,
           });
           rdxDispatch(
-            updateUserAvatar(_.omit(data.uploadAvatar, ["__typename"]))
+            updateUserAvatar(_.omit(data.uploadAvatar, ["__typename"])),
           );
           setEditable(false);
         }
@@ -53,7 +56,7 @@ export default function AvatarEdit() {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <li className={className.item}>
         <div className={className.itemLeft}>
           <label className={className.label}>Photo</label>
@@ -131,6 +134,6 @@ export default function AvatarEdit() {
         title="Avatar upload errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

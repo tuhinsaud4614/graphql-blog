@@ -1,4 +1,4 @@
-import { useSynchronizeAnimation } from "@hooks";
+import { useSynchronizeAnimation } from "@/hooks";
 
 const className = {
   root: "flex items-center space-x-2 overflow-hidden",

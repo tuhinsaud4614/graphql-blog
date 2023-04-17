@@ -1,11 +1,13 @@
-import { Button, ErrorModal } from "components";
-import { FormControl } from "components/account";
+import * as React from "react";
+
 import { FormikHelpers, useFormik } from "formik";
-import { useResetPasswordMutation } from "graphql/generated/schema";
-import { Fragment, useId, useState } from "react";
 import { toast } from "react-toastify";
-import { gplErrorHandler } from "utils";
 import * as yup from "yup";
+
+import { Button, ErrorModal } from "@/components";
+import { FormControl } from "@/components/account";
+import { useResetPasswordMutation } from "@/graphql/generated/schema";
+import { gplErrorHandler } from "@/utils";
 
 const className = {
   item: "py-8 flex flex-wrap sm:flex-nowrap items-center justify-between space-y-3",
@@ -26,14 +28,14 @@ const schema = yup.object().shape({
 });
 
 export default function PasswordChange() {
-  const [editable, setEditable] = useState(false);
+  const [editable, setEditable] = React.useState(false);
   const initialValues: IValues = {
     newPassword: "",
     oldPassword: "",
   };
 
-  const newPasswordId = useId();
-  const oldPasswordId = useId();
+  const newPasswordId = React.useId();
+  const oldPasswordId = React.useId();
 
   const [resetPassword, { loading, error, reset, client }] =
     useResetPasswordMutation({
@@ -42,7 +44,7 @@ export default function PasswordChange() {
 
   const onSubmit = async (
     { newPassword, oldPassword }: IValues,
-    { resetForm }: FormikHelpers<IValues>
+    { resetForm }: FormikHelpers<IValues>,
   ) => {
     try {
       await client.resetStore();
@@ -81,7 +83,7 @@ export default function PasswordChange() {
   });
 
   return (
-    <Fragment>
+    <React.Fragment>
       <li>
         <form onSubmit={handleSubmit} className={className.item}>
           <div className={className.itemLeft}>
@@ -91,7 +93,7 @@ export default function PasswordChange() {
                 You can change your password. That will help you to log in.
               </p>
             ) : (
-              <Fragment>
+              <React.Fragment>
                 <FormControl
                   classes={{
                     label: "text-left self-start",
@@ -103,7 +105,7 @@ export default function PasswordChange() {
                   aria-label="Old password"
                   placeholder="Your old password"
                   aria-invalid={Boolean(
-                    touched.oldPassword && errors.oldPassword
+                    touched.oldPassword && errors.oldPassword,
                   )}
                   type="password"
                   valid={!(touched.oldPassword && errors.oldPassword)}
@@ -125,7 +127,7 @@ export default function PasswordChange() {
                   aria-label="New password"
                   placeholder="Your new password"
                   aria-invalid={Boolean(
-                    touched.newPassword && errors.newPassword
+                    touched.newPassword && errors.newPassword,
                   )}
                   type="password"
                   valid={!(touched.newPassword && errors.newPassword)}
@@ -135,7 +137,7 @@ export default function PasswordChange() {
                   onBlur={handleBlur}
                   required
                 />
-              </Fragment>
+              </React.Fragment>
             )}
           </div>
           <div className={className.itemRight}>
@@ -171,6 +173,6 @@ export default function PasswordChange() {
         title="Reset Password Errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

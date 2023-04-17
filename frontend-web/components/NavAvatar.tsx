@@ -1,6 +1,8 @@
-import classNames from "classnames";
+import * as React from "react";
+
 import Image, { ImageProps } from "next/image";
-import { ComponentPropsWithRef } from "react";
+
+import classNames from "classnames";
 
 const className = {
   avatar:
@@ -9,7 +11,7 @@ const className = {
 
 interface Props extends ImageProps {
   size: number;
-  btnProps?: Omit<ComponentPropsWithRef<"button">, "children">;
+  btnProps?: Omit<React.ComponentPropsWithRef<"button">, "children">;
 }
 
 export default function NavAvatar({

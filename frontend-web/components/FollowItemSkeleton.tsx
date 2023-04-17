@@ -1,5 +1,6 @@
-import { useSynchronizeAnimation } from "@hooks";
 import classNames from "classnames";
+
+import { useSynchronizeAnimation } from "@/hooks";
 
 const className = {
   common: "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20",
@@ -31,7 +32,7 @@ export default function FollowItemSkeleton({ classes }: Props) {
         className={classNames(
           className.common,
           className.avatar,
-          classes?.avatar
+          classes?.avatar,
         )}
       />
       <div className={classNames(className.mid, classes?.mid)}>
@@ -40,7 +41,7 @@ export default function FollowItemSkeleton({ classes }: Props) {
           className={classNames(
             className.common,
             className.title,
-            classes?.title
+            classes?.title,
           )}
         />
         <span
@@ -48,7 +49,7 @@ export default function FollowItemSkeleton({ classes }: Props) {
           className={classNames(
             className.common,
             className.subtitle,
-            classes?.subtitle
+            classes?.subtitle,
           )}
         />
       </div>

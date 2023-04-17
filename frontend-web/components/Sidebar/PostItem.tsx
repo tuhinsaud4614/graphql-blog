@@ -1,9 +1,11 @@
-import { ROUTES } from "@constants";
-import { UserLink } from "components";
-import { GetPostItemFragment } from "graphql/generated/schema";
-import moment from "moment";
 import Link from "next/link";
-import { getUserName } from "utils";
+
+import moment from "moment";
+
+import { UserLink } from "@/components";
+import { GetPostItemFragment } from "@/graphql/generated/schema";
+import { getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   root: "flex flex-col",
@@ -34,11 +36,7 @@ export default function PostItem({ post }: Props) {
           </a>
         </Link>
         <div className={className.timeBox}>
-          <time>
-            {moment(+post.updatedAt)
-              .startOf("second")
-              .fromNow()}
-          </time>
+          <time>{moment(+post.updatedAt).startOf("second").fromNow()}</time>
         </div>
       </div>
     </li>

@@ -1,19 +1,16 @@
-import { useDebounce, useOnClickOutside } from "@hooks";
+import * as React from "react";
+
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import _ from "lodash";
-import {
-  ComponentPropsWithRef,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
 import { BiX } from "react-icons/bi";
+
+import { useDebounce, useOnClickOutside } from "@/hooks";
+
 import Label from "./Label";
-import SelectedItem from "./SelectedItem";
 import SelectItem from "./SelectItem";
 import SelectItems from "./SelectItems";
+import SelectedItem from "./SelectedItem";
 
 const className = {
   control: "flex flex-col items-center justify-center w-full",
@@ -32,10 +29,10 @@ interface IOption {
 }
 
 interface Props
-  extends Omit<ComponentPropsWithRef<"input">, "value" | "onChange"> {
+  extends Omit<React.ComponentPropsWithRef<"input">, "value" | "onChange"> {
   title: string;
   valid?: boolean;
-  errorText?: ReactNode;
+  errorText?: React.ReactNode;
   classes?: {
     root?: string;
     label?: string;
@@ -63,11 +60,11 @@ export default function Select({
   values,
   ...rest
 }: Props) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const selectedItemsRef = useRef<HTMLDivElement | null>(null);
-  const [inputValue, setInputValue] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<IOption[]>([]);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const selectedItemsRef = React.useRef<HTMLDivElement | null>(null);
+  const [inputValue, setInputValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [items, setItems] = React.useState<IOption[]>([]);
 
   useOnClickOutside([selectedItemsRef, inputRef], () => {
     setInputValue("");
@@ -75,7 +72,7 @@ export default function Select({
 
   const debouncedValue = useDebounce<string>(inputValue, 300);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetching = async () => {
       try {
         const result = await loadOptions(debouncedValue);
@@ -107,14 +104,14 @@ export default function Select({
           classes?.box,
           valid
             ? "border-neutral dark:text-neutral-dark"
-            : "border-error dark:border-neutral-dark"
+            : "border-error dark:border-neutral-dark",
         )}
       >
         <section
           className={classNames(
             className.boxInner,
             values.length && "space-x-1 space-y-1 -ml-1 -mt-1",
-            classes?.boxInner
+            classes?.boxInner,
           )}
         >
           <AnimatePresence>
@@ -124,7 +121,7 @@ export default function Select({
                 onClose={() => {
                   onChangeValues &&
                     onChangeValues(
-                      values.filter((prev) => prev.value !== item.value)
+                      values.filter((prev) => prev.value !== item.value),
                     );
                 }}
               >

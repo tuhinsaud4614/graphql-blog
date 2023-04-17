@@ -1,9 +1,11 @@
-import { useDarkMode } from "@hooks";
-import { IAnchorOrigin } from "@interfaces";
-import classNames from "classnames";
-import { Fragment, ReactNode, useState } from "react";
+import * as React from "react";
 
-import STYLES from "@styles";
+import classNames from "classnames";
+
+import { useDarkMode } from "@/hooks";
+import { IAnchorOrigin } from "@/utils/interfaces";
+import STYLES from "@/utils/styles";
+
 import Button from "./Button";
 import Menu from "./Menu";
 import { DarkIcon, LightIcon, SystemIcon } from "./svg";
@@ -24,10 +26,12 @@ interface Props {
 }
 
 export default function Theme({ anchorOrigin, classes }: Props) {
-  const [anchorEle, setAnchorEle] = useState<null | HTMLButtonElement>(null);
+  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
+    null,
+  );
   const { isDarkMode, setTernaryDarkMode, ternaryDarkMode } = useDarkMode();
   return (
-    <Fragment>
+    <React.Fragment>
       <Button
         type="button"
         aria-label="Theme"
@@ -92,13 +96,13 @@ export default function Theme({ anchorOrigin, classes }: Props) {
           </Item>
         </ul>
       </Menu>
-    </Fragment>
+    </React.Fragment>
   );
 }
 
 interface ItemProps {
   text: string;
-  children: ReactNode;
+  children: React.ReactNode;
   onClick?(): void;
   active: boolean;
 }

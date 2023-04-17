@@ -1,10 +1,13 @@
-import { RECENT_SEARCHES_KEY, SEARCH_TABS } from "@constants";
-import { useLocalStorage } from "@hooks";
-import { SearchBox, Tabs } from "components";
-import { SearchLayout } from "components/Layout";
+import * as React from "react";
+
 import { useRouter } from "next/router";
-import { Fragment, KeyboardEvent, useEffect, useRef, useState } from "react";
-import { queryChecking } from "utils";
+
+import { SearchBox, Tabs } from "@/components";
+import { SearchLayout } from "@/components/Layout";
+import { useLocalStorage } from "@/hooks";
+import { queryChecking } from "@/utils";
+import { RECENT_SEARCHES_KEY, SEARCH_TABS } from "@/utils/constants";
+
 import {
   SearchAuthor,
   SearchCategories,
@@ -25,18 +28,18 @@ interface Props {
 }
 
 export default function SearchResult({ query }: Props) {
-  const [currentTab, setCurrentTab] = useState(() =>
-    queryChecking(query, SEARCH_TABS, "t")
+  const [currentTab, setCurrentTab] = React.useState(() =>
+    queryChecking(query, SEARCH_TABS, "t"),
   );
   const [_, setRecentSearches] = useLocalStorage<string[] | null>(
     RECENT_SEARCHES_KEY,
-    null
+    null,
   );
-  const searchRef = useRef<null | HTMLDivElement>(null);
-  const inputRef = useRef<null | HTMLInputElement>(null);
+  const searchRef = React.useRef<null | HTMLDivElement>(null);
+  const inputRef = React.useRef<null | HTMLInputElement>(null);
   const { replace } = useRouter();
 
-  const keyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+  const keyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputRef.current) {
       if (inputRef.current.value.trim()) {
         setRecentSearches((prev) => {
@@ -51,12 +54,12 @@ export default function SearchResult({ query }: Props) {
       replace(
         `/search?q=${inputRef.current.value}${
           currentTab === 0 ? "" : "&t=" + SEARCH_TABS[currentTab]
-        }`
+        }`,
       );
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     setCurrentTab(queryChecking(query, SEARCH_TABS, "t"));
   }, [query]);
   return (
@@ -86,7 +89,7 @@ export default function SearchResult({ query }: Props) {
           replace(
             index !== 0
               ? `/search?q=${query["q"]}&t=${key}`
-              : `/search?q=${query["q"]}`
+              : `/search?q=${query["q"]}`,
           );
         }}
         selectedTab={currentTab}
@@ -97,7 +100,7 @@ export default function SearchResult({ query }: Props) {
             linkText="Browse searched author"
           />
         ) : (
-          <Fragment />
+          <React.Fragment />
         )}
         {currentTab === 1 ? (
           <SearchAuthor
@@ -105,7 +108,7 @@ export default function SearchResult({ query }: Props) {
             linkText="Browse searched categories"
           />
         ) : (
-          <Fragment />
+          <React.Fragment />
         )}
         {currentTab === 2 ? (
           <SearchCategories
@@ -113,7 +116,7 @@ export default function SearchResult({ query }: Props) {
             linkText="Browse searched tags"
           />
         ) : (
-          <Fragment />
+          <React.Fragment />
         )}
         {currentTab === 3 ? (
           <SearchTags
@@ -121,7 +124,7 @@ export default function SearchResult({ query }: Props) {
             linkText="Browse searched posts"
           />
         ) : (
-          <Fragment />
+          <React.Fragment />
         )}
       </Tabs>
     </SearchLayout>

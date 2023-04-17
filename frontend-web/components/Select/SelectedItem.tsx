@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
 import { BiX } from "react-icons/bi";
 
 const className = {
@@ -10,7 +11,7 @@ const className = {
 
 interface Props {
   onClose?(): void;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export default function SelectedItem({ children, onClose }: Props) {

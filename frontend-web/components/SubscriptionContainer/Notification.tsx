@@ -1,12 +1,11 @@
-import { useEffect } from "react";
+import * as React from "react";
 
+import { notify } from "@/features";
 import {
   FollowingMutationStatus,
   useFollowingSubscription,
-} from "graphql/generated/schema";
-import { useAppDispatch } from "store";
-
-import { notify } from "@/features/notificationSlice";
+} from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
 
 export default function Notification() {
   const { data } = useFollowingSubscription({
@@ -15,7 +14,7 @@ export default function Notification() {
 
   const rdxDispatch = useAppDispatch();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (data?.following.mutation === FollowingMutationStatus.Follow) {
       rdxDispatch(
         notify({

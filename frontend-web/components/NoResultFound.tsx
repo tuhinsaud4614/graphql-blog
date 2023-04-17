@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { ReactNode } from "react";
 
 const className = {
   notFoundRoot: "py-[1.875rem] flex flex-col items-center",
@@ -8,7 +9,7 @@ const className = {
 };
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
   classes?: { root?: string; title?: string };
 }
 

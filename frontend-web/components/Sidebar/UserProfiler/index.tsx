@@ -1,12 +1,15 @@
-import { ROUTES } from "@constants";
-import { selectUser } from "@features";
-import classNames from "classnames";
-import { ClientOnly, DemoAvatar } from "components";
-import { FUserFragment } from "graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
-import { useAppSelector } from "store";
-import { generateFileUrl, getUserName } from "utils";
+
+import classNames from "classnames";
+
+import { ClientOnly, DemoAvatar } from "@/components";
+import { selectUser } from "@/features";
+import { FUserFragment } from "@/graphql/generated/schema";
+import { useAppSelector } from "@/store";
+import { generateFileUrl, getUserName } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+
 import OtherInfo from "./OtherInfo";
 
 const className = {
@@ -47,7 +50,7 @@ export default function UserProfiler({ classes, user }: Props) {
           />
         </span>
       ) : (
-        <DemoAvatar className="w-[5.5rem] h-[5.5rem]" size={88 / 1.8} />
+        <DemoAvatar className="h-[5.5rem] w-[5.5rem]" size={88 / 1.8} />
       )}
       <Link href={ROUTES.authorProfile(user.id)} passHref>
         <a aria-label={userName} className={className.name}>

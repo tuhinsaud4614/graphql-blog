@@ -1,11 +1,12 @@
-import { authorFollowerDecrement, authorFollowerIncrement } from "@features";
-import { Button } from "components";
+import * as React from "react";
+
+import { Button } from "@/components";
+import { authorFollowerDecrement, authorFollowerIncrement } from "@/features";
 import {
   useSendFollowRequestMutation,
   useSendUnFollowRequestMutation,
-} from "graphql/generated/schema";
-import { useState } from "react";
-import { useAppDispatch } from "store";
+} from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
 
 interface Props {
   isFollowed: boolean;
@@ -13,13 +14,13 @@ interface Props {
 }
 
 export default function FollowButton({ isFollowed, toId }: Props) {
-  const [follow, setFollow] = useState(isFollowed);
+  const [follow, setFollow] = React.useState(isFollowed);
   const rdxDispatch = useAppDispatch();
   const [sendFollow, { loading: loadingFollow }] = useSendFollowRequestMutation(
     {
       notifyOnNetworkStatusChange: true,
       errorPolicy: "all",
-    }
+    },
   );
 
   const [sendUnFollow, { loading: unFollowLoading }] =

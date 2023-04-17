@@ -1,6 +1,6 @@
-import { ComponentPropsWithoutRef } from "react";
+import * as React from "react";
 
-export default function Logo(props: ComponentPropsWithoutRef<"svg">) {
+export default function Logo(props: React.ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
       {...props}

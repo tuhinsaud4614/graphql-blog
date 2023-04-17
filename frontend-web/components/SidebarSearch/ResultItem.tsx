@@ -1,4 +1,4 @@
-import { UserLink } from "components";
+import { UserLink } from "@/components";
 
 const className = {
   item: "mb-3 last:mb-0",

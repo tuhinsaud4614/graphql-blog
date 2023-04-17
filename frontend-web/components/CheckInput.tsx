@@ -1,5 +1,6 @@
+import * as React from "react";
+
 import classNames from "classnames";
-import { ComponentPropsWithRef } from "react";
 
 const className = {
   label: "pointer flex items-center py-2 px-1 select-none cursor-pointer",
@@ -10,7 +11,7 @@ const className = {
   text: "ml-3 text-sm text-neutral dark:text-neutral-dark",
 };
 
-interface Props extends Omit<ComponentPropsWithRef<"input">, "type"> {
+interface Props extends Omit<React.ComponentPropsWithRef<"input">, "type"> {
   label?: string;
   classes?: {
     label?: string;
@@ -35,7 +36,7 @@ export default function CheckInput({
           className.input,
           className.inputCheck,
           cls,
-          classes?.input
+          classes?.input,
         )}
         type="checkbox"
       />

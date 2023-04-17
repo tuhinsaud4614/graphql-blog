@@ -1,7 +1,8 @@
-import classNames from "classnames";
-import { ComponentPropsWithoutRef } from "react";
+import * as React from "react";
 
-interface Props extends ComponentPropsWithoutRef<"label"> {
+import classNames from "classnames";
+
+interface Props extends React.ComponentPropsWithoutRef<"label"> {
   valid: boolean;
   required?: boolean;
 }
@@ -20,7 +21,7 @@ export default function Label({
         valid
           ? "text-neutral dark:text-neutral-dark"
           : "text-error dark:text-error-dark",
-        rest.className
+        rest.className,
       )}
     >
       {children}

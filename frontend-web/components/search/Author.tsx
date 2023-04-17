@@ -1,5 +1,7 @@
-import { FollowItem } from "components";
-import { ReactNode } from "react";
+import * as React from "react";
+
+import { FollowItem } from "@/components";
+
 import TabContainer from "./TabContainer";
 
 const className = {
@@ -13,7 +15,7 @@ const isTrue = false;
 interface Props {
   link: string;
   linkText: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Author({ link, linkText }: Props) {
@@ -23,7 +25,7 @@ export default function Author({ link, linkText }: Props) {
       link={link}
       linkText={linkText}
     >
-      {Array.from({ length: 10 }).map((_, index) => (
+      {/* {Array.from({ length: 10 }).map((_, index) => (
         <FollowItem
           key={index}
           classes={{
@@ -32,7 +34,7 @@ export default function Author({ link, linkText }: Props) {
             mid: className.mid,
           }}
         />
-      ))}
+      ))} */}
     </TabContainer>
   );
 }

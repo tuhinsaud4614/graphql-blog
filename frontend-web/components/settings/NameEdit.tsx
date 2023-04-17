@@ -1,14 +1,17 @@
-import { ROUTES } from "@constants";
-import { updateUserName } from "@features";
-import { IUser } from "@interfaces";
-import { Button, ErrorModal } from "components";
-import { FormControl } from "components/account";
-import { useUpdateNameMutation } from "graphql/generated/schema";
+import * as React from "react";
+
 import Link from "next/link";
-import { Fragment, useEffect, useId, useRef, useState } from "react";
+
 import { toast } from "react-toastify";
-import { useAppDispatch } from "store";
-import { gplErrorHandler } from "utils";
+
+import { Button, ErrorModal } from "@/components";
+import { FormControl } from "@/components/account";
+import { updateUserName } from "@/features";
+import { useUpdateNameMutation } from "@/graphql/generated/schema";
+import { useAppDispatch } from "@/store";
+import { gplErrorHandler } from "@/utils";
+import { ROUTES } from "@/utils/constants";
+import { IUser } from "@/utils/interfaces";
 
 const className = {
   item: "py-8 flex flex-wrap sm:flex-nowrap items-center justify-between space-y-3",
@@ -22,10 +25,10 @@ interface Props {
 }
 
 export default function NameEdit({ user }: Props) {
-  const [nameEdit, setNameEdit] = useState(false);
-  const [name, setName] = useState(user?.name || "");
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const nameId = useId();
+  const [nameEdit, setNameEdit] = React.useState(false);
+  const [name, setName] = React.useState(user?.name || "");
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const nameId = React.useId();
 
   const rdxDispatch = useAppDispatch();
   const [updateName, { loading, error, reset }] = useUpdateNameMutation({
@@ -33,7 +36,7 @@ export default function NameEdit({ user }: Props) {
     errorPolicy: "all",
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     const inputEle = inputRef.current;
     if (nameEdit && inputEle) {
       inputEle.focus();
@@ -68,7 +71,7 @@ export default function NameEdit({ user }: Props) {
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <li className={className.item}>
         <div className={className.itemLeft}>
           <FormControl
@@ -131,6 +134,6 @@ export default function NameEdit({ user }: Props) {
         title="Update name errors"
         errors={gplErrorHandler(error)}
       />
-    </Fragment>
+    </React.Fragment>
   );
 }

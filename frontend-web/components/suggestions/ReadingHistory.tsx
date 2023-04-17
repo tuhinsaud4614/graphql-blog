@@ -1,5 +1,7 @@
-import { Button, Modal, ModalHeader } from "components";
-import { Fragment, useState } from "react";
+import * as React from "react";
+
+import { Button, Modal, ModalHeader } from "@/components";
+
 import HistoryPost from "./HistoryPost";
 
 const className = {
@@ -27,7 +29,7 @@ export default function ReadingHistory() {
   return (
     <div className={className.root}>
       {isTrue ? (
-        <Fragment>
+        <React.Fragment>
           <ClearCard />
           <ul className={className.items}>
             {Array.from({ length: 5 }).map((_, index) => (
@@ -39,7 +41,7 @@ export default function ReadingHistory() {
               />
             ))}
           </ul>
-        </Fragment>
+        </React.Fragment>
       ) : (
         <NotFound />
       )}
@@ -48,9 +50,9 @@ export default function ReadingHistory() {
 }
 
 function ClearCard() {
-  const [openModel, setOpenModel] = useState(false);
+  const [openModel, setOpenModel] = React.useState(false);
   return (
-    <Fragment>
+    <React.Fragment>
       <div className={className.clearCard}>
         <p className={className.clearCardText}>
           You can clear your reading history for a fresh start.
@@ -86,7 +88,7 @@ function ClearCard() {
               aria-label="Cancel"
               type="button"
               onClick={() => setOpenModel(false)}
-              className="text-sm mr-2"
+              className="mr-2 text-sm"
               variant="neutral"
               mode="outline"
             >
@@ -104,7 +106,7 @@ function ClearCard() {
           </div>
         </div>
       </Modal>
-    </Fragment>
+    </React.Fragment>
   );
 }
 
