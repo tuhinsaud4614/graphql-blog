@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { GraphQLResolveInfo } from "graphql";
 
 import logger from "@/logger";
@@ -7,7 +8,7 @@ import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
 } from "@/utils/constants";
-import { YogaContextReturnType } from "@/utils/types";
+import { YogaContext } from "@/utils/types";
 import { getGraphqlYogaError } from "@/validations";
 
 export const Subscription = {
@@ -15,8 +16,8 @@ export const Subscription = {
     async subscribe(
       _: any,
       { postId }: { postId: string },
-      { user, pubSub }: YogaContextReturnType,
-      ___: GraphQLResolveInfo
+      { user, pubSub }: YogaContext,
+      ___: GraphQLResolveInfo,
     ) {
       try {
         if (user === null) {

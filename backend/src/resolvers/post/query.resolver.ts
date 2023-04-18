@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import {
   getAllPostsByTagCtrl,
@@ -14,37 +14,32 @@ import logger from "@/logger";
 import { AuthenticationError } from "@/model";
 import { getPostById } from "@/services/post.service";
 import { NOT_EXIST_ERR_MSG } from "@/utils/constants";
-import {
-  ICursorQueryParams,
-  IOffsetQueryParams,
-  IPostsByTagQueryParams,
-} from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import type {
+  CursorParams,
+  OffsetParams,
+  TaggedPostCursorParams,
+  YogaContext,
+} from "@/utils/types";
 
 export const Query = {
   async postsOnOffset(
     _: any,
-    params: IOffsetQueryParams,
-    { prisma }: YogaContextReturnType,
-    ___: any
+    params: OffsetParams,
+    { prisma }: YogaContext,
+    ___: any,
   ) {
     const result = await getAllPostsOnOffsetCtrl(prisma, params);
     return result;
   },
-  async posts(
-    _: any,
-    params: ICursorQueryParams,
-    { prisma }: YogaContextReturnType,
-    ___: any
-  ) {
+  async posts(_: any, params: CursorParams, { prisma }: YogaContext, ___: any) {
     const result = await getAllPostsCtrl(prisma, params);
     return result;
   },
   async followingAuthorPosts(
     _: any,
-    params: ICursorQueryParams,
-    { prisma, user }: YogaContextReturnType,
-    ___: any
+    params: CursorParams,
+    { prisma, user }: YogaContext,
+    ___: any,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -55,8 +50,8 @@ export const Query = {
   async post(
     _: any,
     { id }: { id: string },
-    { prisma }: YogaContextReturnType,
-    ___: any
+    { prisma }: YogaContext,
+    ___: any,
   ) {
     try {
       const result = await getPostById(prisma, id);
@@ -64,24 +59,19 @@ export const Query = {
       return result;
     } catch (error: any) {
       logger.error(error);
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
     }
   },
-  async trendingPosts(
-    _: any,
-    __: any,
-    { prisma }: YogaContextReturnType,
-    ___: any
-  ) {
+  async trendingPosts(_: any, __: any, { prisma }: YogaContext, ___: any) {
     const result = await getTrendingPostsCtrl(prisma);
     return result;
   },
 
   async tagPosts(
     _: any,
-    params: IPostsByTagQueryParams,
-    { prisma }: YogaContextReturnType,
-    ___: any
+    params: TaggedPostCursorParams,
+    { prisma }: YogaContext,
+    ___: any,
   ) {
     const result = await getAllPostsByTagCtrl(prisma, params);
     return result;
@@ -90,8 +80,8 @@ export const Query = {
   async postReactionsCount(
     _: any,
     { id }: { id: string },
-    { prisma, user }: YogaContextReturnType,
-    ___: any
+    { prisma, user }: YogaContext,
+    ___: any,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -103,8 +93,8 @@ export const Query = {
   async postCommentsCount(
     _: any,
     { id }: { id: string },
-    { prisma, user }: YogaContextReturnType,
-    ___: any
+    { prisma, user }: YogaContext,
+    ___: any,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -115,9 +105,9 @@ export const Query = {
 
   async postReactionsBy(
     _: any,
-    { id, ...rest }: { id: string } & ICursorQueryParams,
-    { prisma, user }: YogaContextReturnType,
-    ___: any
+    { id, ...rest }: { id: string } & CursorParams,
+    { prisma, user }: YogaContext,
+    ___: any,
   ) {
     if (user === null) {
       return new AuthenticationError();

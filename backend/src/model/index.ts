@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 import { GraphQLErrorExtensions } from "graphql";
 
 import {
@@ -72,7 +72,7 @@ export class HttpSuccess {
   constructor(
     public message: string,
     public data: any,
-    public detail: string | null = null
+    public detail: string | null = null,
   ) {}
 
   toObj(): ISuccessResponse {
@@ -86,113 +86,113 @@ export class HttpSuccess {
   }
 }
 
-export class CustomError extends GraphQLYogaError {
+export class CustomError extends GraphQLError {
   constructor(message: string, code: string) {
-    super(message, { code });
+    super(message, { extensions: { code } });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // The GraphQL operation string contains a syntax error.
-export class SyntaxError extends GraphQLYogaError {
+export class SyntaxError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: GRAPHQL_PARSE_FAILED });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // The GraphQL operation is not valid against the server's schema.
-export class ValidationError extends GraphQLYogaError {
+export class ValidationError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: GRAPHQL_VALIDATION_FAILED });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // The GraphQL operation includes an invalid value for a field argument.
-export class UserInputError extends GraphQLYogaError {
+export class UserInputError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: BAD_USER_INPUT });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // The server failed to authenticate with a required data source, such as a REST API.
-export class AuthenticationError extends GraphQLYogaError {
+export class AuthenticationError extends GraphQLError {
   constructor(
     message: string = UN_AUTH_ERR_MSG,
-    extensions?: GraphQLErrorExtensions
+    extensions?: GraphQLErrorExtensions,
   ) {
     super(message, { ...extensions, code: UN_AUTH_EXT_ERR_CODE });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // The server was unauthorized to access a required data source, such as a REST API.
-export class ForbiddenError extends GraphQLYogaError {
+export class ForbiddenError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: FORBIDDEN });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // No content error.
-export class NoContentError extends GraphQLYogaError {
+export class NoContentError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: NO_CONTENT });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // A client sent the hash of a query string to execute via automatic persisted queries, but the query was not in the APQ cache.
-export class PersistedQueryNotFoundError extends GraphQLYogaError {
+export class PersistedQueryNotFoundError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: PERSISTED_QUERY_NOT_FOUND });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // A client sent the hash of a query string to execute via automatic persisted queries, but the server has disabled APQ.
-export class PersistedQueryNotSupportedError extends GraphQLYogaError {
+export class PersistedQueryNotSupportedError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: PERSISTED_QUERY_NOT_SUPPORTED });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
 // An unspecified error occurred.
-export class UnknownError extends GraphQLYogaError {
+export class UnknownError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: INTERNAL_SERVER_ERROR });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }
 
-export class RateLimitError extends GraphQLYogaError {
+export class RateLimitError extends GraphQLError {
   constructor(message: string, extensions?: GraphQLErrorExtensions) {
     super(message, { ...extensions, code: RATE_LIMIT_EXCEED });
 
     // this is for instanceof behave properly
-    Object.setPrototypeOf(this, GraphQLYogaError.prototype);
+    Object.setPrototypeOf(this, GraphQLError.prototype);
   }
 }

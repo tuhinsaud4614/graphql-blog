@@ -6,8 +6,9 @@ import type {
   Tag,
   User,
 } from "@prisma/client";
+
 import { EAuthorStatus, EUserRole } from "./enums";
-import { YogaContextReturnType } from "./types";
+import { YogaContext } from "./types";
 
 export interface IPicture extends Picture {}
 
@@ -24,16 +25,16 @@ export interface ITag extends Tag {}
 export type IResolver = (
   parent: any,
   args: any,
-  context: YogaContextReturnType,
-  info: any
+  context: YogaContext,
+  info: any,
 ) => any;
 
 export type GraphQLMiddlewareFunc = (
   resolver: IResolver,
   parent: any,
   args: any,
-  context: YogaContextReturnType,
-  info: any
+  context: YogaContext,
+  info: any,
 ) => any;
 
 export interface ResolverMap {
@@ -54,25 +55,6 @@ export interface IRegisterInput {
 export interface ILoginInput {
   emailOrMobile: string;
   password: string;
-}
-
-export interface ICreatePostInput {
-  title: string;
-  image: File;
-  categories: string[];
-  published: boolean;
-  content: string;
-  tags: string[];
-}
-
-export interface IUpdatePostInput {
-  id: string;
-  title?: string;
-  image?: File;
-  categories?: string[];
-  published?: boolean;
-  content?: string;
-  tags?: string[];
 }
 
 // Payload
@@ -142,16 +124,6 @@ export interface IPostPayload {
   updatedAt: Date;
 }
 
-export interface IOffsetQueryParams {
-  limit?: number;
-  page?: number;
-}
-
-export interface ICursorQueryParams {
-  after?: string | null;
-  limit: number;
-}
-
 export interface ICursorPageInfo {
   hasNext: boolean;
   endCursor?: string | null;
@@ -184,13 +156,6 @@ export interface IResponseOnOffset<T> {
 export interface IReactionsCount {
   count: number;
   reacted: boolean;
-}
-
-export interface IPostsByTagQueryParams {
-  role: string;
-  tag: string;
-  limit?: number;
-  page?: number;
 }
 
 export interface IErrorResponse {

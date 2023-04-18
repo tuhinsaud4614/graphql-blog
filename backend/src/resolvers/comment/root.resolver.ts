@@ -5,15 +5,10 @@ import { UnknownError } from "@/model";
 import { getReplyCount } from "@/services/comment.service";
 import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
 import { IComment } from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import { YogaContext } from "@/utils/types";
 
 export const Comment = {
-  async commenter(
-    { id }: IComment,
-    _: any,
-    { prisma }: YogaContextReturnType,
-    __: any
-  ) {
+  async commenter({ id }: IComment, _: any, { prisma }: YogaContext, __: any) {
     try {
       const user = await prisma.comment
         .findUnique({ where: { id } })
@@ -26,8 +21,8 @@ export const Comment = {
   async parentComment(
     { id }: IComment,
     _: any,
-    { prisma }: YogaContextReturnType,
-    __: any
+    { prisma }: YogaContext,
+    __: any,
   ) {
     try {
       const comment = await prisma.comment
@@ -36,15 +31,15 @@ export const Comment = {
       return comment;
     } catch (error) {
       return new GraphQLYogaError(
-        NOT_EXIST_FOR_ERR_MSG("Parent comment", "user")
+        NOT_EXIST_FOR_ERR_MSG("Parent comment", "user"),
       );
     }
   },
   async replies(
     { id }: IComment,
     _: unknown,
-    { prisma }: YogaContextReturnType,
-    __: any
+    { prisma }: YogaContext,
+    __: any,
   ) {
     try {
       const count = await getReplyCount(prisma, id);

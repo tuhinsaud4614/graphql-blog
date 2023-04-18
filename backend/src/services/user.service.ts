@@ -9,7 +9,7 @@ import {
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import {
-  ICursorQueryParams,
+  CursorParams,
   IRegisterInput,
   IResponseOnCursor,
   IResponseOnOffset,
@@ -36,7 +36,7 @@ export function getUserByMobile(prisma: PrismaClient, mobile: string) {
 export function getUserByEmailOrMobile(
   prisma: PrismaClient,
   email: string,
-  mobile: string
+  mobile: string,
 ) {
   return prisma.user.findFirst({ where: { OR: [{ email }, { mobile }] } });
 }
@@ -70,7 +70,7 @@ export function getUserByIdWithInfo(prisma: PrismaClient, id: string) {
 export function getUserByEmailOrMobileWithInfo(
   prisma: PrismaClient,
   email: string,
-  mobile: string
+  mobile: string,
 ) {
   return prisma.user.findFirst({
     where: { OR: [{ email }, { mobile }] },
@@ -83,7 +83,7 @@ export async function getUsersOnOffset(
   count: number,
   page?: number,
   limit?: number,
-  condition?: Prisma.UserFindManyArgs
+  condition?: Prisma.UserFindManyArgs,
 ) {
   if (limit && page) {
     const result = await prisma.user.findMany({
@@ -110,9 +110,9 @@ export async function getUsersOnOffset(
 
 export async function getUsersOnCursor(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
+  params: CursorParams,
   condition: Prisma.UserFindManyArgs,
-  total: number
+  total: number,
 ): Promise<IResponseOnCursor<User>> {
   const { limit, after } = params;
   let results: User[] = [];
@@ -177,7 +177,7 @@ export function verifyAuthorStatus(prisma: PrismaClient, userId: string) {
 export function userResetPassword(
   prisma: PrismaClient,
   userId: string,
-  newPassword: string
+  newPassword: string,
 ) {
   return prisma.user.update({
     data: { password: newPassword },
@@ -188,7 +188,7 @@ export function userResetPassword(
 export function getUserFollowerList(
   prisma: PrismaClient,
   id: string,
-  followerId: string
+  followerId: string,
 ) {
   return prisma.user.findFirst({
     where: { id, followers: { some: { id: followerId } } },
@@ -198,7 +198,7 @@ export function getUserFollowerList(
 export function getUserFollowingList(
   prisma: PrismaClient,
   id: string,
-  followingId: string
+  followingId: string,
 ) {
   return prisma.user.findFirst({
     where: { id, followings: { some: { id: followingId } } },
@@ -207,7 +207,7 @@ export function getUserFollowingList(
 
 export function createUser(
   prisma: PrismaClient,
-  { email, mobile, password, name }: Omit<IRegisterInput, "confirmPassword">
+  { email, mobile, password, name }: Omit<IRegisterInput, "confirmPassword">,
 ) {
   return prisma.user.create({
     data: {
@@ -233,7 +233,7 @@ export function updateUserName(prisma: PrismaClient, id: string, name: string) {
 export function updateUserAbout(
   prisma: PrismaClient,
   id: string,
-  value: string
+  value: string,
 ) {
   return prisma.user.update({
     where: { id },
@@ -253,7 +253,7 @@ export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
 export function isFollowTheUser(
   prisma: PrismaClient,
   myId: string,
-  toId: string
+  toId: string,
 ) {
   return prisma.user.findFirst({
     where: {
@@ -295,7 +295,7 @@ export const sendMailToUser = async (
   to: string,
   subject: string,
   message: string,
-  from = "foo@example.com"
+  from = "foo@example.com",
 ) => {
   const info = await sendMail({
     from,
@@ -316,7 +316,7 @@ export const sendMailToUser = async (
 export const sendUserVerificationCode = async (
   userId: string,
   email: string,
-  host?: string
+  host?: string,
 ) => {
   const verificationCode = nanoid(6);
   const href = `${
@@ -344,12 +344,12 @@ export const sendUserVerificationCode = async (
   await sendMailToUser(
     email,
     "The RAT Diary account verification code",
-    message
+    message,
   );
   await redisClient.setEx(
     USER_VERIFICATION_KEY_NAME(userId),
     600,
-    verificationCode
+    verificationCode,
   );
 };
 
@@ -357,7 +357,7 @@ export const sendResetPasswordVerificationCode = async (
   userId: string,
   email: string,
   password: string,
-  host?: string
+  host?: string,
 ) => {
   const verificationCode = nanoid(6);
   const href = `${
@@ -385,11 +385,11 @@ export const sendResetPasswordVerificationCode = async (
   await sendMailToUser(
     email,
     "The RAT Diary reset password verification code",
-    message
+    message,
   );
   await redisClient.setEx(
     RESET_PASSWORD_VERIFICATION_KEY_NAME(userId),
     600,
-    JSON.stringify({ code: verificationCode, hash: password })
+    JSON.stringify({ code: verificationCode, hash: password }),
   );
 };

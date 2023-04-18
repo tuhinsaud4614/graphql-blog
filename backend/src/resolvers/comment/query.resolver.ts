@@ -3,15 +3,15 @@ import {
   getPostCommentsOnOffsetCtrl,
 } from "@/controller/comment.controller";
 import { AuthenticationError } from "@/model";
-import { ICursorQueryParams, IOffsetQueryParams } from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import { CursorParams, OffsetParams } from "@/utils/interfaces";
+import { YogaContext } from "@/utils/types";
 
 export const Query = {
   async postCommentsOnOffset(
     _: any,
-    params: IOffsetQueryParams & { postId: string },
-    { prisma, user }: YogaContextReturnType,
-    ___: any
+    params: OffsetParams & { postId: string },
+    { prisma, user }: YogaContext,
+    ___: any,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -21,9 +21,9 @@ export const Query = {
   },
   async postCommentsOnCursor(
     _: any,
-    params: ICursorQueryParams & { postId: string },
-    { prisma, user }: YogaContextReturnType,
-    ___: any
+    params: CursorParams & { postId: string },
+    { prisma, user }: YogaContext,
+    ___: any,
   ) {
     if (user === null) {
       return new AuthenticationError();

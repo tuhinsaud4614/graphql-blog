@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { GraphQLResolveInfo } from "graphql";
 
 import {
@@ -25,19 +26,19 @@ import {
 } from "@/utils/constants";
 import { EAuthorStatus, EFollowingMutationStatus } from "@/utils/enums";
 import { ILoginInput, IRegisterInput } from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import { YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async register(
     _: any,
     { data }: { data: IRegisterInput },
-    { prisma, req }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, req }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     const result = await registerCtrl(
       prisma,
       data,
-      req.headers.origin || config.CLIENT_ENDPOINT
+      req.headers.origin || config.CLIENT_ENDPOINT,
     );
     return result;
   },
@@ -45,13 +46,13 @@ export const Mutation = {
   async resendActivation(
     _: any,
     { userId }: { userId: string },
-    { prisma, req }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, req }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     const result = await resendActivationCtrl(
       prisma,
       userId,
-      req.headers.origin || config.CLIENT_ENDPOINT
+      req.headers.origin || config.CLIENT_ENDPOINT,
     );
     return result;
   },
@@ -59,8 +60,8 @@ export const Mutation = {
   async verifyUser(
     _: any,
     { userId, code }: { userId: string; code: string },
-    { prisma, pubSub }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, pubSub }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     const verifiedUserId = await verifyUserCtrl(prisma, userId, code);
     if (!(verifiedUserId instanceof GraphQLYogaError)) {
@@ -75,8 +76,8 @@ export const Mutation = {
   async login(
     _: any,
     { data }: { data: ILoginInput },
-    { prisma, res }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, res }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     const result = await loginCtrl(prisma, data, res);
     return result;
@@ -85,8 +86,8 @@ export const Mutation = {
   async logout(
     _: any,
     __: any,
-    { user, req, res }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { user, req, res }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
@@ -98,8 +99,8 @@ export const Mutation = {
   async resetPassword(
     _: any,
     { newPassword, oldPassword }: { oldPassword: string; newPassword: string },
-    { prisma, user, req }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user, req }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
@@ -109,7 +110,7 @@ export const Mutation = {
       user.id,
       oldPassword,
       newPassword,
-      req.headers.origin
+      req.headers.origin,
     );
     return result;
   },
@@ -117,8 +118,8 @@ export const Mutation = {
   async verifyResetPassword(
     _: any,
     { code }: { code: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
@@ -130,8 +131,8 @@ export const Mutation = {
   async uploadAvatar(
     _: any,
     { avatar }: { avatar: File },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -146,8 +147,8 @@ export const Mutation = {
   async updateName(
     _: any,
     { name }: { name: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -162,8 +163,8 @@ export const Mutation = {
   async updateAbout(
     _: any,
     { value }: { value: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -178,8 +179,8 @@ export const Mutation = {
   async followRequest(
     _: any,
     { toId }: { toId: string },
-    { prisma, user, pubSub }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user, pubSub }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -202,8 +203,8 @@ export const Mutation = {
   async unFollowRequest(
     _: any,
     { toId }: { toId: string },
-    { prisma, user, pubSub }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user, pubSub }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {

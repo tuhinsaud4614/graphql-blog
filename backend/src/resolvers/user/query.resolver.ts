@@ -17,15 +17,15 @@ import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
 } from "@/utils/constants";
-import { ICursorQueryParams, IOffsetQueryParams } from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import { CursorParams, OffsetParams } from "@/utils/interfaces";
+import { YogaContext } from "@/utils/types";
 import { getGraphqlYogaError } from "@/validations";
 
 export const Query = {
   async token(
     _: any,
     { refreshToken }: { refreshToken?: string },
-    { prisma, req }: YogaContextReturnType
+    { prisma, req }: YogaContext,
   ) {
     // @ts-ignore
     refreshToken ||= req.cookies?.jwt;
@@ -34,15 +34,15 @@ export const Query = {
     return result;
   },
 
-  async users(_: unknown, __: unknown, { prisma }: YogaContextReturnType) {
+  async users(_: unknown, __: unknown, { prisma }: YogaContext) {
     const u = await prisma.user.findMany();
     return u;
   },
 
   async usersOnOffset(
     _: any,
-    params: IOffsetQueryParams,
-    { prisma, user }: YogaContextReturnType
+    params: OffsetParams,
+    { prisma, user }: YogaContext,
   ) {
     const result = await getUsersOnOffsetCtrl(prisma, params, user?.id);
     return result;
@@ -50,8 +50,8 @@ export const Query = {
 
   async suggestAuthorsToUserOnOffset(
     _: any,
-    params: IOffsetQueryParams,
-    { prisma, user }: YogaContextReturnType
+    params: OffsetParams,
+    { prisma, user }: YogaContext,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -61,15 +61,15 @@ export const Query = {
     const result = await suggestAuthorsToUserOnOffsetCtrl(
       prisma,
       params,
-      user.id
+      user.id,
     );
     return result;
   },
 
   async authorFollowersOnCursor(
     _: any,
-    { authorId, ...rest }: ICursorQueryParams & { authorId?: string },
-    { prisma, user }: YogaContextReturnType
+    { authorId, ...rest }: CursorParams & { authorId?: string },
+    { prisma, user }: YogaContext,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -79,15 +79,15 @@ export const Query = {
     const result = await authorFollowersOnCursorCtrl(
       prisma,
       rest,
-      authorId || user.id
+      authorId || user.id,
     );
     return result;
   },
 
   async authorFollowingsOnCursor(
     _: any,
-    { authorId, ...rest }: ICursorQueryParams & { authorId?: string },
-    { prisma, user }: YogaContextReturnType
+    { authorId, ...rest }: CursorParams & { authorId?: string },
+    { prisma, user }: YogaContext,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -97,16 +97,12 @@ export const Query = {
     const result = await authorFollowingsOnCursorCtrl(
       prisma,
       rest,
-      authorId || user.id
+      authorId || user.id,
     );
     return result;
   },
 
-  async user(
-    _: unknown,
-    { id }: { id: string },
-    { prisma }: YogaContextReturnType
-  ) {
+  async user(_: unknown, { id }: { id: string }, { prisma }: YogaContext) {
     try {
       const user = await getUserById(prisma, id);
       if (user === null) {
@@ -121,7 +117,7 @@ export const Query = {
   async userResult(
     _: unknown,
     { id }: { id: string },
-    { prisma, user }: YogaContextReturnType
+    { prisma, user }: YogaContext,
   ) {
     const result = await userResultCtrl(prisma, id, user?.id);
     return result;
@@ -130,7 +126,7 @@ export const Query = {
   async userFollow(
     _: unknown,
     { id }: { id: string },
-    { prisma }: YogaContextReturnType
+    { prisma }: YogaContext,
   ) {
     const result = await userFollowCtrl(prisma, id);
     return result;
@@ -139,7 +135,7 @@ export const Query = {
   async userFollowers(
     _: unknown,
     { id }: { id: string },
-    { prisma }: YogaContextReturnType
+    { prisma }: YogaContext,
   ) {
     const result = await userFollowersCtrl(prisma, id);
     return result;
@@ -148,7 +144,7 @@ export const Query = {
   async userFollowings(
     _: unknown,
     { id }: { id: string },
-    { prisma }: YogaContextReturnType
+    { prisma }: YogaContext,
   ) {
     const result = await userFollowingsCtrl(prisma, id);
     return result;

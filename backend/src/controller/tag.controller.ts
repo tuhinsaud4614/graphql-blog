@@ -3,17 +3,17 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import logger from "@/logger";
 import { getManyTags } from "@/services/tag.service";
 import { FETCH_ERR_MSG } from "@/utils/constants";
-import { IOffsetPageInfo, IOffsetQueryParams } from "@/utils/interfaces";
+import { IOffsetPageInfo, OffsetParams } from "@/utils/interfaces";
 import { getGraphqlYogaError } from "@/validations";
-import { offsetQueryParamsSchema } from "@/validations/post.validation";
+import { offsetParamsSchema } from "@/validations/post.validation";
 
 // Offset based pagination start
 export async function getTagsOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams
+  params: OffsetParams,
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
+    await offsetParamsSchema.validate(params, { abortEarly: false });
 
     const { limit, page } = params;
 
@@ -55,10 +55,10 @@ export async function getTagsOnOffsetCtrl(
 
 export async function getTagsByTextOnOffsetCtrl(
   prisma: PrismaClient,
-  { text, ...rest }: IOffsetQueryParams & { text: string }
+  { text, ...rest }: OffsetParams & { text: string },
 ) {
   try {
-    await offsetQueryParamsSchema.validate(rest, { abortEarly: false });
+    await offsetParamsSchema.validate(rest, { abortEarly: false });
 
     const { limit, page } = rest;
 

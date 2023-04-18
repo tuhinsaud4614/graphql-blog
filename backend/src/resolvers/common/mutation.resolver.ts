@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { GraphQLResolveInfo } from "graphql";
 
 import {
@@ -12,14 +13,14 @@ import {
   VERIFIED_AUTHOR_ERR_MSG,
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
-import { YogaContextReturnType } from "@/utils/types";
+import { YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async uploadFile(
     _: any,
     { file }: { file: File },
-    { user }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { user }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -40,8 +41,8 @@ export const Mutation = {
   async uploadImage(
     _: unknown,
     { image }: { image: File },
-    { user }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { user }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();

@@ -1,7 +1,7 @@
 import { Comment, Prisma, PrismaClient } from "@prisma/client";
 
 import {
-  ICursorQueryParams,
+  CursorParams,
   IResponseOnCursor,
   IResponseOnOffset,
 } from "@/utils/interfaces";
@@ -9,7 +9,7 @@ import {
 export function getCommentForUser(
   prisma: PrismaClient,
   id: string,
-  userId: string
+  userId: string,
 ) {
   return prisma.comment.findFirst({ where: { id, commenterId: userId } });
 }
@@ -17,7 +17,7 @@ export function getCommentForUser(
 export function getCommentForReply(
   prisma: PrismaClient,
   parentCommentId: string,
-  postId: string
+  postId: string,
 ) {
   return prisma.comment.findFirst({
     where: { id: parentCommentId, postId: postId },
@@ -34,7 +34,7 @@ export function getPaginateComments(
   prisma: PrismaClient,
   page: number,
   limit: number,
-  condition?: Prisma.CommentFindManyArgs
+  condition?: Prisma.CommentFindManyArgs,
 ) {
   return prisma.comment.findMany({
     skip: (page - 1) * limit,
@@ -49,7 +49,7 @@ export function countCommentsForPost(prisma: PrismaClient, postId: string) {
 
 export function countReplies(
   prisma: PrismaClient,
-  parentCommentId?: string | null
+  parentCommentId?: string | null,
 ) {
   if (!parentCommentId) {
     return 0;
@@ -61,7 +61,7 @@ export function createComment(
   prisma: PrismaClient,
   postId: string,
   commenterId: string,
-  content: string
+  content: string,
 ) {
   return prisma.comment.create({
     data: {
@@ -84,7 +84,7 @@ export function createReply(
   prisma: PrismaClient,
   parentCommentId: string,
   commenterId: string,
-  content: string
+  content: string,
 ) {
   return prisma.comment.create({
     data: {
@@ -98,7 +98,7 @@ export function createReply(
 export function updateComment(
   prisma: PrismaClient,
   id: string,
-  content: string
+  content: string,
 ) {
   return prisma.comment.update({ where: { id }, data: { content } });
 }
@@ -112,7 +112,7 @@ export async function getCommentsOnOffset(
   count: number,
   page?: number,
   limit?: number,
-  condition?: Prisma.CommentFindManyArgs
+  condition?: Prisma.CommentFindManyArgs,
 ) {
   if (limit && page) {
     const result = await prisma.comment.findMany({
@@ -139,9 +139,9 @@ export async function getCommentsOnOffset(
 
 export async function getCommentsOnCursor(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
+  params: CursorParams,
   condition: Prisma.CommentFindManyArgs,
-  total: number
+  total: number,
 ): Promise<IResponseOnCursor<Comment>> {
   const { after } = params;
 
@@ -213,9 +213,9 @@ export async function getReplyCount(prisma: PrismaClient, commentId: string) {
 
 export async function getCommentsRepliesOnCursor(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
+  params: CursorParams,
   commentId: string,
-  count: number
+  count: number,
 ): Promise<IResponseOnCursor<Comment>> {
   const { limit, after } = params;
 

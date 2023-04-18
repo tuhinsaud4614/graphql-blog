@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { Prisma, PrismaClient } from "@prisma/client";
 import _ from "lodash";
 
@@ -25,16 +26,13 @@ import {
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "@/utils/constants";
-import {
-  ICursorQueryParams,
-  IOffsetQueryParams,
-  IUserPayload,
-} from "@/utils/interfaces";
+import { CursorParams, IUserPayload, OffsetParams } from "@/utils/interfaces";
 import { getGraphqlYogaError } from "@/validations";
 import { createCommentSchema } from "@/validations/comment.validation";
+
 import {
   cursorQueryParamsSchema,
-  offsetQueryParamsSchema,
+  offsetParamsSchema,
 } from "../validations/post.validation";
 
 export async function createCommentCtrl(
@@ -42,12 +40,12 @@ export async function createCommentCtrl(
   postId: string,
   content: string,
   user: IUserPayload,
-  parentComment?: string
+  parentComment?: string,
 ) {
   try {
     await createCommentSchema.validate(
       { postId, content, parentComment },
-      { abortEarly: false }
+      { abortEarly: false },
     );
 
     // If parent comment is valid thats means it's a reply
@@ -80,7 +78,7 @@ export async function updateCommentCtrl(
   prisma: PrismaClient,
   commentId: string,
   content: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);
@@ -103,7 +101,7 @@ export async function updateCommentCtrl(
 export async function deleteCommentCtrl(
   prisma: PrismaClient,
   commentId: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);
@@ -122,10 +120,10 @@ export async function deleteCommentCtrl(
 
 export async function getPostCommentsOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams & { postId: string }
+  params: OffsetParams & { postId: string },
 ) {
   try {
-    await offsetQueryParamsSchema.validate(_.omit(params, ["postId"]), {
+    await offsetParamsSchema.validate(_.omit(params, ["postId"]), {
       abortEarly: false,
     });
 
@@ -159,7 +157,7 @@ export async function getPostCommentsOnCursorCtrl(
     postId,
     parentId,
     ...rest
-  }: ICursorQueryParams & { postId: string; parentId?: string }
+  }: CursorParams & { postId: string; parentId?: string },
 ) {
   try {
     await cursorQueryParamsSchema.validate(rest, { abortEarly: false });
@@ -181,7 +179,7 @@ export async function getPostCommentsOnCursorCtrl(
         prisma,
         rest,
         parentId,
-        count
+        count,
       );
       return result;
     }

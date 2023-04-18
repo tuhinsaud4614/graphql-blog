@@ -1,11 +1,11 @@
 import { Post, Prisma, PrismaClient, User } from "@prisma/client";
 
 import {
-  ICreatePostInput,
-  ICursorQueryParams,
+  CreatePostInput,
+  CursorParams,
   IResponseOnCursor,
   IResponseOnOffset,
-  IUpdatePostInput,
+  UpdatePostInput,
 } from "@/utils/interfaces";
 
 export function getPostById(prisma: PrismaClient, id: string) {
@@ -22,14 +22,14 @@ export function getPostByIdWithReactions(prisma: PrismaClient, id: string) {
 export function getPostByIdForUser(
   prisma: PrismaClient,
   id: string,
-  authorId: string
+  authorId: string,
 ) {
   return prisma.post.findFirst({ where: { id, authorId } });
 }
 
 export function getAllPosts(
   prisma: PrismaClient,
-  condition?: Prisma.PostFindManyArgs
+  condition?: Prisma.PostFindManyArgs,
 ) {
   return prisma.post.findMany({
     ...condition,
@@ -38,7 +38,7 @@ export function getAllPosts(
 
 export function getPostsByTag(
   prisma: PrismaClient,
-  condition?: Prisma.PostFindManyArgs
+  condition?: Prisma.PostFindManyArgs,
 ) {
   return prisma.post.findMany({
     ...condition,
@@ -62,7 +62,7 @@ export function getPostCommentsCount(prisma: PrismaClient, id: string) {
 export function isReactToThePost(
   prisma: PrismaClient,
   postId: string,
-  userId: string
+  userId: string,
 ) {
   return prisma.post.findFirst({
     where: { id: postId, reactionsBy: { some: { id: userId } } },
@@ -81,11 +81,11 @@ export function createPost(
     imgHeight,
     imgUrl,
     imgWidth,
-  }: Omit<ICreatePostInput, "image"> & {
+  }: Omit<CreatePostInput, "image"> & {
     imgUrl: string;
     imgWidth?: number;
     imgHeight?: number;
-  }
+  },
 ) {
   return prisma.post.create({
     data: {
@@ -127,11 +127,11 @@ export function updatePost(
     imgHeight,
     imgUrl,
     imgWidth,
-  }: Omit<IUpdatePostInput, "image"> & {
+  }: Omit<UpdatePostInput, "image"> & {
     imgUrl?: string;
     imgWidth?: number;
     imgHeight?: number;
-  }
+  },
 ) {
   return prisma.post.update({
     where: { id },
@@ -171,7 +171,7 @@ export function deletePost(prisma: PrismaClient, id: string) {
 export function reactionToPost(
   prisma: PrismaClient,
   id: string,
-  reactById: string
+  reactById: string,
 ) {
   return prisma.post.update({
     where: { id },
@@ -182,7 +182,7 @@ export function reactionToPost(
 export function reactionWithdrawToPost(
   prisma: PrismaClient,
   id: string,
-  withdrawById: string
+  withdrawById: string,
 ) {
   return prisma.post.update({
     where: { id },
@@ -192,9 +192,9 @@ export function reactionWithdrawToPost(
 
 export async function getPostsOnCursor(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
+  params: CursorParams,
   condition: Prisma.PostFindManyArgs,
-  total: number
+  total: number,
 ): Promise<IResponseOnCursor<Post>> {
   const { limit, after } = params;
   let results: Post[] = [];
@@ -250,7 +250,7 @@ export async function getPostsOnCursor(
 export async function getPostReactionsByOnCursor(
   prisma: PrismaClient,
   postId: string,
-  params: ICursorQueryParams
+  params: CursorParams,
 ): Promise<IResponseOnCursor<User>> {
   const { limit, after } = params;
   let results: User[] = [];
@@ -324,7 +324,7 @@ export async function getPostsOnOffset(
   count: number,
   page?: number,
   limit?: number,
-  condition?: Prisma.PostFindManyArgs
+  condition?: Prisma.PostFindManyArgs,
 ) {
   if (limit && page) {
     const result = await prisma.post.findMany({

@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { unlink } from "fs";
@@ -20,8 +21,8 @@ import {
   getUserByEmailOrMobile,
   getUserByEmailOrMobileWithInfo,
   getUserById,
-  getUserByIdWithInfo,
   getUserByIdWitInfo,
+  getUserByIdWithInfo,
   getUserFollowCount,
   getUserFollowersCount,
   getUserFollowingsCount,
@@ -63,17 +64,17 @@ import {
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import {
-  ICursorQueryParams,
+  CursorParams,
   ILoginInput,
-  IOffsetQueryParams,
   IRegisterInput,
   IUserPayload,
+  OffsetParams,
 } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
 import { getGraphqlYogaError } from "@/validations";
 import {
   cursorQueryParamsSchema,
-  offsetQueryParamsSchema,
+  offsetParamsSchema,
 } from "@/validations/post.validation";
 import {
   loginSchema,
@@ -87,14 +88,14 @@ async function generateTokens(user: IUserPayload) {
   const accessToken = await generateToken(
     user,
     config.ACCESS_TOKEN_SECRET_KEY,
-    config.ACCESS_TOKEN_EXPIRES
+    config.ACCESS_TOKEN_EXPIRES,
   );
 
   const refreshToken = await generateToken(
     user,
     config.REFRESH_TOKEN_SECRET_KEY,
     config.REFRESH_TOKEN_EXPIRES,
-    true
+    true,
   );
 
   return { accessToken, refreshToken } as const;
@@ -103,7 +104,7 @@ async function generateTokens(user: IUserPayload) {
 export async function registerCtrl(
   prisma: PrismaClient,
   args: IRegisterInput,
-  host: string
+  host: string,
 ) {
   try {
     const { email, password, mobile, name } = args;
@@ -135,7 +136,7 @@ export async function registerCtrl(
     return getGraphqlYogaError(
       error,
       CREATION_ERR_MSG("User"),
-      "Register input"
+      "Register input",
     );
   }
 }
@@ -143,7 +144,7 @@ export async function registerCtrl(
 export async function resendActivationCtrl(
   prisma: PrismaClient,
   userId: string,
-  host: string
+  host: string,
 ) {
   try {
     await resendActivationSchema.validate({ userId }, { abortEarly: false });
@@ -166,7 +167,7 @@ export async function resendActivationCtrl(
 export async function verifyUserCtrl(
   prisma: PrismaClient,
   userId: string,
-  code: string
+  code: string,
 ) {
   try {
     await verifyUserSchema.validate({ userId, code }, { abortEarly: false });
@@ -207,7 +208,7 @@ export async function verifyUserCtrl(
 export async function loginCtrl(
   prisma: PrismaClient,
   args: ILoginInput,
-  res: ServerResponse
+  res: ServerResponse,
 ) {
   try {
     const { emailOrMobile, password } = args;
@@ -217,7 +218,7 @@ export async function loginCtrl(
     const isUserExist = await getUserByEmailOrMobileWithInfo(
       prisma,
       emailOrMobile,
-      emailOrMobile
+      emailOrMobile,
     );
 
     if (!isUserExist) {
@@ -261,7 +262,7 @@ export async function loginCtrl(
 export async function logoutCtrl(
   user: IUserPayload,
   req: IncomingMessage,
-  res: ServerResponse
+  res: ServerResponse,
 ) {
   try {
     // @ts-ignore
@@ -282,7 +283,7 @@ export async function logoutCtrl(
       error,
       UN_AUTH_ERR_MSG,
       undefined,
-      UN_AUTH_EXT_ERR_CODE
+      UN_AUTH_EXT_ERR_CODE,
     );
   }
 }
@@ -313,7 +314,7 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken?: string) {
         ]),
       } as IUserPayload,
       config.ACCESS_TOKEN_SECRET_KEY,
-      config.ACCESS_TOKEN_EXPIRES
+      config.ACCESS_TOKEN_EXPIRES,
     );
 
     return accessToken;
@@ -323,7 +324,7 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken?: string) {
       error,
       UN_AUTH_ERR_MSG,
       undefined,
-      UN_AUTH_EXT_ERR_CODE
+      UN_AUTH_EXT_ERR_CODE,
     );
   }
 }
@@ -333,12 +334,12 @@ export async function resetPasswordCtrl(
   userId: string,
   oldPassword: string,
   newPassword: string,
-  host?: string
+  host?: string,
 ) {
   try {
     await resetPasswordSchema.validate(
       { oldPassword, newPassword },
-      { abortEarly: false }
+      { abortEarly: false },
     );
     const isExist = await getUserById(prisma, userId);
 
@@ -356,7 +357,7 @@ export async function resetPasswordCtrl(
       userId,
       isExist.email,
       hashNewPassword,
-      host
+      host,
     );
 
     return "Reset password verification code sent. Check the email.";
@@ -366,7 +367,7 @@ export async function resetPasswordCtrl(
       error,
       "Failed to reset password",
       undefined,
-      INTERNAL_SERVER_ERROR
+      INTERNAL_SERVER_ERROR,
     );
   }
 }
@@ -374,7 +375,7 @@ export async function resetPasswordCtrl(
 export async function verifyResetPasswordCtrl(
   prisma: PrismaClient,
   userId: string,
-  code: string
+  code: string,
 ) {
   try {
     const isUserExist = await getUserById(prisma, userId);
@@ -402,7 +403,7 @@ export async function verifyResetPasswordCtrl(
       error,
       "Reset password verification failed",
       undefined,
-      INTERNAL_SERVER_ERROR
+      INTERNAL_SERVER_ERROR,
     );
   }
 }
@@ -410,7 +411,7 @@ export async function verifyResetPasswordCtrl(
 export async function uploadAvatar(
   prisma: PrismaClient,
   avatar: File,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, user.id);
@@ -463,7 +464,7 @@ export async function uploadAvatar(
       error,
       UN_AUTH_ERR_MSG,
       undefined,
-      UN_AUTH_EXT_ERR_CODE
+      UN_AUTH_EXT_ERR_CODE,
     );
   }
 }
@@ -471,7 +472,7 @@ export async function uploadAvatar(
 export async function updateNameCtrl(
   prisma: PrismaClient,
   name: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, user.id);
@@ -490,7 +491,7 @@ export async function updateNameCtrl(
       error,
       UN_AUTH_ERR_MSG,
       undefined,
-      UN_AUTH_EXT_ERR_CODE
+      UN_AUTH_EXT_ERR_CODE,
     );
   }
 }
@@ -498,7 +499,7 @@ export async function updateNameCtrl(
 export async function updateAboutCtrl(
   prisma: PrismaClient,
   value: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, user.id);
@@ -517,7 +518,7 @@ export async function updateAboutCtrl(
       error,
       UN_AUTH_ERR_MSG,
       undefined,
-      UN_AUTH_EXT_ERR_CODE
+      UN_AUTH_EXT_ERR_CODE,
     );
   }
 }
@@ -525,7 +526,7 @@ export async function updateAboutCtrl(
 export async function followRequestCtrl(
   prisma: PrismaClient,
   toId: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, toId);
@@ -535,7 +536,7 @@ export async function followRequestCtrl(
     }
 
     const index = isExist.followers.findIndex(
-      (follower) => follower.id === user.id
+      (follower) => follower.id === user.id,
     );
 
     if (index !== -1) {
@@ -553,7 +554,7 @@ export async function followRequestCtrl(
 export async function unfollowRequestCtrl(
   prisma: PrismaClient,
   toId: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, toId);
@@ -563,7 +564,7 @@ export async function unfollowRequestCtrl(
     }
 
     const index = isExist.followers.findIndex(
-      (follower) => follower.id === user.id
+      (follower) => follower.id === user.id,
     );
 
     if (index === -1) {
@@ -580,11 +581,11 @@ export async function unfollowRequestCtrl(
 
 export async function getUsersOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams,
-  userId?: string
+  params: OffsetParams,
+  userId?: string,
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, {
+    await offsetParamsSchema.validate(params, {
       abortEarly: false,
     });
 
@@ -615,11 +616,11 @@ export async function getUsersOnOffsetCtrl(
 
 export async function suggestAuthorsToUserOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams,
-  userId: string
+  params: OffsetParams,
+  userId: string,
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, {
+    await offsetParamsSchema.validate(params, {
       abortEarly: false,
     });
 
@@ -653,8 +654,8 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
 
 export async function authorFollowersOnCursorCtrl(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
-  userId: string
+  params: CursorParams,
+  userId: string,
 ) {
   try {
     await cursorQueryParamsSchema.validate(params, {
@@ -685,8 +686,8 @@ export async function authorFollowersOnCursorCtrl(
 
 export async function authorFollowingsOnCursorCtrl(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
-  userId: string
+  params: CursorParams,
+  userId: string,
 ) {
   try {
     await cursorQueryParamsSchema.validate(params, {
@@ -718,7 +719,7 @@ export async function authorFollowingsOnCursorCtrl(
 export async function userResultCtrl(
   prisma: PrismaClient,
   forUserId: string,
-  userId?: string
+  userId?: string,
 ) {
   try {
     if (userId) {
@@ -762,7 +763,7 @@ export async function userFollowCtrl(prisma: PrismaClient, userId: string) {
 export async function userFollowersCtrl(
   prisma: PrismaClient,
 
-  userId: string
+  userId: string,
 ) {
   try {
     const followerCount = await getUserFollowersCount(prisma, userId);

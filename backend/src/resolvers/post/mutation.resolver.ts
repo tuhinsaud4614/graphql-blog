@@ -1,5 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
 import {
   createPostCtrl,
@@ -14,19 +13,24 @@ import {
   VERIFIED_AUTHOR_ERR_MSG,
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
-import { ICreatePostInput, IUpdatePostInput } from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import type {
+  CreatePostInput,
+  UpdatePostInput,
+  YogaContext,
+} from "@/utils/types";
 
 export const Mutation = {
   async createPost(
     _: any,
-    { data }: { data: ICreatePostInput },
-    { prisma, user }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { data }: { data: CreatePostInput },
+    { prisma, user }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -34,7 +38,7 @@ export const Mutation = {
       user.role === EUserRole.Author &&
       user.authorStatus !== EAuthorStatus.Verified
     ) {
-      return new GraphQLYogaError(VERIFIED_AUTHOR_ERR_MSG);
+      return new GraphQLError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
     const result = await createPostCtrl(prisma, data, user);
@@ -43,13 +47,15 @@ export const Mutation = {
 
   async updatePost(
     _: any,
-    { data }: { data: IUpdatePostInput },
-    { prisma, user }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { data }: { data: UpdatePostInput },
+    { prisma, user }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -57,7 +63,7 @@ export const Mutation = {
       user.role === EUserRole.Author &&
       user.authorStatus !== EAuthorStatus.Verified
     ) {
-      return new GraphQLYogaError(VERIFIED_AUTHOR_ERR_MSG);
+      return new GraphQLError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
     const result = await updatePostCtrl(prisma, data, user);
@@ -67,12 +73,14 @@ export const Mutation = {
   async deletePost(
     _: any,
     { id }: { id: string },
-    { prisma, user }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -83,8 +91,8 @@ export const Mutation = {
   async reactionToPost(
     _: any,
     { toId }: { toId: string },
-    { prisma, user, pubSub }: YogaContextReturnType,
-    ___: GraphQLResolveInfo
+    { prisma, user, pubSub }: YogaContext,
+    ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();

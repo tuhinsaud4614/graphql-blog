@@ -2,18 +2,13 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 
 import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
 import { IUser } from "@/utils/interfaces";
-import { YogaContextReturnType } from "@/utils/types";
+import { YogaContext } from "@/utils/types";
 
 export const User = {
   password() {
     return null;
   },
-  async avatar(
-    { id }: IUser,
-    _: any,
-    { prisma }: YogaContextReturnType,
-    __: any
-  ) {
+  async avatar({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
     try {
       const image = await prisma.picture.findFirst({ where: { userId: id } });
 
@@ -23,12 +18,7 @@ export const User = {
     }
   },
 
-  async posts(
-    { id }: IUser,
-    _: any,
-    { prisma }: YogaContextReturnType,
-    __: any
-  ) {
+  async posts({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
     try {
       const posts = await prisma.post.findMany({ where: { authorId: id } });
       return posts;
@@ -37,12 +27,7 @@ export const User = {
     }
   },
 
-  async followings(
-    { id }: IUser,
-    _: any,
-    { prisma }: YogaContextReturnType,
-    __: any
-  ) {
+  async followings({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
     try {
       const users = await prisma.user
         .findUnique({
@@ -55,12 +40,7 @@ export const User = {
     }
   },
 
-  async followers(
-    { id }: IUser,
-    _: any,
-    { prisma }: YogaContextReturnType,
-    __: any
-  ) {
+  async followers({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
     try {
       const users = await prisma.user
         .findUnique({

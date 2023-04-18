@@ -1,4 +1,5 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
+
 import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
 
@@ -31,29 +32,33 @@ import {
 } from "@/utils/constants";
 import { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
-import {
-  ICreatePostInput,
-  ICursorQueryParams,
+import type {
   IOffsetPageInfo,
-  IOffsetQueryParams,
-  IPostsByTagQueryParams,
   IReactionsCount,
-  IUpdatePostInput,
   IUserPayload,
 } from "@/utils/interfaces";
-import { getGraphqlYogaError } from "@/validations";
+import type {
+  CreatePostInput,
+  CursorParams,
+  OffsetParams,
+  TaggedPostCursorParams,
+  UpdatePostInput,
+} from "@/utils/types";
+import {
+  cursorParamsSchema,
+  getGraphqlYogaError,
+  offsetParamsSchema,
+} from "@/validations";
 import {
   createPostSchema,
-  cursorQueryParamsSchema,
   getAllPostsByTagSchema,
-  offsetQueryParamsSchema,
   updatePostSchema,
 } from "@/validations/post.validation";
 
 export async function createPostCtrl(
   prisma: PrismaClient,
-  args: ICreatePostInput,
-  user: IUserPayload
+  args: CreatePostInput,
+  user: IUserPayload,
 ) {
   let imagePath;
   try {
@@ -67,7 +72,7 @@ export async function createPostCtrl(
     const { name, height, width, filePath } = await imageUpload(
       image,
       dest,
-      uId
+      uId,
     );
     imagePath = filePath;
     const post = await createPost(prisma, user.id, {
@@ -87,8 +92,8 @@ export async function createPostCtrl(
 
 export async function updatePostCtrl(
   prisma: PrismaClient,
-  args: IUpdatePostInput,
-  user: IUserPayload
+  args: UpdatePostInput,
+  user: IUserPayload,
 ) {
   let imagePath: string | undefined;
   let imageName: string | undefined;
@@ -100,7 +105,7 @@ export async function updatePostCtrl(
     const isExist = await getPostByIdForUser(prisma, rest.id, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
     }
 
     if (image) {
@@ -109,7 +114,7 @@ export async function updatePostCtrl(
       const { name, height, width, filePath } = await imageUpload(
         image,
         dest,
-        uId
+        uId,
       );
       imagePath = filePath;
       imageName = `images/${name}`;
@@ -136,13 +141,13 @@ export async function updatePostCtrl(
 export async function deletePostCtrl(
   prisma: PrismaClient,
   id: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getPostByIdForUser(prisma, id, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
     }
 
     const deletedPost = await deletePost(prisma, id);
@@ -158,13 +163,13 @@ export async function reactionToCtrl(
   // pubSub: PubSub<PubSubPublishArgsByKey>,
   pubSub: YogaPubSubType,
   toId: string,
-  user: IUserPayload
+  user: IUserPayload,
 ) {
   try {
     const isExist = await getPostById(prisma, toId);
 
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
     }
     const isReacted = await isReactToThePost(prisma, toId, user.id);
 
@@ -200,10 +205,10 @@ export async function reactionToCtrl(
 // Offset based pagination start
 export async function getAllPostsOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams
+  params: OffsetParams,
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, { abortEarly: false });
+    await offsetParamsSchema.validate(params, { abortEarly: false });
 
     const { limit, page } = params;
     const condition = {
@@ -235,10 +240,10 @@ export async function getAllPostsOnOffsetCtrl(
 // Cursor based pagination start
 export async function getAllPostsCtrl(
   prisma: PrismaClient,
-  params: ICursorQueryParams
+  params: CursorParams,
 ) {
   try {
-    await cursorQueryParamsSchema.validate(params, { abortEarly: false });
+    await cursorParamsSchema.validate(params, { abortEarly: false });
 
     const args: Prisma.PostFindManyArgs = {
       orderBy: { updatedAt: "desc" },
@@ -269,7 +274,7 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
         },
       ],
     });
-    // throw new GraphQLYogaError("hello");
+    // throw new GraphQLError("hello");
 
     return posts;
   } catch (error: any) {
@@ -280,11 +285,11 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
 
 export async function getFollowingAuthorPostsCtrl(
   prisma: PrismaClient,
-  params: ICursorQueryParams,
-  userId: string
+  params: CursorParams,
+  userId: string,
 ) {
   try {
-    await cursorQueryParamsSchema.validate(params, { abortEarly: false });
+    await cursorParamsSchema.validate(params, { abortEarly: false });
 
     const condition = {
       where: {
@@ -309,7 +314,7 @@ export async function getFollowingAuthorPostsCtrl(
 
 export async function getAllPostsByTagCtrl(
   prisma: PrismaClient,
-  params: IPostsByTagQueryParams
+  params: TaggedPostCursorParams,
 ) {
   try {
     await getAllPostsByTagSchema.validate(params, { abortEarly: false });
@@ -363,7 +368,7 @@ export async function getAllPostsByTagCtrl(
 export async function postReactionsCountCtrl(
   prisma: PrismaClient,
   userId: string,
-  postId: string
+  postId: string,
 ) {
   try {
     const [count, isReacted] = await prisma.$transaction([
@@ -383,7 +388,7 @@ export async function postReactionsCountCtrl(
 
 export async function postCommentsCountCtrl(
   prisma: PrismaClient,
-  postId: string
+  postId: string,
 ) {
   try {
     const result = await getPostCommentsCount(prisma, postId);
@@ -397,10 +402,10 @@ export async function postCommentsCountCtrl(
 export async function postReactionsByCtrl(
   prisma: PrismaClient,
   postId: string,
-  params: ICursorQueryParams
+  params: CursorParams,
 ) {
   try {
-    await cursorQueryParamsSchema.validate(params, { abortEarly: false });
+    await cursorParamsSchema.validate(params, { abortEarly: false });
 
     const result = await getPostReactionsByOnCursor(prisma, postId, params);
 

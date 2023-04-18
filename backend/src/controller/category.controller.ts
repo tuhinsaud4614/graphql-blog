@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { Prisma, PrismaClient } from "@prisma/client";
 
 import logger from "@/logger";
@@ -16,16 +17,15 @@ import {
   NOT_EXIST_ERR_MSG,
   UPDATE_ERR_MSG,
 } from "@/utils/constants";
-import { IOffsetQueryParams } from "@/utils/interfaces";
-import { getGraphqlYogaError } from "@/validations";
-import { offsetQueryParamsSchema } from "@/validations/post.validation";
+import type { OffsetParams } from "@/utils/types";
+import { getGraphqlYogaError, offsetParamsSchema } from "@/validations";
 
 export async function getCategoriesOnOffsetCtrl(
   prisma: PrismaClient,
-  params: IOffsetQueryParams
+  params: OffsetParams,
 ) {
   try {
-    await offsetQueryParamsSchema.validate(params, {
+    await offsetParamsSchema.validate(params, {
       abortEarly: false,
     });
 
@@ -44,7 +44,7 @@ export async function getCategoriesOnOffsetCtrl(
       count,
       page,
       limit,
-      args
+      args,
     );
     return result;
   } catch (error) {
@@ -55,10 +55,10 @@ export async function getCategoriesOnOffsetCtrl(
 
 export async function getCategoriesByTextOnOffsetCtrl(
   prisma: PrismaClient,
-  { text, ...rest }: IOffsetQueryParams & { text: string }
+  { text, ...rest }: OffsetParams & { text: string },
 ) {
   try {
-    await offsetQueryParamsSchema.validate(rest, {
+    await offsetParamsSchema.validate(rest, {
       abortEarly: false,
     });
 
@@ -82,7 +82,7 @@ export async function getCategoriesByTextOnOffsetCtrl(
       count,
       page,
       limit,
-      args
+      args,
     );
     return result;
   } catch (error) {
@@ -106,7 +106,7 @@ export async function createCategoryCtrl(prisma: PrismaClient, title: string) {
 export async function updateCategoryCtrl(
   prisma: PrismaClient,
   id: string,
-  title: string
+  title: string,
 ) {
   try {
     const isExist = await getCategoryById(prisma, id);

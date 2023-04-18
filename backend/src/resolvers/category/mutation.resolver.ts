@@ -1,5 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
+
 import { GraphQLResolveInfo } from "graphql";
+
 import {
   createCategoryCtrl,
   deleteCategoryCtrl,
@@ -11,14 +13,14 @@ import {
   UN_AUTH_EXT_ERR_CODE,
 } from "../../utils/constants";
 import { EUserRole } from "../../utils/enums";
-import { YogaContextReturnType } from "../../utils/types";
+import { YogaContext } from "../../utils/types";
 
 export const Mutation = {
   async createCategory(
     _: any,
     { title }: { title: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -37,8 +39,8 @@ export const Mutation = {
   async updateCategory(
     _: any,
     { id, title }: { id: string; title: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
@@ -57,8 +59,8 @@ export const Mutation = {
   async deleteCategory(
     _: any,
     { id }: { id: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new GraphQLYogaError(UN_AUTH_ERR_MSG, {

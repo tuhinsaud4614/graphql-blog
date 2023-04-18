@@ -6,7 +6,7 @@ import {
   updateCommentCtrl,
 } from "@/controller/comment.controller";
 import { AuthenticationError } from "@/model";
-import { YogaContextReturnType } from "@/utils/types";
+import { YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async createComment(
@@ -14,8 +14,8 @@ export const Mutation = {
     {
       data: { content, postId, parentComment },
     }: { data: { parentComment?: string; postId: string; content: string } },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -26,7 +26,7 @@ export const Mutation = {
       postId,
       content,
       user,
-      parentComment
+      parentComment,
     );
     return result;
   },
@@ -36,8 +36,8 @@ export const Mutation = {
     {
       data: { content, commentId },
     }: { data: { commentId: string; content: string } },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -50,8 +50,8 @@ export const Mutation = {
   async deleteComment(
     _: any,
     { commentId }: { commentId: string },
-    { prisma, user }: YogaContextReturnType,
-    __: GraphQLResolveInfo
+    { prisma, user }: YogaContext,
+    __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
