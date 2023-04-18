@@ -56,6 +56,7 @@ import {
   UN_AUTH_EXT_ERR_CODE,
   generateCreationErrorMessage,
   generateExistErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateRefreshTokenKeyName,
   generateResetPasswordVerificationKeyForId,
@@ -615,7 +616,7 @@ export async function getUsersOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("users"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("users"));
   }
 }
 
@@ -653,7 +654,7 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("users"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("users"));
   }
 }
 
@@ -687,7 +688,7 @@ export async function authorFollowersOnCursorCtrl(
     logger.error(error);
     return getGraphqlYogaError(
       error,
-      generateCreationErrorMessage("authors followers"),
+      generateFetchErrorMessage("authors followers"),
     );
   }
 }
@@ -722,7 +723,7 @@ export async function authorFollowingsOnCursorCtrl(
     logger.error(error);
     return getGraphqlYogaError(
       error,
-      generateCreationErrorMessage("authors following"),
+      generateFetchErrorMessage("authors following"),
     );
   }
 }
@@ -753,10 +754,7 @@ export async function userResultCtrl(
     };
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(
-      error,
-      generateCreationErrorMessage("user result"),
-    );
+    return getGraphqlYogaError(error, generateFetchErrorMessage("user result"));
   }
 }
 
@@ -770,10 +768,7 @@ export async function userFollowCtrl(prisma: PrismaClient, userId: string) {
     };
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(
-      error,
-      generateCreationErrorMessage("user follow"),
-    );
+    return getGraphqlYogaError(error, generateFetchErrorMessage("user follow"));
   }
 }
 
@@ -790,7 +785,7 @@ export async function userFollowersCtrl(
     logger.error(error);
     return getGraphqlYogaError(
       error,
-      generateCreationErrorMessage("user followers"),
+      generateFetchErrorMessage("user followers"),
     );
   }
 }
@@ -804,7 +799,7 @@ export async function userFollowingsCtrl(prisma: PrismaClient, userId: string) {
     logger.error(error);
     return getGraphqlYogaError(
       error,
-      generateCreationErrorMessage("user followings"),
+      generateFetchErrorMessage("user followings"),
     );
   }
 }

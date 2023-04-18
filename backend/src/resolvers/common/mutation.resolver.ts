@@ -1,6 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
-
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLError, GraphQLResolveInfo } from "graphql";
 
 import {
   uploadFileCtrl,
@@ -23,8 +21,10 @@ export const Mutation = {
     ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -32,7 +32,7 @@ export const Mutation = {
       user.role === EUserRole.Author &&
       user.authorStatus !== EAuthorStatus.Verified
     ) {
-      return new GraphQLYogaError(VERIFIED_AUTHOR_ERR_MSG);
+      return new GraphQLError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
     const result = await uploadFileCtrl(file);

@@ -1,9 +1,9 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import logger from "@/logger";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { ITag } from "@/utils/interfaces";
-import { YogaContext } from "@/utils/types";
+import type { YogaContext } from "@/utils/types";
 
 export const Tag = {
   async posts({ id }: ITag, _: any, { prisma }: YogaContext, __: any) {
@@ -18,7 +18,7 @@ export const Tag = {
     } catch (error) {
       logger.error(error);
 
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Posts", "user"),
       );
     }

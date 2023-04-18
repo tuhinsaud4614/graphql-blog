@@ -1,10 +1,7 @@
 import { Comment, Prisma, PrismaClient } from "@prisma/client";
 
-import {
-  CursorParams,
-  IResponseOnCursor,
-  IResponseOnOffset,
-} from "@/utils/interfaces";
+import type { IResponseOnCursor, IResponseOnOffset } from "@/utils/interfaces";
+import type { CursorParams } from "@/utils/types";
 
 export function getCommentForUser(
   prisma: PrismaClient,

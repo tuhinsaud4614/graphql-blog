@@ -8,14 +8,10 @@ import {
   generateUserVerificationKey,
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
-import {
-  CursorParams,
-  IResponseOnCursor,
-  IResponseOnOffset,
-  RegisterInput,
-} from "@/utils/interfaces";
+import { IResponseOnCursor, IResponseOnOffset } from "@/utils/interfaces";
 import sendMail from "@/utils/mailer";
 import redisClient from "@/utils/redis";
+import { CursorParams, RegisterInput } from "@/utils/types";
 
 export function getUserById(prisma: PrismaClient, id: string) {
   return prisma.user.findUnique({ where: { id } });

@@ -2,8 +2,7 @@ import {
   getTagsByTextOnOffsetCtrl,
   getTagsOnOffsetCtrl,
 } from "@/controller/tag.controller";
-import { OffsetParams } from "@/utils/interfaces";
-import { YogaContext } from "@/utils/types";
+import type { OffsetParams, YogaContext } from "@/utils/types";
 
 export const Query = {
   async tagsOnOffset(

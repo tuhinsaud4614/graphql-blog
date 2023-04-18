@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import logger from "@/logger";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
@@ -17,7 +17,7 @@ export const Post = {
       return author;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("User", "post"),
       );
     }
@@ -33,7 +33,7 @@ export const Post = {
     } catch (error) {
       logger.error(error);
 
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Categories", "post"),
       );
     }
@@ -49,7 +49,7 @@ export const Post = {
       return tags;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Tags", "post"),
       );
     }
@@ -63,7 +63,7 @@ export const Post = {
       return categories;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Image", "post"),
       );
     }
@@ -79,7 +79,7 @@ export const Post = {
       return reactions;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Reactions", "post"),
       );
     }
@@ -103,7 +103,7 @@ export const Post = {
       return comments;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Comments", "post"),
       );
     }

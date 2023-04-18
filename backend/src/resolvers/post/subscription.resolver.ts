@@ -1,6 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
-
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLError, GraphQLResolveInfo } from "graphql";
 
 import logger from "@/logger";
 import {
@@ -21,8 +19,10 @@ export const Subscription = {
     ) {
       try {
         if (user === null) {
-          return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-            code: UN_AUTH_EXT_ERR_CODE,
+          return new GraphQLError(UN_AUTH_ERR_MSG, {
+            extensions: {
+              code: UN_AUTH_EXT_ERR_CODE,
+            },
           });
         }
         // return pubSub.subscribe(SUBSCRIPTION_REACTIONS(postId));

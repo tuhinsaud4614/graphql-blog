@@ -1,5 +1,6 @@
+import { createSchema, createYoga } from "@graphql-yoga/node";
+
 import { IdentifyFn, useRateLimiter } from "@envelop/rate-limiter";
-import { createServer, renderGraphiQL } from "@graphql-yoga/node";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
@@ -20,7 +21,7 @@ async function shutdown({
   signal,
   server,
 }: {
-  signal: typeof SIGNALS[number];
+  signal: (typeof SIGNALS)[number];
   server: Server;
 }) {
   logger.info(`Got signal ${signal} Good bye.`);
@@ -37,13 +38,13 @@ async function startServer() {
     return context.request.ip;
   };
 
-  const server = createServer({
+  const server = createYoga({
     // cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
-    schema: {
+    schema: createSchema({
       typeDefs,
       resolvers,
-    },
-    renderGraphiQL,
+    }),
+    // renderGraphiQL,
     context: (props) => createContext(props),
     plugins: [
       useRateLimiter({
@@ -77,7 +78,7 @@ async function startServer() {
 
   const httpServer = app.listen(config.PORT, async () => {
     logger.info(
-      `Running a GraphQL API server at ${config.HOST}:${config.PORT}/graphql`
+      `Running a GraphQL API server at ${config.HOST}:${config.PORT}/graphql`,
     );
   });
 

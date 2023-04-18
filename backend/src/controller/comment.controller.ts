@@ -22,6 +22,7 @@ import { getPostById } from "@/services/post.service";
 import {
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
@@ -146,7 +147,7 @@ export async function getPostCommentsOnOffsetCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("comments"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("comments"));
   }
 }
 
@@ -210,6 +211,6 @@ export async function getPostCommentsOnCursorCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("comments"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("comments"));
   }
 }

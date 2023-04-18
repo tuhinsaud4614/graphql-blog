@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { IUser } from "@/utils/interfaces";
@@ -14,7 +14,7 @@ export const User = {
 
       return image;
     } catch (error) {
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Avatar", "user"),
       );
     }
@@ -25,7 +25,7 @@ export const User = {
       const posts = await prisma.post.findMany({ where: { authorId: id } });
       return posts;
     } catch (error) {
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Posts", "user"),
       );
     }
@@ -40,7 +40,7 @@ export const User = {
         .followings();
       return users;
     } catch (error) {
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Followings", "user"),
       );
     }
@@ -55,7 +55,7 @@ export const User = {
         .followers();
       return users;
     } catch (error) {
-      return new GraphQLYogaError(
+      return new GraphQLError(
         generateEntityNotExistErrorMessage("Followers", "user"),
       );
     }

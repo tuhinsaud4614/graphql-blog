@@ -26,6 +26,7 @@ import {
   REACTIONS_ERR_MSG,
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
@@ -243,7 +244,7 @@ export async function getAllPostsOnOffsetCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
 }
 // Offset based pagination end
@@ -266,7 +267,7 @@ export async function getAllPostsCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
 }
 // Cursor based pagination start
@@ -290,7 +291,7 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
     return posts;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
 }
 
@@ -319,7 +320,7 @@ export async function getFollowingAuthorPostsCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
 }
 
@@ -372,7 +373,7 @@ export async function getAllPostsByTagCtrl(
     return { data: result, total: count };
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("Posts"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
 }
 

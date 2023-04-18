@@ -19,7 +19,7 @@ export const errorHandler: ErrorRequestHandler = (err, _, res, next) => {
   const result = new HttpError(
     "Something went wrong",
     500,
-    "An unknown error occurs"
+    "An unknown error occurs",
   ).toObj();
   res.status(500).json(result);
 };

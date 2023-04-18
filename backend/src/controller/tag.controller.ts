@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 
 import logger from "@/logger";
 import { getManyTags } from "@/services/tag.service";
-import { generateCreationErrorMessage } from "@/utils/constants";
+import { generateFetchErrorMessage } from "@/utils/constants";
 import type { IOffsetPageInfo } from "@/utils/interfaces";
 import { OffsetParams } from "@/utils/types";
 import { getGraphqlYogaError, offsetParamsSchema } from "@/validations";
@@ -49,7 +49,7 @@ export async function getTagsOnOffsetCtrl(
     return { results, total: count };
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("tags"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("tags"));
   }
 }
 
@@ -98,6 +98,6 @@ export async function getTagsByTextOnOffsetCtrl(
     return { results, total: count };
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, generateCreationErrorMessage("tags"));
+    return getGraphqlYogaError(error, generateFetchErrorMessage("tags"));
   }
 }

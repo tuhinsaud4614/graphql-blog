@@ -1,4 +1,4 @@
-import { GraphQLError, GraphQLErrorExtensions } from "graphql";
+import { GraphQLError, type GraphQLErrorExtensions } from "graphql";
 
 import {
   BAD_USER_INPUT,

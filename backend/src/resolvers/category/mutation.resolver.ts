@@ -1,4 +1,4 @@
-import { GraphQLError, GraphQLResolveInfo } from "graphql";
+import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
 import {
   createCategoryCtrl,

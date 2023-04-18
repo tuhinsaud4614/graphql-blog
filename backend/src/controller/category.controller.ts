@@ -13,6 +13,7 @@ import {
 import {
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
@@ -48,10 +49,7 @@ export async function getCategoriesWithOffsetController(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(
-      error,
-      generateCreationErrorMessage("categories"),
-    );
+    return getGraphqlYogaError(error, generateFetchErrorMessage("categories"));
   }
 }
 
@@ -89,10 +87,7 @@ export async function getCategoriesByTextOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(
-      error,
-      generateCreationErrorMessage("categories"),
-    );
+    return getGraphqlYogaError(error, generateFetchErrorMessage("categories"));
   }
 }
 
