@@ -3,8 +3,7 @@ import {
   getPostCommentsOnOffsetCtrl,
 } from "@/controller/comment.controller";
 import { AuthenticationError } from "@/model";
-import { CursorParams, OffsetParams } from "@/utils/interfaces";
-import { YogaContext } from "@/utils/types";
+import { CursorParams, OffsetParams, YogaContext } from "@/utils/types";
 
 export const Query = {
   async postCommentsOnOffset(

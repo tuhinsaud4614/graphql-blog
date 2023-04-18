@@ -1,6 +1,6 @@
 import {
   getCategoriesByTextOnOffsetCtrl,
-  getCategoriesOnOffsetCtrl,
+  getCategoriesWithOffsetController,
 } from "@/controller/category.controller";
 import type { OffsetParams, YogaContext } from "@/utils/types";
 
@@ -11,7 +11,7 @@ export const Query = {
     { prisma }: YogaContext,
     ___: any,
   ) {
-    const result = await getCategoriesOnOffsetCtrl(prisma, params);
+    const result = await getCategoriesWithOffsetController(prisma, params);
     return result;
   },
 

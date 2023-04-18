@@ -1,15 +1,4 @@
-import {
-  AuthenticationError,
-  ForbiddenError,
-  NoContentError,
-  PersistedQueryNotFoundError,
-  PersistedQueryNotSupportedError,
-  RateLimitError,
-  SyntaxError,
-  UnknownError,
-  UserInputError,
-  ValidationError,
-} from "../model";
+import { isVowel } from "./typeCheck";
 
 // Error Messages
 export const INVALID_CREDENTIAL = "Invalid email, phone or password";
@@ -35,42 +24,238 @@ export const REACTIONS_ERR_MSG = "Reactions request failed";
 export const NOT_IMG_ERR_MSG =
   "File should be image (gif, svg, jpeg, jpg, png, webp)";
 export const VERIFIED_AUTHOR_ERR_MSG = `You must a verified author`;
-export const TOO_LARGE_FILE_ERR_MSG = (field: string, value: string) =>
-  `${field} size should be less than ${value}`;
-export const ARRAY_LENGTH_ERR_MSG = (
+
+/**
+ * This function generates an error message for when a file size is too large.
+ * @param {string} field - The name of the field that has a size limit.
+ * @param {string} value - The value parameter in the function represents the maximum allowed size for
+ * a file. The function generates an error message if a file exceeds this maximum size.
+ * @returns a string message that states that the size of a certain field should be less than a certain
+ * value. The message is generated using the parameters `field` and `value` passed to the function.
+ */
+export function generateTooLargeFileErrorMessage(
+  field: string,
+  value: string,
+): string {
+  return `${field} size should be less than ${value}.`;
+}
+
+/**
+ * This function generates an error message indicating that a field does not exist for a given entity.
+ * @param {string} field - The name of the field that does not exist.
+ * @param {string} entity - The `entity` parameter is a string that represents the name of an entity
+ * (e.g. user, product, order) for which a certain field does not exist.
+ * @returns a string message that says that a certain field does not exist for a certain entity. The
+ * message is generated using the parameters `field` and `entity` passed to the function.
+ */
+export function generateEntityNotExistErrorMessage(
+  field: string,
+  entity: string,
+): string {
+  return `${field} does not exist for ${entity}.`;
+}
+
+/**
+ * This TypeScript function generates an error message for an array field based on whether it should
+ * have a minimum or maximum length.
+ * @param {"min" | "max"} mode - A string that can only be either "min" or "max", indicating whether
+ * the error message is for a minimum or maximum length requirement.
+ * @param {string} field - The name of the field that the error message is referring to. For example,
+ * if the field is an array of user names, the error message might say "The user names field must
+ * contain at least 3 items."
+ * @param {number} length - The length parameter is a number that represents the minimum or maximum
+ * number of items that a field must contain, depending on the mode parameter.
+ * @returns A string message indicating the minimum or maximum number of items required for a given
+ * field in an array. The message is generated based on the input parameters `mode`, `field`, and
+ * `length`.
+ */
+export function generateArrayLengthErrorMessage(
   mode: "min" | "max",
   field: string,
-  min: number
-) => `${mode === "min" ? "At least" : "Maximum"} ${min} ${field} required`;
-export const EXIST_ERR_MSG = (key: string) => `${key} already exist`;
-export const ROLE_ERR_MSG = (
+  length: number,
+): string {
+  const verb = mode === "min" ? "at least" : "at most";
+  return `The ${field} field must contain ${verb} ${length} items.`;
+}
+
+/**
+ * This function generates an error message indicating that a given key already exists.
+ * @param {string} key - The key parameter is a string that represents the identifier or name of a
+ * resource or object that already exists. The function generates an error message indicating that the
+ * resource or object with the given key already exists.
+ * @returns A string message that includes the key parameter and the phrase "already exists."
+ */
+export function generateExistErrorMessage(key: string): string {
+  return `${key} already exists.`;
+}
+
+/**
+ * Generates an error message indicating that a user must have a certain role.
+ *
+ * @param role The required role.
+ * @param orRole An optional alternate role.
+ * @returns The error message.
+ */
+export function generateRoleErrorMessage(
   role: "admin" | "author" | "user",
-  orRole?: "admin" | "author" | "user"
-) => `You must be ${role}${orRole ? " or " + orRole : ""}`;
-export const NOT_EXIST_ERR_MSG = (key: string) => `${key} not exist`;
-export const NOT_EXIST_FOR_ERR_MSG = (field: string, fr: string) =>
-  `${field} not exist for ${fr}`;
-export const REQUIRED_ERR_MSG = (key: string) => `${key} is required`;
-export const INVALID_MOBILE_OR_EMAIL_ERR_MSG = (key: string) =>
-  `Must be a valid ${key}`;
-export const MATCHED_ERR_MSG = (key: string) => `${key} must be matched`;
-export const EITHER_ERR_MSG = (key: string, value: string) =>
-  `${key} should be ${value}`;
-export const NOT_NUM_ERR_MSG = (field: string, value: string = "number") =>
-  `${field} should be ${value}`;
-export const CREATION_ERR_MSG = (key: string) => `${key} creation failed`;
-export const FETCH_ERR_MSG = (key: string) => `Failed to fetch ${key}`;
-export const UPDATE_ERR_MSG = (key: string) => `${key} update failed`;
-export const DELETE_ERR_MSG = (key: string) => `${key} delete failed`;
-export const VALIDATION_ERR_MSG = (key?: string) =>
-  key ? `${key} validation error` : "Validation error";
+  orRole?: "admin" | "author" | "user",
+): string {
+  let message = `You must be ${isVowel(role) ? "an" : "a"} ${role}.`;
+
+  if (orRole) {
+    message += ` Alternatively, you must be ${
+      isVowel(orRole) ? "an" : "a"
+    } ${orRole}.`;
+  }
+
+  return message;
+}
+
+/**
+ * Generates an error message indicating that a key does not exist.
+ *
+ * @param key The name of the key.
+ * @returns The error message.
+ */
+export function generateNotExistErrorMessage(key: string): string {
+  return `${key} does not exist.`;
+}
+
+/**
+ * Generates an error message indicating that a key is required.
+ *
+ * @param key The name of the key.
+ * @returns The error message.
+ */
+export function generateRequiredErrorMessage(key: string): string {
+  return `${key} is required.`;
+}
+
+/**
+ * Generates an error message indicating that a key must be a valid.
+ *
+ * @param key The name of a valid key.
+ * @returns The error message.
+ */
+export function generateInvalidErrorMessage(key: string): string {
+  return `Please enter a valid ${key}.`;
+}
+
+/**
+ * Generates an error message indicating that two values must match.
+ *
+ * @param key The name of the key that must match.
+ * @returns The error message.
+ */
+export function generateMatchedErrorMessage(key: string): string {
+  return `${key} must match.`;
+}
+
+/**
+ * Generates an error message indicating that a value should be one of two options.
+ *
+ * @param key The name of the key.
+ * @param value1 The first valid value.
+ * @param value2 The second valid value.
+ * @returns The error message.
+ */
+export function generateEitherErrorMessage(
+  key: string,
+  value1: string,
+  value2: string,
+): string {
+  return `${key} should be either "${value1}" or "${value2}".`;
+}
+
+/**
+ * Generates an error message indicating that a value should be a number.
+ *
+ * @param field The name of the field.
+ * @returns The error message.
+ */
+export function generateNotNumberErrorMessage(field: string): string {
+  return `${field} should be a number.`;
+}
+
+/**
+ * Generates an error message indicating that the creation of an entity failed.
+ *
+ * @param entityName The name of the entity.
+ * @returns The error message.
+ */
+export function generateCreationErrorMessage(entityName: string): string {
+  return `Failed to create ${entityName}.`;
+}
+
+/**
+ * Generates an error message indicating that the fetching of an entity failed.
+ *
+ * @param entityName The name of the entity.
+ * @returns The error message.
+ */
+export function generateFetchErrorMessage(entityName: string): string {
+  return `Failed to fetch ${entityName}.`;
+}
+
+/**
+ * Generates an error message indicating that the update of an entity failed.
+ *
+ * @param entityName The name of the entity.
+ * @returns The error message.
+ */
+export function generateUpdateErrorMessage(entityName: string): string {
+  return `${entityName} update failed.`;
+}
+
+/**
+ * Generates an error message indicating that the deletion of an entity failed.
+ *
+ * @param entityName The name of the entity.
+ * @returns The error message.
+ */
+export function generateDeleteErrorMessage(entityName: string): string {
+  return `${entityName} delete failed.`;
+}
+
+/**
+ * Returns a validation error message.
+ * @param key Optional key to indicate the field that failed validation.
+ * @returns The validation error message.
+ */
+export function generateValidationErrorMessage(key?: string) {
+  return key ? `Validation failed for ${key}.` : "Validation error.";
+}
 
 // REDIS KEY START
-export const REFRESH_TOKEN_KEY_NAME = (id: string) => `REFRESH_TOKEN-${id}`;
-export const USER_VERIFICATION_KEY_NAME = (id: string) =>
-  `USER_VERIFICATION-${id}`;
-export const RESET_PASSWORD_VERIFICATION_KEY_NAME = (id: string) =>
-  `RESET_PASSWORD_VERIFICATION-${id}`;
+/**
+ * Returns a string key for a refresh token, based on a given ID.
+ *
+ * @param {string} id - The ID to use in the key.
+ * @returns {string} - The refresh token key name.
+ */
+export const generateRefreshTokenKeyName = (id: string) =>
+  `REFRESH_TOKEN@${id}`;
+
+/**
+ * Generates a Redis key for user verification using the provided ID.
+ *
+ * The generated key format is: USER_VERIFICATION@${id}
+ *
+ * @param {string} id - The ID to use in the key.
+ * @returns {string} The generated Redis key.
+ */
+export const generateUserVerificationKey = (id: string) =>
+  `USER_VERIFICATION@${id}`;
+
+/**
+Generates a unique key for reset password verification
+
+@param id - The id to be used for generating the key
+@returns A unique key for reset password verification
+*/
+export const generateResetPasswordVerificationKeyForId = (id: string) =>
+  `RESET_PASSWORD_VERIFICATION@${id}`;
+
 // REDIS KEY END
 
 export const IMAGE_MIMES = {
@@ -117,16 +302,3 @@ export const PERSISTED_QUERY_NOT_FOUND = "PERSISTED_QUERY_NOT_FOUND";
 export const GRAPHQL_PARSE_FAILED = "GRAPHQL_PARSE_FAILED"; // The GraphQL operation string contains a syntax error.
 
 export const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
-
-export const ERRORS = [
-  SyntaxError,
-  ValidationError,
-  UserInputError,
-  AuthenticationError,
-  ForbiddenError,
-  NoContentError,
-  PersistedQueryNotFoundError,
-  PersistedQueryNotSupportedError,
-  UnknownError,
-  RateLimitError,
-] as const;

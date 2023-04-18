@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import { Prisma, PrismaClient } from "@prisma/client";
 import _ from "lodash";
@@ -20,20 +20,19 @@ import {
 } from "@/services/comment.service";
 import { getPostById } from "@/services/post.service";
 import {
-  CREATION_ERR_MSG,
-  DELETE_ERR_MSG,
-  FETCH_ERR_MSG,
-  NOT_EXIST_ERR_MSG,
-  UPDATE_ERR_MSG,
+  generateCreationErrorMessage,
+  generateDeleteErrorMessage,
+  generateNotExistErrorMessage,
+  generateUpdateErrorMessage,
 } from "@/utils/constants";
-import { CursorParams, IUserPayload, OffsetParams } from "@/utils/interfaces";
-import { getGraphqlYogaError } from "@/validations";
-import { createCommentSchema } from "@/validations/comment.validation";
-
+import { IUserPayload } from "@/utils/interfaces";
+import { CursorParams, OffsetParams } from "@/utils/types";
 import {
-  cursorQueryParamsSchema,
+  cursorParamsSchema,
+  getGraphqlYogaError,
   offsetParamsSchema,
-} from "../validations/post.validation";
+} from "@/validations";
+import { createCommentSchema } from "@/validations/comment.validation";
 
 export async function createCommentCtrl(
   prisma: PrismaClient,
@@ -53,7 +52,7 @@ export async function createCommentCtrl(
       const parent = await getCommentById(prisma, parentComment);
 
       if (!parent) {
-        return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment"));
+        return new GraphQLError(generateNotExistErrorMessage("Comment"));
       }
 
       const comment = await createReply(prisma, parent.id, user.id, content);
@@ -62,7 +61,7 @@ export async function createCommentCtrl(
 
     const isExist = await getPostById(prisma, postId);
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
 
     const comment = await createComment(prisma, isExist.id, user.id, content);
@@ -70,7 +69,7 @@ export async function createCommentCtrl(
     return comment;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, CREATION_ERR_MSG("Comment"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("Comment"));
   }
 }
 
@@ -83,7 +82,7 @@ export async function updateCommentCtrl(
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment or Reply"));
+      return new GraphQLError(generateNotExistErrorMessage("Comment or Reply"));
     }
 
     if (isExist.content === content) {
@@ -94,7 +93,7 @@ export async function updateCommentCtrl(
     return comment;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, UPDATE_ERR_MSG("Comment"));
+    return getGraphqlYogaError(error, generateUpdateErrorMessage("Comment"));
   }
 }
 
@@ -107,14 +106,14 @@ export async function deleteCommentCtrl(
     const isExist = await getCommentForUser(prisma, commentId, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Comment or Reply"));
+      return new GraphQLError(generateNotExistErrorMessage("Comment or Reply"));
     }
 
     const comment = await deleteComment(prisma, commentId);
     return comment.id;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, DELETE_ERR_MSG("Comment"));
+    return getGraphqlYogaError(error, generateDeleteErrorMessage("Comment"));
   }
 }
 
@@ -132,7 +131,7 @@ export async function getPostCommentsOnOffsetCtrl(
     const isPostExist = await getPostById(prisma, postId);
 
     if (!isPostExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
 
     const count = await countCommentsForPost(prisma, postId);
@@ -147,7 +146,7 @@ export async function getPostCommentsOnOffsetCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("comments"));
   }
 }
 
@@ -160,7 +159,7 @@ export async function getPostCommentsOnCursorCtrl(
   }: CursorParams & { postId: string; parentId?: string },
 ) {
   try {
-    await cursorQueryParamsSchema.validate(rest, { abortEarly: false });
+    await cursorParamsSchema.validate(rest, { abortEarly: false });
 
     if (parentId) {
       const count = await countReplies(prisma, parentId);
@@ -187,7 +186,7 @@ export async function getPostCommentsOnCursorCtrl(
     const isPostExist = await getPostById(prisma, postId);
 
     if (!isPostExist) {
-      return new NoContentError(NOT_EXIST_ERR_MSG("Post"));
+      return new NoContentError(generateNotExistErrorMessage("Post"));
     }
 
     const args: Prisma.CommentFindManyArgs = {
@@ -211,6 +210,6 @@ export async function getPostCommentsOnCursorCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("comments"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("comments"));
   }
 }

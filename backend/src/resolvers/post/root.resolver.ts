@@ -1,7 +1,7 @@
 import { GraphQLYogaError } from "@graphql-yoga/node";
 
 import logger from "@/logger";
-import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
+import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { IPost } from "@/utils/interfaces";
 import { YogaContext } from "@/utils/types";
 
@@ -17,7 +17,9 @@ export const Post = {
       return author;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("User", "post"));
+      return new GraphQLYogaError(
+        generateEntityNotExistErrorMessage("User", "post"),
+      );
     }
   },
   async categories({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
@@ -31,7 +33,9 @@ export const Post = {
     } catch (error) {
       logger.error(error);
 
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Categories", "post"));
+      return new GraphQLYogaError(
+        generateEntityNotExistErrorMessage("Categories", "post"),
+      );
     }
   },
   async tags({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
@@ -45,7 +49,9 @@ export const Post = {
       return tags;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Tags", "post"));
+      return new GraphQLYogaError(
+        generateEntityNotExistErrorMessage("Tags", "post"),
+      );
     }
   },
   async image({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
@@ -57,7 +63,9 @@ export const Post = {
       return categories;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Image", "post"));
+      return new GraphQLYogaError(
+        generateEntityNotExistErrorMessage("Image", "post"),
+      );
     }
   },
   async reactionsBy({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
@@ -71,7 +79,9 @@ export const Post = {
       return reactions;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Reactions", "post"));
+      return new GraphQLYogaError(
+        generateEntityNotExistErrorMessage("Reactions", "post"),
+      );
     }
   },
   async comments(
@@ -93,7 +103,9 @@ export const Post = {
       return comments;
     } catch (error) {
       logger.error(error);
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Comments", "post"));
+      return new GraphQLYogaError(
+        generateEntityNotExistErrorMessage("Comments", "post"),
+      );
     }
   },
 };

@@ -7,6 +7,7 @@ import ms from "ms";
 import path from "path";
 import { promisify } from "util";
 import { ValidationError } from "yup";
+
 import logger from "../logger";
 import { CustomError } from "../model";
 import config from "./config";
@@ -17,10 +18,10 @@ import {
   INTERNAL_SERVER_ERROR,
   INVALID_FILE_ERR_MSG,
   NOT_IMG_ERR_MSG,
-  REFRESH_TOKEN_KEY_NAME,
-  TOO_LARGE_FILE_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
+  generateRefreshTokenKeyName,
+  generateTooLargeFileErrorMessage,
 } from "./constants";
 import {
   IExtensionsWithAuthorization,
@@ -56,7 +57,7 @@ export function nanoid(size?: number) {
             : e > 62
             ? "-"
             : "_"),
-      ""
+      "",
     );
   }
   return randomUUID();
@@ -84,11 +85,13 @@ export const verifyRefreshToken = async (token: string) => {
     const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY);
     const payload = getUserPayload(decoded);
 
-    const value = await redisClient.get(REFRESH_TOKEN_KEY_NAME(payload.id));
+    const value = await redisClient.get(
+      generateRefreshTokenKeyName(payload.id),
+    );
     if (value && token === JSON.parse(value)) {
       return payload;
     }
-    redisClient.del(REFRESH_TOKEN_KEY_NAME(payload.id));
+    redisClient.del(generateRefreshTokenKeyName(payload.id));
     throw new CustomError(UN_AUTH_ERR_MSG, UN_AUTH_EXT_ERR_CODE);
   } catch (error) {
     logger.error(error);
@@ -112,7 +115,7 @@ export const verifyAccessTokenInContext = (request: Request) => {
 };
 
 export const isExtensionsWithAuthorization = (
-  extensions: any
+  extensions: any,
 ): extensions is IExtensionsWithAuthorization =>
   typeof extensions === "object" &&
   "headers" in extensions &&
@@ -143,7 +146,7 @@ export const generateToken = async (
   user: IUserPayload,
   key: string,
   expires: string,
-  settable: boolean = false
+  settable: boolean = false,
 ) => {
   const token = jwt.sign({ ...user }, key, {
     expiresIn: expires,
@@ -153,9 +156,9 @@ export const generateToken = async (
 
   if (settable) {
     await redisClient.setEx(
-      REFRESH_TOKEN_KEY_NAME(user.id),
+      generateRefreshTokenKeyName(user.id),
       exp,
-      JSON.stringify(token)
+      JSON.stringify(token),
     );
   }
   return token;
@@ -166,12 +169,12 @@ export const maxFileSize = (mb: number) => mb * 1000000;
 
 type FileFilterCallbackFunctionType = (
   error: CustomError | null,
-  valid?: boolean
+  valid?: boolean,
 ) => void;
 
 type FileFilterFunctionType = (
   file: File,
-  cb: FileFilterCallbackFunctionType
+  cb: FileFilterCallbackFunctionType,
 ) => void;
 
 const fileFilterCb = (error: CustomError | null, valid?: boolean) => {
@@ -192,7 +195,7 @@ export async function fileUpload(
     dest?: string;
     name?: string;
     filterFunction?: FileFilterFunctionType;
-  }
+  },
 ) {
   try {
     filterFunction && filterFunction(file, fileFilterCb);
@@ -217,7 +220,7 @@ export async function imageUpload(
   file: File,
   dest: string,
   name: string,
-  maxSize: number = maxFileSize(5)
+  maxSize: number = maxFileSize(5),
 ) {
   const { name: newName, filePath } = await fileUpload(file, {
     dest,
@@ -231,9 +234,9 @@ export async function imageUpload(
       if (size > maxSize) {
         return cb(
           new CustomError(
-            TOO_LARGE_FILE_ERR_MSG("Image", `${maxSize} Mb`),
-            BAD_USER_INPUT
-          )
+            generateTooLargeFileErrorMessage("Image", `${maxSize} Mb`),
+            BAD_USER_INPUT,
+          ),
         );
       }
 
@@ -265,6 +268,6 @@ export function removeFile(filePath?: string) {
 export const isDev = () => process.env.NODE_ENV === "development";
 
 export const isVerifyResetPassword = (
-  data: any
+  data: any,
 ): data is IVerifyResetPassword =>
   typeof data === "object" && _.has(data, "code") && _.has(data, "hash");

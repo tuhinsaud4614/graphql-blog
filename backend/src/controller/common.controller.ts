@@ -2,7 +2,7 @@ import path from "path";
 
 import logger from "@/logger";
 import { fileUpload, imageUpload, nanoid, removeFile } from "@/utils";
-import { CREATION_ERR_MSG } from "@/utils/constants";
+import { generateCreationErrorMessage } from "@/utils/constants";
 import {
   getGraphqlYogaError,
   uploadFileSchema,
@@ -25,7 +25,11 @@ export async function uploadFileCtrl(file: File) {
   } catch (error) {
     removeFile(newFilePath);
     logger.error(error);
-    return getGraphqlYogaError(error, CREATION_ERR_MSG("File"), "File input");
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("File"),
+      "File input",
+    );
   }
 }
 
@@ -44,6 +48,10 @@ export async function uploadImageCtrl(image: File) {
   } catch (error) {
     removeFile(newFilePath);
     logger.error(error);
-    return getGraphqlYogaError(error, CREATION_ERR_MSG("File"), "File input");
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("File"),
+      "File input",
+    );
   }
 }

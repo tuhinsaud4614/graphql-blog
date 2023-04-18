@@ -6,12 +6,12 @@ export function getCategoryById(prisma: PrismaClient, id: string) {
   return prisma.category.findUnique({ where: { id } });
 }
 
-export async function getCategoriesOnOffset(
+export async function getCategoriesWithOffset(
   prisma: PrismaClient,
   count: number,
   page?: number,
   limit?: number,
-  condition?: Prisma.CategoryFindManyArgs
+  condition?: Prisma.CategoryFindManyArgs,
 ) {
   if (limit && page) {
     const result = await prisma.category.findMany({
@@ -47,7 +47,7 @@ export function createCategory(prisma: PrismaClient, title: string) {
 export function updateCategory(
   prisma: PrismaClient,
   id: string,
-  title: string
+  title: string,
 ) {
   return prisma.category.update({
     where: { id },

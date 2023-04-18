@@ -3,51 +3,59 @@ import * as yup from "yup";
 import {
   INVALID_EMAIL,
   INVALID_MOBILE,
-  INVALID_MOBILE_OR_EMAIL_ERR_MSG,
-  MATCHED_ERR_MSG,
   PASSWORD_NOT_LONG_ENOUGH,
   PASSWORD_TOO_LONG,
-  REQUIRED_ERR_MSG,
   VALID_EMAIL_REGEX,
   VALID_MOBILE_REGEX,
+  generateInvalidErrorMessage,
+  generateMatchedErrorMessage,
+  generateRequiredErrorMessage,
 } from "@/utils/constants";
 
 export const registerSchema = yup.object({
   name: yup.string(),
-  email: yup.string().required(REQUIRED_ERR_MSG("Email")).email(INVALID_EMAIL),
+  email: yup
+    .string()
+    .required(generateRequiredErrorMessage("Email"))
+    .email(INVALID_EMAIL),
   mobile: yup
     .string()
-    .required(REQUIRED_ERR_MSG("Mobile"))
+    .required(generateRequiredErrorMessage("Mobile"))
     .test("validMobile", INVALID_MOBILE, (value) => {
       return !!value && VALID_MOBILE_REGEX.test(value);
     }),
   password: yup
     .string()
-    .required(REQUIRED_ERR_MSG("password"))
+    .required(generateRequiredErrorMessage("password"))
     .min(3, PASSWORD_NOT_LONG_ENOUGH)
     .max(255, PASSWORD_TOO_LONG),
   confirmPassword: yup
     .string()
-    .required(REQUIRED_ERR_MSG("Confirm password"))
-    .oneOf([yup.ref("password"), null], MATCHED_ERR_MSG("Password")),
+    .required(generateRequiredErrorMessage("Confirm password"))
+    .oneOf(
+      [yup.ref("password"), null],
+      generateMatchedErrorMessage("Password"),
+    ),
 });
 
 export const resendActivationSchema = yup.object().shape({
-  userId: yup.string().required(REQUIRED_ERR_MSG("User id")),
+  userId: yup.string().required(generateRequiredErrorMessage("User id")),
 });
 
 export const verifyUserSchema = yup.object().shape({
-  userId: yup.string().required(REQUIRED_ERR_MSG("User id")),
-  code: yup.string().required(REQUIRED_ERR_MSG("Verification code")),
+  userId: yup.string().required(generateRequiredErrorMessage("User id")),
+  code: yup
+    .string()
+    .required(generateRequiredErrorMessage("Verification code")),
 });
 
 export const loginSchema = yup.object({
   emailOrMobile: yup
     .string()
-    .required(REQUIRED_ERR_MSG("Email/Mobile"))
+    .required(generateRequiredErrorMessage("Email/Mobile"))
     .test(
       "validMobile",
-      INVALID_MOBILE_OR_EMAIL_ERR_MSG("Email/Mobile"),
+      generateInvalidErrorMessage("Email/Mobile"),
       (value) => {
         return (
           !!value &&
@@ -55,14 +63,16 @@ export const loginSchema = yup.object({
         );
       },
     ),
-  password: yup.string().required(REQUIRED_ERR_MSG("password")),
+  password: yup.string().required(generateRequiredErrorMessage("password")),
 });
 
 export const resetPasswordSchema = yup.object({
-  oldPassword: yup.string().required(REQUIRED_ERR_MSG("Old password")),
+  oldPassword: yup
+    .string()
+    .required(generateRequiredErrorMessage("Old password")),
   newPassword: yup
     .string()
-    .required(REQUIRED_ERR_MSG("New password"))
+    .required(generateRequiredErrorMessage("New password"))
     .min(3, PASSWORD_NOT_LONG_ENOUGH)
     .max(255, PASSWORD_TOO_LONG),
 });

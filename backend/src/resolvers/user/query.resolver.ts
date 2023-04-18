@@ -13,9 +13,9 @@ import {
 } from "@/controller/user.controller";
 import { getUserById } from "@/services/user.service";
 import {
-  NOT_EXIST_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
+  generateNotExistErrorMessage,
 } from "@/utils/constants";
 import { CursorParams, OffsetParams, YogaContext } from "@/utils/types";
 import { getGraphqlYogaError } from "@/validations";
@@ -111,11 +111,11 @@ export const Query = {
     try {
       const user = await getUserById(prisma, id);
       if (user === null) {
-        return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
+        return new GraphQLError(generateNotExistErrorMessage("User"));
       }
       return user;
     } catch (error) {
-      return getGraphqlYogaError(error, NOT_EXIST_ERR_MSG("User"));
+      return getGraphqlYogaError(error, generateNotExistErrorMessage("User"));
     }
   },
 

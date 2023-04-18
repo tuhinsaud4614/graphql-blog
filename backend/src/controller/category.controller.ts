@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import { Prisma, PrismaClient } from "@prisma/client";
 
@@ -6,21 +6,20 @@ import logger from "@/logger";
 import {
   createCategory,
   deleteCategory,
-  getCategoriesOnOffset,
+  getCategoriesWithOffset,
   getCategoryById,
   updateCategory,
 } from "@/services/category.service";
 import {
-  CREATION_ERR_MSG,
-  DELETE_ERR_MSG,
-  FETCH_ERR_MSG,
-  NOT_EXIST_ERR_MSG,
-  UPDATE_ERR_MSG,
+  generateCreationErrorMessage,
+  generateDeleteErrorMessage,
+  generateNotExistErrorMessage,
+  generateUpdateErrorMessage,
 } from "@/utils/constants";
 import type { OffsetParams } from "@/utils/types";
 import { getGraphqlYogaError, offsetParamsSchema } from "@/validations";
 
-export async function getCategoriesOnOffsetCtrl(
+export async function getCategoriesWithOffsetController(
   prisma: PrismaClient,
   params: OffsetParams,
 ) {
@@ -39,7 +38,7 @@ export async function getCategoriesOnOffsetCtrl(
       return { data: [], total: count };
     }
 
-    const result = await getCategoriesOnOffset(
+    const result = await getCategoriesWithOffset(
       prisma,
       count,
       page,
@@ -49,7 +48,10 @@ export async function getCategoriesOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("categories"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("categories"),
+    );
   }
 }
 
@@ -77,7 +79,7 @@ export async function getCategoriesByTextOnOffsetCtrl(
       return { data: [], total: count };
     }
 
-    const result = await getCategoriesOnOffset(
+    const result = await getCategoriesWithOffset(
       prisma,
       count,
       page,
@@ -87,7 +89,10 @@ export async function getCategoriesByTextOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("categories"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("categories"),
+    );
   }
 }
 
@@ -99,7 +104,7 @@ export async function createCategoryCtrl(prisma: PrismaClient, title: string) {
     return category;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, CREATION_ERR_MSG("Category"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("Category"));
   }
 }
 
@@ -111,14 +116,14 @@ export async function updateCategoryCtrl(
   try {
     const isExist = await getCategoryById(prisma, id);
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Category"));
+      return new GraphQLError(generateNotExistErrorMessage("Category"));
     }
 
     const category = await updateCategory(prisma, id, title);
     return category;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, UPDATE_ERR_MSG("Category"));
+    return getGraphqlYogaError(error, generateUpdateErrorMessage("Category"));
   }
 }
 
@@ -126,13 +131,13 @@ export async function deleteCategoryCtrl(prisma: PrismaClient, id: string) {
   try {
     const isExist = await getCategoryById(prisma, id);
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("Category"));
+      return new GraphQLError(generateNotExistErrorMessage("Category"));
     }
 
     const category = await deleteCategory(prisma, id);
     return category.id;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, DELETE_ERR_MSG("Category"));
+    return getGraphqlYogaError(error, generateDeleteErrorMessage("Category"));
   }
 }

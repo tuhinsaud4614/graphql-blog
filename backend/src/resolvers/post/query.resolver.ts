@@ -13,7 +13,7 @@ import {
 import logger from "@/logger";
 import { AuthenticationError } from "@/model";
 import { getPostById } from "@/services/post.service";
-import { NOT_EXIST_ERR_MSG } from "@/utils/constants";
+import { generateNotExistErrorMessage } from "@/utils/constants";
 import type {
   CursorParams,
   OffsetParams,
@@ -59,7 +59,7 @@ export const Query = {
       return result;
     } catch (error: any) {
       logger.error(error);
-      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
   },
   async trendingPosts(_: any, __: any, { prisma }: YogaContext, ___: any) {

@@ -1,6 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
-
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLError, GraphQLResolveInfo } from "graphql";
 
 import {
   createCategoryCtrl,
@@ -8,9 +6,9 @@ import {
   updateCategoryCtrl,
 } from "../../controller/category.controller";
 import {
-  ROLE_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
+  generateRoleErrorMessage,
 } from "../../utils/constants";
 import { EUserRole } from "../../utils/enums";
 import { YogaContext } from "../../utils/types";
@@ -23,13 +21,15 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
     if (user.role !== EUserRole.Admin) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin"));
+      return new GraphQLError(generateRoleErrorMessage("admin"));
     }
 
     const result = await createCategoryCtrl(prisma, title);
@@ -43,13 +43,15 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
     if (user.role !== EUserRole.Admin) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin"));
+      return new GraphQLError(generateRoleErrorMessage("admin"));
     }
 
     const result = await updateCategoryCtrl(prisma, id, title);
@@ -63,13 +65,15 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
     if (user.role !== EUserRole.Admin) {
-      return new GraphQLYogaError(ROLE_ERR_MSG("admin"));
+      return new GraphQLError(generateRoleErrorMessage("admin"));
     }
 
     const result = await deleteCategoryCtrl(prisma, id);

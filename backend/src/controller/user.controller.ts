@@ -49,21 +49,20 @@ import {
   ALREADY_FOLLOWED_ERR_MSG,
   ALREADY_UN_FOLLOWED_ERR_MSG,
   AUTH_FAIL_ERR_MSG,
-  CREATION_ERR_MSG,
-  EXIST_ERR_MSG,
-  FETCH_ERR_MSG,
   FOLLOW_ERR_MSG,
   INTERNAL_SERVER_ERROR,
   INVALID_CREDENTIAL,
-  NOT_EXIST_ERR_MSG,
-  REFRESH_TOKEN_KEY_NAME,
-  RESET_PASSWORD_VERIFICATION_KEY_NAME,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
-  USER_VERIFICATION_KEY_NAME,
+  generateCreationErrorMessage,
+  generateExistErrorMessage,
+  generateNotExistErrorMessage,
+  generateRefreshTokenKeyName,
+  generateResetPasswordVerificationKeyForId,
+  generateUserVerificationKey,
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
-import { IUserPayload } from "@/utils/interfaces";
+import type { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
 import type {
   CursorParams,
@@ -113,7 +112,7 @@ export async function registerCtrl(
 
     if (isUserExist) {
       if (isUserExist.authorStatus === EAuthorStatus.Verified) {
-        return new GraphQLError(EXIST_ERR_MSG("User"));
+        return new GraphQLError(generateExistErrorMessage("User"));
       }
       await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
       return isUserExist.id;
@@ -135,7 +134,7 @@ export async function registerCtrl(
     logger.error(error);
     return getGraphqlYogaError(
       error,
-      CREATION_ERR_MSG("User"),
+      generateCreationErrorMessage("User"),
       "Register input",
     );
   }
@@ -150,7 +149,7 @@ export async function resendActivationCtrl(
     await resendActivationSchema.validate({ userId }, { abortEarly: false });
     const isUserExist = await getUserById(prisma, userId);
     if (!isUserExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
     if (isUserExist.authorStatus === EAuthorStatus.Verified) {
@@ -174,14 +173,14 @@ export async function verifyUserCtrl(
     const isUserExist = await getUserById(prisma, userId);
 
     if (!isUserExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
     if (isUserExist.authorStatus === EAuthorStatus.Verified) {
       return new GraphQLError("User already verified");
     }
 
-    const VRKey = USER_VERIFICATION_KEY_NAME(userId);
+    const VRKey = generateUserVerificationKey(userId);
 
     const redisCode = await redisClient.get(VRKey);
 
@@ -271,7 +270,7 @@ export async function logoutCtrl(
       return new NoContentError("Logout failed");
     }
 
-    await redisClient.del(REFRESH_TOKEN_KEY_NAME(user.id));
+    await redisClient.del(generateRefreshTokenKeyName(user.id));
 
     // @ts-ignore
     res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
@@ -344,7 +343,7 @@ export async function resetPasswordCtrl(
     const isExist = await getUserById(prisma, userId);
 
     if (!isExist) {
-      return new ValidationError(NOT_EXIST_ERR_MSG("User"));
+      return new ValidationError(generateNotExistErrorMessage("User"));
     }
 
     const isValidPassword = await verify(isExist.password, oldPassword);
@@ -381,10 +380,10 @@ export async function verifyResetPasswordCtrl(
     const isUserExist = await getUserById(prisma, userId);
 
     if (!isUserExist) {
-      return new ValidationError(NOT_EXIST_ERR_MSG("User"));
+      return new ValidationError(generateNotExistErrorMessage("User"));
     }
 
-    const key = RESET_PASSWORD_VERIFICATION_KEY_NAME(userId);
+    const key = generateResetPasswordVerificationKeyForId(userId);
 
     const data = await redisClient.get(key);
     const result = data ? JSON.parse(data) : null;
@@ -538,7 +537,7 @@ export async function followRequestCtrl(
     const isExist = await getUserByIdWithInfo(prisma, toId);
 
     if (!isExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
     const index = isExist.followers.findIndex(
@@ -566,7 +565,7 @@ export async function unfollowRequestCtrl(
     const isExist = await getUserByIdWithInfo(prisma, toId);
 
     if (!isExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
     const index = isExist.followers.findIndex(
@@ -616,7 +615,7 @@ export async function getUsersOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("users"));
   }
 }
 
@@ -654,7 +653,7 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("users"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("users"));
   }
 }
 
@@ -686,7 +685,10 @@ export async function authorFollowersOnCursorCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("authors followers"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("authors followers"),
+    );
   }
 }
 
@@ -718,7 +720,10 @@ export async function authorFollowingsOnCursorCtrl(
     return result;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("authors following"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("authors following"),
+    );
   }
 }
 
@@ -748,7 +753,10 @@ export async function userResultCtrl(
     };
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("user result"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("user result"),
+    );
   }
 }
 
@@ -762,7 +770,10 @@ export async function userFollowCtrl(prisma: PrismaClient, userId: string) {
     };
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("user follow"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("user follow"),
+    );
   }
 }
 
@@ -777,7 +788,10 @@ export async function userFollowersCtrl(
     return followerCount?._count.followers ?? 0;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("user followers"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("user followers"),
+    );
   }
 }
 
@@ -788,6 +802,9 @@ export async function userFollowingsCtrl(prisma: PrismaClient, userId: string) {
     return followerCount?._count.followings ?? 0;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("user followings"));
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("user followings"),
+    );
   }
 }

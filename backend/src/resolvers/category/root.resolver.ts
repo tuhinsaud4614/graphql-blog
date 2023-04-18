@@ -1,8 +1,10 @@
 import { GraphQLError } from "graphql";
 
+import type { Category as ICategory } from "@prisma/client";
+
 import logger from "@/logger";
-import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
-import { ICategory } from "@/utils/interfaces";
+import { getPostsByCategoryId } from "@/repositories/category";
+import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { YogaContext } from "@/utils/types";
 
 export const Category = {
@@ -13,15 +15,12 @@ export const Category = {
     __: unknown,
   ) {
     try {
-      const posts = await prisma.category
-        .findFirst({
-          where: { id },
-        })
-        .posts();
-      return posts;
+      return await getPostsByCategoryId(prisma, id);
     } catch (error) {
       logger.error(error);
-      throw new GraphQLError(NOT_EXIST_FOR_ERR_MSG("Posts", "user"));
+      throw new GraphQLError(
+        generateEntityNotExistErrorMessage("Posts", "user"),
+      );
     }
   },
 };

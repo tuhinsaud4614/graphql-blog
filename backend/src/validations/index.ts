@@ -9,10 +9,10 @@ import {
   IMAGE_MIMES,
   INTERNAL_SERVER_ERROR,
   NOT_IMG_ERR_MSG,
-  NOT_NUM_ERR_MSG,
-  REQUIRED_ERR_MSG,
-  TOO_LARGE_FILE_ERR_MSG,
-  VALIDATION_ERR_MSG,
+  generateNotNumberErrorMessage,
+  generateRequiredErrorMessage,
+  generateTooLargeFileErrorMessage,
+  generateValidationErrorMessage,
 } from "@/utils/constants";
 
 export function getGraphqlYogaError(
@@ -27,7 +27,7 @@ export function getGraphqlYogaError(
 
   if (error instanceof yup.ValidationError) {
     const err = formatYupError(error);
-    return new UserInputError(VALIDATION_ERR_MSG(errFor), {
+    return new UserInputError(generateValidationErrorMessage(errFor), {
       fields: err,
     });
   }
@@ -35,13 +35,13 @@ export function getGraphqlYogaError(
 }
 
 export const uploadFileSchema = yup.object().shape({
-  file: yup.mixed<File>().required(REQUIRED_ERR_MSG("File")),
+  file: yup.mixed<File>().required(generateRequiredErrorMessage("File")),
 });
 
 export const uploadImageSchema = yup.object().shape({
   image: yup
     .mixed<File>()
-    .required(REQUIRED_ERR_MSG("Image"))
+    .required(generateRequiredErrorMessage("Image"))
     .test(
       "fileFormat",
       NOT_IMG_ERR_MSG,
@@ -49,7 +49,7 @@ export const uploadImageSchema = yup.object().shape({
     )
     .test(
       "fileSize",
-      TOO_LARGE_FILE_ERR_MSG("Image", `${maxFileSize(5)} Mb`),
+      generateTooLargeFileErrorMessage("Image", `${maxFileSize(5)} Mb`),
       (value) => !!value && value.size <= maxFileSize(5),
     ),
 });
@@ -57,12 +57,14 @@ export const uploadImageSchema = yup.object().shape({
 export const cursorParamsSchema = yup.object({
   limit: yup
     .number()
-    .required(REQUIRED_ERR_MSG("Limit"))
-    .integer(NOT_NUM_ERR_MSG("Limit", "integer")),
+    .required(generateRequiredErrorMessage("Limit"))
+    .integer(generateNotNumberErrorMessage("Limit", "integer")),
   after: yup.string().nullable(),
 });
 
 export const offsetParamsSchema = yup.object({
-  limit: yup.number().integer(NOT_NUM_ERR_MSG("Limit", "integer")),
-  page: yup.number().integer(NOT_NUM_ERR_MSG("Page", "integer")),
+  limit: yup
+    .number()
+    .integer(generateNotNumberErrorMessage("Limit", "integer")),
+  page: yup.number().integer(generateNotNumberErrorMessage("Page", "integer")),
 });

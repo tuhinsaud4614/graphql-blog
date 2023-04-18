@@ -4,8 +4,8 @@ import path from "path";
 import logger from "@/logger";
 import { nanoid } from "@/utils";
 import {
-  RESET_PASSWORD_VERIFICATION_KEY_NAME,
-  USER_VERIFICATION_KEY_NAME,
+  generateResetPasswordVerificationKeyForId,
+  generateUserVerificationKey,
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import {
@@ -347,7 +347,7 @@ export const sendUserVerificationCode = async (
     message,
   );
   await redisClient.setEx(
-    USER_VERIFICATION_KEY_NAME(userId),
+    generateUserVerificationKey(userId),
     600,
     verificationCode,
   );
@@ -388,7 +388,7 @@ export const sendResetPasswordVerificationCode = async (
     message,
   );
   await redisClient.setEx(
-    RESET_PASSWORD_VERIFICATION_KEY_NAME(userId),
+    generateResetPasswordVerificationKeyForId(userId),
     600,
     JSON.stringify({ code: verificationCode, hash: password }),
   );

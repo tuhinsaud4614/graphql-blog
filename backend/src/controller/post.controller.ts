@@ -23,12 +23,11 @@ import {
 } from "@/services/post.service";
 import { imageUpload, nanoid, removeFile } from "@/utils";
 import {
-  CREATION_ERR_MSG,
-  DELETE_ERR_MSG,
-  FETCH_ERR_MSG,
-  NOT_EXIST_ERR_MSG,
   REACTIONS_ERR_MSG,
-  UPDATE_ERR_MSG,
+  generateCreationErrorMessage,
+  generateDeleteErrorMessage,
+  generateNotExistErrorMessage,
+  generateUpdateErrorMessage,
 } from "@/utils/constants";
 import { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
@@ -86,7 +85,11 @@ export async function createPostCtrl(
   } catch (error) {
     removeFile(imagePath);
     logger.error(error);
-    return getGraphqlYogaError(error, CREATION_ERR_MSG("Post"), "Post input");
+    return getGraphqlYogaError(
+      error,
+      generateCreationErrorMessage("Post"),
+      "Post input",
+    );
   }
 }
 
@@ -105,7 +108,7 @@ export async function updatePostCtrl(
     const isExist = await getPostByIdForUser(prisma, rest.id, user.id);
 
     if (!isExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
 
     if (image) {
@@ -134,7 +137,11 @@ export async function updatePostCtrl(
   } catch (error) {
     removeFile(imagePath);
     logger.error(error);
-    return getGraphqlYogaError(error, UPDATE_ERR_MSG("Post"), "Post input");
+    return getGraphqlYogaError(
+      error,
+      generateUpdateErrorMessage("Post"),
+      "Post input",
+    );
   }
 }
 
@@ -147,14 +154,18 @@ export async function deletePostCtrl(
     const isExist = await getPostByIdForUser(prisma, id, user.id);
 
     if (!isExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
 
     const deletedPost = await deletePost(prisma, id);
     return deletedPost.id;
   } catch (error) {
     logger.error(error);
-    return getGraphqlYogaError(error, DELETE_ERR_MSG("Post"), "Post input");
+    return getGraphqlYogaError(
+      error,
+      generateDeleteErrorMessage("Post"),
+      "Post input",
+    );
   }
 }
 
@@ -169,7 +180,7 @@ export async function reactionToCtrl(
     const isExist = await getPostById(prisma, toId);
 
     if (!isExist) {
-      return new GraphQLError(NOT_EXIST_ERR_MSG("Post"));
+      return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
     const isReacted = await isReactToThePost(prisma, toId, user.id);
 
@@ -232,7 +243,7 @@ export async function getAllPostsOnOffsetCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
   }
 }
 // Offset based pagination end
@@ -255,7 +266,7 @@ export async function getAllPostsCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
   }
 }
 // Cursor based pagination start
@@ -279,7 +290,7 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
     return posts;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
   }
 }
 
@@ -308,7 +319,7 @@ export async function getFollowingAuthorPostsCtrl(
     return result;
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("posts"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("posts"));
   }
 }
 
@@ -361,7 +372,7 @@ export async function getAllPostsByTagCtrl(
     return { data: result, total: count };
   } catch (error: any) {
     logger.error(error);
-    return getGraphqlYogaError(error, FETCH_ERR_MSG("Posts"));
+    return getGraphqlYogaError(error, generateCreationErrorMessage("Posts"));
   }
 }
 

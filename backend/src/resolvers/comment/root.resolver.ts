@@ -1,9 +1,9 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import logger from "@/logger";
 import { UnknownError } from "@/model";
 import { getReplyCount } from "@/services/comment.service";
-import { NOT_EXIST_FOR_ERR_MSG } from "@/utils/constants";
+import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { IComment } from "@/utils/interfaces";
 import { YogaContext } from "@/utils/types";
 
@@ -15,7 +15,9 @@ export const Comment = {
         .commenter();
       return user;
     } catch (error) {
-      return new GraphQLYogaError(NOT_EXIST_FOR_ERR_MSG("Commenter", "user"));
+      return new GraphQLError(
+        generateEntityNotExistErrorMessage("Commenter", "user"),
+      );
     }
   },
   async parentComment(
@@ -30,8 +32,8 @@ export const Comment = {
         .parentComment();
       return comment;
     } catch (error) {
-      return new GraphQLYogaError(
-        NOT_EXIST_FOR_ERR_MSG("Parent comment", "user"),
+      return new GraphQLError(
+        generateEntityNotExistErrorMessage("Parent comment", "user"),
       );
     }
   },
