@@ -12,7 +12,8 @@ import {
   VALID_MOBILE_REGEX,
 } from "@/utils/constants";
 
-export const registerSchema = yup.object().shape({
+export const registerSchema = yup.object({
+  name: yup.string(),
   email: yup.string().required(REQUIRED_ERR_MSG("Email")).email(INVALID_EMAIL),
   mobile: yup
     .string()
@@ -40,7 +41,7 @@ export const verifyUserSchema = yup.object().shape({
   code: yup.string().required(REQUIRED_ERR_MSG("Verification code")),
 });
 
-export const loginSchema = yup.object().shape({
+export const loginSchema = yup.object({
   emailOrMobile: yup
     .string()
     .required(REQUIRED_ERR_MSG("Email/Mobile"))
@@ -52,12 +53,12 @@ export const loginSchema = yup.object().shape({
           !!value &&
           (VALID_MOBILE_REGEX.test(value) || VALID_EMAIL_REGEX.test(value))
         );
-      }
+      },
     ),
   password: yup.string().required(REQUIRED_ERR_MSG("password")),
 });
 
-export const resetPasswordSchema = yup.object().shape({
+export const resetPasswordSchema = yup.object({
   oldPassword: yup.string().required(REQUIRED_ERR_MSG("Old password")),
   newPassword: yup
     .string()

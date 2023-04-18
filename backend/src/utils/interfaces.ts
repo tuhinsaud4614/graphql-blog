@@ -43,20 +43,6 @@ export interface ResolverMap {
   };
 }
 
-// Mutation Input Interface
-export interface IRegisterInput {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  mobile: string;
-  name?: string;
-}
-
-export interface ILoginInput {
-  emailOrMobile: string;
-  password: string;
-}
-
 // Payload
 export interface IPicturePayload {
   id: string;

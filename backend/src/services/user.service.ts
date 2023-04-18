@@ -10,9 +10,9 @@ import {
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import {
   CursorParams,
-  IRegisterInput,
   IResponseOnCursor,
   IResponseOnOffset,
+  RegisterInput,
 } from "@/utils/interfaces";
 import sendMail from "@/utils/mailer";
 import redisClient from "@/utils/redis";
@@ -207,7 +207,7 @@ export function getUserFollowingList(
 
 export function createUser(
   prisma: PrismaClient,
-  { email, mobile, password, name }: Omit<IRegisterInput, "confirmPassword">,
+  { email, mobile, password, name }: Omit<RegisterInput, "confirmPassword">,
 ) {
   return prisma.user.create({
     data: {

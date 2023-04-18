@@ -1,6 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
-
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
 import {
   followRequestCtrl,
@@ -25,13 +23,12 @@ import {
   UN_FOLLOW_OWN_ERR_MSG,
 } from "@/utils/constants";
 import { EAuthorStatus, EFollowingMutationStatus } from "@/utils/enums";
-import { ILoginInput, IRegisterInput } from "@/utils/interfaces";
-import { YogaContext } from "@/utils/types";
+import { LoginInput, RegisterInput, YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async register(
     _: any,
-    { data }: { data: IRegisterInput },
+    { data }: { data: RegisterInput },
     { prisma, req }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
@@ -64,7 +61,7 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     const verifiedUserId = await verifyUserCtrl(prisma, userId, code);
-    if (!(verifiedUserId instanceof GraphQLYogaError)) {
+    if (!(verifiedUserId instanceof GraphQLError)) {
       pubSub.publish("verifyUser", verifiedUserId, {
         mutation: EAuthorStatus.Verified,
         userId: verifiedUserId,
@@ -75,7 +72,7 @@ export const Mutation = {
 
   async login(
     _: any,
-    { data }: { data: ILoginInput },
+    { data }: { data: LoginInput },
     { prisma, res }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
@@ -135,8 +132,10 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -151,8 +150,10 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -167,8 +168,10 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -183,13 +186,15 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
     if (user.id === toId) {
-      return new GraphQLYogaError(FOLLOW_OWN_ERR_MSG);
+      return new GraphQLError(FOLLOW_OWN_ERR_MSG);
     }
 
     const result = await followRequestCtrl(prisma, toId, user);
@@ -207,13 +212,15 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
     if (user.id === toId) {
-      return new GraphQLYogaError(UN_FOLLOW_OWN_ERR_MSG);
+      return new GraphQLError(UN_FOLLOW_OWN_ERR_MSG);
     }
 
     const result = await unfollowRequestCtrl(prisma, toId, user);

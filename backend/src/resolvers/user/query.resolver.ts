@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import {
   authorFollowersOnCursorCtrl,
@@ -17,8 +17,7 @@ import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
 } from "@/utils/constants";
-import { CursorParams, OffsetParams } from "@/utils/interfaces";
-import { YogaContext } from "@/utils/types";
+import { CursorParams, OffsetParams, YogaContext } from "@/utils/types";
 import { getGraphqlYogaError } from "@/validations";
 
 export const Query = {
@@ -54,8 +53,10 @@ export const Query = {
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
     const result = await suggestAuthorsToUserOnOffsetCtrl(
@@ -72,8 +73,10 @@ export const Query = {
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
     const result = await authorFollowersOnCursorCtrl(
@@ -90,8 +93,10 @@ export const Query = {
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
     const result = await authorFollowingsOnCursorCtrl(
@@ -106,7 +111,7 @@ export const Query = {
     try {
       const user = await getUserById(prisma, id);
       if (user === null) {
-        return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+        return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
       }
       return user;
     } catch (error) {

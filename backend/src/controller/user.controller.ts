@@ -1,4 +1,4 @@
-import { GraphQLYogaError } from "@graphql-yoga/node";
+import { GraphQLError } from "graphql";
 
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
@@ -63,19 +63,19 @@ import {
   USER_VERIFICATION_KEY_NAME,
 } from "@/utils/constants";
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
-import {
-  CursorParams,
-  ILoginInput,
-  IRegisterInput,
-  IUserPayload,
-  OffsetParams,
-} from "@/utils/interfaces";
+import { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
-import { getGraphqlYogaError } from "@/validations";
+import type {
+  CursorParams,
+  LoginInput,
+  OffsetParams,
+  RegisterInput,
+} from "@/utils/types";
 import {
-  cursorQueryParamsSchema,
+  cursorParamsSchema,
+  getGraphqlYogaError,
   offsetParamsSchema,
-} from "@/validations/post.validation";
+} from "@/validations";
 import {
   loginSchema,
   registerSchema,
@@ -103,7 +103,7 @@ async function generateTokens(user: IUserPayload) {
 
 export async function registerCtrl(
   prisma: PrismaClient,
-  args: IRegisterInput,
+  args: RegisterInput,
   host: string,
 ) {
   try {
@@ -113,7 +113,7 @@ export async function registerCtrl(
 
     if (isUserExist) {
       if (isUserExist.authorStatus === EAuthorStatus.Verified) {
-        return new GraphQLYogaError(EXIST_ERR_MSG("User"));
+        return new GraphQLError(EXIST_ERR_MSG("User"));
       }
       await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
       return isUserExist.id;
@@ -150,11 +150,11 @@ export async function resendActivationCtrl(
     await resendActivationSchema.validate({ userId }, { abortEarly: false });
     const isUserExist = await getUserById(prisma, userId);
     if (!isUserExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
     }
 
     if (isUserExist.authorStatus === EAuthorStatus.Verified) {
-      return new GraphQLYogaError("User already verified");
+      return new GraphQLError("User already verified");
     }
 
     await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
@@ -174,11 +174,11 @@ export async function verifyUserCtrl(
     const isUserExist = await getUserById(prisma, userId);
 
     if (!isUserExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
     }
 
     if (isUserExist.authorStatus === EAuthorStatus.Verified) {
-      return new GraphQLYogaError("User already verified");
+      return new GraphQLError("User already verified");
     }
 
     const VRKey = USER_VERIFICATION_KEY_NAME(userId);
@@ -186,7 +186,7 @@ export async function verifyUserCtrl(
     const redisCode = await redisClient.get(VRKey);
 
     if (code !== redisCode) {
-      return new GraphQLYogaError("User verification failed");
+      return new GraphQLError("User verification failed");
     }
 
     await redisClient.del(VRKey);
@@ -207,7 +207,7 @@ export async function verifyUserCtrl(
 
 export async function loginCtrl(
   prisma: PrismaClient,
-  args: ILoginInput,
+  args: LoginInput,
   res: ServerResponse,
 ) {
   try {
@@ -222,13 +222,13 @@ export async function loginCtrl(
     );
 
     if (!isUserExist) {
-      return new GraphQLYogaError(INVALID_CREDENTIAL);
+      return new GraphQLError(INVALID_CREDENTIAL);
     }
 
     const isValidPassword = await verify(isUserExist.password, password);
 
     if (!isValidPassword) {
-      return new GraphQLYogaError(INVALID_CREDENTIAL);
+      return new GraphQLError(INVALID_CREDENTIAL);
     }
 
     const user = {
@@ -417,8 +417,10 @@ export async function uploadAvatar(
     const isExist = await getUserByIdWithInfo(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -478,8 +480,10 @@ export async function updateNameCtrl(
     const isExist = await getUserByIdWithInfo(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -505,8 +509,10 @@ export async function updateAboutCtrl(
     const isExist = await getUserByIdWithInfo(prisma, user.id);
 
     if (!isExist) {
-      return new GraphQLYogaError(UN_AUTH_ERR_MSG, {
-        code: UN_AUTH_EXT_ERR_CODE,
+      return new GraphQLError(UN_AUTH_ERR_MSG, {
+        extensions: {
+          code: UN_AUTH_EXT_ERR_CODE,
+        },
       });
     }
 
@@ -532,7 +538,7 @@ export async function followRequestCtrl(
     const isExist = await getUserByIdWithInfo(prisma, toId);
 
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
     }
 
     const index = isExist.followers.findIndex(
@@ -540,7 +546,7 @@ export async function followRequestCtrl(
     );
 
     if (index !== -1) {
-      return new GraphQLYogaError(ALREADY_FOLLOWED_ERR_MSG);
+      return new GraphQLError(ALREADY_FOLLOWED_ERR_MSG);
     }
 
     const followedUser = await followTo(prisma, toId, user.id);
@@ -560,7 +566,7 @@ export async function unfollowRequestCtrl(
     const isExist = await getUserByIdWithInfo(prisma, toId);
 
     if (!isExist) {
-      return new GraphQLYogaError(NOT_EXIST_ERR_MSG("User"));
+      return new GraphQLError(NOT_EXIST_ERR_MSG("User"));
     }
 
     const index = isExist.followers.findIndex(
@@ -568,7 +574,7 @@ export async function unfollowRequestCtrl(
     );
 
     if (index === -1) {
-      return new GraphQLYogaError(ALREADY_UN_FOLLOWED_ERR_MSG);
+      return new GraphQLError(ALREADY_UN_FOLLOWED_ERR_MSG);
     }
 
     await unfollowTo(prisma, toId, user.id);
@@ -658,7 +664,7 @@ export async function authorFollowersOnCursorCtrl(
   userId: string,
 ) {
   try {
-    await cursorQueryParamsSchema.validate(params, {
+    await cursorParamsSchema.validate(params, {
       abortEarly: false,
     });
 
@@ -690,7 +696,7 @@ export async function authorFollowingsOnCursorCtrl(
   userId: string,
 ) {
   try {
-    await cursorQueryParamsSchema.validate(params, {
+    await cursorParamsSchema.validate(params, {
       abortEarly: false,
     });
 
