@@ -47,7 +47,7 @@ export const Query = {
     return result;
   },
 
-  async suggestAuthorsToUserOnOffset(
+  async recommendAuthorsWithOffset(
     _: any,
     params: OffsetParams,
     { prisma, user }: YogaContext,
@@ -67,7 +67,7 @@ export const Query = {
     return result;
   },
 
-  async authorFollowersOnCursor(
+  async authorFollowersWithCursor(
     _: any,
     { authorId, ...rest }: CursorParams & { authorId?: string },
     { prisma, user }: YogaContext,
@@ -87,7 +87,7 @@ export const Query = {
     return result;
   },
 
-  async authorFollowingsOnCursor(
+  async authorFollowingsWithCursor(
     _: any,
     { authorId, ...rest }: CursorParams & { authorId?: string },
     { prisma, user }: YogaContext,

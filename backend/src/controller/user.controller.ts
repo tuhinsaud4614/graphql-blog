@@ -245,14 +245,6 @@ export async function loginCtrl(
       ]),
     } as IUserPayload;
     const { accessToken, refreshToken } = await generateTokens(user);
-    // await request.cookieStore?.set({
-    //   name: "jwt",
-    //   value: refreshToken,
-    //   secure: true,
-    //   sameSite: "none",
-    //   expires: ms(config.REFRESH_TOKEN_EXPIRES),
-    //   domain: null,
-    // });
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true, // accessible only by web server

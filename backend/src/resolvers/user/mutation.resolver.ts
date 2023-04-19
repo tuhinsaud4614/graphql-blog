@@ -23,7 +23,12 @@ import {
   UN_FOLLOW_OWN_ERR_MSG,
 } from "@/utils/constants";
 import { EAuthorStatus, EFollowingMutationStatus } from "@/utils/enums";
-import { LoginInput, RegisterInput, YogaContext } from "@/utils/types";
+import {
+  LoginInput,
+  RegisterInput,
+  ResetPasswordInput,
+  YogaContext,
+} from "@/utils/types";
 
 export const Mutation = {
   async register(
@@ -95,7 +100,7 @@ export const Mutation = {
 
   async resetPassword(
     _: any,
-    { newPassword, oldPassword }: { oldPassword: string; newPassword: string },
+    { newPassword, oldPassword }: ResetPasswordInput,
     { prisma, user, req }: YogaContext,
     __: GraphQLResolveInfo,
   ) {

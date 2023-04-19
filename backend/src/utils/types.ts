@@ -9,7 +9,11 @@ import {
   getAllPostsByTagSchema,
   updatePostSchema,
 } from "@/validations/post.validation";
-import { loginSchema, registerSchema } from "@/validations/user.validation";
+import {
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "@/validations/user.validation";
 
 import createContext from "./context";
 
@@ -26,6 +30,7 @@ export type OffsetParams = InferType<typeof offsetParamsSchema>;
 /* User Type */
 export type RegisterInput = InferType<typeof registerSchema>;
 export type LoginInput = InferType<typeof loginSchema>;
+export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;
 
 /* Post Type */
 export type CreatePostInput = InferType<typeof createPostSchema>;

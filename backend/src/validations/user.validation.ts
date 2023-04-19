@@ -38,7 +38,7 @@ export const registerSchema = yup.object({
     ),
 });
 
-export const resendActivationSchema = yup.object().shape({
+export const resendActivationSchema = yup.object({
   userId: yup.string().required(generateRequiredErrorMessage("User id")),
 });
 

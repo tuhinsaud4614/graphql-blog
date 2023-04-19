@@ -1,7 +1,9 @@
 import { createYoga } from "graphql-yoga";
 
 import { useGraphQlJit } from "@envelop/graphql-jit";
-import { IdentifyFn, useRateLimiter } from "@envelop/rate-limiter";
+import { useRateLimiter } from "@envelop/rate-limiter";
+import { useResponseCache } from "@envelop/response-cache";
+import { createRedisCache } from "@envelop/response-cache-redis";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -28,16 +30,14 @@ async function shutdown({
   signal: (typeof SIGNALS)[number];
   server: Server;
 }) {
+  redisClient.disconnect();
   logger.info(`Got signal ${signal} Good bye.`);
-  await redisClient.disconnect();
   server.close(() => {
     process.exit(0);
   });
 }
 
 async function startServer() {
-  const identifyFn: IdentifyFn = (context: any) => context.request.ip;
-
   const server = createYoga({
     // cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
     schema: makeExecutableSchema({
@@ -49,8 +49,13 @@ async function startServer() {
     },
     plugins: [
       useGraphQlJit(),
+      useResponseCache({
+        session: () => null,
+        cache: createRedisCache({ redis: redisClient }),
+        ttl: 1000 * 60,
+      }),
       useRateLimiter({
-        identifyFn,
+        identifyFn: (context: any) => context.request.ip,
         onRateLimitError({ error }) {
           logger.error(error);
           throw new RateLimitError(error);
@@ -74,21 +79,21 @@ async function startServer() {
   });
   app.use(errorHandler);
 
-  const httpServer = app.listen(config.PORT, async () => {
-    logger.info(
-      `Running a GraphQL API server at ${config.HOST}:${config.PORT}/graphql`,
-    );
-  });
-
   try {
     await redisClient.connect();
+
+    const httpServer = app.listen(config.PORT, async () => {
+      logger.info(
+        `Running a GraphQL API server at ${config.HOST}:${config.PORT}/graphql`,
+      );
+    });
+
+    SIGNALS.forEach((signal) => {
+      process.on(signal, () => shutdown({ signal, server: httpServer }));
+    });
   } catch (error) {
     process.exit(1);
   }
-
-  SIGNALS.forEach((signal) => {
-    process.on(signal, () => shutdown({ signal, server: httpServer }));
-  });
 }
 
 startServer();

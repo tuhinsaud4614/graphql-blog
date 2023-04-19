@@ -155,7 +155,7 @@ export const generateToken = async (
   const exp = isNaN(+expires) ? ms(expires) / 1000 : +expires;
 
   if (settable) {
-    await redisClient.setEx(
+    await redisClient.setex(
       generateRefreshTokenKeyName(user.id),
       exp,
       JSON.stringify(token),

@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { createPubSub } from "graphql-yoga";
+
+import { PrismaClient } from "@prisma/client";
 
 import { verifyAccessTokenInContext } from ".";
 import {
@@ -24,10 +25,24 @@ const pubSub = createPubSub<{
     payload: { reactBy: IUserPayload; mutation: EReactionsMutationStatus },
   ];
 }>();
+
+class DbClient {
+  static #instance: PrismaClient;
+
+  private constructor() {}
+
+  public static get instance() {
+    if (this.#instance) {
+      return this.#instance;
+    }
+    this.#instance = new PrismaClient();
+    return this.#instance;
+  }
+}
+
+const prisma = DbClient.instance;
+
 export type YogaPubSubType = typeof pubSub;
-
-const prisma = new PrismaClient();
-
 export default function createContext({ request, ...rest }: YogaContextType) {
   const user = verifyAccessTokenInContext(request);
   return { ...rest, request, pubSub, prisma, user } as const;

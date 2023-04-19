@@ -87,13 +87,13 @@ type Query {
   token(refreshToken: String): String!
   users: [User!]!
   usersOnOffset(limit: Int, page: Int): PaginateUsers!
-  suggestAuthorsToUserOnOffset(limit: Int, page: Int): PaginateUsers!
-  authorFollowersOnCursor(
+  recommendAuthorsWithOffset(limit: Int, page: Int): PaginateUsers!
+  authorFollowersWithCursor(
     limit: Int!
     after: ID
     authorId: ID
   ): CursorUserResponse!
-  authorFollowingsOnCursor(
+  authorFollowingsWithCursor(
     limit: Int!
     after: ID
     authorId: ID

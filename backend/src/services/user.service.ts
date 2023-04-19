@@ -342,7 +342,7 @@ export const sendUserVerificationCode = async (
     "The RAT Diary account verification code",
     message,
   );
-  await redisClient.setEx(
+  await redisClient.setex(
     generateUserVerificationKey(userId),
     600,
     verificationCode,
@@ -383,7 +383,7 @@ export const sendResetPasswordVerificationCode = async (
     "The RAT Diary reset password verification code",
     message,
   );
-  await redisClient.setEx(
+  await redisClient.setex(
     generateResetPasswordVerificationKeyForId(userId),
     600,
     JSON.stringify({ code: verificationCode, hash: password }),
