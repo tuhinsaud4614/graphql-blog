@@ -1,5 +1,6 @@
-import { createPubSub } from "@graphql-yoga/node";
 import { PrismaClient } from "@prisma/client";
+import { createPubSub } from "graphql-yoga";
+
 import { verifyAccessTokenInContext } from ".";
 import {
   EAuthorStatus,
@@ -12,15 +13,15 @@ import { YogaContextType } from "./types";
 const pubSub = createPubSub<{
   following: [
     userId: string,
-    payload: { followedBy: IUserPayload; mutation: EFollowingMutationStatus }
+    payload: { followedBy: IUserPayload; mutation: EFollowingMutationStatus },
   ];
   verifyUser: [
     userId: string,
-    payload: { userId: string; mutation: EAuthorStatus }
+    payload: { userId: string; mutation: EAuthorStatus },
   ];
   reactions: [
     postId: string,
-    payload: { reactBy: IUserPayload; mutation: EReactionsMutationStatus }
+    payload: { reactBy: IUserPayload; mutation: EReactionsMutationStatus },
   ];
 }>();
 export type YogaPubSubType = typeof pubSub;

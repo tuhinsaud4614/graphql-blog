@@ -1,6 +1,7 @@
-import { createSchema, createYoga } from "@graphql-yoga/node";
+import { createYoga } from "graphql-yoga";
 
 import { IdentifyFn, useRateLimiter } from "@envelop/rate-limiter";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
@@ -10,12 +11,14 @@ import path from "path";
 import logger from "@/logger";
 import { errorHandler } from "@/middleware";
 import { HttpError, RateLimitError } from "@/model";
-import resolvers from "@/resolvers";
 import typeDefs from "@/typeDefs";
 import { createContext } from "@/utils";
 import config from "@/utils/config";
 import { SIGNALS } from "@/utils/constants";
 import redisClient from "@/utils/redis";
+
+import resolvers from "./resolvers";
+import { YogaContextType } from "./utils/types";
 
 async function shutdown({
   signal,
@@ -40,12 +43,13 @@ async function startServer() {
 
   const server = createYoga({
     // cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
-    schema: createSchema({
-      typeDefs,
-      resolvers,
+    schema: makeExecutableSchema({
+      resolvers: [resolvers],
+      typeDefs: typeDefs,
     }),
-    // renderGraphiQL,
-    context: (props) => createContext(props),
+    context: (props: YogaContextType) => {
+      return createContext(props);
+    },
     plugins: [
       useRateLimiter({
         identifyFn,
@@ -61,13 +65,11 @@ async function startServer() {
 
   const app = express();
 
-  // app.use(helmet());
-  // app.use(compression());
   app.use(cors({ origin: config.CLIENT_ENDPOINT, credentials: true }));
   app.use(cookieParser());
   app.use(express.static(path.join(process.cwd(), "public")));
   app.use("/images", express.static(path.join(process.cwd(), "images")));
-  app.use("/graphql", server);
+  app.use("/graphql", server.requestListener);
 
   // No Route found
   app.use((_: Request, __: Response, next: NextFunction) => {

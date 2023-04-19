@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
+import type { Response } from "express";
 import { unlink } from "fs";
 import { IncomingMessage, ServerResponse } from "http";
 import { pick } from "lodash";
@@ -208,7 +209,7 @@ export async function verifyUserCtrl(
 export async function loginCtrl(
   prisma: PrismaClient,
   args: LoginInput,
-  res: ServerResponse,
+  res: Response,
 ) {
   try {
     const { emailOrMobile, password } = args;
@@ -244,12 +245,19 @@ export async function loginCtrl(
       ]),
     } as IUserPayload;
     const { accessToken, refreshToken } = await generateTokens(user);
+    // await request.cookieStore?.set({
+    //   name: "jwt",
+    //   value: refreshToken,
+    //   secure: true,
+    //   sameSite: "none",
+    //   expires: ms(config.REFRESH_TOKEN_EXPIRES),
+    //   domain: null,
+    // });
 
-    // @ts-ignore
     res.cookie("jwt", refreshToken, {
       httpOnly: true, // accessible only by web server
       secure: true, // https
-      sameSite: "None", // cross-site cookie
+      sameSite: "none", // cross-site cookie
       maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
     });
     return accessToken;

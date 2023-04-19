@@ -1,6 +1,6 @@
-import { YogaInitialContext } from "@graphql-yoga/node";
+import { YogaInitialContext } from "graphql-yoga";
 
-import { IncomingMessage, ServerResponse } from "http";
+import type { Request, Response } from "express";
 import type { InferType } from "yup";
 
 import { cursorParamsSchema, offsetParamsSchema } from "@/validations";
@@ -14,8 +14,8 @@ import { loginSchema, registerSchema } from "@/validations/user.validation";
 import createContext from "./context";
 
 export type YogaContextType = YogaInitialContext & {
-  req: IncomingMessage;
-  res: ServerResponse;
+  req: Request;
+  res: Response;
 };
 
 export type YogaContext = ReturnType<typeof createContext>;

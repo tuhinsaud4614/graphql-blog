@@ -58,13 +58,11 @@ export const cursorParamsSchema = yup.object({
   limit: yup
     .number()
     .required(generateRequiredErrorMessage("Limit"))
-    .integer(generateNotNumberErrorMessage("Limit", "integer")),
+    .integer(generateNotNumberErrorMessage("Limit")),
   after: yup.string().nullable(),
 });
 
 export const offsetParamsSchema = yup.object({
-  limit: yup
-    .number()
-    .integer(generateNotNumberErrorMessage("Limit", "integer")),
-  page: yup.number().integer(generateNotNumberErrorMessage("Page", "integer")),
+  limit: yup.number().integer(generateNotNumberErrorMessage("Limit")),
+  page: yup.number().integer(generateNotNumberErrorMessage("Page")),
 });

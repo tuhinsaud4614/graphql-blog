@@ -76,7 +76,7 @@ export const getAllPostsByTagSchema = offsetParamsSchema.shape({
     .required(generateRequiredErrorMessage("Role"))
     .oneOf(
       Object.values(EUserRole),
-      generateEitherErrorMessage("Role", "AUTHOR, ADMIN"),
+      generateEitherErrorMessage("Role", "AUTHOR", "ADMIN"),
     ),
   tag: yup.string().required(generateRequiredErrorMessage("Tag")),
 });

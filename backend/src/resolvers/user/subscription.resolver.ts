@@ -16,7 +16,7 @@ export const Subscription = {
     async subscribe(
       _: any,
       __: any,
-      { pubSub, extensions }: YogaContext,
+      { pubSub, params: { extensions } }: YogaContext,
       ___: GraphQLResolveInfo,
     ) {
       try {

@@ -7,8 +7,7 @@
   "printWidth": 80,
   "endOfLine": "lf",
   "importOrder": [
-    "^@graphql-yoga/node$",
-    "^graphql$",
+    "^graphql(.*)$",
     "<THIRD_PARTY_MODULES>",
     "^@/(.*)$",
     "^[./]"
