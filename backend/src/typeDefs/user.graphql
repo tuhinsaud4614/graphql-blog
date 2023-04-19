@@ -109,15 +109,17 @@ type Mutation {
   register(data: RegisterInput): ID!
   resendActivation(userId: ID!): ID!
   verifyUser(userId: ID!, code: String!): ID!
-  login(data: LoginInput): String!
-    @rateLimit(window: "1m", max: 5, message: "Too many calls made by login")
+  login(data: LoginInput): String! @rateLimit(
+    window: "1m",
+    max: 5,
+    message: "Too many calls made by login"
+  )
   logout: ID!
-  resetPassword(oldPassword: String!, newPassword: String!): String!
-    @rateLimit(
-      window: "1m"
-      max: 3
-      message: "Too many calls for resetting password"
-    )
+  resetPassword(oldPassword: String!, newPassword: String!): String! @rateLimit(
+    window: "1m",
+    max: 3,
+    message: "Too many calls for resetting password"
+  )
   verifyResetPassword(code: String!): String!
   uploadAvatar(avatar: File!): Picture!
   updateName(name: String!): String!

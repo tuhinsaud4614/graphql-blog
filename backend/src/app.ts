@@ -1,5 +1,6 @@
 import { createYoga } from "graphql-yoga";
 
+import { useGraphQlJit } from "@envelop/graphql-jit";
 import { IdentifyFn, useRateLimiter } from "@envelop/rate-limiter";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
@@ -35,29 +36,24 @@ async function shutdown({
 }
 
 async function startServer() {
-  // @ts-ignore
-  const identifyFn: IdentifyFn = async (context) => {
-    // @ts-ignore
-    return context.request.ip;
-  };
+  const identifyFn: IdentifyFn = (context: any) => context.request.ip;
 
   const server = createYoga({
     // cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
     schema: makeExecutableSchema({
-      resolvers: [resolvers],
-      typeDefs: typeDefs,
+      resolvers,
+      typeDefs,
     }),
     context: (props: YogaContextType) => {
       return createContext(props);
     },
     plugins: [
+      useGraphQlJit(),
       useRateLimiter({
         identifyFn,
         onRateLimitError({ error }) {
           logger.error(error);
-        },
-        transformError(message) {
-          return new RateLimitError(message);
+          throw new RateLimitError(error);
         },
       }),
     ],
