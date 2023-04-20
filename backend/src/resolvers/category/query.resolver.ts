@@ -1,17 +1,15 @@
-import {
-  getCategoriesByTextOnOffsetCtrl,
-  getCategoriesWithOffsetController,
-} from "@/controller/category.controller";
+import { getCategoriesByTextOnOffsetCtrl } from "@/controller/category.controller";
+import CategoryService from "@/services/category";
 import type { OffsetParams, YogaContext } from "@/utils/types";
 
 export const Query = {
-  async categoriesOnOffset(
-    _: any,
+  async categoriesWithOffset(
+    _: unknown,
     params: OffsetParams,
-    { prisma }: YogaContext,
-    ___: any,
+    __: unknown,
+    ___: unknown,
   ) {
-    const result = await getCategoriesWithOffsetController(prisma, params);
+    const result = await CategoryService.categoriesWithOffset(params);
     return result;
   },
 

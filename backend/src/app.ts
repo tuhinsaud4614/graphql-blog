@@ -81,10 +81,9 @@ async function startServer() {
 
   try {
     await redisClient.connect();
-
     const httpServer = app.listen(config.PORT, async () => {
       logger.info(
-        `Running a GraphQL API server at ${config.HOST}:${config.PORT}/graphql`,
+        `Running a GraphQL server at ${config.HOST}:${config.PORT}/graphql`,
       );
     });
 

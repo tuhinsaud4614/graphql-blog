@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
 import imageSize from "image-size";
@@ -9,7 +11,7 @@ import { promisify } from "util";
 import { ValidationError } from "yup";
 
 import logger from "../logger";
-import { CustomError } from "../model";
+import { CustomError, UserInputError } from "../model";
 import config from "./config";
 import {
   BAD_USER_INPUT,
@@ -22,6 +24,7 @@ import {
   UN_AUTH_EXT_ERR_CODE,
   generateRefreshTokenKeyName,
   generateTooLargeFileErrorMessage,
+  generateValidationErrorMessage,
 } from "./constants";
 import {
   IExtensionsWithAuthorization,
@@ -43,6 +46,28 @@ export const formatYupError = (err: ValidationError) => {
   });
   return errors;
 };
+
+export function formatError(
+  error: unknown,
+  options?: {
+    /** If you want to set custom message. */
+    message?: string;
+    /** Indicate the field that failed validation. */
+    key?: string;
+    /** Code for error. */
+    code?: string;
+  },
+) {
+  if (error instanceof ValidationError) {
+    return new UserInputError(generateValidationErrorMessage(options?.key), {
+      fields: formatYupError(error),
+    });
+  }
+
+  return new GraphQLError(options?.message || "Something went wrong.", {
+    extensions: { code: options?.code || INTERNAL_SERVER_ERROR },
+  });
+}
 
 export function nanoid(size?: number) {
   if (size && size <= 256) {

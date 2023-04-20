@@ -223,7 +223,7 @@ export function generateDeleteErrorMessage(entityName: string): string {
  * @returns The validation error message.
  */
 export function generateValidationErrorMessage(key?: string) {
-  return key ? `Validation failed for ${key}.` : "Validation error.";
+  return key ? `Validation failed for ${key}.` : "Validation failed.";
 }
 
 // REDIS KEY START

@@ -20,39 +20,6 @@ import {
 import type { OffsetParams } from "@/utils/types";
 import { getGraphqlYogaError, offsetParamsSchema } from "@/validations";
 
-export async function getCategoriesWithOffsetController(
-  prisma: PrismaClient,
-  params: OffsetParams,
-) {
-  try {
-    await offsetParamsSchema.validate(params, {
-      abortEarly: false,
-    });
-
-    const { limit, page } = params;
-    let args: Prisma.CategoryFindManyArgs = {
-      orderBy: { updatedAt: "desc" },
-    };
-
-    const count = await prisma.category.count();
-    if (count === 0) {
-      return { data: [], total: count };
-    }
-
-    const result = await getCategoriesWithOffset(
-      prisma,
-      count,
-      page,
-      limit,
-      args,
-    );
-    return result;
-  } catch (error) {
-    logger.error(error);
-    return getGraphqlYogaError(error, generateFetchErrorMessage("categories"));
-  }
-}
-
 export async function getCategoriesByTextOnOffsetCtrl(
   prisma: PrismaClient,
   { text, ...rest }: OffsetParams & { text: string },
