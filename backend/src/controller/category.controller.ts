@@ -1,62 +1,21 @@
 import { GraphQLError } from "graphql";
 
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 import logger from "@/logger";
 import {
   createCategory,
   deleteCategory,
-  getCategoriesWithOffset,
   getCategoryById,
   updateCategory,
 } from "@/services/category.service";
 import {
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
-  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
-import type { OffsetParams } from "@/utils/types";
-import { getGraphqlYogaError, offsetParamsSchema } from "@/validations";
-
-export async function getCategoriesByTextOnOffsetCtrl(
-  prisma: PrismaClient,
-  { text, ...rest }: OffsetParams & { text: string },
-) {
-  try {
-    await offsetParamsSchema.validate(rest, {
-      abortEarly: false,
-    });
-
-    const { limit, page } = rest;
-
-    const condition: Prisma.CategoryWhereInput = {
-      title: { contains: text, mode: "insensitive" },
-    };
-    let args: Prisma.CategoryFindManyArgs = {
-      orderBy: { updatedAt: "desc" },
-      where: condition,
-    };
-
-    const count = await prisma.category.count({ where: condition });
-    if (count === 0) {
-      return { data: [], total: count };
-    }
-
-    const result = await getCategoriesWithOffset(
-      prisma,
-      count,
-      page,
-      limit,
-      args,
-    );
-    return result;
-  } catch (error) {
-    logger.error(error);
-    return getGraphqlYogaError(error, generateFetchErrorMessage("categories"));
-  }
-}
+import { getGraphqlYogaError } from "@/validations";
 
 export async function createCategoryCtrl(prisma: PrismaClient, title: string) {
   try {

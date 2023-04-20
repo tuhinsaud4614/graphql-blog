@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import type { InferType } from "yup";
 
 import { cursorParamsSchema, offsetParamsSchema } from "@/validations";
+import { categoriesByTextSchema } from "@/validations/category";
 import {
   createPostSchema,
   getAllPostsByTagSchema,
@@ -36,3 +37,6 @@ export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;
 export type CreatePostInput = InferType<typeof createPostSchema>;
 export type UpdatePostInput = InferType<typeof updatePostSchema>;
 export type TaggedPostCursorParams = InferType<typeof getAllPostsByTagSchema>;
+
+// Category
+export type CategoriesByTextParams = InferType<typeof categoriesByTextSchema>;
