@@ -1,82 +1,71 @@
-import { GraphQLError, type GraphQLResolveInfo } from "graphql";
+import { type GraphQLResolveInfo } from "graphql";
 
+import { AuthenticationError } from "@/model";
 import {
-  createCategoryCtrl,
-  deleteCategoryCtrl,
-  updateCategoryCtrl,
-} from "../../controller/category.controller";
+  categoryCreationService,
+  categoryDeletionService,
+  categoryModificationService,
+} from "@/services/category";
+import { UN_AUTH_ERR_MSG, generateRoleErrorMessage } from "@/utils/constants";
+import { EUserRole } from "@/utils/enums";
 import {
-  UN_AUTH_ERR_MSG,
-  UN_AUTH_EXT_ERR_CODE,
-  generateRoleErrorMessage,
-} from "../../utils/constants";
-import { EUserRole } from "../../utils/enums";
-import { YogaContext } from "../../utils/types";
+  CategoryCreationParams,
+  CategoryModificationParams,
+  IDParams,
+  YogaContext,
+} from "@/utils/types";
 
 export const Mutation = {
   async createCategory(
-    _: any,
-    { title }: { title: string },
+    _: unknown,
+    params: CategoryCreationParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
     if (user.role !== EUserRole.Admin) {
-      return new GraphQLError(generateRoleErrorMessage("admin"));
+      return new AuthenticationError(generateRoleErrorMessage("admin"));
     }
 
-    const result = await createCategoryCtrl(prisma, title);
+    const result = await categoryCreationService(prisma, params);
     return result;
   },
 
   async updateCategory(
     _: any,
-    { id, title }: { id: string; title: string },
+    params: CategoryModificationParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
     if (user.role !== EUserRole.Admin) {
-      return new GraphQLError(generateRoleErrorMessage("admin"));
+      return new AuthenticationError(generateRoleErrorMessage("admin"));
     }
 
-    const result = await updateCategoryCtrl(prisma, id, title);
-    return result;
+    return await categoryModificationService(prisma, params);
   },
 
   async deleteCategory(
     _: any,
-    { id }: { id: string },
+    params: IDParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
     if (user.role !== EUserRole.Admin) {
-      return new GraphQLError(generateRoleErrorMessage("admin"));
+      return new AuthenticationError(generateRoleErrorMessage("admin"));
     }
 
-    const result = await deleteCategoryCtrl(prisma, id);
+    const result = await categoryDeletionService(prisma, params);
     return result;
   },
 };

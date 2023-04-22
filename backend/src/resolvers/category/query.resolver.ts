@@ -2,7 +2,11 @@ import {
   categoriesByTextWithOffsetService,
   categoriesWithOffsetService,
 } from "@/services/category";
-import type { OffsetParams, YogaContext } from "@/utils/types";
+import type {
+  CategoriesByTextParams,
+  OffsetParams,
+  YogaContext,
+} from "@/utils/types";
 
 export const Query = {
   async categoriesWithOffset(
@@ -17,7 +21,7 @@ export const Query = {
 
   async categoriesByTextOnOffset(
     _: any,
-    params: OffsetParams & { text: string },
+    params: CategoriesByTextParams,
     { prisma }: YogaContext,
     ___: any,
   ) {

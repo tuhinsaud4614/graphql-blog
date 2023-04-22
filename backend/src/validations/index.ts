@@ -66,3 +66,7 @@ export const offsetParamsSchema = yup.object({
   limit: yup.number().integer(generateNotNumberErrorMessage("Limit")),
   page: yup.number().integer(generateNotNumberErrorMessage("Page")),
 });
+
+export const idParamsSchema = yup.object({
+  id: yup.string().required(generateRequiredErrorMessage("ID")),
+});

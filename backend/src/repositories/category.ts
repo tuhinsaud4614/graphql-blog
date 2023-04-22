@@ -82,3 +82,58 @@ export async function getCategoriesWithOffset(
   const result = await prisma.category.findMany(condition);
   return { data: result, total: count } as IResponseOnOffset<Category>;
 }
+
+/**
+ * This TypeScript function creates a new category in a Prisma database with a given title.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} title - The `title` parameter is a string that represents the title of the category
+ * that we want to create. This function uses the Prisma client to create a new category in the
+ * database with the given title.
+ * @returns The `createCategory` function is returning a Promise that resolves to the newly created
+ * category object in the database.
+ */
+export async function createCategory(prisma: PrismaClient, title: string) {
+  return prisma.category.create({
+    data: {
+      title,
+    },
+  });
+}
+
+/**
+ * This TypeScript function updates a category's title in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * category that needs to be updated. It is used in the `where` clause of the
+ * `prisma.category.update` method to identify the category to be updated.
+ * @param {string} title - The `title` parameter is a string that represents the new title of the
+ * category that needs to be updated.
+ * @returns The `updateCategory` function is returning a Promise that resolves to the updated
+ * category object with the new `title` value.
+ */
+export function updateCategory(
+  prisma: PrismaClient,
+  id: string,
+  title: string,
+) {
+  return prisma.category.update({
+    where: { id },
+    data: { title },
+  });
+}
+
+/**
+ * This function deletes a category from a Prisma client based on its ID.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * category that needs to be deleted from the database. This function uses the Prisma client to delete
+ * the category with the specified `id` from the database.
+ * @returns The `deleteCategory` function is returning a Promise that will resolve to the result of
+ * deleting a category from the database using the Prisma client. The `where` clause specifies which
+ * category to delete based on the `id` parameter passed to the function.
+ */
+export function deleteCategory(prisma: PrismaClient, id: string) {
+  return prisma.category.delete({
+    where: { id },
+  });
+}

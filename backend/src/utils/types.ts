@@ -3,8 +3,16 @@ import { YogaInitialContext } from "graphql-yoga";
 import type { Request, Response } from "express";
 import type { InferType } from "yup";
 
-import { cursorParamsSchema, offsetParamsSchema } from "@/validations";
-import { categoriesByTextSchema } from "@/validations/category";
+import {
+  cursorParamsSchema,
+  idParamsSchema,
+  offsetParamsSchema,
+} from "@/validations";
+import {
+  categoriesByTextSchema,
+  categoryCreationSchema,
+  categoryModificationSchema,
+} from "@/validations/category";
 import {
   createPostSchema,
   getAllPostsByTagSchema,
@@ -28,15 +36,22 @@ export type YogaContext = ReturnType<typeof createContext>;
 export type CursorParams = InferType<typeof cursorParamsSchema>;
 export type OffsetParams = InferType<typeof offsetParamsSchema>;
 
-/* User Type */
+// Common
+export type IDParams = InferType<typeof idParamsSchema>;
+
+// User Type
 export type RegisterInput = InferType<typeof registerSchema>;
 export type LoginInput = InferType<typeof loginSchema>;
 export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;
 
-/* Post Type */
+// Post Type
 export type CreatePostInput = InferType<typeof createPostSchema>;
 export type UpdatePostInput = InferType<typeof updatePostSchema>;
 export type TaggedPostCursorParams = InferType<typeof getAllPostsByTagSchema>;
 
 // Category
 export type CategoriesByTextParams = InferType<typeof categoriesByTextSchema>;
+export type CategoryCreationParams = InferType<typeof categoryCreationSchema>;
+export type CategoryModificationParams = InferType<
+  typeof categoryModificationSchema
+>;
