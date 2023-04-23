@@ -29,6 +29,7 @@ import type {
 import { idParamsSchema, offsetParamsSchema } from "@/validations";
 import {
   categoriesByTextSchema,
+  categoryCreationSchema,
   categoryModificationSchema,
 } from "@/validations/category";
 
@@ -50,7 +51,7 @@ export async function categoriesWithOffsetService(
     });
   } catch (error) {
     logger.error(error);
-    return formatError(error, { key: "categories params" });
+    return formatError(error, { key: "categories" });
   }
 
   try {
@@ -93,7 +94,7 @@ export async function categoriesByTextWithOffsetService(
     });
   } catch (error) {
     logger.error(error);
-    return formatError(error, { key: "categories params" });
+    return formatError(error, { key: "categories by text" });
   }
 
   try {
@@ -117,7 +118,7 @@ export async function categoriesByTextWithOffsetService(
   } catch (error) {
     logger.error(error);
     return formatError(error, {
-      message: generateFetchErrorMessage("categories"),
+      message: generateFetchErrorMessage("categories bt text"),
     });
   }
 }
@@ -140,12 +141,12 @@ export async function categoryCreationService(
   params: CategoryCreationParams,
 ) {
   try {
-    await categoriesByTextSchema.validate(params, {
+    await categoryCreationSchema.validate(params, {
       abortEarly: false,
     });
   } catch (error) {
     logger.error(error);
-    return formatError(error, { key: "Category creation params" });
+    return formatError(error, { key: "Category creation" });
   }
 
   try {
@@ -176,7 +177,7 @@ export async function categoryModificationService(
     });
   } catch (error) {
     logger.error(error);
-    return formatError(error, { key: "Category modification params" });
+    return formatError(error, { key: "Category modification" });
   }
 
   try {
@@ -215,7 +216,7 @@ export async function categoryDeletionService(
     });
   } catch (error) {
     logger.error(error);
-    return formatError(error, { key: "Category delete params" });
+    return formatError(error, { key: "Category deletion" });
   }
 
   try {
