@@ -12,6 +12,8 @@ import {
   generateRequiredErrorMessage,
 } from "@/utils/constants";
 
+import { idParamsSchema } from ".";
+
 export const registerSchema = yup.object({
   name: yup.string(),
   email: yup
@@ -38,12 +40,7 @@ export const registerSchema = yup.object({
     ),
 });
 
-export const resendActivationSchema = yup.object({
-  userId: yup.string().required(generateRequiredErrorMessage("User id")),
-});
-
-export const verifyUserSchema = yup.object().shape({
-  userId: yup.string().required(generateRequiredErrorMessage("User id")),
+export const verifyUserSchema = idParamsSchema.shape({
   code: yup
     .string()
     .required(generateRequiredErrorMessage("Verification code")),

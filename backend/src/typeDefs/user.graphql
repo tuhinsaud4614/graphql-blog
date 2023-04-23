@@ -107,8 +107,8 @@ type Query {
 
 type Mutation {
   register(data: RegisterInput): ID!
-  resendActivation(userId: ID!): ID!
-  verifyUser(userId: ID!, code: String!): ID!
+  resendActivation(id: ID!): ID!
+  verifyUser(id: ID!, code: String!): ID!
   login(data: LoginInput): String! @rateLimit(
     window: "1m",
     max: 5,

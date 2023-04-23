@@ -2,19 +2,21 @@ import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
 import {
   followRequestCtrl,
-  loginCtrl,
   logoutCtrl,
-  registerCtrl,
-  resendActivationCtrl,
   resetPasswordCtrl,
   unfollowRequestCtrl,
   updateAboutCtrl,
   updateNameCtrl,
   uploadAvatar,
   verifyResetPasswordCtrl,
-  verifyUserCtrl,
 } from "@/controller/user.controller";
 import { AuthenticationError } from "@/model";
+import {
+  loginService,
+  resendActivationService,
+  userRegistrationService,
+  verifyUserService,
+} from "@/services/user";
 import config from "@/utils/config";
 import {
   FOLLOW_OWN_ERR_MSG,
@@ -24,9 +26,11 @@ import {
 } from "@/utils/constants";
 import { EAuthorStatus, EFollowingMutationStatus } from "@/utils/enums";
 import {
+  IDParams,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  VerifyUserParams,
   YogaContext,
 } from "@/utils/types";
 
@@ -37,23 +41,22 @@ export const Mutation = {
     { prisma, req }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
-    const result = await registerCtrl(
+    return await userRegistrationService(
       prisma,
       data,
       req.headers.origin || config.CLIENT_ENDPOINT,
     );
-    return result;
   },
 
   async resendActivation(
     _: any,
-    { userId }: { userId: string },
+    params: IDParams,
     { prisma, req }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
-    const result = await resendActivationCtrl(
+    const result = await resendActivationService(
       prisma,
-      userId,
+      params,
       req.headers.origin || config.CLIENT_ENDPOINT,
     );
     return result;
@@ -61,17 +64,19 @@ export const Mutation = {
 
   async verifyUser(
     _: any,
-    { userId, code }: { userId: string; code: string },
+    params: VerifyUserParams,
     { prisma, pubSub }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
-    const verifiedUserId = await verifyUserCtrl(prisma, userId, code);
-    if (!(verifiedUserId instanceof GraphQLError)) {
+    const verifiedUserId = await verifyUserService(prisma, params);
+
+    if (typeof verifiedUserId === "string") {
       pubSub.publish("verifyUser", verifiedUserId, {
         mutation: EAuthorStatus.Verified,
         userId: verifiedUserId,
       });
     }
+
     return verifiedUserId;
   },
 
@@ -81,8 +86,7 @@ export const Mutation = {
     { prisma, res }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
-    const result = await loginCtrl(prisma, data, res);
-    return result;
+    return await loginService(prisma, data, res);
   },
 
   async logout(

@@ -37,7 +37,7 @@ export function getUserByEmailOrMobile(
   return prisma.user.findFirst({ where: { OR: [{ email }, { mobile }] } });
 }
 
-const infoIncludes = {
+const infoIncludes: Prisma.UserInclude = {
   avatar: { select: { id: true, height: true, width: true, url: true } },
   followers: {
     select: {

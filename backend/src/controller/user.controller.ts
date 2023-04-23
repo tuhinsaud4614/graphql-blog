@@ -2,11 +2,9 @@ import { GraphQLError } from "graphql";
 
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
-import type { Response } from "express";
 import { unlink } from "fs";
 import { IncomingMessage, ServerResponse } from "http";
 import { pick } from "lodash";
-import ms from "ms";
 import path from "path";
 
 import logger from "@/logger";
@@ -17,10 +15,7 @@ import {
   ValidationError,
 } from "@/model";
 import {
-  createUser,
   followTo,
-  getUserByEmailOrMobile,
-  getUserByEmailOrMobileWithInfo,
   getUserById,
   getUserByIdWitInfo,
   getUserByIdWithInfo,
@@ -31,7 +26,6 @@ import {
   getUsersOnOffset,
   isFollowTheUser,
   sendResetPasswordVerificationCode,
-  sendUserVerificationCode,
   unfollowTo,
   updateUserAbout,
   updateUserName,
@@ -49,14 +43,10 @@ import config from "@/utils/config";
 import {
   ALREADY_FOLLOWED_ERR_MSG,
   ALREADY_UN_FOLLOWED_ERR_MSG,
-  AUTH_FAIL_ERR_MSG,
   FOLLOW_ERR_MSG,
   INTERNAL_SERVER_ERROR,
-  INVALID_CREDENTIAL,
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
-  generateCreationErrorMessage,
-  generateExistErrorMessage,
   generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateRefreshTokenKeyName,
@@ -66,105 +56,14 @@ import {
 import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import type { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
-import type {
-  CursorParams,
-  LoginInput,
-  OffsetParams,
-  RegisterInput,
-} from "@/utils/types";
+import type { CursorParams, OffsetParams } from "@/utils/types";
 import {
   cursorParamsSchema,
   getGraphqlYogaError,
   offsetParamsSchema,
 } from "@/validations";
-import {
-  loginSchema,
-  registerSchema,
-  resendActivationSchema,
-  resetPasswordSchema,
-  verifyUserSchema,
-} from "@/validations/user.validation";
+import { resetPasswordSchema, verifyUserSchema } from "@/validations/user";
 
-async function generateTokens(user: IUserPayload) {
-  const accessToken = await generateToken(
-    user,
-    config.ACCESS_TOKEN_SECRET_KEY,
-    config.ACCESS_TOKEN_EXPIRES,
-  );
-
-  const refreshToken = await generateToken(
-    user,
-    config.REFRESH_TOKEN_SECRET_KEY,
-    config.REFRESH_TOKEN_EXPIRES,
-    true,
-  );
-
-  return { accessToken, refreshToken } as const;
-}
-
-export async function registerCtrl(
-  prisma: PrismaClient,
-  args: RegisterInput,
-  host: string,
-) {
-  try {
-    const { email, password, mobile, name } = args;
-    await registerSchema.validate(args, { abortEarly: false });
-    const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
-
-    if (isUserExist) {
-      if (isUserExist.authorStatus === EAuthorStatus.Verified) {
-        return new GraphQLError(generateExistErrorMessage("User"));
-      }
-      await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
-      return isUserExist.id;
-    }
-
-    const hashPassword = await hash(password);
-
-    const user = await createUser(prisma, {
-      email,
-      mobile,
-      name,
-      password: hashPassword,
-    });
-
-    await sendUserVerificationCode(user.id, email, host);
-
-    return user.id;
-  } catch (error) {
-    logger.error(error);
-    return getGraphqlYogaError(
-      error,
-      generateCreationErrorMessage("User"),
-      "Register input",
-    );
-  }
-}
-
-export async function resendActivationCtrl(
-  prisma: PrismaClient,
-  userId: string,
-  host: string,
-) {
-  try {
-    await resendActivationSchema.validate({ userId }, { abortEarly: false });
-    const isUserExist = await getUserById(prisma, userId);
-    if (!isUserExist) {
-      return new GraphQLError(generateNotExistErrorMessage("User"));
-    }
-
-    if (isUserExist.authorStatus === EAuthorStatus.Verified) {
-      return new GraphQLError("User already verified");
-    }
-
-    await sendUserVerificationCode(isUserExist.id, isUserExist.email, host);
-    return userId;
-  } catch (error) {
-    logger.error(error);
-    return getGraphqlYogaError(error, "Resend activation failed");
-  }
-}
 export async function verifyUserCtrl(
   prisma: PrismaClient,
   userId: string,
@@ -203,59 +102,6 @@ export async function verifyUserCtrl(
   } catch (error) {
     logger.error(error);
     return getGraphqlYogaError(error, "User verification failed");
-  }
-}
-
-export async function loginCtrl(
-  prisma: PrismaClient,
-  args: LoginInput,
-  res: Response,
-) {
-  try {
-    const { emailOrMobile, password } = args;
-
-    await loginSchema.validate(args, { abortEarly: false });
-
-    const isUserExist = await getUserByEmailOrMobileWithInfo(
-      prisma,
-      emailOrMobile,
-      emailOrMobile,
-    );
-
-    if (!isUserExist) {
-      return new GraphQLError(INVALID_CREDENTIAL);
-    }
-
-    const isValidPassword = await verify(isUserExist.password, password);
-
-    if (!isValidPassword) {
-      return new GraphQLError(INVALID_CREDENTIAL);
-    }
-
-    const user = {
-      ...pick(isUserExist, [
-        "id",
-        "name",
-        "mobile",
-        "email",
-        "role",
-        "authorStatus",
-        "about",
-        "avatar",
-      ]),
-    } as IUserPayload;
-    const { accessToken, refreshToken } = await generateTokens(user);
-
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true, // accessible only by web server
-      secure: true, // https
-      sameSite: "none", // cross-site cookie
-      maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
-    });
-    return accessToken;
-  } catch (error: any) {
-    logger.error(error);
-    return getGraphqlYogaError(error, AUTH_FAIL_ERR_MSG, "Login input");
   }
 }
 
@@ -541,7 +387,7 @@ export async function followRequestCtrl(
       return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
-    const index = isExist.followers.findIndex(
+    const index = isExist.followers?.findIndex(
       (follower) => follower.id === user.id,
     );
 
@@ -569,7 +415,7 @@ export async function unfollowRequestCtrl(
       return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
-    const index = isExist.followers.findIndex(
+    const index = isExist.followers?.findIndex(
       (follower) => follower.id === user.id,
     );
 
