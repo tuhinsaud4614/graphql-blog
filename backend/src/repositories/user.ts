@@ -123,3 +123,22 @@ export async function getUserByEmailOrMobileWithInfo(
 export function getUserById(prisma: PrismaClient, id: string) {
   return prisma.user.findUnique({ where: { id } });
 }
+
+/**
+ * This function updates the password of a user in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * the user whose password needs to be reset.
+ * @param {string} newPassword - The new password that the user wants to set for their account.
+ * @returns a Promise that resolves to the updated user object with the new password.
+ */
+export function resetNewPassword(
+  prisma: PrismaClient,
+  userId: string,
+  newPassword: string,
+) {
+  return prisma.user.update({
+    data: { password: newPassword },
+    where: { id: userId },
+  });
+}

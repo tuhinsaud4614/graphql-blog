@@ -40,11 +40,13 @@ export const registerSchema = yup.object({
     ),
 });
 
-export const verifyUserSchema = idParamsSchema.shape({
+export const verifyCodeSchema = yup.object({
   code: yup
     .string()
     .required(generateRequiredErrorMessage("Verification code")),
 });
+
+export const verifyUserSchema = idParamsSchema.concat(verifyCodeSchema);
 
 export const loginSchema = yup.object({
   emailOrMobile: yup

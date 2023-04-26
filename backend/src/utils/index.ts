@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
 import imageSize from "image-size";
 import jwt, { JwtPayload, verify } from "jsonwebtoken";
-import _, { has, random } from "lodash";
+import { has, random } from "lodash";
 import ms from "ms";
 import path from "path";
 import { promisify } from "util";
@@ -26,11 +26,7 @@ import {
   generateTooLargeFileErrorMessage,
   generateValidationErrorMessage,
 } from "./constants";
-import {
-  IExtensionsWithAuthorization,
-  IUserPayload,
-  IVerifyResetPassword,
-} from "./interfaces";
+import { IExtensionsWithAuthorization, IUserPayload } from "./interfaces";
 import redisClient from "./redis";
 
 // Sub exports
@@ -291,8 +287,3 @@ export function removeFile(filePath?: string) {
 }
 
 export const isDev = () => process.env.NODE_ENV === "development";
-
-export const isVerifyResetPassword = (
-  data: any,
-): data is IVerifyResetPassword =>
-  typeof data === "object" && _.has(data, "code") && _.has(data, "hash");

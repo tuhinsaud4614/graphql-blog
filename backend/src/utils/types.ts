@@ -22,6 +22,7 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  verifyCodeSchema,
   verifyUserSchema,
 } from "@/validations/user";
 
@@ -44,6 +45,7 @@ export type IDParams = InferType<typeof idParamsSchema>;
 export type RegisterInput = InferType<typeof registerSchema>;
 export type LoginInput = InferType<typeof loginSchema>;
 export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;
+export type VerifyCodeParams = InferType<typeof verifyCodeSchema>;
 export type VerifyUserParams = InferType<typeof verifyUserSchema>;
 
 // Post Type

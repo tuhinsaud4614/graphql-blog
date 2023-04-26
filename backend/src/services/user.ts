@@ -1,16 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { pick } from "lodash";
 import ms from "ms";
 
 import logger from "@/logger";
-import { ForbiddenError, UnknownError, UserInputError } from "@/model";
+import {
+  ForbiddenError,
+  NoContentError,
+  UnknownError,
+  UserInputError,
+} from "@/model";
 import {
   createUser,
   getUserByEmailOrMobile,
   getUserByEmailOrMobileWithInfo,
   getUserById,
+  resetNewPassword,
   updateAuthorStatusToVerified,
 } from "@/repositories/user";
 import { formatError, generateToken } from "@/utils";
@@ -21,25 +27,35 @@ import {
   generateCreationErrorMessage,
   generateExistErrorMessage,
   generateNotExistErrorMessage,
+  generateRefreshTokenKeyName,
+  generateResetPasswordVerificationKeyForId,
   generateUserVerificationKey,
 } from "@/utils/constants";
 import { EAuthorStatus } from "@/utils/enums";
 import { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
-import {
+import { isVerifyResetPassword } from "@/utils/typeCheck";
+import type {
   IDParams,
   LoginInput,
   RegisterInput,
+  ResetPasswordInput,
+  VerifyCodeParams,
   VerifyUserParams,
 } from "@/utils/types";
 import { idParamsSchema } from "@/validations";
 import {
   loginSchema,
   registerSchema,
+  resetPasswordSchema,
+  verifyCodeSchema,
   verifyUserSchema,
 } from "@/validations/user";
 
-import { sendVerificationCodeService } from "./mail";
+import {
+  sendResetPasswordVerificationCodeService,
+  sendVerificationCodeService,
+} from "./mail";
 
 async function generateTokensService(user: IUserPayload) {
   const accessToken = await generateToken(
@@ -294,5 +310,139 @@ export async function loginService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(AUTH_FAIL_ERR_MSG);
+  }
+}
+
+/**
+ * This is a function that logs out a user by deleting their refresh token and clearing
+ * their JWT cookie.
+ * @param {IUserPayload} user - The user parameter is an object that represents the user payload, which
+ * contains information about the user such as their ID, name, email, etc.
+ * @param {Request} req - The `req` parameter is an object that represents the HTTP request made to the
+ * server. It contains information about the request such as the URL, headers, and any data sent in the
+ * request body.
+ * @param {Response} res - The `res` parameter is an instance of the `Response` object from the
+ * Express.js framework. It is used to send a response back to the client after processing a request.
+ * In this case, it is used to clear the JWT cookie and send a success or error response.
+ * @returns either the user ID if the logout is successful, or an error object (either a NoContentError
+ * or an AuthenticationError) if there is an issue with the logout process.
+ */
+export async function logoutService(
+  user: IUserPayload,
+  req: Request,
+  res: Response,
+) {
+  try {
+    const jwt = req.cookies?.jwt;
+    if (!jwt) {
+      return new NoContentError("Logout failed.");
+    }
+
+    await redisClient.del(generateRefreshTokenKeyName(user.id));
+
+    res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "none" });
+
+    return user.id;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("Logout failed.");
+  }
+}
+
+/**
+ * This is a function that resets a user's password by validating input, verifying old
+ * password, hashing new password, and sending a reset password verification code to the user's email.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient used to interact with the database.
+ * @param {string} userId - The ID of the user whose password needs to be reset.
+ * @param {ResetPasswordInput} params - The `params` parameter is an object that contains the
+ * `newPassword` and `oldPassword` fields, which are used to reset the user's password.
+ * @param {string} [host] - The `host` parameter is an optional string that represents the host URL
+ * where the reset password verification code will be sent to. It is used in the
+ * `sendResetPasswordVerificationCodeService` function. If it is not provided, the default host URL
+ * will be used.
+ * @returns a string message indicating that a reset password code has been sent to the user's email
+ * address for verification. If there is an error, it returns an error object with a message indicating
+ * the reason for the error.
+ */
+export async function resetPasswordService(
+  prisma: PrismaClient,
+  userId: string,
+  params: ResetPasswordInput,
+  host?: string,
+) {
+  try {
+    await resetPasswordSchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "reset password" });
+  }
+
+  try {
+    const user = await getUserById(prisma, userId);
+
+    if (!user) {
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
+    }
+
+    const { newPassword, oldPassword } = params;
+
+    if (!(await verify(user.password, oldPassword))) {
+      return new UserInputError("Invalid credentials");
+    }
+
+    const hashNewPassword = await hash(newPassword);
+
+    await sendResetPasswordVerificationCodeService(
+      userId,
+      user.email,
+      hashNewPassword,
+      host,
+    );
+
+    return `Reset password code sent to ${user.email}. Check the email.`;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("Failed to reset password.");
+  }
+}
+
+export async function verifyResetPasswordService(
+  prisma: PrismaClient,
+  userId: string,
+  params: VerifyCodeParams,
+) {
+  try {
+    await verifyCodeSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "verify reset password code" });
+  }
+
+  try {
+    const user = await getUserById(prisma, userId);
+
+    if (!user) {
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
+    }
+
+    const key = generateResetPasswordVerificationKeyForId(userId);
+    const { code } = params;
+
+    const data = await redisClient.get(key);
+    const result = data ? JSON.parse(data) : null;
+
+    if (!isVerifyResetPassword(result) || result.code !== code) {
+      return new ForbiddenError("Reset password verification failed");
+    }
+    await redisClient.del(key);
+
+    await resetNewPassword(prisma, userId, result.hash);
+
+    return "Reset password successfully.";
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("Reset password verification failed");
   }
 }

@@ -2,19 +2,19 @@ import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
 import {
   followRequestCtrl,
-  logoutCtrl,
-  resetPasswordCtrl,
   unfollowRequestCtrl,
   updateAboutCtrl,
   updateNameCtrl,
   uploadAvatar,
-  verifyResetPasswordCtrl,
 } from "@/controller/user.controller";
 import { AuthenticationError } from "@/model";
 import {
   loginService,
+  logoutService,
   resendActivationService,
+  resetPasswordService,
   userRegistrationService,
+  verifyResetPasswordService,
   verifyUserService,
 } from "@/services/user";
 import config from "@/utils/config";
@@ -30,13 +30,14 @@ import {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  VerifyCodeParams,
   VerifyUserParams,
   YogaContext,
 } from "@/utils/types";
 
 export const Mutation = {
   async register(
-    _: any,
+    _: unknown,
     { data }: { data: RegisterInput },
     { prisma, req }: YogaContext,
     __: GraphQLResolveInfo,
@@ -49,7 +50,7 @@ export const Mutation = {
   },
 
   async resendActivation(
-    _: any,
+    _: unknown,
     params: IDParams,
     { prisma, req }: YogaContext,
     __: GraphQLResolveInfo,
@@ -63,7 +64,7 @@ export const Mutation = {
   },
 
   async verifyUser(
-    _: any,
+    _: unknown,
     params: VerifyUserParams,
     { prisma, pubSub }: YogaContext,
     __: GraphQLResolveInfo,
@@ -81,7 +82,7 @@ export const Mutation = {
   },
 
   async login(
-    _: any,
+    _: unknown,
     { data }: { data: LoginInput },
     { prisma, res }: YogaContext,
     __: GraphQLResolveInfo,
@@ -90,52 +91,50 @@ export const Mutation = {
   },
 
   async logout(
-    _: any,
-    __: any,
+    _: unknown,
+    __: unknown,
     { user, req, res }: YogaContext,
     ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await logoutCtrl(user, req, res);
-    return result;
+    return await logoutService(user, req, res);
   },
 
   async resetPassword(
-    _: any,
-    { newPassword, oldPassword }: ResetPasswordInput,
+    _: unknown,
+    params: ResetPasswordInput,
     { prisma, user, req }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await resetPasswordCtrl(
+
+    return await resetPasswordService(
       prisma,
       user.id,
-      oldPassword,
-      newPassword,
+      params,
       req.headers.origin,
     );
-    return result;
   },
 
   async verifyResetPassword(
-    _: any,
-    { code }: { code: string },
+    _: unknown,
+    params: VerifyCodeParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await verifyResetPasswordCtrl(prisma, user.id, code);
-    return result;
+
+    return await verifyResetPasswordService(prisma, user.id, params);
   },
 
   async uploadAvatar(
-    _: any,
+    _: unknown,
     { avatar }: { avatar: File },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
@@ -153,7 +152,7 @@ export const Mutation = {
   },
 
   async updateName(
-    _: any,
+    _: unknown,
     { name }: { name: string },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
@@ -171,7 +170,7 @@ export const Mutation = {
   },
 
   async updateAbout(
-    _: any,
+    _: unknown,
     { value }: { value: string },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
@@ -189,7 +188,7 @@ export const Mutation = {
   },
 
   async followRequest(
-    _: any,
+    _: unknown,
     { toId }: { toId: string },
     { prisma, user, pubSub }: YogaContext,
     __: GraphQLResolveInfo,
@@ -215,7 +214,7 @@ export const Mutation = {
   },
 
   async unFollowRequest(
-    _: any,
+    _: unknown,
     { toId }: { toId: string },
     { prisma, user, pubSub }: YogaContext,
     __: GraphQLResolveInfo,
