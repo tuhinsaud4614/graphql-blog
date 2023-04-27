@@ -1,29 +1,35 @@
 import { PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { Request, Response } from "express";
+import { unlink } from "fs";
 import { pick } from "lodash";
 import ms from "ms";
+import path from "path";
 
 import logger from "@/logger";
 import {
+  AuthenticationError,
   ForbiddenError,
   NoContentError,
   UnknownError,
   UserInputError,
 } from "@/model";
 import {
+  createOrUpdateAvatar,
   createUser,
   getUserByEmailOrMobile,
-  getUserByEmailOrMobileWithInfo,
+  getUserByEmailOrMobileWithAvatar,
   getUserById,
+  getUserByIdWithAvatar,
   resetNewPassword,
   updateAuthorStatusToVerified,
 } from "@/repositories/user";
-import { formatError, generateToken } from "@/utils";
+import { formatError, generateToken, imageUpload, nanoid } from "@/utils";
 import config from "@/utils/config";
 import {
   AUTH_FAIL_ERR_MSG,
   INVALID_CREDENTIAL,
+  UN_AUTH_ERR_MSG,
   generateCreationErrorMessage,
   generateExistErrorMessage,
   generateNotExistErrorMessage,
@@ -31,19 +37,20 @@ import {
   generateResetPasswordVerificationKeyForId,
   generateUserVerificationKey,
 } from "@/utils/constants";
-import { EAuthorStatus } from "@/utils/enums";
 import { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
-import { isVerifyResetPassword } from "@/utils/typeCheck";
+import { isVerifyResetPassword } from "@/utils/type-check";
 import type {
   IDParams,
+  ImageParams,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UserWithAvatar,
   VerifyCodeParams,
-  VerifyUserParams,
+  VerifyUserParams
 } from "@/utils/types";
-import { idParamsSchema } from "@/validations";
+import { idParamsSchema, imageParamsSchema } from "@/validations";
 import {
   loginSchema,
   registerSchema,
@@ -57,7 +64,7 @@ import {
   sendVerificationCodeService,
 } from "./mail";
 
-async function generateTokensService(user: IUserPayload) {
+async function generateTokensService(user: UserWithAvatar) {
   const accessToken = await generateToken(
     user,
     config.ACCESS_TOKEN_SECRET_KEY,
@@ -105,7 +112,7 @@ export async function userRegistrationService(
     const { email, password, mobile, name } = params;
     const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
 
-    if (isUserExist?.authorStatus === EAuthorStatus.Verified) {
+    if (isUserExist?.authorStatus === "VERIFIED") {
       return new ForbiddenError(generateExistErrorMessage("User"));
     }
 
@@ -172,7 +179,7 @@ export async function resendActivationService(
 
     const { authorStatus, email, id } = user;
 
-    if (authorStatus === EAuthorStatus.Verified) {
+    if (authorStatus === "VERIFIED") {
       return new ForbiddenError("User already verified");
     }
 
@@ -218,7 +225,7 @@ export async function verifyUserService(
 
     const { authorStatus } = user;
 
-    if (authorStatus === EAuthorStatus.Verified) {
+    if (authorStatus === "VERIFIED") {
       return new ForbiddenError("User already verified");
     }
 
@@ -271,7 +278,7 @@ export async function loginService(
   try {
     const { emailOrMobile } = params;
 
-    const user = await getUserByEmailOrMobileWithInfo(
+    const user = await getUserByEmailOrMobileWithAvatar(
       prisma,
       emailOrMobile,
       emailOrMobile,
@@ -286,19 +293,8 @@ export async function loginService(
     if (!isValidPassword) {
       return new UserInputError(INVALID_CREDENTIAL);
     }
-
-    const pickUser = pick(user, [
-      "id",
-      "name",
-      "mobile",
-      "email",
-      "role",
-      "authorStatus",
-      "about",
-      "avatar",
-    ]) as IUserPayload;
-
-    const { accessToken, refreshToken } = await generateTokensService(pickUser);
+    
+    const { accessToken, refreshToken } = await generateTokensService(user);
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true, // accessible only by web server
@@ -307,6 +303,7 @@ export async function loginService(
       maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
     });
     return accessToken;
+    
   } catch (error) {
     logger.error(error);
     return new UnknownError(AUTH_FAIL_ERR_MSG);
@@ -406,6 +403,21 @@ export async function resetPasswordService(
   }
 }
 
+/**
+ * This function verifies a reset password code and resets the user's password if the code is valid.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient, which is a type-safe database client
+ * for TypeScript and Node.js that can be used to interact with a database.
+ * @param {string} userId - The ID of the user whose password is being reset.
+ * @param {VerifyCodeParams} params - The `params` parameter is an object containing the `code`
+ * property, which is a string representing the verification code entered by the user during the reset
+ * password process.
+ * @returns The function can return different values depending on the execution path:
+ * - If the `params` object fails validation against the `verifyCodeSchema`, an error object with
+ * details about the validation errors is returned.
+ * - If the `userId` parameter does not correspond to an existing user in the database, a
+ * `ForbiddenError` object with a message indicating that the user does not exist is returned.
+ * - If the
+ */
 export async function verifyResetPasswordService(
   prisma: PrismaClient,
   userId: string,
@@ -444,5 +456,51 @@ export async function verifyResetPasswordService(
   } catch (error) {
     logger.error(error);
     return new UnknownError("Reset password verification failed");
+  }
+}
+
+export async function uploadAvatarService(
+  prisma: PrismaClient,
+  userId: string,
+  params: ImageParams,
+) {
+  try {
+    await imageParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "upload avatar" });
+  }
+
+  try {
+    const detailedUser = await getUserByIdWithAvatar(prisma, userId);
+
+    if (!detailedUser) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+
+    const uId = nanoid();
+    const dest = path.join(process.cwd(), "images");
+    
+    const image = await imageUpload(params.image, dest, uId);
+
+    const updatedUser = await createOrUpdateAvatar(prisma, userId, image);
+
+    if (updatedUser.avatar && detailedUser.avatar) {
+      const oldAvatarPath = `${process.cwd()}/${detailedUser.avatar.url}`;
+      unlink(oldAvatarPath, (linkErr) => {
+        if (linkErr) {
+          logger.error(linkErr);
+        }
+      });
+    }
+
+    return pick(updatedUser.avatar, ["id", "url", "height", "width"]);
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(
+      "Avatar upload failed."
+    );
   }
 }

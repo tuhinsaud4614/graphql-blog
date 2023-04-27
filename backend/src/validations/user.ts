@@ -9,13 +9,12 @@ import {
   VALID_MOBILE_REGEX,
   generateInvalidErrorMessage,
   generateMatchedErrorMessage,
-  generateRequiredErrorMessage,
+  generateRequiredErrorMessage
 } from "@/utils/constants";
 
 import { idParamsSchema } from ".";
 
-export const registerSchema = yup.object({
-  name: yup.string(),
+export const userEmailMobileSchema = yup.object({
   email: yup
     .string()
     .required(generateRequiredErrorMessage("Email"))
@@ -26,9 +25,13 @@ export const registerSchema = yup.object({
     .test("validMobile", INVALID_MOBILE, (value) => {
       return !!value && VALID_MOBILE_REGEX.test(value);
     }),
+});
+
+export const registerSchema = userEmailMobileSchema.shape({
+  name: yup.string(),
   password: yup
     .string()
-    .required(generateRequiredErrorMessage("password"))
+    .required(generateRequiredErrorMessage("Password"))
     .min(3, PASSWORD_NOT_LONG_ENOUGH)
     .max(255, PASSWORD_TOO_LONG),
   confirmPassword: yup

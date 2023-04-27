@@ -26,8 +26,7 @@ import {
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
-import { IUserPayload } from "@/utils/interfaces";
-import { CursorParams, OffsetParams } from "@/utils/types";
+import { CursorParams, OffsetParams, UserPayload } from "@/utils/types";
 import {
   cursorParamsSchema,
   getGraphqlYogaError,
@@ -39,7 +38,7 @@ export async function createCommentCtrl(
   prisma: PrismaClient,
   postId: string,
   content: string,
-  user: IUserPayload,
+  user: UserPayload,
   parentComment?: string,
 ) {
   try {
@@ -78,7 +77,7 @@ export async function updateCommentCtrl(
   prisma: PrismaClient,
   commentId: string,
   content: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);
@@ -101,7 +100,7 @@ export async function updateCommentCtrl(
 export async function deleteCommentCtrl(
   prisma: PrismaClient,
   commentId: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);

@@ -7,7 +7,6 @@ import {
   categoryModificationService,
 } from "@/services/category";
 import { UN_AUTH_ERR_MSG, generateRoleErrorMessage } from "@/utils/constants";
-import { EUserRole } from "@/utils/enums";
 import {
   CategoryCreationParams,
   CategoryModificationParams,
@@ -26,7 +25,7 @@ export const Mutation = {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    if (user.role !== EUserRole.Admin) {
+    if (user.role !== "ADMIN") {
       return new AuthenticationError(generateRoleErrorMessage("admin"));
     }
 
@@ -44,7 +43,7 @@ export const Mutation = {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    if (user.role !== EUserRole.Admin) {
+    if (user.role !== "ADMIN") {
       return new AuthenticationError(generateRoleErrorMessage("admin"));
     }
 
@@ -61,7 +60,7 @@ export const Mutation = {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    if (user.role !== EUserRole.Admin) {
+    if (user.role !== "ADMIN") {
       return new AuthenticationError(generateRoleErrorMessage("admin"));
     }
 

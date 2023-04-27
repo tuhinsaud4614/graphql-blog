@@ -1,29 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
-import { EAuthorStatus, EUserRole } from "@/utils/enums";
+import { imageUpload } from "@/utils";
 import type { RegisterInput } from "@/utils/types";
-
-const infoIncludes: Prisma.UserInclude = {
-  avatar: { select: { id: true, height: true, width: true, url: true } },
-  followers: {
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      mobile: true,
-      avatar: { select: { id: true, height: true, width: true, url: true } },
-    },
-  },
-  followings: {
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      mobile: true,
-      avatar: { select: { id: true, height: true, width: true, url: true } },
-    },
-  },
-};
 
 /**
  * This function creates a new user with the given input data and sets their role and author status.
@@ -44,8 +22,8 @@ export function createUser(
       mobile,
       password,
       name,
-      role: EUserRole.Author,
-      authorStatus: EAuthorStatus.Pending,
+      role: "AUTHOR",
+      authorStatus: "PENDING",
     },
   });
 }
@@ -57,13 +35,62 @@ export function createUser(
  * @param {string} id - The id parameter is a string that represents the unique identifier of a user in
  * the database. It is used to locate the user whose author status needs to be updated to "Verified".
  * @returns The `updateAuthorStatusToVerified` function is returning a Promise that resolves to the
- * updated user object with the `authorStatus` property set to `EAuthorStatus.Verified`.
+ * updated user object with the `authorStatus` property set to `"VERIFIED"`.
  */
 export function updateAuthorStatusToVerified(prisma: PrismaClient, id: string) {
   return prisma.user.update({
-    data: { authorStatus: EAuthorStatus.Verified },
+    data: { authorStatus: "VERIFIED" },
     where: { id },
   });
+}
+
+/**
+ * This function updates the password of a user in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * the user whose password needs to be reset.
+ * @param {string} newPassword - The new password that the user wants to set for their account.
+ * @returns a Promise that resolves to the updated user object with the new password.
+ */
+export function resetNewPassword(
+  prisma: PrismaClient,
+  userId: string,
+  newPassword: string,
+) {
+  return prisma.user.update({
+    data: { password: newPassword },
+    where: { id: userId },
+  });
+}
+
+/**
+ * This function creates or updates a user's avatar in a Prisma database.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} userId - The ID of the user whose avatar is being created or updated.
+ * @param  - - `prisma`: an instance of the PrismaClient used to interact with the database
+ * @returns a Promise that resolves to an updated user object with the avatar property included.
+ */
+export function createOrUpdateAvatar(prisma: PrismaClient,userId: string, {height,name,width}: Awaited<ReturnType<typeof imageUpload>>) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      avatar: {
+        upsert: {
+          create: {
+            url: `images/${name}`,
+            width: width || 200,
+            height: height || 200,
+          },
+          update: {
+            url: `images/${name}`,
+            width: width || 200,
+            height: height || 200,
+          },
+        },
+      },
+    },
+    include: { avatar: true },
+  })
 }
 
 /**
@@ -88,26 +115,28 @@ export async function getUserByEmailOrMobile(
 }
 
 /**
- * This TypeScript function finds a user in a Prisma database by their email or mobile number and
- * includes additional information.
- * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * This TypeScript function returns a user with their avatar based on their email or mobile number
+ * using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with a database.
  * @param {string} email - The email parameter is a string that represents the email address of a user.
- * It is used as a filter criterion to search for a user in the database.
  * @param {string} mobile - The `mobile` parameter is a string that represents the user's mobile phone
- * number. It is used as a search criteria along with the `email` parameter to find a user in the
- * database.
- * @returns a Promise that resolves to a user object from the Prisma client database that matches
- * either the email or mobile number provided as arguments, and includes additional information
- * specified in the `infoIncludes` variable.
+ * number. It is used as one of the criteria to search for a user in the database along with their
+ * email address.
+ * @returns The function `getUserByEmailOrMobileWithAvatar` is returning a Promise that resolves to the
+ * result of a Prisma query. The query searches for a user in the database whose email or mobile
+ * matches the provided parameters, and includes the user's avatar data.
  */
-export async function getUserByEmailOrMobileWithInfo(
+export async function getUserByEmailOrMobileWithAvatar(
   prisma: PrismaClient,
   email: string,
   mobile: string,
 ) {
   return prisma.user.findFirst({
     where: { OR: [{ email }, { mobile }] },
-    include: infoIncludes,
+    include: {
+      avatar: { select: { id: true, height: true, width: true, url: true } },
+    },
   });
 }
 
@@ -125,20 +154,15 @@ export function getUserById(prisma: PrismaClient, id: string) {
 }
 
 /**
- * This function updates the password of a user in a Prisma database.
- * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
- * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
- * the user whose password needs to be reset.
- * @param {string} newPassword - The new password that the user wants to set for their account.
- * @returns a Promise that resolves to the updated user object with the new password.
+ * This function retrieves a user by their ID with their associated avatar using Prisma.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
+ * interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user.
+ * It is used to find a specific user in the database.
+ * @returns a Promise that resolves to a user object with the specified `id` and includes the avatar
+ * information. The `avatarIncludes` is likely an object that specifies which fields of the avatar
+ * should be included in the response.
  */
-export function resetNewPassword(
-  prisma: PrismaClient,
-  userId: string,
-  newPassword: string,
-) {
-  return prisma.user.update({
-    data: { password: newPassword },
-    where: { id: userId },
-  });
+export function getUserByIdWithAvatar(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({ where: { id }, include: {avatar: { select: { id: true, height: true, width: true, url: true } }}});
 }

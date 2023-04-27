@@ -2,11 +2,11 @@ import { GraphQLError } from "graphql";
 
 import logger from "@/logger";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
-import { IPost } from "@/utils/interfaces";
 import { YogaContext } from "@/utils/types";
+import { Post as IPost } from "@prisma/client";
 
 export const Post = {
-  async author({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
+  async author({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const author = await prisma.post
         .findUnique({
@@ -22,7 +22,7 @@ export const Post = {
       );
     }
   },
-  async categories({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
+  async categories({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const categories = await prisma.post
         .findUnique({
@@ -38,7 +38,7 @@ export const Post = {
       );
     }
   },
-  async tags({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
+  async tags({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const tags = await prisma.post
         .findUnique({
@@ -54,7 +54,7 @@ export const Post = {
       );
     }
   },
-  async image({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
+  async image({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const categories = await prisma.picture.findFirst({
         where: { postId: id },
@@ -68,7 +68,7 @@ export const Post = {
       );
     }
   },
-  async reactionsBy({ id }: IPost, _: any, { prisma }: YogaContext, __: any) {
+  async reactionsBy({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const reactions = await prisma.post
         .findUnique({
@@ -86,9 +86,9 @@ export const Post = {
   },
   async comments(
     { id }: IPost,
-    _: any,
+    _: unknown,
     { prisma, user }: YogaContext,
-    __: any,
+    __: unknown,
   ) {
     try {
       if (!user) {

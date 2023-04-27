@@ -1,14 +1,14 @@
+import type { User as IUser } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
-import { IUser } from "@/utils/interfaces";
 import { YogaContext } from "@/utils/types";
 
 export const User = {
   password() {
     return null;
   },
-  async avatar({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
+  async avatar({ id }: IUser, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const image = await prisma.picture.findFirst({ where: { userId: id } });
 
@@ -20,7 +20,7 @@ export const User = {
     }
   },
 
-  async posts({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
+  async posts({ id }: IUser, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const posts = await prisma.post.findMany({ where: { authorId: id } });
       return posts;
@@ -31,7 +31,7 @@ export const User = {
     }
   },
 
-  async followings({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
+  async followings({ id }: IUser, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const users = await prisma.user
         .findUnique({
@@ -46,7 +46,7 @@ export const User = {
     }
   },
 
-  async followers({ id }: IUser, _: any, { prisma }: YogaContext, __: any) {
+  async followers({ id }: IUser, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const users = await prisma.user
         .findUnique({

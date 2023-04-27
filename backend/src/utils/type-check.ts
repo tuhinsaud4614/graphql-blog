@@ -1,6 +1,6 @@
 import { has } from "lodash";
 
-import { IVerifyResetPassword } from "./interfaces";
+import { IExtensionsWithAuthorization, IVerifyResetPassword } from "./interfaces";
 
 /**
  * The function checks if the first character of a given string is a vowel.
@@ -30,3 +30,23 @@ export const isVerifyResetPassword = (
   data !== null &&
   has(data, "code") &&
   has(data, "hash");
+
+/**
+ * This function checks if the current environment is set to development.
+ */
+export const isDev = () => process.env.NODE_ENV === "development";
+
+/**
+ * This TypeScript function checks if an object has a "headers" property with an "Authorization"
+ * property inside it.
+ * @param {any} extensions - The `extensions` parameter is of type `any`, which means it can be any
+ * data type. The function is checking if this parameter is an object with a `headers` property that is
+ * also an object, and if that `headers` object has an `Authorization` property. If all of these
+ */
+export const isExtensionsWithAuthorization = (
+  extensions: any,
+): extensions is IExtensionsWithAuthorization =>
+  typeof extensions === "object" &&
+  "headers" in extensions &&
+  typeof extensions.headers === "object" &&
+  "Authorization" in extensions.headers;

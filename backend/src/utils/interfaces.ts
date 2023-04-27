@@ -1,47 +1,9 @@
 import type {
+  AuthorStatus,
   Category,
-  Comment,
-  Picture,
-  Post,
-  Tag,
-  User,
+  UserRole
 } from "@prisma/client";
 
-import { EAuthorStatus, EUserRole } from "./enums";
-import { YogaContext } from "./types";
-
-export interface IPicture extends Picture {}
-
-export interface IUser extends User {}
-
-export interface ICategory extends Category {}
-
-export interface IComment extends Comment {}
-
-export interface IPost extends Post {}
-
-export interface ITag extends Tag {}
-
-export type IResolver = (
-  parent: any,
-  args: any,
-  context: YogaContext,
-  info: any,
-) => any;
-
-export type GraphQLMiddlewareFunc = (
-  resolver: IResolver,
-  parent: any,
-  args: any,
-  context: YogaContext,
-  info: any,
-) => any;
-
-export interface ResolverMap {
-  [key: string]: {
-    [key: string]: IResolver;
-  };
-}
 
 // Payload
 export interface IPicturePayload {
@@ -62,8 +24,8 @@ export interface IUserPayload {
   name: string | null;
   mobile: string;
   email: string;
-  role: EUserRole;
-  authorStatus: EAuthorStatus | null;
+  role: UserRole;
+  authorStatus: AuthorStatus | null;
   avatar: IPicturePayload | null;
   about: string | null;
 }
@@ -102,7 +64,7 @@ export interface IPostPayload {
   published: boolean;
   publishedAt: Date | null;
   content: string;
-  categories: ICategory[];
+  categories: Category[];
   tags: ITagPayload[];
   reactionsBy: IUserPayload[];
   comments: ICommentPayload[];

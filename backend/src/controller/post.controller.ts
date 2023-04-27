@@ -35,7 +35,6 @@ import { EReactionsMutationStatus } from "@/utils/enums";
 import type {
   IOffsetPageInfo,
   IReactionsCount,
-  IUserPayload,
 } from "@/utils/interfaces";
 import type {
   CreatePostInput,
@@ -58,7 +57,7 @@ import {
 export async function createPostCtrl(
   prisma: PrismaClient,
   args: CreatePostInput,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   let imagePath;
   try {
@@ -97,7 +96,7 @@ export async function createPostCtrl(
 export async function updatePostCtrl(
   prisma: PrismaClient,
   args: UpdatePostInput,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   let imagePath: string | undefined;
   let imageName: string | undefined;
@@ -149,7 +148,7 @@ export async function updatePostCtrl(
 export async function deletePostCtrl(
   prisma: PrismaClient,
   id: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getPostByIdForUser(prisma, id, user.id);
@@ -175,7 +174,7 @@ export async function reactionToCtrl(
   // pubSub: PubSub<PubSubPublishArgsByKey>,
   pubSub: YogaPubSubType,
   toId: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getPostById(prisma, toId);

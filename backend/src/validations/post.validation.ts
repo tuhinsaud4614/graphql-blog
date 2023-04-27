@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { has } from "lodash";
 import * as yup from "yup";
 
@@ -10,7 +11,6 @@ import {
   generateRequiredErrorMessage,
   generateTooLargeFileErrorMessage,
 } from "@/utils/constants";
-import { EUserRole } from "@/utils/enums";
 
 import { offsetParamsSchema } from ".";
 
@@ -74,8 +74,8 @@ export const getAllPostsByTagSchema = offsetParamsSchema.shape({
   role: yup
     .string()
     .required(generateRequiredErrorMessage("Role"))
-    .oneOf(
-      Object.values(EUserRole),
+    .oneOf<UserRole>(
+      ["ADMIN", "AUTHOR"],
       generateEitherErrorMessage("Role", "AUTHOR", "ADMIN"),
     ),
   tag: yup.string().required(generateRequiredErrorMessage("Tag")),

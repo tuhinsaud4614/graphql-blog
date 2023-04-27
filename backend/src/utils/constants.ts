@@ -1,4 +1,4 @@
-import { isVowel } from "./typeCheck";
+import { isVowel } from "./type-check";
 
 // Error Messages
 export const INVALID_CREDENTIAL = "Invalid email, phone or password";
@@ -178,6 +178,27 @@ export function generateNotNumberErrorMessage(field: string): string {
 }
 
 /**
+ * This TypeScript function generates an error message stating that a given field should be an integer.
+ * @param {string} field - The name of the field that is expected to be an integer.
+ * @returns a string message that says the input field should be an integer.
+ */
+export function generateNotIntegerErrorMessage(field: string): string {
+  return `${field} should be a integer.`;
+}
+
+/**
+ * This function generates an error message indicating that a given field is not a valid URL.
+ * @param {string} [field] - The `field` parameter is an optional string parameter that represents the
+ * name of the field that is not a valid URL. If this parameter is not provided, the error message will
+ * simply say "is not valid url."
+ * @returns A string message that includes the provided field parameter and the text "is not valid
+ * url."
+ */
+export function generateNotUrlErrorMessage(field?: string): string {
+  return `${field || "It"} is not valid url.`;
+}
+
+/**
  * Generates an error message indicating that the creation of an entity failed.
  *
  * @param entityName The name of the entity.
@@ -224,6 +245,19 @@ export function generateDeleteErrorMessage(entityName: string): string {
  */
 export function generateValidationErrorMessage(key?: string) {
   return key ? `Validation failed for ${key}.` : "Validation failed.";
+}
+
+/**
+ * This function generates an error message stating that a specified entity needs to be
+ * defined.
+ * @param {string} entityName - The entityName parameter is a string that represents the name of an
+ * entity that needs to be defined. This function generates an error message that informs the user that
+ * the specified entity needs to be defined.
+ * @returns A string message that says "[entityName] need to be defined." The value of [entityName]
+ * will be the value of the parameter passed to the function.
+ */
+export function generateNotDefinedErrorMessage(entityName: string) {
+  return `${entityName} need to be defined.`;
 }
 
 // REDIS KEY START

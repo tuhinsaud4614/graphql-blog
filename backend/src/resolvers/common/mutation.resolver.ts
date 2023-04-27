@@ -10,7 +10,6 @@ import {
   UN_AUTH_EXT_ERR_CODE,
   VERIFIED_AUTHOR_ERR_MSG,
 } from "@/utils/constants";
-import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import { YogaContext } from "@/utils/types";
 
 export const Mutation = {
@@ -28,10 +27,7 @@ export const Mutation = {
       });
     }
 
-    if (
-      user.role === EUserRole.Author &&
-      user.authorStatus !== EAuthorStatus.Verified
-    ) {
+    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
       return new GraphQLError(VERIFIED_AUTHOR_ERR_MSG);
     }
 

@@ -7,7 +7,6 @@ import {
   generateResetPasswordVerificationKeyForId,
   generateUserVerificationKey,
 } from "@/utils/constants";
-import { EAuthorStatus, EUserRole } from "@/utils/enums";
 import { IResponseOnCursor, IResponseOnOffset } from "@/utils/interfaces";
 import sendMail from "@/utils/mailer";
 import redisClient from "@/utils/redis";
@@ -165,7 +164,7 @@ export async function getUsersOnCursor(
 
 export function verifyAuthorStatus(prisma: PrismaClient, userId: string) {
   return prisma.user.update({
-    data: { authorStatus: EAuthorStatus.Verified },
+    data: { authorStatus: "VERIFIED" },
     where: { id: userId },
   });
 }
@@ -211,8 +210,8 @@ export function createUser(
       mobile,
       password,
       name,
-      role: EUserRole.Author,
-      authorStatus: EAuthorStatus.Pending,
+      role: "AUTHOR",
+      authorStatus: "PENDING",
     },
   });
 }

@@ -1,14 +1,14 @@
+import type { Comment as IComment } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
 import logger from "@/logger";
 import { UnknownError } from "@/model";
 import { getReplyCount } from "@/services/comment.service";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
-import { IComment } from "@/utils/interfaces";
 import { YogaContext } from "@/utils/types";
 
 export const Comment = {
-  async commenter({ id }: IComment, _: any, { prisma }: YogaContext, __: any) {
+  async commenter({ id }: IComment, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
       const user = await prisma.comment
         .findUnique({ where: { id } })
@@ -22,9 +22,9 @@ export const Comment = {
   },
   async parentComment(
     { id }: IComment,
-    _: any,
+    _: unknown,
     { prisma }: YogaContext,
-    __: any,
+    __: unknown,
   ) {
     try {
       const comment = await prisma.comment
@@ -41,7 +41,7 @@ export const Comment = {
     { id }: IComment,
     _: unknown,
     { prisma }: YogaContext,
-    __: any,
+    __: unknown,
   ) {
     try {
       const count = await getReplyCount(prisma, id);

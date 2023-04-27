@@ -9,10 +9,11 @@ import {
   IMAGE_MIMES,
   INTERNAL_SERVER_ERROR,
   NOT_IMG_ERR_MSG,
+  generateNotIntegerErrorMessage,
   generateNotNumberErrorMessage,
   generateRequiredErrorMessage,
   generateTooLargeFileErrorMessage,
-  generateValidationErrorMessage,
+  generateValidationErrorMessage
 } from "@/utils/constants";
 
 export function getGraphqlYogaError(
@@ -34,11 +35,15 @@ export function getGraphqlYogaError(
   return new GraphQLError(msg, { extensions: { code } });
 }
 
+export const idParamsSchema = yup.object({
+  id: yup.string().required(generateRequiredErrorMessage("ID")),
+});
+
 export const uploadFileSchema = yup.object().shape({
   file: yup.mixed<File>().required(generateRequiredErrorMessage("File")),
 });
 
-export const uploadImageSchema = yup.object().shape({
+export const imageParamsSchema = yup.object({
   image: yup
     .mixed<File>()
     .required(generateRequiredErrorMessage("Image"))
@@ -58,15 +63,11 @@ export const cursorParamsSchema = yup.object({
   limit: yup
     .number()
     .required(generateRequiredErrorMessage("Limit"))
-    .integer(generateNotNumberErrorMessage("Limit")),
+    .integer(generateNotIntegerErrorMessage("Limit")),
   after: yup.string().nullable(),
 });
 
 export const offsetParamsSchema = yup.object({
   limit: yup.number().integer(generateNotNumberErrorMessage("Limit")),
-  page: yup.number().integer(generateNotNumberErrorMessage("Page")),
-});
-
-export const idParamsSchema = yup.object({
-  id: yup.string().required(generateRequiredErrorMessage("ID")),
+  page: yup.number().integer(generateNotIntegerErrorMessage("Page")),
 });

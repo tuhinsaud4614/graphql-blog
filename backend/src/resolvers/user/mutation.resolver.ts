@@ -4,8 +4,7 @@ import {
   followRequestCtrl,
   unfollowRequestCtrl,
   updateAboutCtrl,
-  updateNameCtrl,
-  uploadAvatar,
+  updateNameCtrl
 } from "@/controller/user.controller";
 import { AuthenticationError } from "@/model";
 import {
@@ -13,6 +12,7 @@ import {
   logoutService,
   resendActivationService,
   resetPasswordService,
+  uploadAvatarService,
   userRegistrationService,
   verifyResetPasswordService,
   verifyUserService,
@@ -24,9 +24,10 @@ import {
   UN_AUTH_EXT_ERR_CODE,
   UN_FOLLOW_OWN_ERR_MSG,
 } from "@/utils/constants";
-import { EAuthorStatus, EFollowingMutationStatus } from "@/utils/enums";
-import {
+import { EFollowingMutationStatus } from "@/utils/enums";
+import type {
   IDParams,
+  ImageParams,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
@@ -73,7 +74,7 @@ export const Mutation = {
 
     if (typeof verifiedUserId === "string") {
       pubSub.publish("verifyUser", verifiedUserId, {
-        mutation: EAuthorStatus.Verified,
+        mutation: "VERIFIED",
         userId: verifiedUserId,
       });
     }
@@ -135,19 +136,15 @@ export const Mutation = {
 
   async uploadAvatar(
     _: unknown,
-    { avatar }: { avatar: File },
+    params: ImageParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    const result = await uploadAvatar(prisma, avatar, user);
+    const result = await uploadAvatarService(prisma, user.id,params);
     return result;
   },
 

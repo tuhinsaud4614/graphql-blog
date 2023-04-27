@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import { YogaInitialContext } from "graphql-yoga";
 
 import type { Request, Response } from "express";
@@ -6,7 +7,8 @@ import type { InferType } from "yup";
 import {
   cursorParamsSchema,
   idParamsSchema,
-  offsetParamsSchema,
+  imageParamsSchema,
+  offsetParamsSchema
 } from "@/validations";
 import {
   categoriesByTextSchema,
@@ -23,25 +25,37 @@ import {
   registerSchema,
   resetPasswordSchema,
   verifyCodeSchema,
-  verifyUserSchema,
+  verifyUserSchema
 } from "@/validations/user";
 
+import type { User } from "@prisma/client";
 import createContext from "./context";
 
 export type YogaContextType = YogaInitialContext & {
   req: Request;
   res: Response;
 };
-
 export type YogaContext = ReturnType<typeof createContext>;
+
+export type FileFilterFunction = (
+  file: File,
+  cb: (error: GraphQLError | null, valid?: boolean) => void,
+) => void;
 
 export type CursorParams = InferType<typeof cursorParamsSchema>;
 export type OffsetParams = InferType<typeof offsetParamsSchema>;
-
-// Common
 export type IDParams = InferType<typeof idParamsSchema>;
+export type ImageParams = InferType<typeof imageParamsSchema>;
 
 // User Type
+export type UserWithAvatar = User & {
+  avatar: {
+      id: string;
+      height: number;
+      width: number;
+      url: string;
+  } | null;
+};
 export type RegisterInput = InferType<typeof registerSchema>;
 export type LoginInput = InferType<typeof loginSchema>;
 export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;

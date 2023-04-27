@@ -35,7 +35,6 @@ import {
 import {
   generateToken,
   imageUpload,
-  isVerifyResetPassword,
   nanoid,
   verifyRefreshToken,
 } from "@/utils";
@@ -53,10 +52,8 @@ import {
   generateResetPasswordVerificationKeyForId,
   generateUserVerificationKey,
 } from "@/utils/constants";
-import { EAuthorStatus, EUserRole } from "@/utils/enums";
-import type { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
-import type { CursorParams, OffsetParams } from "@/utils/types";
+import type { CursorParams, OffsetParams, UserPayload } from "@/utils/types";
 import {
   cursorParamsSchema,
   getGraphqlYogaError,
@@ -77,7 +74,7 @@ export async function verifyUserCtrl(
       return new GraphQLError(generateNotExistErrorMessage("User"));
     }
 
-    if (isUserExist.authorStatus === EAuthorStatus.Verified) {
+    if (isUserExist.authorStatus === "VERIFIED") {
       return new GraphQLError("User already verified");
     }
 
@@ -95,7 +92,7 @@ export async function verifyUserCtrl(
     // pubSub.publish(SUBSCRIPTION_USER_VERIFICATION(userId), {
     //   userVerify: {
     //     userId,
-    //     mutation: EAuthorStatus.Verified,
+    //     mutation: "VERIFIED",
     //   },
     // });
     return userId;
@@ -106,7 +103,7 @@ export async function verifyUserCtrl(
 }
 
 export async function logoutCtrl(
-  user: IUserPayload,
+  user: UserPayload,
   req: IncomingMessage,
   res: ServerResponse,
 ) {
@@ -158,7 +155,7 @@ export async function tokenCtrl(prisma: PrismaClient, refreshToken?: string) {
           "about",
           "avatar",
         ]),
-      } as IUserPayload,
+      },
       config.ACCESS_TOKEN_SECRET_KEY,
       config.ACCESS_TOKEN_EXPIRES,
     );
@@ -257,7 +254,7 @@ export async function verifyResetPasswordCtrl(
 export async function uploadAvatar(
   prisma: PrismaClient,
   avatar: File,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, user.id);
@@ -320,7 +317,7 @@ export async function uploadAvatar(
 export async function updateNameCtrl(
   prisma: PrismaClient,
   name: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, user.id);
@@ -349,7 +346,7 @@ export async function updateNameCtrl(
 export async function updateAboutCtrl(
   prisma: PrismaClient,
   value: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, user.id);
@@ -378,7 +375,7 @@ export async function updateAboutCtrl(
 export async function followRequestCtrl(
   prisma: PrismaClient,
   toId: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, toId);
@@ -406,7 +403,7 @@ export async function followRequestCtrl(
 export async function unfollowRequestCtrl(
   prisma: PrismaClient,
   toId: string,
-  user: IUserPayload,
+  user: UserPayload,
 ) {
   try {
     const isExist = await getUserByIdWithInfo(prisma, toId);
@@ -444,7 +441,7 @@ export async function getUsersOnOffsetCtrl(
     const { limit, page } = params;
     const condition = {
       where: {
-        role: { not: EUserRole.Admin },
+        role: { not: "ADMIN" },
         id: { not: userId },
       } as Prisma.UserWhereInput,
     };
@@ -482,7 +479,7 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
         NOT: {
           followers: { some: { id: userId } },
         },
-        role: { not: EUserRole.Admin },
+        role: { not: "ADMIN" },
         id: { not: userId },
       } as Prisma.UserWhereInput,
     };
@@ -517,7 +514,7 @@ export async function authorFollowersOnCursorCtrl(
     const condition = {
       where: {
         followings: { some: { id: userId } },
-        role: { not: EUserRole.Admin },
+        role: { not: "ADMIN" },
         id: { not: userId },
       } as Prisma.UserWhereInput,
     };
@@ -552,7 +549,7 @@ export async function authorFollowingsOnCursorCtrl(
     const condition = {
       where: {
         followers: { some: { id: userId } },
-        role: { not: EUserRole.Admin },
+        role: { not: "ADMIN" },
         id: { not: userId },
       } as Prisma.UserWhereInput,
     };
