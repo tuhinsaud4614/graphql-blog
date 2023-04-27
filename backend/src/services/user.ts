@@ -22,6 +22,7 @@ import {
   getUserById,
   getUserByIdWithAvatar,
   resetNewPassword,
+  unfollowTo,
   updateAuthorStatusToVerified,
   updateUserAbout,
   updateUserName,
@@ -605,6 +606,26 @@ export async function followRequestService(
 
     const followedUser = await followTo(prisma, toId, ownId);
     return followedUser;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(FOLLOW_ERR_MSG);
+  }
+}
+
+export async function unfollowRequestService(
+  prisma: PrismaClient,
+  toId: string,
+  ownId: string,
+) {
+  try {
+    const user = await getUserByIdWithAvatar(prisma, toId);
+
+    if (!user) {
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
+    }
+
+    await unfollowTo(prisma, toId, ownId);
+    return toId;
   } catch (error) {
     logger.error(error);
     return new UnknownError(FOLLOW_ERR_MSG);

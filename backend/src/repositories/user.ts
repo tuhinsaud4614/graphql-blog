@@ -146,6 +146,13 @@ export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
   });
 }
 
+export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
+  return prisma.user.update({
+    where: { id: toId },
+    data: { followers: { disconnect: { id: ownId } } },
+  });
+}
+
 /**
  * This TypeScript function returns a user object from a Prisma client based on their email or mobile
  * number.
