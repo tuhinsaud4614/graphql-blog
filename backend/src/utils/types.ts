@@ -25,6 +25,7 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  updateAboutSchema,
   updateNameSchema,
   verifyCodeSchema,
   verifyUserSchema,
@@ -63,6 +64,7 @@ export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;
 export type VerifyCodeParams = InferType<typeof verifyCodeSchema>;
 export type VerifyUserParams = InferType<typeof verifyUserSchema>;
 export type UpdateNameParams = InferType<typeof updateNameSchema>;
+export type UpdateAboutParams = InferType<typeof updateAboutSchema>;
 
 // Post Type
 export type CreatePostInput = InferType<typeof createPostSchema>;

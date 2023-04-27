@@ -1,16 +1,14 @@
 import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
+import { unfollowRequestCtrl } from "@/controller/user.controller";
+import { AuthenticationError, ForbiddenError } from "@/model";
 import {
-  followRequestCtrl,
-  unfollowRequestCtrl,
-  updateAboutCtrl,
-} from "@/controller/user.controller";
-import { AuthenticationError } from "@/model";
-import {
+  followRequestService,
   loginService,
   logoutService,
   resendActivationService,
   resetPasswordService,
+  updateAboutService,
   updateNameService,
   uploadAvatarService,
   userRegistrationService,
@@ -31,6 +29,7 @@ import type {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateAboutParams,
   UpdateNameParams,
   VerifyCodeParams,
   VerifyUserParams,
@@ -163,20 +162,14 @@ export const Mutation = {
 
   async updateAbout(
     _: unknown,
-    { value }: { value: string },
+    params: UpdateAboutParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-
-    const result = await updateAboutCtrl(prisma, value, user);
-    return result;
+    return await updateAboutService(prisma, user.id, params);
   },
 
   async followRequest(
@@ -186,22 +179,19 @@ export const Mutation = {
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
     if (user.id === toId) {
-      return new GraphQLError(FOLLOW_OWN_ERR_MSG);
+      return new ForbiddenError(FOLLOW_OWN_ERR_MSG);
     }
 
-    const result = await followRequestCtrl(prisma, toId, user);
+    const result = await followRequestService(prisma, toId, user.id);
     pubSub.publish("following", toId, {
       followedBy: user,
       mutation: EFollowingMutationStatus.Follow,
     });
+
     return result;
   },
 

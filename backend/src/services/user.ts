@@ -16,18 +16,21 @@ import {
 import {
   createOrUpdateAvatar,
   createUser,
+  followTo,
   getUserByEmailOrMobile,
   getUserByEmailOrMobileWithAvatar,
   getUserById,
   getUserByIdWithAvatar,
   resetNewPassword,
   updateAuthorStatusToVerified,
+  updateUserAbout,
   updateUserName,
 } from "@/repositories/user";
 import { formatError, generateToken, imageUpload, nanoid } from "@/utils";
 import config from "@/utils/config";
 import {
   AUTH_FAIL_ERR_MSG,
+  FOLLOW_ERR_MSG,
   INVALID_CREDENTIAL,
   generateCreationErrorMessage,
   generateExistErrorMessage,
@@ -45,6 +48,7 @@ import type {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateAboutParams,
   UpdateNameParams,
   UserWithAvatar,
   VerifyCodeParams,
@@ -55,6 +59,7 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  updateAboutSchema,
   updateNameSchema,
   verifyCodeSchema,
   verifyUserSchema,
@@ -512,6 +517,17 @@ export async function uploadAvatarService(
   }
 }
 
+/**
+ * This function updates a user's name in a database using input validation and error handling.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient, which is a type-safe database client
+ * for Node.js that provides autocompletion and type checking for database queries.
+ * @param {string} userId - The ID of the user whose name is being updated.
+ * @param {UpdateNameParams} params - The `params` parameter is an object that contains the new name
+ * that the user wants to update to. It should have the following properties:
+ * @returns either an error object or the result of calling the `updateUserName` function with the
+ * provided `prisma` client, the `id` of the user retrieved by calling `getUserByIdWithAvatar`, and the
+ * `name` property of the `params` object.
+ */
 export async function updateNameService(
   prisma: PrismaClient,
   userId: string,
@@ -537,5 +553,60 @@ export async function updateNameService(
   } catch (error) {
     logger.error(error);
     return new UnknownError("User name update failed.");
+  }
+}
+
+/**
+ * Updates a user's about section.
+ * @param {PrismaClient} prisma - An instance of PrismaClient.
+ * @param {string} userId - The ID of the user to update.
+ * @param {UpdateAboutParams} params - An object containing the new about value to update.
+ * @returns {Promise<User | ForbiddenError | UnknownError>} - A Promise that resolves with the updated user object, or one of the following error objects: ForbiddenError, UnknownError.
+ */
+export async function updateAboutService(
+  prisma: PrismaClient,
+  userId: string,
+  params: UpdateAboutParams,
+) {
+  try {
+    await updateAboutSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "update about" });
+  }
+
+  try {
+    const user = await getUserByIdWithAvatar(prisma, userId);
+
+    if (!user) {
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
+    }
+
+    return await updateUserAbout(prisma, user.id, params.value);
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("User about update failed.");
+  }
+}
+
+export async function followRequestService(
+  prisma: PrismaClient,
+  toId: string,
+  ownId: string,
+) {
+  try {
+    const user = await getUserByIdWithAvatar(prisma, toId);
+
+    if (!user) {
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
+    }
+
+    const followedUser = await followTo(prisma, toId, ownId);
+    return followedUser;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(FOLLOW_ERR_MSG);
   }
 }

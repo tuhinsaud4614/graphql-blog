@@ -116,6 +116,37 @@ export function updateUserName(prisma: PrismaClient, id: string, name: string) {
 }
 
 /**
+ * This function updates a user's "about" field in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * user whose `about` field needs to be updated.
+ * @param {string} value - The `value` parameter is a string that represents the new value for the
+ * `about` field of a user in a database. This function updates the `about` field of a user with the
+ * specified `id` to the new `value`.
+ * @returns The `updateUserAbout` function is returning a Promise that resolves to the updated user
+ * object with the new `about` value.
+ */
+export function updateUserAbout(
+  prisma: PrismaClient,
+  id: string,
+  value: string,
+) {
+  return prisma.user.update({
+    where: { id },
+    data: {
+      about: value,
+    },
+  });
+}
+
+export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
+  return prisma.user.update({
+    where: { id: toId },
+    data: { followers: { connect: { id: ownId } } },
+  });
+}
+
+/**
  * This TypeScript function returns a user object from a Prisma client based on their email or mobile
  * number.
  * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.

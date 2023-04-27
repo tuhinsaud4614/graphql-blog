@@ -82,3 +82,7 @@ export const resetPasswordSchema = yup.object({
 export const updateNameSchema = yup.object({
   name: yup.string().required(generateRequiredErrorMessage("Name")),
 });
+
+export const updateAboutSchema = yup.object({
+  value: yup.string().required(generateRequiredErrorMessage("About")),
+});
