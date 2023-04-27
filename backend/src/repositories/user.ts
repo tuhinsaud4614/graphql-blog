@@ -70,7 +70,11 @@ export function resetNewPassword(
  * @param  - - `prisma`: an instance of the PrismaClient used to interact with the database
  * @returns a Promise that resolves to an updated user object with the avatar property included.
  */
-export function createOrUpdateAvatar(prisma: PrismaClient,userId: string, {height,name,width}: Awaited<ReturnType<typeof imageUpload>>) {
+export function createOrUpdateAvatar(
+  prisma: PrismaClient,
+  userId: string,
+  { height, name, width }: Awaited<ReturnType<typeof imageUpload>>,
+) {
   return prisma.user.update({
     where: { id: userId },
     data: {
@@ -90,7 +94,25 @@ export function createOrUpdateAvatar(prisma: PrismaClient,userId: string, {heigh
       },
     },
     include: { avatar: true },
-  })
+  });
+}
+
+/**
+ * This function updates the name of a user in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * user whose name needs to be updated.
+ * @param {string} name - The new name that we want to update for the user.
+ * @returns The `updateUserName` function is returning a Promise that resolves to the updated user
+ * object with the new `name` value.
+ */
+export function updateUserName(prisma: PrismaClient, id: string, name: string) {
+  return prisma.user.update({
+    where: { id },
+    data: {
+      name,
+    },
+  });
 }
 
 /**
@@ -164,5 +186,10 @@ export function getUserById(prisma: PrismaClient, id: string) {
  * should be included in the response.
  */
 export function getUserByIdWithAvatar(prisma: PrismaClient, id: string) {
-  return prisma.user.findUnique({ where: { id }, include: {avatar: { select: { id: true, height: true, width: true, url: true } }}});
+  return prisma.user.findUnique({
+    where: { id },
+    include: {
+      avatar: { select: { id: true, height: true, width: true, url: true } },
+    },
+  });
 }

@@ -8,7 +8,6 @@ import path from "path";
 
 import logger from "@/logger";
 import {
-  AuthenticationError,
   ForbiddenError,
   NoContentError,
   UnknownError,
@@ -23,13 +22,13 @@ import {
   getUserByIdWithAvatar,
   resetNewPassword,
   updateAuthorStatusToVerified,
+  updateUserName,
 } from "@/repositories/user";
 import { formatError, generateToken, imageUpload, nanoid } from "@/utils";
 import config from "@/utils/config";
 import {
   AUTH_FAIL_ERR_MSG,
   INVALID_CREDENTIAL,
-  UN_AUTH_ERR_MSG,
   generateCreationErrorMessage,
   generateExistErrorMessage,
   generateNotExistErrorMessage,
@@ -46,15 +45,17 @@ import type {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateNameParams,
   UserWithAvatar,
   VerifyCodeParams,
-  VerifyUserParams
+  VerifyUserParams,
 } from "@/utils/types";
 import { idParamsSchema, imageParamsSchema } from "@/validations";
 import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  updateNameSchema,
   verifyCodeSchema,
   verifyUserSchema,
 } from "@/validations/user";
@@ -293,7 +294,7 @@ export async function loginService(
     if (!isValidPassword) {
       return new UserInputError(INVALID_CREDENTIAL);
     }
-    
+
     const { accessToken, refreshToken } = await generateTokensService(user);
 
     res.cookie("jwt", refreshToken, {
@@ -303,7 +304,6 @@ export async function loginService(
       maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
     });
     return accessToken;
-    
   } catch (error) {
     logger.error(error);
     return new UnknownError(AUTH_FAIL_ERR_MSG);
@@ -459,6 +459,15 @@ export async function verifyResetPasswordService(
   }
 }
 
+/**
+ * This function uploads a user's avatar image and updates their avatar information in the database.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} userId - The ID of the user for whom the avatar is being uploaded.
+ * @param {ImageParams} params - The `params` parameter is an object containing the image file to be
+ * uploaded, with the following properties:
+ * @returns either a formatted error object or an object containing the updated user's avatar
+ * information (id, url, height, width).
+ */
 export async function uploadAvatarService(
   prisma: PrismaClient,
   userId: string,
@@ -477,12 +486,12 @@ export async function uploadAvatarService(
     const detailedUser = await getUserByIdWithAvatar(prisma, userId);
 
     if (!detailedUser) {
-      return new AuthenticationError(UN_AUTH_ERR_MSG);
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
     const uId = nanoid();
     const dest = path.join(process.cwd(), "images");
-    
+
     const image = await imageUpload(params.image, dest, uId);
 
     const updatedUser = await createOrUpdateAvatar(prisma, userId, image);
@@ -499,8 +508,34 @@ export async function uploadAvatarService(
     return pick(updatedUser.avatar, ["id", "url", "height", "width"]);
   } catch (error) {
     logger.error(error);
-    return new UnknownError(
-      "Avatar upload failed."
-    );
+    return new UnknownError("Avatar upload failed.");
+  }
+}
+
+export async function updateNameService(
+  prisma: PrismaClient,
+  userId: string,
+  params: UpdateNameParams,
+) {
+  try {
+    await updateNameSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "update name" });
+  }
+
+  try {
+    const user = await getUserByIdWithAvatar(prisma, userId);
+
+    if (!user) {
+      return new ForbiddenError(generateNotExistErrorMessage("User"));
+    }
+
+    return await updateUserName(prisma, user.id, params.name);
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("User name update failed.");
   }
 }

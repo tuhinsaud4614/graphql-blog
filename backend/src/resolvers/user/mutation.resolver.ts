@@ -4,7 +4,6 @@ import {
   followRequestCtrl,
   unfollowRequestCtrl,
   updateAboutCtrl,
-  updateNameCtrl
 } from "@/controller/user.controller";
 import { AuthenticationError } from "@/model";
 import {
@@ -12,6 +11,7 @@ import {
   logoutService,
   resendActivationService,
   resetPasswordService,
+  updateNameService,
   uploadAvatarService,
   userRegistrationService,
   verifyResetPasswordService,
@@ -31,6 +31,7 @@ import type {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateNameParams,
   VerifyCodeParams,
   VerifyUserParams,
   YogaContext,
@@ -144,26 +145,20 @@ export const Mutation = {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    const result = await uploadAvatarService(prisma, user.id,params);
-    return result;
+    return await uploadAvatarService(prisma, user.id, params);
   },
 
   async updateName(
     _: unknown,
-    { name }: { name: string },
+    params: UpdateNameParams,
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
-    const result = await updateNameCtrl(prisma, name, user);
-    return result;
+    return await updateNameService(prisma, user.id, params);
   },
 
   async updateAbout(

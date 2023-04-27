@@ -17,7 +17,7 @@ import {
   INTERNAL_SERVER_ERROR,
   UN_AUTH_ERR_MSG,
   generateRefreshTokenKeyName,
-  generateValidationErrorMessage
+  generateValidationErrorMessage,
 } from "./constants";
 import redisClient from "./redis";
 import { isExtensionsWithAuthorization } from "./type-check";
@@ -90,7 +90,17 @@ export function nanoid(size?: number) {
  * message.
  */
 export function getUserPayload(decoded: string | JwtPayload) {
-  if (typeof decoded === "object" && "id" in decoded && "name" in decoded && "email" in decoded && "mobile" in decoded && "role" in decoded && "authorStatus"in decoded && "avatar" in decoded && "about" in decoded) {
+  if (
+    typeof decoded === "object" &&
+    "id" in decoded &&
+    "name" in decoded &&
+    "email" in decoded &&
+    "mobile" in decoded &&
+    "role" in decoded &&
+    "authorStatus" in decoded &&
+    "avatar" in decoded &&
+    "about" in decoded
+  ) {
     // @ts-ignore
     return {
       id: decoded["id"],
@@ -109,7 +119,7 @@ export function getUserPayload(decoded: string | JwtPayload) {
 
 export const verifyRefreshToken = async (token: string) => {
   try {
-    const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY,);
+    const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY);
     const payload = getUserPayload(decoded);
 
     const value = await redisClient.get(
@@ -140,8 +150,6 @@ export const verifyAccessTokenInContext = (request: Request) => {
     return null;
   }
 };
-
-
 
 /**
  * This function verifies an access token from extensions and returns the user payload if successful.
@@ -212,25 +220,20 @@ export async function fileUpload(
     name?: string;
   },
 ) {
-    const newDest = dest || path.join(process.cwd(), "files");
-    fs.mkdirSync(newDest, { recursive: true });
+  const newDest = dest || path.join(process.cwd(), "files");
+  fs.mkdirSync(newDest, { recursive: true });
 
-    const newName = name ? name + path.extname(file.name) : file.name;
-    const filePath = path.join(newDest, newName);
+  const newName = name ? name + path.extname(file.name) : file.name;
+  const filePath = path.join(newDest, newName);
 
-    await fs.promises.writeFile(filePath, file.stream());
-    return { ...file, name: newName, ext: path.extname(newName), filePath };
-  
+  await fs.promises.writeFile(filePath, file.stream());
+  return { ...file, name: newName, ext: path.extname(newName), filePath };
 }
 
-export async function imageUpload(
-  file: File,
-  dest: string,
-  name: string
-) {
+export async function imageUpload(file: File, dest: string, name: string) {
   const { name: newName, filePath } = await fileUpload(file, {
     dest,
-    name
+    name,
   });
   const dimensions = await AsyncImageSize(filePath);
 

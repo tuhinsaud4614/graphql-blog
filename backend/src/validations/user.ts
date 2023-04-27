@@ -9,7 +9,7 @@ import {
   VALID_MOBILE_REGEX,
   generateInvalidErrorMessage,
   generateMatchedErrorMessage,
-  generateRequiredErrorMessage
+  generateRequiredErrorMessage,
 } from "@/utils/constants";
 
 import { idParamsSchema } from ".";
@@ -77,4 +77,8 @@ export const resetPasswordSchema = yup.object({
     .required(generateRequiredErrorMessage("New password"))
     .min(3, PASSWORD_NOT_LONG_ENOUGH)
     .max(255, PASSWORD_TOO_LONG),
+});
+
+export const updateNameSchema = yup.object({
+  name: yup.string().required(generateRequiredErrorMessage("Name")),
 });

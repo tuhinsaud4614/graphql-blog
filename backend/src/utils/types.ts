@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 import { YogaInitialContext } from "graphql-yoga";
 
+import type { User } from "@prisma/client";
 import type { Request, Response } from "express";
 import type { InferType } from "yup";
 
@@ -8,7 +9,7 @@ import {
   cursorParamsSchema,
   idParamsSchema,
   imageParamsSchema,
-  offsetParamsSchema
+  offsetParamsSchema,
 } from "@/validations";
 import {
   categoriesByTextSchema,
@@ -24,11 +25,11 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  updateNameSchema,
   verifyCodeSchema,
-  verifyUserSchema
+  verifyUserSchema,
 } from "@/validations/user";
 
-import type { User } from "@prisma/client";
 import createContext from "./context";
 
 export type YogaContextType = YogaInitialContext & {
@@ -50,10 +51,10 @@ export type ImageParams = InferType<typeof imageParamsSchema>;
 // User Type
 export type UserWithAvatar = User & {
   avatar: {
-      id: string;
-      height: number;
-      width: number;
-      url: string;
+    id: string;
+    height: number;
+    width: number;
+    url: string;
   } | null;
 };
 export type RegisterInput = InferType<typeof registerSchema>;
@@ -61,6 +62,7 @@ export type LoginInput = InferType<typeof loginSchema>;
 export type ResetPasswordInput = InferType<typeof resetPasswordSchema>;
 export type VerifyCodeParams = InferType<typeof verifyCodeSchema>;
 export type VerifyUserParams = InferType<typeof verifyUserSchema>;
+export type UpdateNameParams = InferType<typeof updateNameSchema>;
 
 // Post Type
 export type CreatePostInput = InferType<typeof createPostSchema>;
