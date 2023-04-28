@@ -58,7 +58,7 @@ export class HttpError extends Error {
 
   toObj(): IErrorResponse {
     return {
-      success: this.code >= 301 && this.code <= 500 ? false : true,
+      success: !(this.code >= 301 && this.code <= 500),
       detail: this.detail || null,
       message: this.message,
       error: this._checkError(this.code),
@@ -67,14 +67,14 @@ export class HttpError extends Error {
   }
 }
 
-export class HttpSuccess {
+export class HttpSuccess<T> {
   constructor(
     public message: string,
-    public data: any,
+    public data: T,
     public detail: string | null = null,
   ) {}
 
-  toObj(): ISuccessResponse {
+  toObj(): ISuccessResponse<T> {
     return {
       data: this.data,
       detail: this.detail,

@@ -32,10 +32,7 @@ import {
 } from "@/utils/constants";
 import { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
-import type {
-  IOffsetPageInfo,
-  IReactionsCount,
-} from "@/utils/interfaces";
+import type { IOffsetPageInfo, IReactionsCount } from "@/utils/interfaces";
 import type {
   CreatePostInput,
   CursorParams,
@@ -128,8 +125,8 @@ export async function updatePostCtrl(
     const post = await updatePost(prisma, {
       ...rest,
       imgUrl: imageName,
-      imgHeight: imgHeight,
-      imgWidth: imgWidth,
+      imgHeight,
+      imgWidth,
     });
     // console.log(post);
 
@@ -225,7 +222,7 @@ export async function getAllPostsOnOffsetCtrl(
     const condition = {
       where: { published: true },
     };
-    let args: Prisma.PostFindManyArgs = {
+    const args: Prisma.PostFindManyArgs = {
       ...condition,
       orderBy: { updatedAt: "desc" },
     };

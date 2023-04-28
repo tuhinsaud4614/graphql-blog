@@ -294,8 +294,8 @@ export const sendMailToUser = async (
 ) => {
   const info = await sendMail({
     from,
-    to: to,
-    subject: subject,
+    to,
+    subject,
     html: message,
     attachments: [
       {

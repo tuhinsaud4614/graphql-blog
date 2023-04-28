@@ -19,7 +19,7 @@ export const Mutation = {
     _: unknown,
     params: CategoryCreationParams,
     { prisma, user }: YogaContext,
-    __: GraphQLResolveInfo,
+    _info: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
@@ -34,10 +34,10 @@ export const Mutation = {
   },
 
   async updateCategory(
-    _: any,
+    _: unknown,
     params: CategoryModificationParams,
     { prisma, user }: YogaContext,
-    __: GraphQLResolveInfo,
+    _info: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
@@ -51,10 +51,10 @@ export const Mutation = {
   },
 
   async deleteCategory(
-    _: any,
+    _: unknown,
     params: IDParams,
     { prisma, user }: YogaContext,
-    __: GraphQLResolveInfo,
+    _info: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);

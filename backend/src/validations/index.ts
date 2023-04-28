@@ -17,7 +17,7 @@ import {
 } from "@/utils/constants";
 
 export function getGraphqlYogaError(
-  error: any,
+  error: unknown,
   msg: string,
   errFor?: string,
   code: string = INTERNAL_SERVER_ERROR,

@@ -1,5 +1,6 @@
-import type { Comment as IComment } from "@prisma/client";
 import { GraphQLError } from "graphql";
+
+import type { Comment as IComment } from "@prisma/client";
 
 import logger from "@/logger";
 import { UnknownError } from "@/model";
@@ -8,7 +9,12 @@ import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { YogaContext } from "@/utils/types";
 
 export const Comment = {
-  async commenter({ id }: IComment, _: unknown, { prisma }: YogaContext, __: unknown) {
+  async commenter(
+    { id }: IComment,
+    _: unknown,
+    { prisma }: YogaContext,
+    __: unknown,
+  ) {
     try {
       const user = await prisma.comment
         .findUnique({ where: { id } })

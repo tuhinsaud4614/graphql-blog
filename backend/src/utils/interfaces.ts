@@ -109,11 +109,11 @@ export interface IErrorResponse {
   timeStamp: string;
 }
 
-export interface ISuccessResponse {
+export interface ISuccessResponse<T> {
   success: boolean;
   detail: string | null;
   message: string;
-  data: any;
+  data: T;
   timeStamp: string;
 }
 

@@ -1,4 +1,3 @@
-import { GraphQLError } from "graphql";
 import { YogaInitialContext } from "graphql-yoga";
 
 import type { User } from "@prisma/client";
@@ -39,11 +38,6 @@ export type YogaContextType = YogaInitialContext & {
   res: Response;
 };
 export type YogaContext = ReturnType<typeof createContext>;
-
-export type FileFilterFunction = (
-  file: File,
-  cb: (error: GraphQLError | null, valid?: boolean) => void,
-) => void;
 
 export type CursorParams = InferType<typeof cursorParamsSchema>;
 export type OffsetParams = InferType<typeof offsetParamsSchema>;

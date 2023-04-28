@@ -37,7 +37,7 @@ export async function suggestAuthorsToUserOnOffsetCtrl(
         id: { not: userId },
       } as Prisma.UserWhereInput,
     };
-    let args: Prisma.UserFindManyArgs = {
+    const args: Prisma.UserFindManyArgs = {
       orderBy: { updatedAt: "desc" },
       ...condition,
     };

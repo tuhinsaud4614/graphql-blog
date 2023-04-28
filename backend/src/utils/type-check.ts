@@ -1,6 +1,9 @@
 import { has } from "lodash";
 
-import { IExtensionsWithAuthorization, IVerifyResetPassword } from "./interfaces";
+import {
+  IExtensionsWithAuthorization,
+  IVerifyResetPassword,
+} from "./interfaces";
 
 /**
  * The function checks if the first character of a given string is a vowel.

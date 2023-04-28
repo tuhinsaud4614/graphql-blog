@@ -7,7 +7,12 @@ import { createRedisCache } from "@envelop/response-cache-redis";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+  NextFunction,
+  Request,
+  Response,
+  static as expressStatic,
+} from "express";
 import { Server } from "http";
 import path from "path";
 
@@ -55,7 +60,7 @@ async function startServer() {
         ttl: 1000 * 60,
       }),
       useRateLimiter({
-        identifyFn: (context: any) => context.request.ip,
+        identifyFn: (context) => (context as YogaContextType).req.ip,
         onRateLimitError({ error }) {
           logger.error(error);
           throw new RateLimitError(error);
@@ -68,8 +73,8 @@ async function startServer() {
 
   app.use(cors({ origin: config.CLIENT_ENDPOINT, credentials: true }));
   app.use(cookieParser());
-  app.use(express.static(path.join(process.cwd(), "public")));
-  app.use("/images", express.static(path.join(process.cwd(), "images")));
+  app.use(expressStatic(path.join(process.cwd(), "public")));
+  app.use("/images", expressStatic(path.join(process.cwd(), "images")));
   app.use("/graphql", server.requestListener);
 
   // No Route found

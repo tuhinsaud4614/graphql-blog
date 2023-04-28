@@ -1,3 +1,6 @@
+/* eslint-disable no-useless-escape */
+
+/* eslint-disable no-control-regex */
 import { isVowel } from "./type-check";
 
 // Error Messages

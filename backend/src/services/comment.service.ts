@@ -20,7 +20,7 @@ export function getCommentForReply(
   postId: string,
 ) {
   return prisma.comment.findFirst({
-    where: { id: parentCommentId, postId: postId },
+    where: { id: parentCommentId, postId },
   });
 }
 
@@ -54,7 +54,7 @@ export function countReplies(
   if (!parentCommentId) {
     return 0;
   }
-  return prisma.comment.count({ where: { parentCommentId: parentCommentId } });
+  return prisma.comment.count({ where: { parentCommentId } });
 }
 
 export function createComment(
@@ -65,7 +65,7 @@ export function createComment(
 ) {
   return prisma.comment.create({
     data: {
-      content: content,
+      content,
       commenter: {
         connect: {
           id: commenterId,

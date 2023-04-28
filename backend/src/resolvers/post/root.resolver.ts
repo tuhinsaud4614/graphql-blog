@@ -1,12 +1,18 @@
 import { GraphQLError } from "graphql";
 
+import { Post as IPost } from "@prisma/client";
+
 import logger from "@/logger";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { YogaContext } from "@/utils/types";
-import { Post as IPost } from "@prisma/client";
 
 export const Post = {
-  async author({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
+  async author(
+    { id }: IPost,
+    _: unknown,
+    { prisma }: YogaContext,
+    __: unknown,
+  ) {
     try {
       const author = await prisma.post
         .findUnique({
@@ -22,7 +28,12 @@ export const Post = {
       );
     }
   },
-  async categories({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
+  async categories(
+    { id }: IPost,
+    _: unknown,
+    { prisma }: YogaContext,
+    __: unknown,
+  ) {
     try {
       const categories = await prisma.post
         .findUnique({
@@ -68,7 +79,12 @@ export const Post = {
       );
     }
   },
-  async reactionsBy({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
+  async reactionsBy(
+    { id }: IPost,
+    _: unknown,
+    { prisma }: YogaContext,
+    __: unknown,
+  ) {
     try {
       const reactions = await prisma.post
         .findUnique({

@@ -2,8 +2,8 @@ import { GraphQLError } from "graphql";
 
 import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
-import imageSize from "image-size";
-import jwt, { JwtPayload, verify } from "jsonwebtoken";
+import { imageSize } from "image-size";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { random } from "lodash";
 import ms from "ms";
 import path from "path";
@@ -101,16 +101,15 @@ export function getUserPayload(decoded: string | JwtPayload) {
     "avatar" in decoded &&
     "about" in decoded
   ) {
-    // @ts-ignore
     return {
-      id: decoded["id"],
-      name: decoded["name"],
-      email: decoded["email"],
-      mobile: decoded["mobile"],
-      role: decoded["role"],
-      authorStatus: decoded["authorStatus"],
-      avatar: decoded["avatar"],
-      about: decoded["about"],
+      id: decoded.id,
+      name: decoded.name,
+      email: decoded.email,
+      mobile: decoded.mobile,
+      role: decoded.role,
+      authorStatus: decoded.authorStatus,
+      avatar: decoded.avatar,
+      about: decoded.about,
     } as UserWithAvatar;
   }
 
@@ -141,7 +140,7 @@ export const verifyAccessTokenInContext = (request: Request) => {
  * @returns The function `verifyAccessTokenFromExtensions` returns either `null` or the decoded user
  * payload if the access token in the extensions object is valid.
  */
-export const verifyAccessTokenFromExtensions = (extensions: any) => {
+export const verifyAccessTokenFromExtensions = (extensions: unknown) => {
   try {
     if (!isExtensionsWithAuthorization(extensions)) {
       return null;
@@ -165,9 +164,9 @@ export const generateToken = async (
   user: UserWithAvatar,
   key: string,
   expires: string,
-  settable: boolean = false,
+  settable = false,
 ) => {
-  const token = jwt.sign({ ...user }, key, {
+  const token = sign({ ...user }, key, {
     expiresIn: expires,
   });
 
