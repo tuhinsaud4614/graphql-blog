@@ -85,8 +85,7 @@ type UserFollowResponse {
 
 type Query {
   token(refreshToken: String): String!
-  users: [User!]!
-  usersOnOffset(limit: Int, page: Int): PaginateUsers!
+  usersWithOffset(limit: Int, page: Int): PaginateUsers!
   recommendAuthorsWithOffset(limit: Int, page: Int): PaginateUsers!
   authorFollowersWithCursor(
     limit: Int!

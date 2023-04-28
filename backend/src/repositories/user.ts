@@ -1,7 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, User } from "@prisma/client";
 
 import { imageUpload } from "@/utils";
-import type { RegisterInput } from "@/utils/types";
+import { IResponseWithCursor, IResponseWithOffset } from "@/utils/interfaces";
+import type { CursorParams, RegisterInput } from "@/utils/types";
 
 /**
  * This function creates a new user with the given input data and sets their role and author status.
@@ -230,4 +231,110 @@ export function getUserByIdWithAvatar(prisma: PrismaClient, id: string) {
       avatar: { select: { id: true, height: true, width: true, url: true } },
     },
   });
+}
+
+/**
+ * This function retrieves users from a database with optional pagination and filtering options.
+ * @param {PrismaClient} prisma - A PrismaClient instance used to interact with the database.
+ * @param {number} count - The total number of users that match the given condition.
+ * @param {number} [page] - The page parameter is an optional parameter that specifies the page number
+ * of the results to retrieve. It is used in conjunction with the limit parameter to implement
+ * pagination. If page is not provided, all results will be returned.
+ * @param {number} [limit] - The maximum number of records to be returned in a single page.
+ * @param [condition] - An optional argument of type `Prisma.UserFindManyArgs` that allows for
+ * filtering, sorting, and pagination options to be passed to the `findMany` method of the Prisma
+ * client.
+ * @returns an object of type `IResponseWithOffset<User>`. The object contains a `data` property which
+ * is an array of `User` objects, a `total` property which is the total count of users, and a
+ * `pageInfo` property which is an object containing information about the pagination such as whether
+ * there is a next page, the next page number, the previous page number
+ */
+export async function getUsersWithOffset(
+  prisma: PrismaClient,
+  count: number,
+  page?: number,
+  limit?: number,
+  condition?: Prisma.UserFindManyArgs,
+) {
+  if (limit && page) {
+    const result = await prisma.user.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      ...condition,
+    });
+
+    return {
+      data: result,
+      total: count,
+      pageInfo: {
+        hasNext: limit * page < count,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        totalPages: Math.ceil(count / limit),
+      },
+    } as IResponseWithOffset<User>;
+  }
+
+  const result = await prisma.user.findMany(condition);
+  return { data: result, total: count } as IResponseWithOffset<User>;
+}
+
+export async function getUsersWithCursor(
+  prisma: PrismaClient,
+  params: CursorParams,
+  condition: Prisma.UserFindManyArgs,
+  total: number,
+): Promise<IResponseWithCursor<User>> {
+  const { limit, after } = params;
+  let results: User[] = [];
+  let newFindArgs = {
+    ...condition,
+  };
+
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+  results = await prisma.user.findMany({
+    ...newFindArgs,
+  });
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastPost = results[resultsLen - 1];
+    const newResults = await prisma.user.findMany({
+      ...condition,
+      skip: 1,
+      take: 1,
+      cursor: {
+        id: lastPost.id,
+      },
+    });
+
+    return {
+      total,
+      pageInfo: {
+        hasNext: !!newResults.length,
+        endCursor: lastPost.id,
+      },
+      edges: results.map((post) => ({ cursor: post.id, node: post })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }

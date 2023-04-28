@@ -1,6 +1,6 @@
 import { type Category, Prisma, PrismaClient } from "@prisma/client";
 
-import { IResponseOnOffset } from "@/utils/interfaces";
+import { IResponseWithOffset } from "@/utils/interfaces";
 
 /**
  * This function retrieves a category from a Prisma client by its ID.
@@ -48,7 +48,7 @@ export function getPostsByCategoryId(prisma: PrismaClient, id: string) {
  * @param [condition] - An optional argument of type `Prisma.CategoryFindManyArgs` that allows for
  * filtering, sorting, and pagination options to be passed to the `findMany` method of the Prisma
  * client.
- * @returns an object of type `IResponseOnOffset<Category>`. The object contains a `data` property
+ * @returns an object of type `IResponseWithOffset<Category>`. The object contains a `data` property
  * which is an array of `Category` objects, a `total` property which is the total count of categories,
  * and a `pageInfo` property which is an object containing information about the pagination such as
  * whether there is a next page, the next page number, the previous page number
@@ -76,11 +76,11 @@ export async function getCategoriesWithOffset(
         previousPage: page - 1,
         totalPages: Math.ceil(count / limit),
       },
-    } as IResponseOnOffset<Category>;
+    } as IResponseWithOffset<Category>;
   }
 
   const result = await prisma.category.findMany(condition);
-  return { data: result, total: count } as IResponseOnOffset<Category>;
+  return { data: result, total: count } as IResponseWithOffset<Category>;
 }
 
 /**

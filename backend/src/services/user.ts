@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
 import { Request, Response } from "express";
 import { unlink } from "fs";
@@ -8,6 +8,7 @@ import path from "path";
 
 import logger from "@/logger";
 import {
+  AuthenticationError,
   ForbiddenError,
   NoContentError,
   UnknownError,
@@ -21,20 +22,30 @@ import {
   getUserByEmailOrMobileWithAvatar,
   getUserById,
   getUserByIdWithAvatar,
+  getUsersWithCursor,
+  getUsersWithOffset,
   resetNewPassword,
   unfollowTo,
   updateAuthorStatusToVerified,
   updateUserAbout,
   updateUserName,
 } from "@/repositories/user";
-import { formatError, generateToken, imageUpload, nanoid } from "@/utils";
+import {
+  formatError,
+  generateToken,
+  getUserPayload,
+  imageUpload,
+  nanoid,
+} from "@/utils";
 import config from "@/utils/config";
 import {
   AUTH_FAIL_ERR_MSG,
   FOLLOW_ERR_MSG,
   INVALID_CREDENTIAL,
+  UN_AUTH_ERR_MSG,
   generateCreationErrorMessage,
   generateExistErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateRefreshTokenKeyName,
   generateResetPasswordVerificationKeyForId,
@@ -44,9 +55,11 @@ import { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
 import { isVerifyResetPassword } from "@/utils/type-check";
 import type {
+  AuthorFollowersWithCursorParams,
   IDParams,
   ImageParams,
   LoginInput,
+  OffsetParams,
   RegisterInput,
   ResetPasswordInput,
   UpdateAboutParams,
@@ -55,8 +68,13 @@ import type {
   VerifyCodeParams,
   VerifyUserParams,
 } from "@/utils/types";
-import { idParamsSchema, imageParamsSchema } from "@/validations";
 import {
+  idParamsSchema,
+  imageParamsSchema,
+  offsetParamsSchema,
+} from "@/validations";
+import {
+  authorFollowersWithCursorSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
@@ -71,6 +89,16 @@ import {
   sendVerificationCodeService,
 } from "./mail";
 
+/**
+ * This function generates access and refresh tokens for a given user.
+ * @param {UserWithAvatar} user - The `user` parameter is an object of type `UserWithAvatar`. It is
+ * likely that this object contains information about a user, such as their username, email, and
+ * possibly a profile picture. This object is used to generate access and refresh tokens for the user.
+ * @returns The function `generateTokensService` returns an object with two properties: `accessToken`
+ * and `refreshToken`. These tokens are generated using the `generateToken` function with the provided
+ * `user` object, secret keys, and expiration times. The `refreshToken` is generated with an additional
+ * parameter `true` to indicate that it is a refresh token. The `as const` assertion is used to
+ */
 async function generateTokensService(user: UserWithAvatar) {
   const accessToken = await generateToken(
     user,
@@ -87,6 +115,35 @@ async function generateTokensService(user: UserWithAvatar) {
 
   return { accessToken, refreshToken } as const;
 }
+
+/**
+ * This function verifies a refresh token by decoding it, checking if it matches the one stored in
+ * Redis, and returning the user payload if it is valid.
+ * @param {string} token - The `token` parameter is a string representing a refresh token that needs to
+ * be verified.
+ * @returns The function `verifyRefreshToken` returns a Promise that resolves to the `payload` object
+ * if the refresh token is valid and matches the one stored in Redis for the user, or throws an
+ * `AuthenticationError` with the message `UN_AUTH_ERR_MSG` if the token is invalid or does not match
+ * the one stored in Redis.
+ */
+const verifyRefreshToken = async (token: string) => {
+  try {
+    const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY);
+    const payload = getUserPayload(decoded);
+
+    const value = await redisClient.get(
+      generateRefreshTokenKeyName(payload.id),
+    );
+    if (value && token === JSON.parse(value)) {
+      return payload;
+    }
+    redisClient.del(generateRefreshTokenKeyName(payload.id));
+    throw new AuthenticationError(UN_AUTH_ERR_MSG);
+  } catch (error) {
+    logger.error(error);
+    throw new AuthenticationError(UN_AUTH_ERR_MSG);
+  }
+};
 
 /**
  * This is a TypeScript function that handles user registration, including validation, checking for
@@ -592,6 +649,17 @@ export async function updateAboutService(
   }
 }
 
+/**
+ * This function follows a user and returns the followed user's information.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} toId - The `toId` parameter is a string representing the ID of the user that the
+ * current user wants to follow.
+ * @param {string} ownId - The `ownId` parameter is a string representing the ID of the user who is
+ * initiating the follow request.
+ * @returns either the followed user object or an error object. If the user with the given ID does not
+ * exist, a ForbiddenError object with an error message is returned. If there is any other error, an
+ * UnknownError object with a default error message is returned.
+ */
 export async function followRequestService(
   prisma: PrismaClient,
   toId: string,
@@ -612,6 +680,16 @@ export async function followRequestService(
   }
 }
 
+/**
+ * This function handles an unfollow request by checking if the user exists and unfollowing them if
+ * they do.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} toId - The ID of the user that the current user wants to unfollow.
+ * @param {string} ownId - The `ownId` parameter is a string representing the ID of the user who wants
+ * to unfollow another user.
+ * @returns either the ID of the user that was unfollowed or an error object if an error occurred
+ * during the process.
+ */
 export async function unfollowRequestService(
   prisma: PrismaClient,
   toId: string,
@@ -629,5 +707,174 @@ export async function unfollowRequestService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(FOLLOW_ERR_MSG);
+  }
+}
+
+/**
+ * This function generates an access token using a refresh token and returns an authentication error if
+ * the refresh token is invalid or the user does not exist.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} [refreshToken] - The refresh token is a string that is used to obtain a new access
+ * token after the previous one has expired. It is typically sent by the client to the server in a
+ * request to refresh the access token.
+ * @returns either an access token or an AuthenticationError object. If there is no refresh token
+ * provided or the user associated with the refresh token does not exist, an AuthenticationError object
+ * with an unauthorized error message is returned. If the user exists, an access token generated using
+ * the user's information and the access token secret key and expiration time is returned.
+ */
+export async function tokenService(
+  prisma: PrismaClient,
+  refreshToken?: string,
+) {
+  try {
+    if (!refreshToken) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+
+    const user = await verifyRefreshToken(refreshToken);
+    const isExist = await getUserByIdWithAvatar(prisma, user.id);
+
+    if (!isExist) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+
+    const accessToken = await generateToken(
+      isExist,
+      config.ACCESS_TOKEN_SECRET_KEY,
+      config.ACCESS_TOKEN_EXPIRES,
+    );
+
+    return accessToken;
+  } catch (error) {
+    logger.error(error);
+    return new AuthenticationError(UN_AUTH_ERR_MSG);
+  }
+}
+
+/**
+ * This is a function that retrieves a list of users with pagination and filtering options,
+ * excluding the admin user and the current user.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {OffsetParams} params - The `params` parameter is an object that contains the `limit` and
+ * `page` properties, which are used to determine the number of results to return and which page of
+ * results to return, respectively. It also has an optional `userId` property, which is used to exclude
+ * a specific user from
+ * @param {string} userId - The `userId` parameter is a string that represents the ID of a
+ * user. It is used in the `condition` object to exclude the user with this ID from the query results.
+ * @returns either an error object or an object containing an array of user data and the total count of
+ * users that match the specified conditions. If there are no users that match the conditions, an
+ * object with an empty array and a total count of 0 is returned.
+ */
+export async function usersWithOffsetService(
+  prisma: PrismaClient,
+  params: OffsetParams,
+  userId: string,
+) {
+  try {
+    await offsetParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "users" });
+  }
+
+  try {
+    const { limit, page } = params;
+    const condition = {
+      where: {
+        role: { not: "ADMIN" },
+        id: { not: userId },
+      } as Prisma.UserWhereInput,
+    };
+
+    const count = await prisma.user.count(condition);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    return await getUsersWithOffset(prisma, count, page, limit, {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    });
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("users"));
+  }
+}
+
+export async function suggestAuthorsWithOffsetService(
+  prisma: PrismaClient,
+  params: OffsetParams,
+  userId: string,
+) {
+  try {
+    await offsetParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "suggest authors" });
+  }
+
+  try {
+    const { limit, page } = params;
+    const condition = {
+      where: {
+        NOT: {
+          followers: { some: { id: userId } },
+        },
+        role: { not: "ADMIN" },
+        id: { not: userId },
+      } as Prisma.UserWhereInput,
+    };
+
+    const count = await prisma.user.count(condition);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    return await getUsersWithOffset(prisma, count, page, limit, {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    });
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("users"));
+  }
+}
+
+export async function authorFollowersWithCursorService(
+  prisma: PrismaClient,
+  params: AuthorFollowersWithCursorParams,
+) {
+  try {
+    await authorFollowersWithCursorSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "author followers" });
+  }
+
+  try {
+    const condition = {
+      where: {
+        followings: { some: { id: params.authorId } },
+        role: { not: "ADMIN" },
+        id: { not: params.authorId },
+      } as Prisma.UserWhereInput,
+    };
+
+    const args: Prisma.UserFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.user.count(condition);
+    return await getUsersWithCursor(prisma, params, args, count);
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("authors followers"));
   }
 }

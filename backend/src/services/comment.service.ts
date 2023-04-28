@@ -1,6 +1,9 @@
 import { Comment, Prisma, PrismaClient } from "@prisma/client";
 
-import type { IResponseOnCursor, IResponseOnOffset } from "@/utils/interfaces";
+import type {
+  IResponseWithCursor,
+  IResponseWithOffset,
+} from "@/utils/interfaces";
 import type { CursorParams } from "@/utils/types";
 
 export function getCommentForUser(
@@ -127,11 +130,11 @@ export async function getCommentsOnOffset(
         previousPage: page - 1,
         totalPages: Math.ceil(count / limit),
       },
-    } as IResponseOnOffset<Comment>;
+    } as IResponseWithOffset<Comment>;
   }
 
   const result = await prisma.comment.findMany(condition);
-  return { data: result, total: count } as IResponseOnOffset<Comment>;
+  return { data: result, total: count } as IResponseWithOffset<Comment>;
 }
 
 export async function getCommentsOnCursor(
@@ -139,7 +142,7 @@ export async function getCommentsOnCursor(
   params: CursorParams,
   condition: Prisma.CommentFindManyArgs,
   total: number,
-): Promise<IResponseOnCursor<Comment>> {
+): Promise<IResponseWithCursor<Comment>> {
   const { after } = params;
 
   const limit = Math.abs(params.limit);
@@ -213,7 +216,7 @@ export async function getCommentsRepliesOnCursor(
   params: CursorParams,
   commentId: string,
   count: number,
-): Promise<IResponseOnCursor<Comment>> {
+): Promise<IResponseWithCursor<Comment>> {
   const { limit, after } = params;
 
   let newFindArgs: Prisma.CommentFindManyArgs = {

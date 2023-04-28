@@ -1,6 +1,6 @@
 import { Post, Prisma, PrismaClient, User } from "@prisma/client";
 
-import { IResponseOnCursor, IResponseOnOffset } from "@/utils/interfaces";
+import { IResponseWithCursor, IResponseWithOffset } from "@/utils/interfaces";
 import { CreatePostInput, CursorParams, UpdatePostInput } from "@/utils/types";
 
 export function getPostById(prisma: PrismaClient, id: string) {
@@ -190,7 +190,7 @@ export async function getPostsOnCursor(
   params: CursorParams,
   condition: Prisma.PostFindManyArgs,
   total: number,
-): Promise<IResponseOnCursor<Post>> {
+): Promise<IResponseWithCursor<Post>> {
   const { limit, after } = params;
   let results: Post[] = [];
   let newFindArgs = {
@@ -246,7 +246,7 @@ export async function getPostReactionsByOnCursor(
   prisma: PrismaClient,
   postId: string,
   params: CursorParams,
-): Promise<IResponseOnCursor<User>> {
+): Promise<IResponseWithCursor<User>> {
   const { limit, after } = params;
   let results: User[] = [];
 
@@ -337,9 +337,9 @@ export async function getPostsOnOffset(
         previousPage: page - 1,
         totalPages: Math.ceil(count / limit),
       },
-    } as IResponseOnOffset<Post>;
+    } as IResponseWithOffset<Post>;
   }
 
   const result = await prisma.post.findMany(condition);
-  return { data: result, total: count } as IResponseOnOffset<Post>;
+  return { data: result, total: count } as IResponseWithOffset<Post>;
 }

@@ -13,7 +13,7 @@ import {
   generateNotNumberErrorMessage,
   generateRequiredErrorMessage,
   generateTooLargeFileErrorMessage,
-  generateValidationErrorMessage
+  generateValidationErrorMessage,
 } from "@/utils/constants";
 
 export function getGraphqlYogaError(

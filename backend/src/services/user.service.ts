@@ -7,7 +7,7 @@ import {
   generateResetPasswordVerificationKeyForId,
   generateUserVerificationKey,
 } from "@/utils/constants";
-import { IResponseOnCursor, IResponseOnOffset } from "@/utils/interfaces";
+import { IResponseWithCursor, IResponseWithOffset } from "@/utils/interfaces";
 import sendMail from "@/utils/mailer";
 import redisClient from "@/utils/redis";
 import { CursorParams, RegisterInput } from "@/utils/types";
@@ -96,11 +96,11 @@ export async function getUsersOnOffset(
         previousPage: page - 1,
         totalPages: Math.ceil(count / limit),
       },
-    } as IResponseOnOffset<User>;
+    } as IResponseWithOffset<User>;
   }
 
   const result = await prisma.user.findMany(condition);
-  return { data: result, total: count } as IResponseOnOffset<User>;
+  return { data: result, total: count } as IResponseWithOffset<User>;
 }
 
 export async function getUsersOnCursor(
@@ -108,7 +108,7 @@ export async function getUsersOnCursor(
   params: CursorParams,
   condition: Prisma.UserFindManyArgs,
   total: number,
-): Promise<IResponseOnCursor<User>> {
+): Promise<IResponseWithCursor<User>> {
   const { limit, after } = params;
   let results: User[] = [];
   let newFindArgs = {

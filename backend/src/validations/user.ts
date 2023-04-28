@@ -12,7 +12,7 @@ import {
   generateRequiredErrorMessage,
 } from "@/utils/constants";
 
-import { idParamsSchema } from ".";
+import { cursorParamsSchema, idParamsSchema } from ".";
 
 export const userEmailMobileSchema = yup.object({
   email: yup
@@ -85,4 +85,8 @@ export const updateNameSchema = yup.object({
 
 export const updateAboutSchema = yup.object({
   value: yup.string().required(generateRequiredErrorMessage("About")),
+});
+
+export const authorFollowersWithCursorSchema = cursorParamsSchema.shape({
+  authorId: yup.string(),
 });

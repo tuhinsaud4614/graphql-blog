@@ -117,25 +117,6 @@ export function getUserPayload(decoded: string | JwtPayload) {
   throw new AuthenticationError(UN_AUTH_ERR_MSG);
 }
 
-export const verifyRefreshToken = async (token: string) => {
-  try {
-    const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY);
-    const payload = getUserPayload(decoded);
-
-    const value = await redisClient.get(
-      generateRefreshTokenKeyName(payload.id),
-    );
-    if (value && token === JSON.parse(value)) {
-      return payload;
-    }
-    redisClient.del(generateRefreshTokenKeyName(payload.id));
-    throw new AuthenticationError(UN_AUTH_ERR_MSG);
-  } catch (error) {
-    logger.error(error);
-    throw new AuthenticationError(UN_AUTH_ERR_MSG);
-  }
-};
-
 export const verifyAccessTokenInContext = (request: Request) => {
   try {
     const authToken = request.headers.get("Authorization");

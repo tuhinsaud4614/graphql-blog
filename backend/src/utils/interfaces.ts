@@ -1,9 +1,4 @@
-import type {
-  AuthorStatus,
-  Category,
-  UserRole
-} from "@prisma/client";
-
+import type { AuthorStatus, Category, UserRole } from "@prisma/client";
 
 // Payload
 export interface IPicturePayload {
@@ -82,7 +77,7 @@ export interface ICursorEdge<T> {
   node: T;
 }
 
-export interface IResponseOnCursor<T> {
+export interface IResponseWithCursor<T> {
   total: number;
   pageInfo: ICursorPageInfo;
   edges: ICursorEdge<T>[];
@@ -95,7 +90,7 @@ export interface IOffsetPageInfo {
   totalPages: number;
 }
 
-export interface IResponseOnOffset<T> {
+export interface IResponseWithOffset<T> {
   data: T[];
   total: number;
   pageInfo?: IOffsetPageInfo;

@@ -1,90 +1,83 @@
 import { GraphQLError } from "graphql";
 
 import {
-  authorFollowersOnCursorCtrl,
   authorFollowingsOnCursorCtrl,
-  getUsersOnOffsetCtrl,
-  suggestAuthorsToUserOnOffsetCtrl,
-  tokenCtrl,
   userFollowCtrl,
   userFollowersCtrl,
   userFollowingsCtrl,
   userResultCtrl,
 } from "@/controller/user.controller";
+import { AuthenticationError } from "@/model";
+import {
+  authorFollowersWithCursorService,
+  suggestAuthorsWithOffsetService,
+  tokenService,
+  usersWithOffsetService,
+} from "@/services/user";
 import { getUserById } from "@/services/user.service";
 import {
   UN_AUTH_ERR_MSG,
-  UN_AUTH_EXT_ERR_CODE,
   generateNotExistErrorMessage,
+  generateRoleErrorMessage,
 } from "@/utils/constants";
-import { CursorParams, OffsetParams, YogaContext } from "@/utils/types";
+import {
+  AuthorFollowersWithCursorParams,
+  CursorParams,
+  OffsetParams,
+  YogaContext,
+} from "@/utils/types";
 import { getGraphqlYogaError } from "@/validations";
 
 export const Query = {
   async token(
-    _: any,
+    _: unknown,
     { refreshToken }: { refreshToken?: string },
     { prisma, req }: YogaContext,
   ) {
-    // @ts-ignore
-    refreshToken ||= req.cookies?.jwt;
-
-    const result = await tokenCtrl(prisma, refreshToken);
-    return result;
+    return await tokenService(prisma, refreshToken || req.cookies?.jwt);
   },
 
-  async users(_: unknown, __: unknown, { prisma }: YogaContext) {
-    const u = await prisma.user.findMany();
-    return u;
-  },
-
-  async usersOnOffset(
-    _: any,
+  async usersWithOffset(
+    _: unknown,
     params: OffsetParams,
     { prisma, user }: YogaContext,
   ) {
-    const result = await getUsersOnOffsetCtrl(prisma, params, user?.id);
-    return result;
+    if (user === null) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+
+    if (user.role !== "ADMIN") {
+      return new AuthenticationError(generateRoleErrorMessage("admin"));
+    }
+
+    return await usersWithOffsetService(prisma, params, user.id);
   },
 
   async recommendAuthorsWithOffset(
-    _: any,
+    _: unknown,
     params: OffsetParams,
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await suggestAuthorsToUserOnOffsetCtrl(
-      prisma,
-      params,
-      user.id,
-    );
-    return result;
+
+    return await suggestAuthorsWithOffsetService(prisma, params, user.id);
   },
 
   async authorFollowersWithCursor(
-    _: any,
-    { authorId, ...rest }: CursorParams & { authorId?: string },
+    _: unknown,
+    { authorId, ...rest }: AuthorFollowersWithCursorParams,
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await authorFollowersOnCursorCtrl(
-      prisma,
-      rest,
-      authorId || user.id,
-    );
-    return result;
+
+    return await authorFollowersWithCursorService(prisma, {
+      ...rest,
+      authorId: authorId || user.id,
+    });
   },
 
   async authorFollowingsWithCursor(
@@ -93,11 +86,7 @@ export const Query = {
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
     const result = await authorFollowingsOnCursorCtrl(
       prisma,
