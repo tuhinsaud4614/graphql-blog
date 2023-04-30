@@ -20,10 +20,10 @@ export const Query = {
   },
 
   async categoriesByTextOnOffset(
-    _: any,
+    _: unknown,
     params: CategoriesByTextParams,
     { prisma }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     const result = await categoriesByTextWithOffsetService(prisma, params);
     return result;

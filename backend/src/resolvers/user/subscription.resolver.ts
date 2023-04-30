@@ -14,8 +14,8 @@ import { getGraphqlYogaError } from "@/validations";
 export const Subscription = {
   following: {
     async subscribe(
-      _: any,
-      __: any,
+      _: unknown,
+      __: unknown,
       { pubSub, params: { extensions } }: YogaContext,
       ___: GraphQLResolveInfo,
     ) {
@@ -35,11 +35,11 @@ export const Subscription = {
         return getGraphqlYogaError(error, SUBSCRIPTION_FOLLOWING_ERR_MSG);
       }
     },
-    resolve: (payload: any) => payload,
+    resolve: (payload: unknown) => payload,
   },
   userVerify: {
     async subscribe(
-      _: any,
+      _: unknown,
       { userId }: { userId: string },
       { pubSub }: YogaContext,
       ___: GraphQLResolveInfo,
@@ -55,6 +55,6 @@ export const Subscription = {
         );
       }
     },
-    resolve: (payload: any) => payload,
+    resolve: (payload: unknown) => payload,
   },
 };

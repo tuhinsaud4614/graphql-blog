@@ -27,6 +27,7 @@ module.exports = {
       "error",
       { allow: ["constructors"] },
     ],
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
   },
   settings: {
     "import/parsers": { "@typescript-eslint/parser": [".ts"] },

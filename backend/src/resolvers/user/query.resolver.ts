@@ -81,7 +81,7 @@ export const Query = {
   },
 
   async authorFollowingsWithCursor(
-    _: any,
+    _: unknown,
     { authorId, ...rest }: CursorParams & { authorId?: string },
     { prisma, user }: YogaContext,
   ) {
