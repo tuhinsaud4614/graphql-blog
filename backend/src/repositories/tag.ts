@@ -20,3 +20,23 @@ export function getManyTags(
     ...condition,
   });
 }
+
+/**
+ * This function retrieves all posts associated with a specific tag ID using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
+ * interact with the database using Prisma's query builder.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a tag
+ * in the database. It is used to find the tag in the `prisma.tag` table and retrieve all the posts
+ * associated with that tag.
+ * @returns a Promise that resolves to an array of posts associated with a specific tag, identified by
+ * its `id`. The function uses the Prisma client to query the database and retrieve the tag with the
+ * specified `id`, and then returns the `posts` field of that tag, which is a relation to the posts
+ * that have that tag.
+ */
+export function getTagPosts(prisma: PrismaClient, id: string) {
+  return prisma.tag
+    .findUnique({
+      where: { id },
+    })
+    .posts();
+}

@@ -1,25 +1,18 @@
-import { GraphQLError } from "graphql";
-
-import { Tag as ITag } from "@prisma/client";
+import type { Tag as ITag } from "@prisma/client";
 
 import logger from "@/logger";
+import { UnknownError } from "@/model";
+import { getTagPosts } from "@/repositories/tag";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import type { YogaContext } from "@/utils/types";
 
 export const Tag = {
   async posts({ id }: ITag, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
-      const posts = await prisma.tag
-        .findUnique({
-          where: { id },
-        })
-        .posts();
-
-      return posts;
+      return await getTagPosts(prisma, id);
     } catch (error) {
       logger.error(error);
-
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Posts", "user"),
       );
     }
