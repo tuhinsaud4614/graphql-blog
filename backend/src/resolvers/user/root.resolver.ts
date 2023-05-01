@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 
 import type { User as IUser } from "@prisma/client";
 
+import { userAvatarService, userPostsService } from "@/services/user";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
 import { YogaContext } from "@/utils/types";
 
@@ -15,26 +16,11 @@ export const User = {
     { prisma }: YogaContext,
     __: unknown,
   ) {
-    try {
-      const image = await prisma.picture.findFirst({ where: { userId: id } });
-
-      return image;
-    } catch (error) {
-      return new GraphQLError(
-        generateEntityNotExistErrorMessage("Avatar", "user"),
-      );
-    }
+    return await userAvatarService(prisma, id);
   },
 
   async posts({ id }: IUser, _: unknown, { prisma }: YogaContext, __: unknown) {
-    try {
-      const posts = await prisma.post.findMany({ where: { authorId: id } });
-      return posts;
-    } catch (error) {
-      return new GraphQLError(
-        generateEntityNotExistErrorMessage("Posts", "user"),
-      );
-    }
+    return await userPostsService(prisma, id);
   },
 
   async followings(

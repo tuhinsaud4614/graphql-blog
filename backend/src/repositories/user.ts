@@ -374,6 +374,23 @@ export function getUserFollowersCount(prisma: PrismaClient, id: string) {
 }
 
 /**
+ * This function retrieves the count of a user's followings using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
+ * interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user
+ * in the database. It is used to find a specific user in the `user` table of the database.
+ * @returns a Promise that resolves to an object containing the count of followings for a user with the
+ * specified id. The count is obtained using the PrismaClient instance passed as an argument to the
+ * function.
+ */
+export function getUserFollowingsCount(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { followings: true } } },
+  });
+}
+
+/**
  * This function checks if a user with ID "myId" is a follower of another user with ID
  * "toId" using the Prisma ORM.
  * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
@@ -410,4 +427,18 @@ export function getUserFollowCount(prisma: PrismaClient, id: string) {
     where: { id },
     select: { _count: { select: { followers: true, followings: true } } },
   });
+}
+
+/**
+ * This function retrieves the avatar picture of a user from a Prisma database.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows you to
+ * interact with your database using Prisma's query builder.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * a user in the database. It is used as a filter condition to find the user's avatar picture in the
+ * `picture` table using the `findFirst` method of the Prisma client.
+ * @returns The function `getUserAvatar` returns a Promise that resolves to the first picture object
+ * found in the Prisma database that has a `userId` matching the provided `userId` argument.
+ */
+export function getUserAvatar(prisma: PrismaClient, userId: string) {
+  return prisma.picture.findFirst({ where: { userId } });
 }

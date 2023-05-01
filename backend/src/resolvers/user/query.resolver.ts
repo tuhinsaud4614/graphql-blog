@@ -1,7 +1,3 @@
-import {
-  userFollowersCtrl,
-  userFollowingsCtrl,
-} from "@/controller/user.controller";
 import { AuthenticationError } from "@/model";
 import {
   authorFollowersWithCursorService,
@@ -9,6 +5,8 @@ import {
   suggestAuthorsWithOffsetService,
   tokenService,
   userFollowService,
+  userFollowersService,
+  userFollowingsService,
   userResultService,
   userService,
   usersWithOffsetService,
@@ -119,8 +117,7 @@ export const Query = {
     { id }: { id: string },
     { prisma }: YogaContext,
   ) {
-    const result = await userFollowersCtrl(prisma, id);
-    return result;
+    return await userFollowersService(prisma, id);
   },
 
   async userFollowings(
@@ -128,7 +125,6 @@ export const Query = {
     { id }: { id: string },
     { prisma }: YogaContext,
   ) {
-    const result = await userFollowingsCtrl(prisma, id);
-    return result;
+    return await userFollowingsService(prisma, id);
   },
 };
