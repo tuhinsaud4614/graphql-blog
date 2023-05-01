@@ -1,7 +1,8 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, verify } from "argon2";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { unlink } from "fs";
+import { verify as jwtVerify } from "jsonwebtoken";
 import { pick } from "lodash";
 import ms from "ms";
 import path from "path";
@@ -10,7 +11,6 @@ import logger from "@/logger";
 import {
   AuthenticationError,
   ForbiddenError,
-  NoContentError,
   UnknownError,
   UserInputError,
 } from "@/model";
@@ -131,13 +131,12 @@ async function generateTokensService(user: UserWithAvatar) {
  * @param {string} token - The `token` parameter is a string representing a refresh token that needs to
  * be verified.
  * @returns The function `verifyRefreshToken` returns a Promise that resolves to the `payload` object
- * if the refresh token is valid and matches the one stored in Redis for the user, or throws an
- * `AuthenticationError` with the message `UN_AUTH_ERR_MSG` if the token is invalid or does not match
- * the one stored in Redis.
+ * if the refresh token is valid and matches the one stored in Redis, or throws an
+ * `AuthenticationError` with the message `UN_AUTH_ERR_MSG` if the token is invalid or has expired.
  */
 const verifyRefreshToken = async (token: string) => {
   try {
-    const decoded = verify(token, config.REFRESH_TOKEN_SECRET_KEY);
+    const decoded = jwtVerify(token, config.REFRESH_TOKEN_SECRET_KEY);
     const payload = getUserPayload(decoded);
 
     const value = await redisClient.get(
@@ -393,7 +392,7 @@ export async function loginService(
  * @param {Response} res - The `res` parameter is an instance of the `Response` object from the
  * Express.js framework. It is used to send a response back to the client after processing a request.
  * In this case, it is used to clear the JWT cookie and send a success or error response.
- * @returns either the user ID if the logout is successful, or an error object (either a NoContentError
+ * @returns either the user ID if the logout is successful, or an error object (either a ForbiddenError
  * or an AuthenticationError) if there is an issue with the logout process.
  */
 export async function logoutService(
@@ -404,7 +403,7 @@ export async function logoutService(
   try {
     const jwt = req.cookies?.jwt;
     if (!jwt) {
-      return new NoContentError("Logout failed.");
+      return new ForbiddenError("Logout failed.");
     }
 
     await redisClient.del(generateRefreshTokenKeyName(user.id));
