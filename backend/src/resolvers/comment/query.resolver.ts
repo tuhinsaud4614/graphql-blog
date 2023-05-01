@@ -7,10 +7,10 @@ import { CursorParams, OffsetParams, YogaContext } from "@/utils/types";
 
 export const Query = {
   async postCommentsOnOffset(
-    _: any,
+    _: unknown,
     params: OffsetParams & { postId: string },
     { prisma, user }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -19,10 +19,10 @@ export const Query = {
     return result;
   },
   async postCommentsOnCursor(
-    _: any,
+    _: unknown,
     params: CursorParams & { postId: string },
     { prisma, user }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();

@@ -39,6 +39,7 @@ import type {
   OffsetParams,
   TaggedPostCursorParams,
   UpdatePostInput,
+  UserWithAvatar,
 } from "@/utils/types";
 import {
   cursorParamsSchema,
@@ -54,7 +55,7 @@ import {
 export async function createPostCtrl(
   prisma: PrismaClient,
   args: CreatePostInput,
-  user: UserPayload,
+  user: UserWithAvatar,
 ) {
   let imagePath;
   try {
@@ -93,7 +94,7 @@ export async function createPostCtrl(
 export async function updatePostCtrl(
   prisma: PrismaClient,
   args: UpdatePostInput,
-  user: UserPayload,
+  user: UserWithAvatar,
 ) {
   let imagePath: string | undefined;
   let imageName: string | undefined;
@@ -145,7 +146,7 @@ export async function updatePostCtrl(
 export async function deletePostCtrl(
   prisma: PrismaClient,
   id: string,
-  user: UserPayload,
+  user: UserWithAvatar,
 ) {
   try {
     const isExist = await getPostByIdForUser(prisma, id, user.id);
@@ -171,7 +172,7 @@ export async function reactionToCtrl(
   // pubSub: PubSub<PubSubPublishArgsByKey>,
   pubSub: YogaPubSubType,
   toId: string,
-  user: UserPayload,
+  user: UserWithAvatar,
 ) {
   try {
     const isExist = await getPostById(prisma, toId);
@@ -238,7 +239,7 @@ export async function getAllPostsOnOffsetCtrl(
     const result = await getPostsOnOffset(prisma, count, page, limit, args);
 
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
@@ -261,7 +262,7 @@ export async function getAllPostsCtrl(
     const count = await prisma.post.count({ where: { published: true } });
     const result = await getPostsOnCursor(prisma, params, args, count);
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
@@ -285,7 +286,7 @@ export async function getTrendingPostsCtrl(prisma: PrismaClient) {
     // throw new GraphQLError("hello");
 
     return posts;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
@@ -314,7 +315,7 @@ export async function getFollowingAuthorPostsCtrl(
     const count = await prisma.post.count(condition);
     const result = await getPostsOnCursor(prisma, params, args, count);
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
@@ -367,7 +368,7 @@ export async function getAllPostsByTagCtrl(
 
     const result = await getPostsByTag(prisma, args);
     return { data: result, total: count };
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("posts"));
   }
@@ -388,7 +389,7 @@ export async function postReactionsCountCtrl(
       count: count?._count.reactionsBy ?? 0,
       reacted: !!isReacted,
     } as IReactionsCount;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, "Post reactions counting failed");
   }
@@ -401,7 +402,7 @@ export async function postCommentsCountCtrl(
   try {
     const result = await getPostCommentsCount(prisma, postId);
     return result?._count.comments ?? 0;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, "Post comments counting failed");
   }
@@ -418,7 +419,7 @@ export async function postReactionsByCtrl(
     const result = await getPostReactionsByOnCursor(prisma, postId, params);
 
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, "Post reactors fetching failed");
   }

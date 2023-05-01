@@ -6,6 +6,11 @@ import {
 } from "./interfaces";
 
 /**
+ * This function checks if the current environment is set to development.
+ */
+export const isDev = () => process.env.NODE_ENV === "development";
+
+/**
  * The function checks if the first character of a given string is a vowel.
  * @param {string} value - The input string that we want to check if its first character is a vowel or
  * not.
@@ -20,36 +25,57 @@ export function isVowel(value: string) {
 }
 
 /**
- * This TypeScript function checks if an object has the properties "code" and "hash" and returns a
+ * This function checks if an input object has all the specified keys.
+ * @param {unknown} data - The data parameter is of type unknown, which means it can be any type of
+ * value. However, the function checks if it is an object before proceeding with further checks.
+ * @param {(keyof T)[]} keys - `keys` is an array of property names (keys) that are expected to exist
+ * in the `data` object. The function checks if `data` is an object and if it has all the specified
+ * keys. If it does, the function returns `true` and `data` is typecast
+ * @returns a boolean value. It returns `true` if the `data` parameter is an object that has all the
+ * keys specified in the `keys` parameter, and `false` otherwise.
+ */
+export function isObjectWithKeys<T extends object>(
+  data: unknown,
+  keys: (keyof T)[],
+): data is T {
+  if (typeof data !== "object" || data === null) {
+    return false;
+  }
+  return keys.every((key) => has(data, key));
+}
+
+/**
+ * This function checks if an input object has the keys "code" and "hash" and returns a
  * boolean value.
  * @param {unknown} data - The `data` parameter is of type `unknown`, which means it can be any type of
- * value. The function is using a type guard to check if the `data` parameter is of type
- * `IVerifyResetPassword`.
+ * value. The purpose of this function is to check if the `data` object has the properties `code` and
+ * `hash`, and if it does, it returns `true` indicating that the `data
+ * @returns A type guard function is being returned. It takes an argument of type `unknown`
+ * and returns a boolean value indicating whether the argument is of type `IVerifyResetPassword`.
  */
-export const isVerifyResetPassword = (
+export function isVerifyResetPassword(
   data: unknown,
-): data is IVerifyResetPassword =>
-  typeof data === "object" &&
-  data !== null &&
-  has(data, "code") &&
-  has(data, "hash");
+): data is IVerifyResetPassword {
+  return isObjectWithKeys<IVerifyResetPassword>(data, ["code", "hash"]);
+}
 
 /**
- * This function checks if the current environment is set to development.
+ * This function checks if an object has specific keys and returns a boolean value.
+ * @param {unknown} extensions - The `extensions` parameter is of type `unknown`, which means it can be
+ * any type of value. The purpose of this function is to check if the `extensions` object has a
+ * specific structure that matches the `IExtensionsWithAuthorization` interface.
+ * @returns The function `isExtensionsWithAuthorization` is returning a boolean value. It returns
+ * `true` if the `extensions` parameter is an object that has a `headers` property which is also an
+ * object with a `Authorization` property. Otherwise, it returns `false`.
  */
-export const isDev = () => process.env.NODE_ENV === "development";
-
-/**
- * This TypeScript function checks if an object has a "headers" property with an "Authorization"
- * property inside it.
- * @param {any} extensions - The `extensions` parameter is of type `any`, which means it can be any
- * data type. The function is checking if this parameter is an object with a `headers` property that is
- * also an object, and if that `headers` object has an `Authorization` property. If all of these
- */
-export const isExtensionsWithAuthorization = (
-  extensions: any,
-): extensions is IExtensionsWithAuthorization =>
-  typeof extensions === "object" &&
-  "headers" in extensions &&
-  typeof extensions.headers === "object" &&
-  "Authorization" in extensions.headers;
+export function isExtensionsWithAuthorization(
+  extensions: unknown,
+): extensions is IExtensionsWithAuthorization {
+  return (
+    isObjectWithKeys<IExtensionsWithAuthorization>(extensions, ["headers"]) &&
+    isObjectWithKeys<IExtensionsWithAuthorization["headers"]>(
+      extensions.headers,
+      ["Authorization"],
+    )
+  );
+}

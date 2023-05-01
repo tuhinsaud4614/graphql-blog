@@ -20,7 +20,7 @@ import type {
 
 export const Mutation = {
   async createPost(
-    _: any,
+    _: unknown,
     { data }: { data: CreatePostInput },
     { prisma, user }: YogaContext,
     ___: GraphQLResolveInfo,
@@ -42,7 +42,7 @@ export const Mutation = {
   },
 
   async updatePost(
-    _: any,
+    _: unknown,
     { data }: { data: UpdatePostInput },
     { prisma, user }: YogaContext,
     ___: GraphQLResolveInfo,
@@ -64,7 +64,7 @@ export const Mutation = {
   },
 
   async deletePost(
-    _: any,
+    _: unknown,
     { id }: { id: string },
     { prisma, user }: YogaContext,
     ___: GraphQLResolveInfo,
@@ -82,7 +82,7 @@ export const Mutation = {
   },
 
   async reactionToPost(
-    _: any,
+    _: unknown,
     { toId }: { toId: string },
     { prisma, user, pubSub }: YogaContext,
     ___: GraphQLResolveInfo,

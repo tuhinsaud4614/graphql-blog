@@ -14,7 +14,7 @@ import { YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async uploadFile(
-    _: any,
+    _: unknown,
     { file }: { file: File },
     { user }: YogaContext,
     ___: GraphQLResolveInfo,

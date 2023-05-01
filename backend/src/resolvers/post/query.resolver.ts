@@ -23,23 +23,28 @@ import type {
 
 export const Query = {
   async postsOnOffset(
-    _: any,
+    _: unknown,
     params: OffsetParams,
     { prisma }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     const result = await getAllPostsOnOffsetCtrl(prisma, params);
     return result;
   },
-  async posts(_: any, params: CursorParams, { prisma }: YogaContext, ___: any) {
+  async posts(
+    _: unknown,
+    params: CursorParams,
+    { prisma }: YogaContext,
+    ___: unknown,
+  ) {
     const result = await getAllPostsCtrl(prisma, params);
     return result;
   },
   async followingAuthorPosts(
-    _: any,
+    _: unknown,
     params: CursorParams,
     { prisma, user }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -48,40 +53,45 @@ export const Query = {
     return result;
   },
   async post(
-    _: any,
+    _: unknown,
     { id }: { id: string },
     { prisma }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     try {
       const result = await getPostById(prisma, id);
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error(error);
       return new GraphQLError(generateNotExistErrorMessage("Post"));
     }
   },
-  async trendingPosts(_: any, __: any, { prisma }: YogaContext, ___: any) {
+  async trendingPosts(
+    _: unknown,
+    __: unknown,
+    { prisma }: YogaContext,
+    ___: unknown,
+  ) {
     const result = await getTrendingPostsCtrl(prisma);
     return result;
   },
 
   async tagPosts(
-    _: any,
+    _: unknown,
     params: TaggedPostCursorParams,
     { prisma }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     const result = await getAllPostsByTagCtrl(prisma, params);
     return result;
   },
 
   async postReactionsCount(
-    _: any,
+    _: unknown,
     { id }: { id: string },
     { prisma, user }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -91,10 +101,10 @@ export const Query = {
   },
 
   async postCommentsCount(
-    _: any,
+    _: unknown,
     { id }: { id: string },
     { prisma, user }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();
@@ -104,10 +114,10 @@ export const Query = {
   },
 
   async postReactionsBy(
-    _: any,
+    _: unknown,
     { id, ...rest }: { id: string } & CursorParams,
     { prisma, user }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();

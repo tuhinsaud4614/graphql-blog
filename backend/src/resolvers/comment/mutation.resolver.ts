@@ -10,7 +10,7 @@ import type { YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async createComment(
-    _: any,
+    _: unknown,
     {
       data: { content, postId, parentComment },
     }: { data: { parentComment?: string; postId: string; content: string } },
@@ -32,7 +32,7 @@ export const Mutation = {
   },
 
   async updateComment(
-    _: any,
+    _: unknown,
     {
       data: { content, commentId },
     }: { data: { commentId: string; content: string } },
@@ -48,7 +48,7 @@ export const Mutation = {
   },
 
   async deleteComment(
-    _: any,
+    _: unknown,
     { commentId }: { commentId: string },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,

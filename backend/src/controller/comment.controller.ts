@@ -26,7 +26,7 @@ import {
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
-import { CursorParams, OffsetParams, UserPayload } from "@/utils/types";
+import { CursorParams, OffsetParams, UserWithAvatar } from "@/utils/types";
 import {
   cursorParamsSchema,
   getGraphqlYogaError,
@@ -38,7 +38,7 @@ export async function createCommentCtrl(
   prisma: PrismaClient,
   postId: string,
   content: string,
-  user: UserPayload,
+  user: UserWithAvatar,
   parentComment?: string,
 ) {
   try {
@@ -77,7 +77,7 @@ export async function updateCommentCtrl(
   prisma: PrismaClient,
   commentId: string,
   content: string,
-  user: UserPayload,
+  user: UserWithAvatar,
 ) {
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);
@@ -100,7 +100,7 @@ export async function updateCommentCtrl(
 export async function deleteCommentCtrl(
   prisma: PrismaClient,
   commentId: string,
-  user: UserPayload,
+  user: UserWithAvatar,
 ) {
   try {
     const isExist = await getCommentForUser(prisma, commentId, user.id);
@@ -144,7 +144,7 @@ export async function getPostCommentsOnOffsetCtrl(
       where: { postId },
     });
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("comments"));
   }
@@ -208,7 +208,7 @@ export async function getPostCommentsOnCursorCtrl(
 
     const result = await getCommentsOnCursor(prisma, rest, args, count);
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
     return getGraphqlYogaError(error, generateFetchErrorMessage("comments"));
   }

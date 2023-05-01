@@ -12,7 +12,7 @@ import { getGraphqlYogaError } from "@/validations";
 export const Subscription = {
   reactions: {
     async subscribe(
-      _: any,
+      _: unknown,
       { postId }: { postId: string },
       { user, pubSub }: YogaContext,
       ___: GraphQLResolveInfo,
@@ -32,6 +32,6 @@ export const Subscription = {
         return getGraphqlYogaError(error, SUBSCRIPTION_REACTIONS_ERR_MSG);
       }
     },
-    resolve: (payload: any) => payload,
+    resolve: (payload: unknown) => payload,
   },
 };
