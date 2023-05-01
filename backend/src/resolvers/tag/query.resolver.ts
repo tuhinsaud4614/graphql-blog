@@ -1,27 +1,29 @@
 import {
-  getTagsByTextOnOffsetCtrl,
-  getTagsOnOffsetCtrl,
-} from "@/controller/tag.controller";
-import type { OffsetParams, YogaContext } from "@/utils/types";
+  tagsByTextWithOffsetService,
+  tagsWithOffsetService,
+} from "@/services/tag";
+import type {
+  OffsetParams,
+  TagsByTextWithOffsetParams,
+  YogaContext,
+} from "@/utils/types";
 
 export const Query = {
-  async tagsOnOffset(
-    _: any,
+  async tagsWithOffset(
+    _: unknown,
     params: OffsetParams,
     { prisma }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
-    const result = await getTagsOnOffsetCtrl(prisma, params);
-    return result;
+    return await tagsWithOffsetService(prisma, params);
   },
 
-  async tagsByTextOnOffset(
-    _: any,
-    params: OffsetParams & { text: string },
+  async tagsByTextWithOffset(
+    _: unknown,
+    params: TagsByTextWithOffsetParams,
     { prisma }: YogaContext,
-    ___: any,
+    ___: unknown,
   ) {
-    const result = await getTagsByTextOnOffsetCtrl(prisma, params);
-    return result;
+    return await tagsByTextWithOffsetService(prisma, params);
   },
 };

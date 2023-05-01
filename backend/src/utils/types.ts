@@ -20,6 +20,7 @@ import {
   getAllPostsByTagSchema,
   updatePostSchema,
 } from "@/validations/post.validation";
+import { tagsByTextWithOffsetSchema } from "@/validations/tag";
 import {
   authorIdWithCursorSchema,
   loginSchema,
@@ -74,4 +75,9 @@ export type CategoriesByTextParams = InferType<typeof categoriesByTextSchema>;
 export type CategoryCreationParams = InferType<typeof categoryCreationSchema>;
 export type CategoryModificationParams = InferType<
   typeof categoryModificationSchema
+>;
+
+// Tag
+export type TagsByTextWithOffsetParams = InferType<
+  typeof tagsByTextWithOffsetSchema
 >;
