@@ -1,15 +1,14 @@
-import { GraphQLError, GraphQLResolveInfo } from "graphql";
+import { GraphQLResolveInfo } from "graphql";
 
 import logger from "@/logger";
+import { AuthenticationError, UnknownError } from "@/model";
 import { verifyAccessTokenFromExtensions } from "@/utils";
 import {
   SUBSCRIPTION_FOLLOWING_ERR_MSG,
   SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
   UN_AUTH_ERR_MSG,
-  UN_AUTH_EXT_ERR_CODE,
 } from "@/utils/constants";
 import { YogaContext } from "@/utils/types";
-import { getGraphqlYogaError } from "@/validations";
 
 export const Subscription = {
   following: {
@@ -23,16 +22,13 @@ export const Subscription = {
         const user = verifyAccessTokenFromExtensions(extensions);
 
         if (user === null) {
-          return new GraphQLError(UN_AUTH_ERR_MSG, {
-            extensions: {
-              code: UN_AUTH_EXT_ERR_CODE,
-            },
-          });
+          return new AuthenticationError(UN_AUTH_ERR_MSG);
         }
+
         return pubSub.subscribe("following", user.id);
       } catch (error) {
         logger.error(error);
-        return getGraphqlYogaError(error, SUBSCRIPTION_FOLLOWING_ERR_MSG);
+        return new UnknownError(SUBSCRIPTION_FOLLOWING_ERR_MSG);
       }
     },
     resolve: (payload: unknown) => payload,
@@ -49,10 +45,7 @@ export const Subscription = {
         return pubSub.subscribe("verifyUser", userId);
       } catch (error) {
         logger.error(error);
-        return getGraphqlYogaError(
-          error,
-          SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
-        );
+        return new UnknownError(SUBSCRIPTION_USER_VERIFICATION_ERR_MSG);
       }
     },
     resolve: (payload: unknown) => payload,

@@ -4,9 +4,9 @@ import {
   authorFollowingsWithCursorService,
   suggestAuthorsWithOffsetService,
   tokenService,
+  userFollowByCountService,
   userFollowService,
-  userFollowersService,
-  userFollowingsService,
+  userFollowersCountService,
   userResultService,
   userService,
   usersWithOffsetService,
@@ -117,7 +117,7 @@ export const Query = {
     { id }: { id: string },
     { prisma }: YogaContext,
   ) {
-    return await userFollowersService(prisma, id);
+    return await userFollowersCountService(prisma, id);
   },
 
   async userFollowings(
@@ -125,6 +125,6 @@ export const Query = {
     { id }: { id: string },
     { prisma }: YogaContext,
   ) {
-    return await userFollowingsService(prisma, id);
+    return await userFollowByCountService(prisma, id);
   },
 };

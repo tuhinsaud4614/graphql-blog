@@ -24,9 +24,11 @@ import {
   getUserByEmailOrMobileWithAvatar,
   getUserById,
   getUserByIdWithAvatar,
+  getUserFollowBy,
+  getUserFollowByCount,
   getUserFollowCount,
+  getUserFollowers,
   getUserFollowersCount,
-  getUserFollowingsCount,
   getUsersWithCursor,
   getUsersWithOffset,
   isFollower,
@@ -215,7 +217,7 @@ export async function userRegistrationService(
 }
 
 /**
- * This function resends an activation code to a user's email if they have not yet been verified.
+ * This function resend an activation code to a user's email if they have not yet been verified.
  * @param {PrismaClient} prisma - An instance of the PrismaClient, which is a type-safe database client
  * for Node.js and TypeScript that provides autocompletion and type checking. It allows you to interact
  * with your database using a fluent and intuitive API.
@@ -1052,12 +1054,11 @@ export async function userFollowService(prisma: PrismaClient, userId: string) {
  * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
  * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
  * a user in the database. It is used to retrieve the number of followers for that particular user.
- * @returns The `userFollowersService` function is returning the number of followers for a given user,
- * obtained from the `getUserFollowersCount` function. If there is an error, it returns an
- * `UnknownError` object with a message indicating that there was an error fetching the user's
- * followers.
+ * @returns The `userFollowersCountService` function returns the number of followers for a given user
+ * ID. If there is an error, it returns an instance of the `UnknownError` class with a message
+ * indicating that there was an error fetching the user's followers.
  */
-export async function userFollowersService(
+export async function userFollowersCountService(
   prisma: PrismaClient,
   userId: string,
 ) {
@@ -1072,21 +1073,23 @@ export async function userFollowersService(
 }
 
 /**
- * This function returns the number of followings for a given user using a Prisma client.
- * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
- * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
- * a user in the database. It is used to retrieve the number of followings for the specified user.
- * @returns The `userFollowingsService` function is returning the number of followings for a given
- * user, obtained from the `getUserFollowingsCount` function. If there is an error, it returns an
- * `UnknownError` object with a message indicating that there was an error fetching the user's
+ * This function returns the number of users following a given user by counting the
  * followings.
+ * @param {PrismaClient} prisma - The Prisma client is an instance of the Prisma ORM that allows us to
+ * interact with the database. It provides a type-safe API for querying the database and generating SQL
+ * queries.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * a user in the database. It is used to retrieve the number of followings for that user.
+ * @returns the count of users who are following the user with the given `userId`. If the count is not
+ * available, it returns 0. If there is an error, it returns an instance of `UnknownError` with a
+ * message indicating that there was an error fetching the user's followings.
  */
-export async function userFollowingsService(
+export async function userFollowByCountService(
   prisma: PrismaClient,
   userId: string,
 ) {
   try {
-    const followerCount = await getUserFollowingsCount(prisma, userId);
+    const followerCount = await getUserFollowByCount(prisma, userId);
 
     return followerCount?._count.followings ?? 0;
   } catch (error) {
@@ -1134,6 +1137,50 @@ export async function userPostsService(prisma: PrismaClient, id: string) {
   } catch (error) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Avatar", "user"),
+    );
+  }
+}
+
+/**
+ * This function retrieves a user's followers using PrismaClient and returns an error message if the
+ * user does not exist.
+ * @param {PrismaClient} prisma - PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user.
+ * It is used as an input to the `getUserFollowBy` function to retrieve the list of users who are
+ * following the user with the given `id`.
+ * @returns The `userFollowByService` function is returning the result of calling the `getUserFollowBy`
+ * function with the `prisma` and `id` parameters. If `getUserFollowBy` function throws an error, the
+ * `userFollowByService` function catches it and returns a new `UnknownError` object with a generated
+ * error message.
+ */
+export async function userFollowByService(prisma: PrismaClient, id: string) {
+  try {
+    return await getUserFollowBy(prisma, id);
+  } catch (error) {
+    return new UnknownError(
+      generateEntityNotExistErrorMessage("Follow by", "user"),
+    );
+  }
+}
+
+/**
+ * This is an async function that returns a user's followers using Prisma, and if there's an error, it
+ * returns an UnknownError with a message indicating that the entity (Followers) does not exist for the
+ * user.
+ * @param {PrismaClient} prisma - PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user.
+ * It is used as an input to retrieve the followers of the user from the database.
+ * @returns The `userFollowersService` function is returning the result of calling the
+ * `getUserFollowers` function with the provided `prisma` and `id` parameters wrapped in a try-catch
+ * block. If the `getUserFollowers` function call is successful, the result is returned. If an error is
+ * thrown, a new `UnknownError` object is returned with a message generated by the `
+ */
+export async function userFollowersService(prisma: PrismaClient, id: string) {
+  try {
+    return await getUserFollowers(prisma, id);
+  } catch (error) {
+    return new UnknownError(
+      generateEntityNotExistErrorMessage("Followers", "user"),
     );
   }
 }

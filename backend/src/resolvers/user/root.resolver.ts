@@ -1,9 +1,11 @@
-import { GraphQLError } from "graphql";
-
 import type { User as IUser } from "@prisma/client";
 
-import { userAvatarService, userPostsService } from "@/services/user";
-import { generateEntityNotExistErrorMessage } from "@/utils/constants";
+import {
+  userAvatarService,
+  userFollowByService,
+  userFollowersService,
+  userPostsService,
+} from "@/services/user";
 import { YogaContext } from "@/utils/types";
 
 export const User = {
@@ -29,18 +31,7 @@ export const User = {
     { prisma }: YogaContext,
     __: unknown,
   ) {
-    try {
-      const users = await prisma.user
-        .findUnique({
-          where: { id },
-        })
-        .followings();
-      return users;
-    } catch (error) {
-      return new GraphQLError(
-        generateEntityNotExistErrorMessage("Followings", "user"),
-      );
-    }
+    return await userFollowByService(prisma, id);
   },
 
   async followers(
@@ -49,17 +40,6 @@ export const User = {
     { prisma }: YogaContext,
     __: unknown,
   ) {
-    try {
-      const users = await prisma.user
-        .findUnique({
-          where: { id },
-        })
-        .followers();
-      return users;
-    } catch (error) {
-      return new GraphQLError(
-        generateEntityNotExistErrorMessage("Followers", "user"),
-      );
-    }
+    return userFollowersService(prisma, id);
   },
 };

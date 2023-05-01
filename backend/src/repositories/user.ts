@@ -375,15 +375,13 @@ export function getUserFollowersCount(prisma: PrismaClient, id: string) {
 
 /**
  * This function retrieves the count of a user's followings using PrismaClient.
- * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
- * interact with the database.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows you to
+ * interact with your database.
  * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user
  * in the database. It is used to find a specific user in the `user` table of the database.
- * @returns a Promise that resolves to an object containing the count of followings for a user with the
- * specified id. The count is obtained using the PrismaClient instance passed as an argument to the
- * function.
+ * @returns the count of followings for a user with the specified id using the Prisma client.
  */
-export function getUserFollowingsCount(prisma: PrismaClient, id: string) {
+export function getUserFollowByCount(prisma: PrismaClient, id: string) {
   return prisma.user.findUnique({
     where: { id },
     select: { _count: { select: { followings: true } } },
@@ -427,6 +425,42 @@ export function getUserFollowCount(prisma: PrismaClient, id: string) {
     where: { id },
     select: { _count: { select: { followers: true, followings: true } } },
   });
+}
+
+/**
+ * This function retrieves the followings of a user with a given ID using PrismaClient.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user
+ * in the database. It is used to find a specific user in the `user` table using the `findUnique`
+ * method of the Prisma client.
+ * @returns a Promise that resolves to an array of followings for a user with the specified id. The
+ * followings are obtained by calling the `followings()` method on the user object returned by the
+ * `findUnique()` method of the PrismaClient instance.
+ */
+export function getUserFollowBy(prisma: PrismaClient, id: string) {
+  return prisma.user
+    .findUnique({
+      where: { id },
+    })
+    .followings();
+}
+
+/**
+ * This function retrieves the followers of a user with a given ID using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows you to
+ * interact with your database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user
+ * in the database. It is used to find a specific user in the `user` table of the database.
+ * @returns a Promise that resolves to an array of followers for a user with the specified id. The
+ * followers are obtained by calling the `followers()` method on the user object obtained from the
+ * Prisma client.
+ */
+export function getUserFollowers(prisma: PrismaClient, id: string) {
+  return prisma.user
+    .findUnique({
+      where: { id },
+    })
+    .followers();
 }
 
 /**
