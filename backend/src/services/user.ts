@@ -22,8 +22,11 @@ import {
   getUserByEmailOrMobileWithAvatar,
   getUserById,
   getUserByIdWithAvatar,
+  getUserFollowCount,
+  getUserFollowersCount,
   getUsersWithCursor,
   getUsersWithOffset,
+  isFollower,
   resetNewPassword,
   unfollowTo,
   updateAuthorStatusToVerified,
@@ -55,7 +58,7 @@ import { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
 import { isVerifyResetPassword } from "@/utils/type-check";
 import type {
-  AuthorFollowersWithCursorParams,
+  AuthorIdWithCursorParams,
   IDParams,
   ImageParams,
   LoginInput,
@@ -74,7 +77,7 @@ import {
   offsetParamsSchema,
 } from "@/validations";
 import {
-  authorFollowersWithCursorSchema,
+  authorIdWithCursorSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
@@ -803,6 +806,21 @@ export async function usersWithOffsetService(
   }
 }
 
+/**
+ * This function suggests authors with an offset based on given parameters and user ID.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {OffsetParams} params - The `params` parameter is an object containing the pagination
+ * parameters `limit` and `page`. These parameters are used to limit the number of results returned and
+ * to specify which page of results to return.
+ * @param {string} userId - The `userId` parameter is a string representing the unique identifier of a
+ * user. It is used in the function to filter out users who are already being followed by the current
+ * user and to exclude the current user from the list of suggested authors.
+ * @returns either an error object or an object containing an array of suggested authors and the total
+ * count of suggested authors. The suggested authors are retrieved from the database using the provided
+ * PrismaClient instance and the given offset parameters and user ID. The function filters out authors
+ * who are already followed by the user and have the role of "ADMIN". If there are no suggested
+ * authors, an empty array is returned
+ */
 export async function suggestAuthorsWithOffsetService(
   prisma: PrismaClient,
   params: OffsetParams,
@@ -844,12 +862,21 @@ export async function suggestAuthorsWithOffsetService(
   }
 }
 
+/**
+ * This function retrieves a list of users who follow a specific author, ordered by their update time,
+ * with pagination support.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {AuthorIdWithCursorParams} params - The `params` parameter is an object that contains
+ * the following properties:
+ * @returns a Promise that resolves to an object containing a list of users who follow a specific
+ * author, along with a cursor for pagination, or an error if one occurs.
+ */
 export async function authorFollowersWithCursorService(
   prisma: PrismaClient,
-  params: AuthorFollowersWithCursorParams,
+  params: AuthorIdWithCursorParams,
 ) {
   try {
-    await authorFollowersWithCursorSchema.validate(params, {
+    await authorIdWithCursorSchema.validate(params, {
       abortEarly: false,
     });
   } catch (error) {
@@ -876,5 +903,142 @@ export async function authorFollowersWithCursorService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("authors followers"));
+  }
+}
+
+/**
+ * This function retrieves a list of users who are following a specific author, ordered by
+ * their update time, using pagination.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {AuthorIdWithCursorParams} params - The `params` parameter is an object that contains the
+ * `authorId` and `cursor` properties. It is of type `AuthorIdWithCursorParams`.
+ * @returns the result of calling the `getUsersWithCursor` function with the provided `prisma` client,
+ * `params` object, `args` object, and `count` value. The `getUsersWithCursor` function likely returns
+ * a list of user objects with pagination information based on the provided arguments. If there is an
+ * error during validation or fetching the data, the function returns an
+ */
+export async function authorFollowingsWithCursorService(
+  prisma: PrismaClient,
+  params: AuthorIdWithCursorParams,
+) {
+  try {
+    await authorIdWithCursorSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "author following" });
+  }
+
+  try {
+    const condition = {
+      where: {
+        followers: { some: { id: params.authorId } },
+        role: { not: "ADMIN" },
+        id: { not: params.authorId },
+      } as Prisma.UserWhereInput,
+    };
+
+    const args: Prisma.UserFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.user.count(condition);
+    const result = await getUsersWithCursor(prisma, params, args, count);
+    return result;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("authors following"));
+  }
+}
+
+/**
+ * This function retrieves a user by their ID using Prisma and returns an error if the user does not
+ * exist or if there is an unknown error.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that is used to
+ * interact with the database. It is passed as a parameter to the userService function.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user.
+ * It is used to retrieve the user from the database using the `getUserById` function.
+ * @returns The `userService` function is returning either a `user` object if it exists in the
+ * database, or a `ForbiddenError` with a message indicating that the user does not exist. If an error
+ * occurs during the database query, the function returns an `UnknownError` with a message indicating
+ * that the user could not be fetched.
+ */
+export async function userService(prisma: PrismaClient, id: string) {
+  try {
+    const user = await getUserById(prisma, id);
+    return user ?? new ForbiddenError(generateNotExistErrorMessage("User"));
+  } catch (error) {
+    return new UnknownError(generateFetchErrorMessage("User"));
+  }
+}
+
+/**
+ * This is an async function that retrieves the follower count and whether a user is being followed by
+ * another user using PrismaClient.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} forUserId - The ID of the user for whom the result is being fetched.
+ * @param {string} [userId] - The `userId` parameter is an optional string that represents the ID of a
+ * user. If it is provided, the function will check if the user with that ID is following the user with
+ * the `forUserId` ID and return the follower count and a boolean indicating whether the user is
+ * following or not.
+ * @returns an object with two properties: `followerCount` and `hasFollow`. The values of these
+ * properties depend on the input parameters and the results of two database queries. If `userId` is
+ * provided, the function will return the count of followers for the user with ID `forUserId` and a
+ * boolean indicating whether the user with ID `userId` is following `forUserId`. If `
+ */
+export async function userResultService(
+  prisma: PrismaClient,
+  forUserId: string,
+  userId?: string,
+) {
+  try {
+    if (userId) {
+      const [followerCount, hasFollow] = await prisma.$transaction([
+        getUserFollowersCount(prisma, forUserId),
+        isFollower(prisma, userId, forUserId),
+      ]);
+
+      return {
+        followerCount: followerCount?._count.followers ?? 0,
+        hasFollow: !!hasFollow,
+      };
+    }
+
+    const followerCount = await getUserFollowersCount(prisma, forUserId);
+
+    return {
+      followerCount: followerCount?._count.followers ?? 0,
+      hasFollow: false,
+    };
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("user result"));
+  }
+}
+
+/**
+ * This TypeScript function returns the follower and following counts for a given user using a Prisma
+ * client.
+ * @param {PrismaClient} prisma - PrismaClient instance used to interact with the database.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * a user. It is used as input to retrieve the follower and following counts for that user.
+ * @returns an object with two properties: `followerCount` and `followingCount`. The values of these
+ * properties are obtained by calling the `getUserFollowCount` function with the `prisma` client and
+ * `userId` as arguments. If the counts are successfully obtained, they are returned as the values of
+ * the respective properties. If there is an error, the function returns an instance of the
+ */
+export async function userFollowService(prisma: PrismaClient, userId: string) {
+  try {
+    const counts = await getUserFollowCount(prisma, userId);
+
+    return {
+      followerCount: counts?._count.followers ?? 0,
+      followingCount: counts?._count.followings ?? 0,
+    };
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("user follow"));
   }
 }

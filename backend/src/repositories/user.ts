@@ -279,6 +279,23 @@ export async function getUsersWithOffset(
   return { data: result, total: count } as IResponseWithOffset<User>;
 }
 
+/**
+ * This function retrieves a list of users from a database using cursor-based pagination and returns
+ * the results along with pagination information.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {CursorParams} params - The `params` parameter is an object containing the `limit` and
+ * `after` properties. `limit` specifies the maximum number of results to return, while `after` is an
+ * optional cursor indicating where to start the next page of results.
+ * @param condition - The `condition` parameter is an object of type `Prisma.UserFindManyArgs` which
+ * contains the conditions to filter the results of the `prisma.user.findMany` query. It can include
+ * properties such as `where`, `orderBy`, `select`, `include`, etc. to customize the
+ * @param {number} total - The total parameter is the total number of items that match the given
+ * condition in the database.
+ * @returns This function returns a Promise that resolves to an object with three properties: `total`,
+ * `pageInfo`, and `edges`. The `total` property is a number representing the total number of users
+ * that match the given condition. The `pageInfo` property is an object with two properties: `hasNext`
+ * (a boolean indicating whether there are more results to be fetched) and `endCursor`
+ */
 export async function getUsersWithCursor(
   prisma: PrismaClient,
   params: CursorParams,
@@ -337,4 +354,60 @@ export async function getUsersWithCursor(
     },
     edges: [],
   };
+}
+
+/**
+ * This function retrieves the count of followers for a specific user using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
+ * interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user
+ * in the database. It is used to find a specific user in the `user` table of the database.
+ * @returns the count of followers for a user with the specified ID using the Prisma client. The count
+ * is returned as an object with a single property `_count` which has a nested property `followers`
+ * that contains the actual count value.
+ */
+export function getUserFollowersCount(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { followers: true } } },
+  });
+}
+
+/**
+ * This function checks if a user with ID "myId" is a follower of another user with ID
+ * "toId" using the Prisma ORM.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} myId - The `myId` parameter is a string representing the ID of the user who is
+ * checking if they are a follower of another user.
+ * @param {string} toId - The `toId` parameter is a string representing the ID of the user that we want
+ * to check if they have a follower with the ID `myId`.
+ * @returns The `isFollower` function is returning a Promise that resolves to a user object if the user
+ * with the `toId` has a follower with the `myId` id. If there is no such user or follower, the Promise
+ * will resolve to `null`.
+ */
+export function isFollower(prisma: PrismaClient, myId: string, toId: string) {
+  return prisma.user.findFirst({
+    where: {
+      id: toId,
+      followers: { some: { id: myId } },
+    },
+  });
+}
+
+/**
+ * This function retrieves the count of followers and followings for a user using
+ * PrismaClient.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a user
+ * in the database. It is used to find a specific user in the `user` table of the database.
+ * @returns the count of followers and followings for a user with the given `id` using the
+ * `PrismaClient` instance `prisma`. The count is returned as an object with two properties:
+ * `followers` and `followings`.
+ */
+export function getUserFollowCount(prisma: PrismaClient, id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { followers: true, followings: true } } },
+  });
 }

@@ -87,6 +87,6 @@ export const updateAboutSchema = yup.object({
   value: yup.string().required(generateRequiredErrorMessage("About")),
 });
 
-export const authorFollowersWithCursorSchema = cursorParamsSchema.shape({
+export const authorIdWithCursorSchema = cursorParamsSchema.shape({
   authorId: yup.string(),
 });

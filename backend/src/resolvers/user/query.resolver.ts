@@ -1,32 +1,24 @@
-import { GraphQLError } from "graphql";
-
 import {
-  authorFollowingsOnCursorCtrl,
-  userFollowCtrl,
   userFollowersCtrl,
   userFollowingsCtrl,
-  userResultCtrl,
 } from "@/controller/user.controller";
 import { AuthenticationError } from "@/model";
 import {
   authorFollowersWithCursorService,
+  authorFollowingsWithCursorService,
   suggestAuthorsWithOffsetService,
   tokenService,
+  userFollowService,
+  userResultService,
+  userService,
   usersWithOffsetService,
 } from "@/services/user";
-import { getUserById } from "@/services/user.service";
+import { UN_AUTH_ERR_MSG, generateRoleErrorMessage } from "@/utils/constants";
 import {
-  UN_AUTH_ERR_MSG,
-  generateNotExistErrorMessage,
-  generateRoleErrorMessage,
-} from "@/utils/constants";
-import {
-  AuthorFollowersWithCursorParams,
-  CursorParams,
+  AuthorIdWithCursorParams,
   OffsetParams,
   YogaContext,
 } from "@/utils/types";
-import { getGraphqlYogaError } from "@/validations";
 
 export const Query = {
   async token(
@@ -67,7 +59,7 @@ export const Query = {
 
   async authorFollowersWithCursor(
     _: unknown,
-    { authorId, ...rest }: AuthorFollowersWithCursorParams,
+    { authorId, ...rest }: AuthorIdWithCursorParams,
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
@@ -79,33 +71,31 @@ export const Query = {
       authorId: authorId || user.id,
     });
   },
-
   async authorFollowingsWithCursor(
     _: unknown,
-    { authorId, ...rest }: CursorParams & { authorId?: string },
+    { authorId, ...rest }: AuthorIdWithCursorParams,
     { prisma, user }: YogaContext,
   ) {
     if (user === null) {
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
-    const result = await authorFollowingsOnCursorCtrl(
-      prisma,
-      rest,
-      authorId || user.id,
-    );
-    return result;
+
+    return await authorFollowingsWithCursorService(prisma, {
+      ...rest,
+      authorId: authorId || user.id,
+    });
   },
 
-  async user(_: unknown, { id }: { id: string }, { prisma }: YogaContext) {
-    try {
-      const user = await getUserById(prisma, id);
-      if (user === null) {
-        return new GraphQLError(generateNotExistErrorMessage("User"));
-      }
-      return user;
-    } catch (error) {
-      return getGraphqlYogaError(error, generateNotExistErrorMessage("User"));
+  async user(
+    _: unknown,
+    { id }: { id: string },
+    { prisma, user }: YogaContext,
+  ) {
+    if (user === null) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
+
+    return await userService(prisma, id);
   },
 
   async userResult(
@@ -113,8 +103,7 @@ export const Query = {
     { id }: { id: string },
     { prisma, user }: YogaContext,
   ) {
-    const result = await userResultCtrl(prisma, id, user?.id);
-    return result;
+    return await userResultService(prisma, id, user?.id);
   },
 
   async userFollow(
@@ -122,8 +111,7 @@ export const Query = {
     { id }: { id: string },
     { prisma }: YogaContext,
   ) {
-    const result = await userFollowCtrl(prisma, id);
-    return result;
+    return await userFollowService(prisma, id);
   },
 
   async userFollowers(

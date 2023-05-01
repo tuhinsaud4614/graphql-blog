@@ -21,7 +21,7 @@ import {
   updatePostSchema,
 } from "@/validations/post.validation";
 import {
-  authorFollowersWithCursorSchema,
+  authorIdWithCursorSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
@@ -60,8 +60,8 @@ export type VerifyCodeParams = InferType<typeof verifyCodeSchema>;
 export type VerifyUserParams = InferType<typeof verifyUserSchema>;
 export type UpdateNameParams = InferType<typeof updateNameSchema>;
 export type UpdateAboutParams = InferType<typeof updateAboutSchema>;
-export type AuthorFollowersWithCursorParams = InferType<
-  typeof authorFollowersWithCursorSchema
+export type AuthorIdWithCursorParams = InferType<
+  typeof authorIdWithCursorSchema
 >;
 
 // Post Type
