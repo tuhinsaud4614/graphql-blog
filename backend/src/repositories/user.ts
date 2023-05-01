@@ -140,6 +140,18 @@ export function updateUserAbout(
   });
 }
 
+/**
+ * This function updates a user's followers list by connecting the ID of the follower.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} toId - The `toId` parameter is a string representing the ID of the user that the
+ * current user wants to follow.
+ * @param {string} ownId - The `ownId` parameter is a string representing the ID of the user who wants
+ * to follow another user.
+ * @returns The `followTo` function is returning a Promise that resolves to the result of updating a
+ * user in the Prisma database. The user being updated is the one with the `toId` provided as an
+ * argument, and the update is adding a follower to that user. The follower being added is the user
+ * with the `ownId` provided as an argument.
+ */
 export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
   return prisma.user.update({
     where: { id: toId },
@@ -147,6 +159,18 @@ export function followTo(prisma: PrismaClient, toId: string, ownId: string) {
   });
 }
 
+/**
+ * This function updates a user's followers list in a Prisma database by disconnecting a
+ * specific follower.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} toId - The `toId` parameter is a string representing the ID of the user that the
+ * current user wants to unfollow.
+ * @param {string} ownId - The `ownId` parameter is a string representing the ID of the user who wants
+ * to unfollow another user.
+ * @returns a Promise that resolves to the result of updating a user in the Prisma database.
+ * Specifically, it disconnects the follower with the given `ownId` from the user with the given `toId`
+ * by removing the corresponding entry in the `followers` field of the user's data.
+ */
 export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
   return prisma.user.update({
     where: { id: toId },
@@ -155,7 +179,7 @@ export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
 }
 
 /**
- * This TypeScript function returns a user object from a Prisma client based on their email or mobile
+ * This function returns a user object from a Prisma client based on their email or mobile
  * number.
  * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
  * @param {string} email - The email parameter is a string that represents the email address of a user.
@@ -176,7 +200,7 @@ export async function getUserByEmailOrMobile(
 }
 
 /**
- * This TypeScript function returns a user with their avatar based on their email or mobile number
+ * This function returns a user with their avatar based on their email or mobile number
  * using PrismaClient.
  * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
  * with a database.
