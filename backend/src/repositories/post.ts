@@ -390,3 +390,21 @@ export function getPostReactionsCount(prisma: PrismaClient, id: string) {
     select: { _count: { select: { reactionsBy: true } } },
   });
 }
+
+/**
+ * This function retrieves the count of comments for a specific post using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with a database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a post
+ * in the database. It is used to query the database and retrieve the count of comments associated with
+ * that post.
+ * @returns a Promise that resolves to an object containing the count of comments associated with a
+ * post with the given `id`. The count is obtained using the `_count` and `select` options of the
+ * Prisma `findUnique` method.
+ */
+export function getPostCommentsCount(prisma: PrismaClient, id: string) {
+  return prisma.post.findUnique({
+    where: { id },
+    select: { _count: { select: { comments: true } } },
+  });
+}

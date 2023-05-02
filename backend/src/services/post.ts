@@ -10,6 +10,7 @@ import {
   getAllPosts,
   getAuthorPostById,
   getPostById,
+  getPostCommentsCount,
   getPostReactionsCount,
   getPostsWithCursor,
   getPostsWithOffset,
@@ -28,7 +29,7 @@ import {
 } from "@/utils/constants";
 import type { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
-import { IReactionsCount } from "@/utils/interfaces";
+import type { IReactionsCount } from "@/utils/interfaces";
 import type {
   CreatePostInput,
   CursorParams,
@@ -501,5 +502,30 @@ export async function postReactionsCountService(
   } catch (error) {
     logger.error(error);
     return new UnknownError("Post reactions counting failed.");
+  }
+}
+
+/**
+ * This function retrieves the count of comments for a given post using Prisma and returns
+ * it, or returns an error if the counting fails.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database. It provides methods to perform CRUD operations on the database.
+ * @param {string} postId - postId is a string parameter that represents the ID of a post for which the
+ * number of comments needs to be counted.
+ * @returns The `postCommentsCountService` function is returning the count of comments for a given post
+ * ID. If the count is successfully retrieved from the database using the `getPostCommentsCount`
+ * function, it returns the count. If there is an error, it logs the error and returns an instance of
+ * the `UnknownError` class with the message "Post comments counting failed".
+ */
+export async function postCommentsCountService(
+  prisma: PrismaClient,
+  postId: string,
+) {
+  try {
+    const result = await getPostCommentsCount(prisma, postId);
+    return result?._count.comments ?? 0;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("Post comments counting failed");
   }
 }
