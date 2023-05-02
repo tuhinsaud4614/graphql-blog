@@ -1,10 +1,9 @@
 import { GraphQLResolveInfo } from "graphql";
 
-import { uploadImageCtrl } from "@/controller/common.controller";
 import { AuthenticationError, ForbiddenError } from "@/model";
-import { uploadFileService } from "@/services";
+import { uploadFileService, uploadImageService } from "@/services";
 import { VERIFIED_AUTHOR_ERR_MSG } from "@/utils/constants";
-import { FileParams, YogaContext } from "@/utils/types";
+import type { FileParams, ImageParams, YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async uploadFile(
@@ -25,7 +24,7 @@ export const Mutation = {
   },
   async uploadImage(
     _: unknown,
-    { image }: { image: File },
+    params: ImageParams,
     { user }: YogaContext,
     ___: GraphQLResolveInfo,
   ) {
@@ -33,6 +32,6 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    return await uploadImageCtrl(image);
+    return await uploadImageService(params);
   },
 };

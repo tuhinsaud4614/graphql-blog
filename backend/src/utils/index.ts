@@ -190,6 +190,14 @@ export const AsyncImageSize = promisify(imageSize);
  */
 export const maxFileSize = (mb: number) => mb * 1000000;
 
+/**
+ * This function uploads a file to a specified destination with an optional new name.
+ * @param {File} file - A File object representing the file to be uploaded.
+ * @param  - The `fileUpload` function takes in two parameters:
+ * @returns an object with properties `name`, `ext`, and `filePath`. The `name` property is the name of
+ * the uploaded file, the `ext` property is the file extension, and the `filePath` property is the full
+ * path to the uploaded file.
+ */
 export async function fileUpload(
   file: File,
   {
@@ -210,6 +218,20 @@ export async function fileUpload(
   return { ...file, name: newName, ext: path.extname(newName), filePath };
 }
 
+/**
+ * This function uploads an image file, retrieves its dimensions, and returns its name,
+ * dimensions, and file path.
+ * @param {File} file - The file parameter is of type File, which is a built-in JavaScript object
+ * representing a file uploaded by the user through a file input field.
+ * @param {string} dest - The `dest` parameter in the `imageUpload` function is a string that
+ * represents the destination directory where the uploaded file will be stored.
+ * @param {string} name - The name parameter is a string that represents the desired name of the
+ * uploaded file.
+ * @returns The function `imageUpload` is returning an object with the properties `name`, `width`,
+ * `height`, and `filePath`. The values of these properties are obtained from the `fileUpload` function
+ * and the `AsyncImageSize` function. The `name` property is the new name of the uploaded file, the
+ * `width` and `height` properties are the dimensions of the uploaded image,
+ */
 export async function imageUpload(file: File, dest: string, name: string) {
   const { name: newName, filePath } = await fileUpload(file, {
     dest,
