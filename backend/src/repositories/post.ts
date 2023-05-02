@@ -372,3 +372,21 @@ export function hasUserReactedToPost(
     where: { id: postId, reactionsBy: { some: { id: userId } } },
   });
 }
+
+/**
+ * This function retrieves the count of reactions for a specific post using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a post
+ * in the database. It is used to locate the post in the `post` table of the database.
+ * @returns a Promise that resolves to an object containing the count of reactions for a specific post.
+ * The count is obtained using the PrismaClient instance and the post's unique ID. The object returned
+ * has a nested `_count` property that selects the `reactionsBy` field, which represents the number of
+ * reactions made by users on the post.
+ */
+export function getPostReactionsCount(prisma: PrismaClient, id: string) {
+  return prisma.post.findUnique({
+    where: { id },
+    select: { _count: { select: { reactionsBy: true } } },
+  });
+}

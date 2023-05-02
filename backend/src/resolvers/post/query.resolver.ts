@@ -1,12 +1,12 @@
 import {
   postCommentsCountCtrl,
   postReactionsByCtrl,
-  postReactionsCountCtrl,
 } from "@/controller/post.controller";
 import { AuthenticationError } from "@/model";
 import {
   followingAuthorPostsService,
   postByIdService,
+  postReactionsCountService,
   postsByTagWithOffsetService,
   postsWithCursorService,
   postsWithOffsetService,
@@ -83,8 +83,8 @@ export const Query = {
     if (user === null) {
       return new AuthenticationError();
     }
-    const result = await postReactionsCountCtrl(prisma, user.id, id);
-    return result;
+
+    return await postReactionsCountService(prisma, user.id, id);
   },
 
   async postCommentsCount(

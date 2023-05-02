@@ -10,6 +10,7 @@ import {
   getAllPosts,
   getAuthorPostById,
   getPostById,
+  getPostReactionsCount,
   getPostsWithCursor,
   getPostsWithOffset,
   hasUserReactedToPost,
@@ -27,6 +28,7 @@ import {
 } from "@/utils/constants";
 import type { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
+import { IReactionsCount } from "@/utils/interfaces";
 import type {
   CreatePostInput,
   CursorParams,
@@ -467,5 +469,37 @@ export async function postsByTagWithOffsetService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("posts"));
+  }
+}
+
+/**
+ * This function retrieves the count of reactions and whether a user has reacted to a post using
+ * PrismaClient.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} userId - The `userId` parameter is a string representing the unique identifier of
+ * the user whose reaction to the post is being checked.
+ * @param {string} postId - The ID of the post for which the reactions count is being retrieved.
+ * @returns an object of type `IReactionsCount` which has two properties: `count` and `reacted`. The
+ * `count` property is the total number of reactions on a post, and the `reacted` property is a boolean
+ * value indicating whether the user with the given `userId` has reacted to the post with the given
+ * `postId`. If there is an error,
+ */
+export async function postReactionsCountService(
+  prisma: PrismaClient,
+  userId: string,
+  postId: string,
+) {
+  try {
+    const [count, isReacted] = await prisma.$transaction([
+      getPostReactionsCount(prisma, postId),
+      hasUserReactedToPost(prisma, postId, userId),
+    ]);
+    return {
+      count: count?._count.reactionsBy ?? 0,
+      reacted: !!isReacted,
+    } as IReactionsCount;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError("Post reactions counting failed.");
   }
 }
