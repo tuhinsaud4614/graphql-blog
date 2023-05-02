@@ -1,5 +1,3 @@
-import { GraphQLError } from "graphql";
-
 import {
   getAllPostsByTagCtrl,
   getTrendingPostsCtrl,
@@ -7,15 +5,13 @@ import {
   postReactionsByCtrl,
   postReactionsCountCtrl,
 } from "@/controller/post.controller";
-import logger from "@/logger";
 import { AuthenticationError } from "@/model";
 import {
   followingAuthorPostsService,
+  postByIdService,
   postsWithCursorService,
   postsWithOffsetService,
 } from "@/services/post";
-import { getPostById } from "@/services/post.service";
-import { generateNotExistErrorMessage } from "@/utils/constants";
 import type {
   CursorParams,
   OffsetParams,
@@ -59,14 +55,7 @@ export const Query = {
     { prisma }: YogaContext,
     ___: unknown,
   ) {
-    try {
-      const result = await getPostById(prisma, id);
-
-      return result;
-    } catch (error: unknown) {
-      logger.error(error);
-      return new GraphQLError(generateNotExistErrorMessage("Post"));
-    }
+    return await postByIdService(prisma, id);
   },
   async trendingPosts(
     _: unknown,
