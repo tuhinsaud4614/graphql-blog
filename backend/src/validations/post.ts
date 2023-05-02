@@ -1,4 +1,3 @@
-import { UserRole } from "@prisma/client";
 import { has } from "lodash";
 import * as yup from "yup";
 
@@ -7,7 +6,6 @@ import {
   IMAGE_MIMES,
   NOT_IMG_ERR_MSG,
   generateArrayLengthErrorMessage,
-  generateEitherErrorMessage,
   generateRequiredErrorMessage,
   generateTooLargeFileErrorMessage,
 } from "@/utils/constants";
@@ -70,13 +68,13 @@ export const updatePostSchema = yup.object({
     .of(yup.string().required(generateRequiredErrorMessage("Tags"))),
 });
 
-export const getAllPostsByTagSchema = offsetParamsSchema.shape({
-  role: yup
-    .string()
-    .required(generateRequiredErrorMessage("Role"))
-    .oneOf<UserRole>(
-      ["ADMIN", "AUTHOR"],
-      generateEitherErrorMessage("Role", "AUTHOR", "ADMIN"),
-    ),
+export const postsByTagSchema = offsetParamsSchema.shape({
+  // role: yup
+  //   .string()
+  //   .required(generateRequiredErrorMessage("Role"))
+  //   .oneOf<UserRole>(
+  //     ["ADMIN", "AUTHOR"],
+  //     generateEitherErrorMessage("Role", "AUTHOR", "ADMIN"),
+  //   ),
   tag: yup.string().required(generateRequiredErrorMessage("Tag")),
 });

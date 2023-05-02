@@ -37,7 +37,7 @@ import type {
   CreatePostInput,
   CursorParams,
   OffsetParams,
-  TaggedPostCursorParams,
+  PostsByTagOffsetParams,
   UpdatePostInput,
   UserWithAvatar,
 } from "@/utils/types";
@@ -48,7 +48,7 @@ import {
 } from "@/validations";
 import {
   createPostSchema,
-  getAllPostsByTagSchema,
+  postsByTagSchema,
   updatePostSchema,
 } from "@/validations/post";
 
@@ -323,10 +323,10 @@ export async function getFollowingAuthorPostsCtrl(
 
 export async function getAllPostsByTagCtrl(
   prisma: PrismaClient,
-  params: TaggedPostCursorParams,
+  params: PostsByTagOffsetParams,
 ) {
   try {
-    await getAllPostsByTagSchema.validate(params, { abortEarly: false });
+    await postsByTagSchema.validate(params, { abortEarly: false });
 
     const { limit, page, tag } = params;
 

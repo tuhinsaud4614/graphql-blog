@@ -1,5 +1,4 @@
 import {
-  getAllPostsByTagCtrl,
   postCommentsCountCtrl,
   postReactionsByCtrl,
   postReactionsCountCtrl,
@@ -8,6 +7,7 @@ import { AuthenticationError } from "@/model";
 import {
   followingAuthorPostsService,
   postByIdService,
+  postsByTagWithOffsetService,
   postsWithCursorService,
   postsWithOffsetService,
   trendingPostsService,
@@ -15,7 +15,7 @@ import {
 import type {
   CursorParams,
   OffsetParams,
-  TaggedPostCursorParams,
+  PostsByTagOffsetParams,
   YogaContext,
 } from "@/utils/types";
 
@@ -65,14 +65,13 @@ export const Query = {
   ) {
     return await trendingPostsService(prisma);
   },
-  async tagPosts(
+  async postsByTagWithOffset(
     _: unknown,
-    params: TaggedPostCursorParams,
+    params: PostsByTagOffsetParams,
     { prisma }: YogaContext,
     ___: unknown,
   ) {
-    const result = await getAllPostsByTagCtrl(prisma, params);
-    return result;
+    return await postsByTagWithOffsetService(prisma, params);
   },
 
   async postReactionsCount(

@@ -31,11 +31,16 @@ import type {
   CreatePostInput,
   CursorParams,
   OffsetParams,
+  PostsByTagOffsetParams,
   UpdatePostInput,
   UserWithAvatar,
 } from "@/utils/types";
 import { cursorParamsSchema, offsetParamsSchema } from "@/validations";
-import { createPostSchema, updatePostSchema } from "@/validations/post";
+import {
+  createPostSchema,
+  postsByTagSchema,
+  updatePostSchema,
+} from "@/validations/post";
 
 /**
  * This function creates a post with an image and validates the input parameters using TypeScript and
@@ -410,6 +415,55 @@ export async function trendingPostsService(prisma: PrismaClient) {
         },
       ],
     });
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("posts"));
+  }
+}
+
+/**
+ * This is a function that retrieves posts with a specific tag and offset pagination from a
+ * Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {PostsByTagOffsetParams} params - The `params` parameter is an object that contains the
+ * following properties:
+ * @returns either an error object or an object containing an array of post data and the total count of
+ * posts that match the given tag. The post data is retrieved using the Prisma client and the function
+ * `getPostsWithOffset`, which takes in the Prisma client, the total count of posts, the page number,
+ * the limit of posts per page, and the query arguments.
+ */
+export async function postsByTagWithOffsetService(
+  prisma: PrismaClient,
+  params: PostsByTagOffsetParams,
+) {
+  try {
+    await postsByTagSchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "posts by tag" });
+  }
+
+  try {
+    const { limit, page, tag } = params;
+    const condition = {
+      where: {
+        published: true,
+        tags: { some: { title: tag } },
+      },
+    };
+
+    const count = await prisma.post.count(condition);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const args: Prisma.PostFindManyArgs = {
+      ...condition,
+      orderBy: {
+        updatedAt: "desc",
+      },
+    };
+    return await getPostsWithOffset(prisma, count, page, limit, args);
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("posts"));
