@@ -273,7 +273,7 @@ export async function postsWithOffsetService(
     }
 
     return await getPostsWithOffset(prisma, count, page, limit, args);
-  } catch (error: unknown) {
+  } catch (error) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("posts"));
   }
@@ -309,7 +309,55 @@ export async function postsWithCursorService(
     const count = await prisma.post.count({ where: { published: true } });
 
     return await getPostsWithCursor(prisma, params, args, count);
-  } catch (error: unknown) {
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("posts"));
+  }
+}
+
+/**
+ * This function retrieves posts from authors that a user is following using cursor
+ * pagination.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient, which is a type-safe database client
+ * for Node.js and TypeScript. It allows you to interact with your database using a type-safe API.
+ * @param {CursorParams} params - The `params` parameter is an object containing cursor-based
+ * pagination parameters such as `first`, `last`, `before`, and `after`. These parameters are used to
+ * limit the number of results returned and to navigate through pages of results.
+ * @param {string} userId - The `userId` parameter is a string representing the ID of the user whose
+ * followed authors' posts are being fetched.
+ * @returns a Promise that resolves to the result of calling the `getPostsWithCursor` function with the
+ * provided parameters, which is an array of Post objects with pagination information. If there is an
+ * error during the execution of the function, it returns an error object.
+ */
+export async function followingAuthorPostsService(
+  prisma: PrismaClient,
+  params: CursorParams,
+  userId: string,
+) {
+  try {
+    await cursorParamsSchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "following author posts" });
+  }
+
+  try {
+    const condition = {
+      where: {
+        published: true,
+        author: { followers: { some: { id: userId } } },
+      } as Prisma.PostWhereInput,
+    };
+
+    const args: Prisma.PostFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      ...condition,
+    };
+
+    const count = await prisma.post.count(condition);
+
+    return await getPostsWithCursor(prisma, params, args, count);
+  } catch (error) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("posts"));
   }

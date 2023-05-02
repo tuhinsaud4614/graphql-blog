@@ -2,7 +2,6 @@ import { GraphQLError } from "graphql";
 
 import {
   getAllPostsByTagCtrl,
-  getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
   postCommentsCountCtrl,
   postReactionsByCtrl,
@@ -11,6 +10,7 @@ import {
 import logger from "@/logger";
 import { AuthenticationError } from "@/model";
 import {
+  followingAuthorPostsService,
   postsWithCursorService,
   postsWithOffsetService,
 } from "@/services/post";
@@ -50,8 +50,8 @@ export const Query = {
     if (user === null) {
       return new AuthenticationError();
     }
-    const result = await getFollowingAuthorPostsCtrl(prisma, params, user.id);
-    return result;
+
+    return await followingAuthorPostsService(prisma, params, user.id);
   },
   async post(
     _: unknown,
