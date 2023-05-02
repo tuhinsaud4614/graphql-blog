@@ -4,15 +4,15 @@ import logger from "@/logger";
 import { fileUpload, imageUpload, nanoid, removeFile } from "@/utils";
 import { generateCreationErrorMessage } from "@/utils/constants";
 import {
+  fileParamsSchema,
   getGraphqlYogaError,
-  uploadFileSchema,
-  uploadImageSchema,
+  imageParamsSchema,
 } from "@/validations";
 
 export async function uploadFileCtrl(file: File) {
   let newFilePath;
   try {
-    await uploadFileSchema.validate({ file }, { abortEarly: false });
+    await fileParamsSchema.validate({ file }, { abortEarly: false });
 
     const uId = nanoid();
 
@@ -36,7 +36,7 @@ export async function uploadFileCtrl(file: File) {
 export async function uploadImageCtrl(image: File) {
   let newFilePath;
   try {
-    await uploadImageSchema.validate({ image }, { abortEarly: false });
+    await imageParamsSchema.validate({ image }, { abortEarly: false });
 
     const uId = nanoid();
     const dest = path.join(process.cwd(), "images");

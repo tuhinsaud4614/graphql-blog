@@ -5,6 +5,7 @@ import _ from "lodash";
 
 import logger from "@/logger";
 import { NoContentError } from "@/model";
+import { getPostById } from "@/repositories/post";
 import {
   countCommentsForPost,
   countReplies,
@@ -18,7 +19,6 @@ import {
   getCommentsRepliesOnCursor,
   updateComment,
 } from "@/services/comment.service";
-import { getPostById } from "@/services/post.service";
 import {
   generateCreationErrorMessage,
   generateDeleteErrorMessage,

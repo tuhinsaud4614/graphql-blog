@@ -6,6 +6,7 @@ import type { InferType } from "yup";
 
 import {
   cursorParamsSchema,
+  fileParamsSchema,
   idParamsSchema,
   imageParamsSchema,
   offsetParamsSchema,
@@ -46,6 +47,7 @@ export type CursorParams = InferType<typeof cursorParamsSchema>;
 export type OffsetParams = InferType<typeof offsetParamsSchema>;
 export type IDParams = InferType<typeof idParamsSchema>;
 export type ImageParams = InferType<typeof imageParamsSchema>;
+export type FileParams = InferType<typeof fileParamsSchema>;
 
 // User Type
 export type UserWithAvatar = User & {

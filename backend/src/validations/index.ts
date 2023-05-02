@@ -39,7 +39,7 @@ export const idParamsSchema = yup.object({
   id: yup.string().required(generateRequiredErrorMessage("ID")),
 });
 
-export const uploadFileSchema = yup.object().shape({
+export const fileParamsSchema = yup.object({
   file: yup.mixed<File>().required(generateRequiredErrorMessage("File")),
 });
 
