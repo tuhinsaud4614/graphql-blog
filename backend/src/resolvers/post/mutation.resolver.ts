@@ -1,11 +1,11 @@
 import { type GraphQLResolveInfo } from "graphql";
 
-import { reactionToCtrl } from "@/controller/post.controller";
 import { AuthenticationError, ForbiddenError } from "@/model";
 import {
   postCreationService,
   postDeletionService,
   postModificationService,
+  toggleReactionToPostService,
 } from "@/services/post";
 import { VERIFIED_AUTHOR_ERR_MSG } from "@/utils/constants";
 import type {
@@ -75,7 +75,6 @@ export const Mutation = {
     if (user === null) {
       return new AuthenticationError();
     }
-    const result = await reactionToCtrl(prisma, pubSub, toId, user);
-    return result;
+    return await toggleReactionToPostService(prisma, pubSub, toId, user);
   },
 };

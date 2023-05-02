@@ -4,19 +4,30 @@ import path from "path";
 import logger from "@/logger";
 import { NoContentError, UnknownError } from "@/model";
 import {
+  addReactionToPost,
   createPost,
   deletePost,
   getAuthorPostById,
+  getPostById,
+  hasUserReactedToPost,
+  removeReactionFromPost,
   updatePost,
 } from "@/repositories/post";
 import { formatError, imageUpload, nanoid, removeFile } from "@/utils";
 import {
+  REACTIONS_ERR_MSG,
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
-import { CreatePostInput, UpdatePostInput } from "@/utils/types";
+import { YogaPubSubType } from "@/utils/context";
+import { EReactionsMutationStatus } from "@/utils/enums";
+import {
+  CreatePostInput,
+  UpdatePostInput,
+  UserWithAvatar,
+} from "@/utils/types";
 import { createPostSchema, updatePostSchema } from "@/validations/post";
 
 /**
@@ -164,5 +175,57 @@ export async function postDeletionService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateDeleteErrorMessage("Post"));
+  }
+}
+
+/**
+ * This function toggles a user's reaction to a post and publishes the change using a PubSub
+ * system.
+ * @param {PrismaClient} prisma - an instance of PrismaClient, which is a type-safe database client for
+ * TypeScript and Node.js that can be used to interact with a database.
+ * @param {YogaPubSubType} pubSub - pubSub is a parameter of type YogaPubSubType, which is likely a
+ * custom type defined in the codebase for handling subscriptions in a GraphQL server. It is used to
+ * publish updates to clients subscribed to a particular topic, in this case "reactions".
+ * @param {string} toId - The ID of the post to toggle the reaction on.
+ * @param {UserWithAvatar} user - The `user` parameter is an object that represents a user with their
+ * avatar. It likely contains properties such as `id`, `name`, `email`, and `avatarUrl`.
+ * @returns either `EReactionsMutationStatus.React` or `EReactionsMutationStatus.Withdraw` depending on
+ * whether the user has already reacted to the post or not. If there is an error, it returns a new
+ * `UnknownError` object with a message.
+ */
+export async function toggleReactionToPostService(
+  prisma: PrismaClient,
+  pubSub: YogaPubSubType,
+  toId: string,
+  user: UserWithAvatar,
+) {
+  try {
+    const isExist = await getPostById(prisma, toId);
+
+    if (!isExist) {
+      return new NoContentError(generateNotExistErrorMessage("Post"));
+    }
+    const isReacted = await hasUserReactedToPost(prisma, toId, user.id);
+
+    if (!isReacted) {
+      await addReactionToPost(prisma, toId, user.id);
+
+      pubSub.publish("reactions", toId, {
+        reactBy: user,
+        mutation: EReactionsMutationStatus.React,
+      });
+      return EReactionsMutationStatus.React;
+    }
+
+    await removeReactionFromPost(prisma, toId, user.id);
+    pubSub.publish("reactions", toId, {
+      reactBy: user,
+      mutation: EReactionsMutationStatus.Withdraw,
+    });
+
+    return EReactionsMutationStatus.Withdraw;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(REACTIONS_ERR_MSG);
   }
 }

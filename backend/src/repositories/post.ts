@@ -129,6 +129,48 @@ export function deletePost(prisma: PrismaClient, id: string) {
 }
 
 /**
+ * This function adds a reaction to a post in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * post to which the reaction is being added.
+ * @param {string} reactById - The `reactById` parameter is a string representing the ID of the user
+ * who reacted to the post. This parameter is used to connect the user to the post through the
+ * `reactionsBy` field in the `data` object of the `prisma.post.update` method.
+ * @returns a Promise that resolves to the updated post object with the newly added reaction.
+ */
+export function addReactionToPost(
+  prisma: PrismaClient,
+  id: string,
+  reactById: string,
+) {
+  return prisma.post.update({
+    where: { id },
+    data: { reactionsBy: { connect: { id: reactById } } },
+  });
+}
+
+/**
+ * This TypeScript function removes a reaction from a post in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The ID of the post from which the reaction needs to be removed.
+ * @param {string} withdrawById - The `withdrawById` parameter is a string that represents the ID of
+ * the user who wants to withdraw their reaction from a post. This function uses the Prisma client to
+ * update the post by disconnecting the reaction made by the user with the specified ID.
+ * @returns a Promise that resolves to the updated post object in the database after removing a
+ * reaction from it.
+ */
+export function removeReactionFromPost(
+  prisma: PrismaClient,
+  id: string,
+  withdrawById: string,
+) {
+  return prisma.post.update({
+    where: { id },
+    data: { reactionsBy: { disconnect: { id: withdrawById } } },
+  });
+}
+
+/**
  * This function retrieves all posts from a Prisma database based on an optional condition.
  * @param {PrismaClient} prisma - The PrismaClient instance used to connect to the database.
  * @param [condition] - The `condition` parameter is an optional argument that can be passed to the
@@ -165,4 +207,39 @@ export function getAuthorPostById(
   authorId: string,
 ) {
   return prisma.post.findFirst({ where: { id, authorId } });
+}
+
+/**
+ * This function retrieves a post from a Prisma client by its ID.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a post.
+ * It is used as a filter to find a specific post in the database using the `findUnique` method of the
+ * Prisma client.
+ * @returns The function `getPostById` is returning a Promise that resolves to a single post object
+ * from the database, identified by the `id` parameter. The post object contains all the fields defined
+ * in the Prisma schema for the `Post` model.
+ */
+export function getPostById(prisma: PrismaClient, id: string) {
+  return prisma.post.findUnique({ where: { id } });
+}
+
+/**
+ * This function checks if a user has reacted to a specific post using PrismaClient.
+ * @param {PrismaClient} prisma - Prisma is an instance of the PrismaClient, which is a type of
+ * database client used to interact with a Prisma schema.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post in a database.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * a user. It is used to check if the user has reacted to a specific post.
+ * @returns a Promise that resolves to a Post object from the PrismaClient that has a specific id and
+ * has at least one reaction by a user with a specific id.
+ */
+export function hasUserReactedToPost(
+  prisma: PrismaClient,
+  postId: string,
+  userId: string,
+) {
+  return prisma.post.findFirst({
+    where: { id: postId, reactionsBy: { some: { id: userId } } },
+  });
 }
