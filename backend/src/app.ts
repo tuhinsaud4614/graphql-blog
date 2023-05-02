@@ -19,14 +19,13 @@ import path from "path";
 import logger from "@/logger";
 import { errorHandler } from "@/middleware";
 import { HttpError, RateLimitError } from "@/model";
+import resolvers from "@/resolvers";
 import typeDefs from "@/typeDefs";
 import { createContext } from "@/utils";
 import config from "@/utils/config";
 import { SIGNALS } from "@/utils/constants";
 import redisClient from "@/utils/redis";
-
-import resolvers from "./resolvers";
-import { YogaContextType } from "./utils/types";
+import { YogaContextType } from "@/utils/types";
 
 async function shutdown({
   signal,

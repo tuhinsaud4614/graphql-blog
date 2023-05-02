@@ -3,10 +3,16 @@ import path from "path";
 
 import logger from "@/logger";
 import { NoContentError, UnknownError } from "@/model";
-import { createPost, getAuthorPostById, updatePost } from "@/repositories/post";
+import {
+  createPost,
+  deletePost,
+  getAuthorPostById,
+  updatePost,
+} from "@/repositories/post";
 import { formatError, imageUpload, nanoid, removeFile } from "@/utils";
 import {
   generateCreationErrorMessage,
+  generateDeleteErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
@@ -126,5 +132,37 @@ export async function postModificationService(
     removeFile(imagePath);
     logger.error(error);
     return new UnknownError(generateUpdateErrorMessage("Post"));
+  }
+}
+
+/**
+ * This function deletes a post from a database using Prisma and returns the deleted post's
+ * ID or an error message.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient, which is a type-safe database client
+ * for Node.js that provides autocompletion and type checking for database queries.
+ * @param {string} id - The id parameter is a string that represents the unique identifier of a post
+ * that needs to be deleted.
+ * @param {string} authorId - The authorId parameter is a string that represents the ID of the author
+ * who created the post that is being deleted.
+ * @returns either the ID of the deleted post if the deletion is successful, or an error object (either
+ * a NoContentError or an UnknownError) if there is an issue with the deletion process.
+ */
+export async function postDeletionService(
+  prisma: PrismaClient,
+  id: string,
+  authorId: string,
+) {
+  try {
+    const isExist = await getAuthorPostById(prisma, id, authorId);
+
+    if (!isExist) {
+      return new NoContentError(generateNotExistErrorMessage("Post"));
+    }
+
+    const deletedPost = await deletePost(prisma, id);
+    return deletedPost.id;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateDeleteErrorMessage("Post"));
   }
 }

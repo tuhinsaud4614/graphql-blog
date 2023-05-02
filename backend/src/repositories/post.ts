@@ -113,6 +113,22 @@ export function updatePost(
 }
 
 /**
+ * This function deletes a post from a Prisma database based on its ID.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * post that needs to be deleted. It is used in the `where` clause of the `prisma.post.delete` method
+ * to specify which post should be deleted.
+ * @returns The `deletePost` function is returning a Promise that resolves to the result of deleting a
+ * post from the database using the Prisma client. The `where` clause specifies the post to be deleted
+ * based on its `id`.
+ */
+export function deletePost(prisma: PrismaClient, id: string) {
+  return prisma.post.delete({
+    where: { id },
+  });
+}
+
+/**
  * This function retrieves all posts from a Prisma database based on an optional condition.
  * @param {PrismaClient} prisma - The PrismaClient instance used to connect to the database.
  * @param [condition] - The `condition` parameter is an optional argument that can be passed to the
