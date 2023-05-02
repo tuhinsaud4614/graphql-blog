@@ -7,6 +7,7 @@ import {
   addReactionToPost,
   createPost,
   deletePost,
+  getAllPosts,
   getAuthorPostById,
   getPostById,
   getPostsWithCursor,
@@ -382,5 +383,35 @@ export async function postByIdService(prisma: PrismaClient, id: string) {
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateNotExistErrorMessage("Post"));
+  }
+}
+
+/**
+ * This function retrieves the top 6 trending posts from a Prisma database based on their
+ * reactions and comments count.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @returns The `trendingPostsService` function is returning the result of calling the `getAllPosts`
+ * function with a set of parameters. The `getAllPosts` function is expected to return a list of posts
+ * that match the specified criteria, such as being published and having the highest number of
+ * reactions and comments. If an error occurs, the function will log the error and return an instance
+ * of the `UnknownError
+ */
+export async function trendingPostsService(prisma: PrismaClient) {
+  try {
+    return await getAllPosts(prisma, {
+      take: 6,
+      where: { published: true },
+      orderBy: [
+        {
+          reactionsBy: { _count: "desc" },
+        },
+        {
+          comments: { _count: "desc" },
+        },
+      ],
+    });
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("posts"));
   }
 }

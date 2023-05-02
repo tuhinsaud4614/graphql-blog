@@ -1,6 +1,5 @@
 import {
   getAllPostsByTagCtrl,
-  getTrendingPostsCtrl,
   postCommentsCountCtrl,
   postReactionsByCtrl,
   postReactionsCountCtrl,
@@ -11,6 +10,7 @@ import {
   postByIdService,
   postsWithCursorService,
   postsWithOffsetService,
+  trendingPostsService,
 } from "@/services/post";
 import type {
   CursorParams,
@@ -63,10 +63,8 @@ export const Query = {
     { prisma }: YogaContext,
     ___: unknown,
   ) {
-    const result = await getTrendingPostsCtrl(prisma);
-    return result;
+    return await trendingPostsService(prisma);
   },
-
   async tagPosts(
     _: unknown,
     params: TaggedPostCursorParams,
