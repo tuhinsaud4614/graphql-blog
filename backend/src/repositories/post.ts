@@ -1,5 +1,6 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Post, Prisma, PrismaClient } from "@prisma/client";
 
+import type { IResponseWithOffset } from "@/utils/interfaces";
 import type { CreatePostInput, UpdatePostInput } from "@/utils/types";
 
 /**
@@ -188,6 +189,53 @@ export function getAllPosts(
   return prisma.post.findMany({
     ...condition,
   });
+}
+
+/**
+ * This function retrieves posts from a database with optional pagination and returns them along with
+ * pagination information.
+ * @param {PrismaClient} prisma - A PrismaClient instance used to interact with the database.
+ * @param {number} count - The total number of posts that match the given condition.
+ * @param {number} [page] - The page parameter is an optional parameter that specifies the current page
+ * number. It is used to calculate the offset for the database query. If this parameter is not
+ * provided, the function will return all posts without pagination.
+ * @param {number} [limit] - The maximum number of items to return in a single page.
+ * @param [condition] - An optional argument of type `Prisma.PostFindManyArgs` that can be used to
+ * filter, sort, and paginate the results returned by the `getAllPosts` function. It allows you to pass
+ * additional options to the Prisma client's `findMany` method, such as `where`, `
+ * @returns The function `getPostsWithOffset` returns an object of type `IResponseWithOffset<Post>`.
+ * The object contains a `data` property which is an array of `Post` objects, a `total` property which
+ * is the total count of `Post` objects, and a `pageInfo` property which is an object containing
+ * information about the pagination such as whether there is a next page, the
+ */
+export async function getPostsWithOffset(
+  prisma: PrismaClient,
+  count: number,
+  page?: number,
+  limit?: number,
+  condition?: Prisma.PostFindManyArgs,
+) {
+  if (limit && page) {
+    const result = await getAllPosts(prisma, {
+      skip: (page - 1) * limit,
+      take: limit,
+      ...condition,
+    });
+
+    return {
+      data: result,
+      total: count,
+      pageInfo: {
+        hasNext: limit * page < count,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        totalPages: Math.ceil(count / limit),
+      },
+    } as IResponseWithOffset<Post>;
+  }
+
+  const result = await getAllPosts(prisma, condition);
+  return { data: result, total: count } as IResponseWithOffset<Post>;
 }
 
 /**

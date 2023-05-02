@@ -3,7 +3,6 @@ import { GraphQLError } from "graphql";
 import {
   getAllPostsByTagCtrl,
   getAllPostsCtrl,
-  getAllPostsOnOffsetCtrl,
   getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
   postCommentsCountCtrl,
@@ -12,6 +11,7 @@ import {
 } from "@/controller/post.controller";
 import logger from "@/logger";
 import { AuthenticationError } from "@/model";
+import { postsWithOffsetService } from "@/services/post";
 import { getPostById } from "@/services/post.service";
 import { generateNotExistErrorMessage } from "@/utils/constants";
 import type {
@@ -22,13 +22,13 @@ import type {
 } from "@/utils/types";
 
 export const Query = {
-  async postsOnOffset(
+  async postsWithOffset(
     _: unknown,
     params: OffsetParams,
     { prisma }: YogaContext,
     ___: unknown,
   ) {
-    const result = await getAllPostsOnOffsetCtrl(prisma, params);
+    const result = await postsWithOffsetService(prisma, params);
     return result;
   },
   async posts(

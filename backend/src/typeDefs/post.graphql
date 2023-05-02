@@ -64,7 +64,7 @@ input UpdatePostInput {
 }
 
 type Query {
-  postsOnOffset(limit: Int, page: Int): OffsetPostsResponse!
+  postsWithOffset(limit: Int, page: Int): OffsetPostsResponse!
   posts(limit: Int!, after: ID): CursorPostsResponse!
   # Auth required
   followingAuthorPosts(limit: Int!, after: ID): CursorPostsResponse!

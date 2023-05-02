@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import path from "path";
 
 import logger from "@/logger";
@@ -9,6 +9,7 @@ import {
   deletePost,
   getAuthorPostById,
   getPostById,
+  getPostsWithOffset,
   hasUserReactedToPost,
   removeReactionFromPost,
   updatePost,
@@ -18,16 +19,19 @@ import {
   REACTIONS_ERR_MSG,
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
-import { YogaPubSubType } from "@/utils/context";
+import type { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
-import {
+import type {
   CreatePostInput,
+  OffsetParams,
   UpdatePostInput,
   UserWithAvatar,
 } from "@/utils/types";
+import { offsetParamsSchema } from "@/validations";
 import { createPostSchema, updatePostSchema } from "@/validations/post";
 
 /**
@@ -227,5 +231,48 @@ export async function toggleReactionToPostService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(REACTIONS_ERR_MSG);
+  }
+}
+
+/**
+ * This function retrieves published posts with an offset and returns them along with the
+ * total count of posts.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient, which is used to interact with the
+ * database.
+ * @param {OffsetParams} params - The `params` parameter is an object that contains the following
+ * properties:
+ * @returns either an error object or an object containing an array of post data and the total count of
+ * posts that match the condition of being published.
+ */
+export async function postsWithOffsetService(
+  prisma: PrismaClient,
+  params: OffsetParams,
+) {
+  try {
+    await offsetParamsSchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "posts with offset" });
+  }
+
+  try {
+    const { limit, page } = params;
+    const condition = {
+      where: { published: true },
+    };
+    const args: Prisma.PostFindManyArgs = {
+      ...condition,
+      orderBy: { updatedAt: "desc" },
+    };
+
+    const count = await prisma.post.count(condition);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    return await getPostsWithOffset(prisma, count, page, limit, args);
+  } catch (error: unknown) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("posts"));
   }
 }
