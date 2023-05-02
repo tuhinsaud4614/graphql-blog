@@ -1,7 +1,7 @@
 import type { AuthorStatus, Category, UserRole } from "@prisma/client";
 
 // Payload
-export interface IPicturePayload {
+export interface PicturePayload {
   id: string;
   height: number;
   width: number;
@@ -12,7 +12,7 @@ export interface IUserFollow {
   name: string | null;
   mobile: string;
   email: string;
-  avatar: null | IPicturePayload;
+  avatar: null | PicturePayload;
 }
 export interface IUserPayload {
   id: string;
@@ -21,7 +21,7 @@ export interface IUserPayload {
   email: string;
   role: UserRole;
   authorStatus: AuthorStatus | null;
-  avatar: IPicturePayload | null;
+  avatar: PicturePayload | null;
   about: string | null;
 }
 
@@ -55,7 +55,7 @@ export interface ICommentPayload {
 export interface IPostPayload {
   id: string;
   title: string;
-  image: IPicturePayload | null;
+  image: PicturePayload | null;
   published: boolean;
   publishedAt: Date | null;
   content: string;

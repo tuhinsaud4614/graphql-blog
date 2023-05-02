@@ -62,7 +62,7 @@ import {
 } from "@/utils/constants";
 import { IUserPayload } from "@/utils/interfaces";
 import redisClient from "@/utils/redis";
-import { isVerifyResetPassword } from "@/utils/type-check";
+import { isVerifyResetPassword } from "@/utils/type-guard";
 import type {
   AuthorIdWithCursorParams,
   IDParams,

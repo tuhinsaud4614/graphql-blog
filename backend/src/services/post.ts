@@ -2,12 +2,16 @@ import { PrismaClient } from "@prisma/client";
 import path from "path";
 
 import logger from "@/logger";
-import { UnknownError } from "@/model";
-import { createPost } from "@/repositories/post";
+import { NoContentError, UnknownError } from "@/model";
+import { createPost, getAuthorPostById, updatePost } from "@/repositories/post";
 import { formatError, imageUpload, nanoid, removeFile } from "@/utils";
-import { generateCreationErrorMessage } from "@/utils/constants";
-import { CreatePostInput } from "@/utils/types";
-import { createPostSchema } from "@/validations/post";
+import {
+  generateCreationErrorMessage,
+  generateNotExistErrorMessage,
+  generateUpdateErrorMessage,
+} from "@/utils/constants";
+import { CreatePostInput, UpdatePostInput } from "@/utils/types";
+import { createPostSchema, updatePostSchema } from "@/validations/post";
 
 /**
  * This function creates a post with an image and validates the input parameters using TypeScript and
@@ -59,5 +63,68 @@ export async function postCreationService(
     removeFile(imagePath);
     logger.error(error);
     return new UnknownError(generateCreationErrorMessage("Post"));
+  }
+}
+
+/**
+ * This is an async function that updates a post in a database, including uploading an image if
+ * provided and validating the input parameters.
+ * @param {PrismaClient} prisma - An instance of the PrismaClient used to interact with the database.
+ * @param {UpdatePostInput} params - The `params` parameter is an object of type `UpdatePostInput`
+ * which contains the data needed to update a post. It may contain the following properties:
+ * @param {string} userId - The `userId` parameter is a string representing the ID of the user who is
+ * making the request to modify a post.
+ * @returns either a formatted error object or the result of calling the `updatePost` function with
+ * modified parameters. If an error occurs during the execution of the function, it will return a
+ * `UnknownError` object with a generated error message.
+ */
+export async function postModificationService(
+  prisma: PrismaClient,
+  params: UpdatePostInput,
+  userId: string,
+) {
+  try {
+    await updatePostSchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "post modification" });
+  }
+
+  let imagePath: string | undefined;
+  let imageName: string | undefined;
+  let imgWidth: number | undefined;
+  let imgHeight: number | undefined;
+
+  try {
+    const { image, ...rest } = params;
+    const isExist = await getAuthorPostById(prisma, rest.id, userId);
+
+    if (!isExist) {
+      return new NoContentError(generateNotExistErrorMessage("Post"));
+    }
+
+    if (image) {
+      const uId = nanoid();
+      const dest = path.join(process.cwd(), "images");
+      const { name, height, width, filePath } = await imageUpload(
+        image,
+        dest,
+        uId,
+      );
+      imagePath = filePath;
+      imageName = `images/${name}`;
+      imgHeight = height;
+      imgWidth = width;
+    }
+    return await updatePost(prisma, {
+      ...rest,
+      imgUrl: imageName,
+      imgHeight,
+      imgWidth,
+    });
+  } catch (error) {
+    removeFile(imagePath);
+    logger.error(error);
+    return new UnknownError(generateUpdateErrorMessage("Post"));
   }
 }

@@ -20,7 +20,7 @@ import {
   generateValidationErrorMessage,
 } from "./constants";
 import redisClient from "./redis";
-import { isExtensionsWithAuthorization } from "./type-check";
+import { isExtensionsWithAuthorization } from "./type-guard";
 import type { UserWithAvatar } from "./types";
 
 // Sub exports

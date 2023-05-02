@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 
-import type { CreatePostInput } from "@/utils/types";
+import type { CreatePostInput, UpdatePostInput } from "@/utils/types";
 
 /**
  * This function creates a post with various properties and connects it to categories and tags using
@@ -57,6 +57,62 @@ export function createPost(
 }
 
 /**
+ * This function updates a post in a Prisma database with new data including categories, content,
+ * published status, tags, and image information.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param  - The `updatePost` function takes in a `prisma` instance of `PrismaClient` and an object
+ * containing the following properties:
+ * @returns The `updatePost` function is returning a Promise that resolves to the updated post object
+ * in the database.
+ */
+export function updatePost(
+  prisma: PrismaClient,
+  {
+    id,
+    categories,
+    content,
+    published,
+    tags,
+    title,
+    imgHeight,
+    imgUrl,
+    imgWidth,
+  }: Omit<UpdatePostInput, "image"> & {
+    imgUrl?: string;
+    imgWidth?: number;
+    imgHeight?: number;
+  },
+) {
+  return prisma.post.update({
+    where: { id },
+    data: {
+      title,
+      content,
+      published,
+      publishedAt: published ? new Date() : undefined,
+      categories: {
+        ...(categories ? { set: [] } : {}),
+        connect: categories?.map((category) => ({ id: category })),
+      },
+      image: {
+        update: {
+          url: imgUrl,
+          width: imgWidth,
+          height: imgHeight,
+        },
+      },
+      tags: {
+        ...(tags ? { set: [] } : {}),
+        connectOrCreate: tags?.map((tag) => ({
+          create: { title: tag },
+          where: { title: tag },
+        })),
+      },
+    },
+  });
+}
+
+/**
  * This function retrieves all posts from a Prisma database based on an optional condition.
  * @param {PrismaClient} prisma - The PrismaClient instance used to connect to the database.
  * @param [condition] - The `condition` parameter is an optional argument that can be passed to the
@@ -74,4 +130,23 @@ export function getAllPosts(
   return prisma.post.findMany({
     ...condition,
   });
+}
+
+/**
+ * This function retrieves a post by its ID and author ID using Prisma.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} id - The id parameter is a string that represents the unique identifier of a post.
+ * @param {string} authorId - The `authorId` parameter is a string that represents the unique
+ * identifier of the author of a post. It is used in conjunction with the `id` parameter to retrieve a
+ * specific post from the database using the Prisma client.
+ * @returns The function `getAuthorPostById` is returning a Promise that resolves to a single post
+ * object from the PrismaClient instance, where the post has the specified `id` and `authorId`.
+ */
+export function getAuthorPostById(
+  prisma: PrismaClient,
+  id: string,
+  authorId: string,
+) {
+  return prisma.post.findFirst({ where: { id, authorId } });
 }

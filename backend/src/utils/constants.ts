@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 
 /* eslint-disable no-control-regex */
-import { isVowel } from "./type-check";
+import { isVowel } from "./type-guard";
 
 // Error Messages
 export const INVALID_CREDENTIAL = "Invalid email, phone or password";
