@@ -10,7 +10,7 @@ import {
   generateTooLargeFileErrorMessage,
 } from "@/utils/constants";
 
-import { offsetParamsSchema } from ".";
+import { cursorParamsSchema, idParamsSchema, offsetParamsSchema } from ".";
 
 export const createPostSchema = yup.object({
   title: yup.string().required(generateRequiredErrorMessage("Title")),
@@ -78,3 +78,5 @@ export const postsByTagSchema = offsetParamsSchema.shape({
   //   ),
   tag: yup.string().required(generateRequiredErrorMessage("Tag")),
 });
+
+export const postReactedBySchema = idParamsSchema.concat(cursorParamsSchema);

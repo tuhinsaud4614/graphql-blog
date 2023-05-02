@@ -11,6 +11,7 @@ import {
   getAuthorPostById,
   getPostById,
   getPostCommentsCount,
+  getPostReactedByWithCursor,
   getPostReactionsCount,
   getPostsWithCursor,
   getPostsWithOffset,
@@ -34,6 +35,7 @@ import type {
   CreatePostInput,
   CursorParams,
   OffsetParams,
+  PostReactedByCursorParams,
   PostsByTagOffsetParams,
   UpdatePostInput,
   UserWithAvatar,
@@ -41,6 +43,7 @@ import type {
 import { cursorParamsSchema, offsetParamsSchema } from "@/validations";
 import {
   createPostSchema,
+  postReactedBySchema,
   postsByTagSchema,
   updatePostSchema,
 } from "@/validations/post";
@@ -527,5 +530,24 @@ export async function postCommentsCountService(
   } catch (error) {
     logger.error(error);
     return new UnknownError("Post comments counting failed");
+  }
+}
+
+export async function postReactedByService(
+  prisma: PrismaClient,
+  params: PostReactedByCursorParams,
+) {
+  try {
+    await postReactedBySchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "posts reacted by" });
+  }
+
+  try {
+    return await getPostReactedByWithCursor(prisma, params);
+  } catch (error: unknown) {
+    logger.error(error);
+    return new UnknownError("Post reactedBy fetching failed.");
   }
 }

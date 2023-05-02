@@ -77,7 +77,7 @@ type Query {
   ): OffsetPostsResponse!
   postReactionsCount(id: ID!): ReactionsCount!
   postCommentsCount(id: ID!): Int!
-  postReactionsBy(id: ID!, limit: Int!, after: ID): CursorUserResponse!
+  postReactedBy(id: ID!, limit: Int!, after: ID): CursorUserResponse!
 }
 
 type Mutation {

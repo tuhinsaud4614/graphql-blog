@@ -17,6 +17,7 @@ import {
 } from "@/validations/category";
 import {
   createPostSchema,
+  postReactedBySchema,
   postsByTagSchema,
   updatePostSchema,
 } from "@/validations/post";
@@ -65,6 +66,7 @@ export type AuthorIdWithCursorParams = InferType<
 export type CreatePostInput = InferType<typeof createPostSchema>;
 export type UpdatePostInput = InferType<typeof updatePostSchema>;
 export type PostsByTagOffsetParams = InferType<typeof postsByTagSchema>;
+export type PostReactedByCursorParams = InferType<typeof postReactedBySchema>;
 
 // Category
 export type CategoriesByTextParams = InferType<typeof categoriesByTextSchema>;

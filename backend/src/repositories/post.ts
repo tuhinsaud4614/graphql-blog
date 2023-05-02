@@ -1,4 +1,4 @@
-import { Post, Prisma, PrismaClient } from "@prisma/client";
+import { Post, Prisma, PrismaClient, User } from "@prisma/client";
 
 import type {
   IResponseWithCursor,
@@ -7,6 +7,7 @@ import type {
 import type {
   CreatePostInput,
   CursorParams,
+  PostReactedByCursorParams,
   UpdatePostInput,
 } from "@/utils/types";
 
@@ -407,4 +408,85 @@ export function getPostCommentsCount(prisma: PrismaClient, id: string) {
     where: { id },
     select: { _count: { select: { comments: true } } },
   });
+}
+
+/**
+ * This function retrieves a list of users who reacted to a post, with pagination support.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {PostReactedByCursorParams} params - The `params` parameter is an object that contains the
+ * following properties:
+ * @returns This function returns an object of type `Promise<IResponseWithCursor<User>>`. The object
+ * contains information about users who have reacted to a post, including the total number of users, a
+ * list of edges containing the user ID and node, and pageInfo which indicates whether there is a next
+ * page and the end cursor.
+ */
+export async function getPostReactedByWithCursor(
+  prisma: PrismaClient,
+  params: PostReactedByCursorParams,
+): Promise<IResponseWithCursor<User>> {
+  const { limit, after, id } = params;
+  let results: User[] = [];
+
+  const condition = after
+    ? {
+        skip: 1,
+        take: limit,
+        cursor: { id: after },
+      }
+    : { take: limit };
+
+  const query = await prisma.post.findUnique({
+    where: { id },
+    select: {
+      reactionsBy: {
+        ...condition,
+        orderBy: {
+          updatedAt: "desc",
+        },
+      },
+      _count: { select: { reactionsBy: true } },
+    },
+  });
+
+  results = query?.reactionsBy || [];
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastUser = results[resultsLen - 1];
+    const newResults = await prisma.post.findUnique({
+      where: { id },
+      select: {
+        reactionsBy: {
+          skip: 1,
+          take: 1,
+          cursor: {
+            id: lastUser.id,
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+        },
+      },
+    });
+
+    return {
+      total: query?._count.reactionsBy ?? 0,
+      pageInfo: {
+        hasNext: !!newResults?.reactionsBy?.length,
+        endCursor: lastUser.id,
+      },
+      edges: results.map((user) => ({ cursor: user.id, node: user })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total: query?._count.reactionsBy ?? 0,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }

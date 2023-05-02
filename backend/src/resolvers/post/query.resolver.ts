@@ -1,9 +1,9 @@
-import { postReactionsByCtrl } from "@/controller/post.controller";
 import { AuthenticationError } from "@/model";
 import {
   followingAuthorPostsService,
   postByIdService,
   postCommentsCountService,
+  postReactedByService,
   postReactionsCountService,
   postsByTagWithOffsetService,
   postsWithCursorService,
@@ -13,6 +13,7 @@ import {
 import type {
   CursorParams,
   OffsetParams,
+  PostReactedByCursorParams,
   PostsByTagOffsetParams,
   YogaContext,
 } from "@/utils/types";
@@ -98,16 +99,16 @@ export const Query = {
     return await postCommentsCountService(prisma, id);
   },
 
-  async postReactionsBy(
+  async postReactedBy(
     _: unknown,
-    { id, ...rest }: { id: string } & CursorParams,
+    params: PostReactedByCursorParams,
     { prisma, user }: YogaContext,
     ___: unknown,
   ) {
     if (user === null) {
       return new AuthenticationError();
     }
-    const result = await postReactionsByCtrl(prisma, id, rest);
-    return result;
+
+    return await postReactedByService(prisma, params);
   },
 };
