@@ -1,12 +1,12 @@
 import { GraphQLError, type GraphQLResolveInfo } from "graphql";
 
 import {
-  createPostCtrl,
   deletePostCtrl,
   reactionToCtrl,
   updatePostCtrl,
 } from "@/controller/post.controller";
-import { AuthenticationError } from "@/model";
+import { AuthenticationError, ForbiddenError } from "@/model";
+import { postCreationService } from "@/services/post";
 import {
   UN_AUTH_ERR_MSG,
   UN_AUTH_EXT_ERR_CODE,
@@ -26,19 +26,14 @@ export const Mutation = {
     ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
-      return new GraphQLError(UN_AUTH_ERR_MSG, {
-        extensions: {
-          code: UN_AUTH_EXT_ERR_CODE,
-        },
-      });
+      return new AuthenticationError();
     }
 
     if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
-      return new GraphQLError(VERIFIED_AUTHOR_ERR_MSG);
+      return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
-    const result = await createPostCtrl(prisma, data, user);
-    return result;
+    return await postCreationService(prisma, data, user.id);
   },
 
   async updatePost(

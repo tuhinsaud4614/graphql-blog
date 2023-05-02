@@ -50,7 +50,7 @@ import {
   createPostSchema,
   getAllPostsByTagSchema,
   updatePostSchema,
-} from "@/validations/post.validation";
+} from "@/validations/post";
 
 export async function createPostCtrl(
   prisma: PrismaClient,

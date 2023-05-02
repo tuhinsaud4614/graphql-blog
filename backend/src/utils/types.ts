@@ -19,7 +19,7 @@ import {
   createPostSchema,
   getAllPostsByTagSchema,
   updatePostSchema,
-} from "@/validations/post.validation";
+} from "@/validations/post";
 import { tagsByTextWithOffsetSchema } from "@/validations/tag";
 import {
   authorIdWithCursorSchema,
