@@ -490,3 +490,114 @@ export async function getPostReactedByWithCursor(
     edges: [],
   };
 }
+
+/**
+ * This function retrieves the author of a post using PrismaClient and the post's ID.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post in the database. It is used to retrieve the author of the post.
+ * @returns The `getPostAuthor` function is returning the author of a post with the given `postId`. It
+ * uses the Prisma client to find the post with the given `postId` and then returns the author of that
+ * post. The return value is likely a Promise that resolves to the author object.
+ */
+export async function getPostAuthor(prisma: PrismaClient, postId: string) {
+  return prisma.post
+    .findUnique({
+      where: { id: postId },
+    })
+    .author();
+}
+
+/**
+ * This function retrieves the categories associated with a specific post using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post. It is used to retrieve the categories associated with the post from the database using
+ * PrismaClient.
+ * @returns The `getPostCategories` function is returning a promise that resolves to an array of
+ * categories associated with a post identified by the `postId` parameter. The categories are obtained
+ * by calling the `categories()` method on the `Post` object returned by the `findUnique()` method of
+ * the `prisma` client.
+ */
+export async function getPostCategories(prisma: PrismaClient, postId: string) {
+  return prisma.post
+    .findUnique({
+      where: { id: postId },
+    })
+    .categories();
+}
+
+/**
+ * This function retrieves the tags associated with a specific post using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post. It is used to retrieve the tags associated with the post from the database using PrismaClient.
+ * @returns The `getPostTags` function is returning a promise that resolves to an array of tags
+ * associated with a post identified by the `postId` parameter. The function uses the Prisma client to
+ * query the database for the post with the specified ID and then retrieves the associated tags using
+ * the `tags()` method.
+ */
+export async function getPostTags(prisma: PrismaClient, postId: string) {
+  return prisma.post
+    .findUnique({
+      where: { id: postId },
+    })
+    .tags();
+}
+
+/**
+ * This function retrieves the image of a post from a Prisma database based on the post's
+ * ID.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post. It is used as a filter to retrieve a specific post from the database.
+ * @returns the image of a post with the given postId.
+ */
+export async function getPostImage(prisma: PrismaClient, postId: string) {
+  return prisma.post.findUnique({
+    where: { id: postId },
+  }).image;
+}
+
+/**
+ * This function retrieves the users who reacted to a specific post using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
+ * interact with the database.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post in a database. It is used to retrieve the post from the database and find the users who reacted
+ * to it.
+ * @returns a Promise that resolves to an array of users who reacted to a post with the given postId.
+ * The function uses PrismaClient to query the database and retrieve the post with the given postId,
+ * and then it uses the `reactionsBy()` method to retrieve the users who reacted to the post.
+ */
+export async function getPostReactedBy(prisma: PrismaClient, postId: string) {
+  return prisma.post
+    .findUnique({
+      where: { id: postId },
+    })
+    .reactionsBy();
+}
+
+/**
+ * This function retrieves comments for a specific post using Prisma client in TypeScript.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} postId - postId is a string parameter that represents the unique identifier of a
+ * post. It is used to retrieve the comments associated with that post from the database using
+ * PrismaClient.
+ * @returns The `getPostComments` function is returning a promise that resolves to an array of comments
+ * associated with a post identified by the `postId` parameter. The comments are obtained by first
+ * finding the post using its unique identifier (`id`) and then accessing its associated comments using
+ * the `comments()` method.
+ */
+export async function getPostComments(prisma: PrismaClient, postId: string) {
+  return prisma.post
+    .findUnique({
+      where: { id: postId },
+    })
+    .comments();
+}

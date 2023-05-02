@@ -1,10 +1,17 @@
-import { GraphQLError } from "graphql";
-
 import { Post as IPost } from "@prisma/client";
 
 import logger from "@/logger";
+import { UnknownError } from "@/model";
+import {
+  getPostAuthor,
+  getPostCategories,
+  getPostComments,
+  getPostImage,
+  getPostReactedBy,
+  getPostTags,
+} from "@/repositories/post";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
-import { YogaContext } from "@/utils/types";
+import type { YogaContext } from "@/utils/types";
 
 export const Post = {
   async author(
@@ -14,16 +21,10 @@ export const Post = {
     __: unknown,
   ) {
     try {
-      const author = await prisma.post
-        .findUnique({
-          where: { id },
-        })
-        .author();
-
-      return author;
+      return await getPostAuthor(prisma, id);
     } catch (error) {
       logger.error(error);
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("User", "post"),
       );
     }
@@ -35,46 +36,30 @@ export const Post = {
     __: unknown,
   ) {
     try {
-      const categories = await prisma.post
-        .findUnique({
-          where: { id },
-        })
-        .categories();
-      return categories;
+      return await getPostCategories(prisma, id);
     } catch (error) {
       logger.error(error);
-
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Categories", "post"),
       );
     }
   },
   async tags({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
-      const tags = await prisma.post
-        .findUnique({
-          where: { id },
-        })
-        .tags();
-
-      return tags;
+      return await getPostTags(prisma, id);
     } catch (error) {
       logger.error(error);
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Tags", "post"),
       );
     }
   },
   async image({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
     try {
-      const categories = await prisma.picture.findFirst({
-        where: { postId: id },
-      });
-
-      return categories;
+      return await getPostImage(prisma, id);
     } catch (error) {
       logger.error(error);
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Image", "post"),
       );
     }
@@ -86,16 +71,10 @@ export const Post = {
     __: unknown,
   ) {
     try {
-      const reactions = await prisma.post
-        .findUnique({
-          where: { id },
-        })
-        .reactionsBy();
-
-      return reactions;
+      return await getPostReactedBy(prisma, id);
     } catch (error) {
       logger.error(error);
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Reactions", "post"),
       );
     }
@@ -110,16 +89,10 @@ export const Post = {
       if (!user) {
         return [];
       }
-      const comments = await prisma.post
-        .findUnique({
-          where: { id },
-        })
-        .comments();
-
-      return comments;
+      return await getPostComments(prisma, id);
     } catch (error) {
       logger.error(error);
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Comments", "post"),
       );
     }
