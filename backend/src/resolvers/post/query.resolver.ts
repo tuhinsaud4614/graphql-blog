@@ -2,7 +2,6 @@ import { GraphQLError } from "graphql";
 
 import {
   getAllPostsByTagCtrl,
-  getAllPostsCtrl,
   getFollowingAuthorPostsCtrl,
   getTrendingPostsCtrl,
   postCommentsCountCtrl,
@@ -11,7 +10,10 @@ import {
 } from "@/controller/post.controller";
 import logger from "@/logger";
 import { AuthenticationError } from "@/model";
-import { postsWithOffsetService } from "@/services/post";
+import {
+  postsWithCursorService,
+  postsWithOffsetService,
+} from "@/services/post";
 import { getPostById } from "@/services/post.service";
 import { generateNotExistErrorMessage } from "@/utils/constants";
 import type {
@@ -31,14 +33,13 @@ export const Query = {
     const result = await postsWithOffsetService(prisma, params);
     return result;
   },
-  async posts(
+  async postsWithCursor(
     _: unknown,
     params: CursorParams,
     { prisma }: YogaContext,
     ___: unknown,
   ) {
-    const result = await getAllPostsCtrl(prisma, params);
-    return result;
+    return await postsWithCursorService(prisma, params);
   },
   async followingAuthorPosts(
     _: unknown,

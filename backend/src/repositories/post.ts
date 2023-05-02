@@ -1,7 +1,14 @@
 import { Post, Prisma, PrismaClient } from "@prisma/client";
 
-import type { IResponseWithOffset } from "@/utils/interfaces";
-import type { CreatePostInput, UpdatePostInput } from "@/utils/types";
+import type {
+  IResponseWithCursor,
+  IResponseWithOffset,
+} from "@/utils/interfaces";
+import type {
+  CreatePostInput,
+  CursorParams,
+  UpdatePostInput,
+} from "@/utils/types";
 
 /**
  * This function creates a post with various properties and connects it to categories and tags using
@@ -236,6 +243,80 @@ export async function getPostsWithOffset(
 
   const result = await getAllPosts(prisma, condition);
   return { data: result, total: count } as IResponseWithOffset<Post>;
+}
+
+/**
+ * This function retrieves posts from a database using cursor-based pagination and returns them along
+ * with pagination information.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {CursorParams} params - The `params` parameter is an object that contains the `limit` and
+ * `after` properties. `limit` specifies the maximum number of results to return, while `after` is an
+ * optional cursor that indicates where to start fetching results from.
+ * @param condition - The `condition` parameter is an object of type `Prisma.PostFindManyArgs` which
+ * contains the conditions to filter and sort the posts to be retrieved from the database. It can
+ * include properties such as `where`, `orderBy`, `select`, `include`, etc.
+ * @param {number} total - The total parameter is the total number of posts that match the given
+ * condition.
+ * @returns This function returns a Promise that resolves to an object with three properties: `total`,
+ * `pageInfo`, and `edges`. The `total` property is a number representing the total number of posts
+ * that match the given condition. The `pageInfo` property is an object with two properties: `hasNext`
+ * (a boolean indicating whether there is a next page of results) and `endCursor`
+ */
+export async function getPostsWithCursor(
+  prisma: PrismaClient,
+  params: CursorParams,
+  condition: Prisma.PostFindManyArgs,
+  total: number,
+): Promise<IResponseWithCursor<Post>> {
+  const { limit, after } = params;
+  let results: Post[] = [];
+  let newFindArgs = {
+    ...condition,
+  };
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+  results = await getAllPosts(prisma, newFindArgs);
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastPost = results[resultsLen - 1];
+    const newResults = await getAllPosts(prisma, {
+      ...condition,
+      skip: 1,
+      take: 1,
+      cursor: {
+        id: lastPost.id,
+      },
+    });
+
+    return {
+      total,
+      pageInfo: {
+        hasNext: !!newResults.length,
+        endCursor: lastPost.id,
+      },
+      edges: results.map((post) => ({ cursor: post.id, node: post })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }
 
 /**

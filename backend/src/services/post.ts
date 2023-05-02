@@ -9,6 +9,7 @@ import {
   deletePost,
   getAuthorPostById,
   getPostById,
+  getPostsWithCursor,
   getPostsWithOffset,
   hasUserReactedToPost,
   removeReactionFromPost,
@@ -27,11 +28,12 @@ import type { YogaPubSubType } from "@/utils/context";
 import { EReactionsMutationStatus } from "@/utils/enums";
 import type {
   CreatePostInput,
+  CursorParams,
   OffsetParams,
   UpdatePostInput,
   UserWithAvatar,
 } from "@/utils/types";
-import { offsetParamsSchema } from "@/validations";
+import { cursorParamsSchema, offsetParamsSchema } from "@/validations";
 import { createPostSchema, updatePostSchema } from "@/validations/post";
 
 /**
@@ -271,6 +273,42 @@ export async function postsWithOffsetService(
     }
 
     return await getPostsWithOffset(prisma, count, page, limit, args);
+  } catch (error: unknown) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("posts"));
+  }
+}
+
+/**
+ * This function retrieves published posts with a cursor and validates the input parameters.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {CursorParams} params - The `params` parameter is an object containing cursor-based
+ * pagination parameters such as `first`, `last`, `before`, and `after`. These parameters are used to
+ * retrieve a specific subset of data from a larger dataset.
+ * @returns The function `postsWithCursorService` returns a Promise that resolves to the result of
+ * calling the `getPostsWithCursor` function with the provided `prisma` client, `params` object, `args`
+ * object, and `count` number. If there are any validation errors, it returns a formatted error object.
+ * If there are any other errors, it returns a new `UnknownError` object
+ */
+export async function postsWithCursorService(
+  prisma: PrismaClient,
+  params: CursorParams,
+) {
+  try {
+    await cursorParamsSchema.validate(params, { abortEarly: false });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "posts with cursor" });
+  }
+
+  try {
+    const args: Prisma.PostFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      where: { published: true },
+    };
+    const count = await prisma.post.count({ where: { published: true } });
+
+    return await getPostsWithCursor(prisma, params, args, count);
   } catch (error: unknown) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("posts"));
