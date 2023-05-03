@@ -7,5 +7,5 @@ export const createCommentSchema = yup.object({
   content: yup
     .string()
     .required(generateRequiredErrorMessage("Comment content")),
-  parentComment: yup.string(),
+  parentId: yup.string(),
 });

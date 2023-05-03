@@ -1,34 +1,24 @@
 import type { GraphQLResolveInfo } from "graphql";
 
 import {
-  createCommentCtrl,
   deleteCommentCtrl,
   updateCommentCtrl,
 } from "@/controller/comment.controller";
 import { AuthenticationError } from "@/model";
-import type { YogaContext } from "@/utils/types";
+import { commentCreationService } from "@/services/comment";
+import type { CreateCommentInput, YogaContext } from "@/utils/types";
 
 export const Mutation = {
   async createComment(
     _: unknown,
-    {
-      data: { content, postId, parentComment },
-    }: { data: { parentComment?: string; postId: string; content: string } },
+    { data }: { data: CreateCommentInput },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
     }
-
-    const result = await createCommentCtrl(
-      prisma,
-      postId,
-      content,
-      user,
-      parentComment,
-    );
-    return result;
+    return await commentCreationService(prisma, user.id, data);
   },
 
   async updateComment(

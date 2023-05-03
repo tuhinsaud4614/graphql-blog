@@ -32,7 +32,7 @@ import {
   getGraphqlYogaError,
   offsetParamsSchema,
 } from "@/validations";
-import { createCommentSchema } from "@/validations/comment.validation";
+import { createCommentSchema } from "@/validations/comment";
 
 export async function createCommentCtrl(
   prisma: PrismaClient,

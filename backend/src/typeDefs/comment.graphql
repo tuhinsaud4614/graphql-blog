@@ -10,7 +10,7 @@ type Comment {
 
 input CreateCommentInput {
   postId: ID!
-  parentComment: ID
+  parentId: ID
   content: String!
 }
 
