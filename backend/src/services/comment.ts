@@ -5,6 +5,7 @@ import { NoContentError, UnknownError } from "@/model";
 import {
   createComment,
   createReply,
+  deleteComment,
   getCommentById,
   getCommentForCommenter,
   updateComment,
@@ -13,6 +14,7 @@ import { getPostById } from "@/repositories/post";
 import { formatError } from "@/utils";
 import {
   generateCreationErrorMessage,
+  generateDeleteErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
@@ -121,5 +123,37 @@ export async function commentModificationService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateUpdateErrorMessage("Comment"));
+  }
+}
+
+/**
+ * This function deletes a comment and returns its ID, while also checking if the comment exists and
+ * handling errors.
+ * @param {PrismaClient} prisma - The Prisma client used to interact with the database.
+ * @param {string} id - The ID of the comment or reply that needs to be deleted.
+ * @param {string} userId - The `userId` parameter is a string representing the ID of the user who is
+ * trying to delete a comment.
+ * @returns either the ID of the deleted comment or an error object (either a NoContentError or an
+ * UnknownError).
+ */
+export async function commentDeletionService(
+  prisma: PrismaClient,
+  id: string,
+  userId: string,
+) {
+  try {
+    const isExist = await getCommentForCommenter(prisma, id, userId);
+
+    if (!isExist) {
+      return new NoContentError(
+        generateNotExistErrorMessage("Comment or Reply"),
+      );
+    }
+
+    const comment = await deleteComment(prisma, id);
+    return comment.id;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateDeleteErrorMessage("Comment"));
   }
 }

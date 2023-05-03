@@ -53,5 +53,5 @@ type Query {
 type Mutation {
   createComment(data: CreateCommentInput): Comment!
   updateComment(data: UpdateCommentInput): Comment!
-  deleteComment(commentId: ID!): ID!
+  deleteComment(id: ID!): ID!
 }

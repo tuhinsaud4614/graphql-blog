@@ -74,6 +74,21 @@ export function updateComment(prisma: PrismaClient, data: UpdateCommentInput) {
 }
 
 /**
+ * This function deletes a comment from a Prisma database using its ID.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
+ * interact with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
+ * comment that needs to be deleted. It is used in the `where` clause of the `prisma.comment.delete`
+ * method to specify which comment should be deleted.
+ * @returns The `deleteComment` function is returning a Promise that will resolve to the result of
+ * deleting a comment from the database using the Prisma client. The comment to be deleted is
+ * identified by its `id`, which is passed as an argument to the function.
+ */
+export function deleteComment(prisma: PrismaClient, id: string) {
+  return prisma.comment.delete({ where: { id } });
+}
+
+/**
  * This function retrieves a comment from a Prisma client by its ID.
  * @param {PrismaClient} prisma - PrismaClient instance used to interact with the database.
  * @param {string} id - The `id` parameter is a string that represents the unique identifier of a

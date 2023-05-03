@@ -1,9 +1,9 @@
 import type { GraphQLResolveInfo } from "graphql";
 
-import { deleteCommentCtrl } from "@/controller/comment.controller";
 import { AuthenticationError } from "@/model";
 import {
   commentCreationService,
+  commentDeletionService,
   commentModificationService,
 } from "@/services/comment";
 import type {
@@ -39,15 +39,13 @@ export const Mutation = {
 
   async deleteComment(
     _: unknown,
-    { commentId }: { commentId: string },
+    { id }: { id: string },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
     }
-
-    const result = await deleteCommentCtrl(prisma, commentId, user);
-    return result;
+    return await commentDeletionService(prisma, id, user.id);
   },
 };
