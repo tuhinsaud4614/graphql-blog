@@ -9,3 +9,8 @@ export const createCommentSchema = yup.object({
     .required(generateRequiredErrorMessage("Comment content")),
   parentId: yup.string(),
 });
+
+export const updateCommentSchema = yup.object({
+  id: yup.string().required(generateRequiredErrorMessage("ID")),
+  content: yup.string().required(generateRequiredErrorMessage("Content")),
+});

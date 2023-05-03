@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
+import { UpdateCommentInput } from "@/utils/types";
+
 /**
  * This function creates a comment in a Prisma database with the provided data.
  * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
@@ -57,6 +59,21 @@ export function createReply(
 }
 
 /**
+ * This function updates a comment's content in a Prisma database.
+ * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * @param {UpdateCommentInput} data - The `data` parameter is an object that contains two properties:
+ * `content` and `id`. These properties are used to update a comment in the database. `content` is the
+ * new content of the comment, and `id` is the unique identifier of the comment that needs to be
+ * updated.
+ * @returns The `updateComment` function is returning a Promise that resolves to the updated comment
+ * object.
+ */
+export function updateComment(prisma: PrismaClient, data: UpdateCommentInput) {
+  const { content, id } = data;
+  return prisma.comment.update({ where: { id }, data: { content } });
+}
+
+/**
  * This function retrieves a comment from a Prisma client by its ID.
  * @param {PrismaClient} prisma - PrismaClient instance used to interact with the database.
  * @param {string} id - The `id` parameter is a string that represents the unique identifier of a
@@ -71,4 +88,26 @@ export function getCommentById(prisma: PrismaClient, id: string) {
   return prisma.comment.findFirst({
     where: { id },
   });
+}
+
+/**
+ * This function retrieves a comment from the Prisma database based on its ID and the ID of the
+ * commenter who wrote it.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows you to
+ * interact with your database.
+ * @param {string} id - The id parameter is a string that represents the unique identifier of a
+ * comment.
+ * @param {string} commenterId - The `commenterId` parameter is a string that represents the unique
+ * identifier of the commenter whose comment is being searched for. It is used in the `where` clause of
+ * the `findFirst` method to filter the search results and return only the comment that matches the
+ * specified `id` and `comment
+ * @returns This function returns a Promise that resolves to a Comment object from the PrismaClient
+ * instance, which has the specified `id` and `commenterId`.
+ */
+export function getCommentForCommenter(
+  prisma: PrismaClient,
+  id: string,
+  commenterId: string,
+) {
+  return prisma.comment.findFirst({ where: { id, commenterId } });
 }

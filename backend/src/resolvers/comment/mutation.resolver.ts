@@ -1,12 +1,16 @@
 import type { GraphQLResolveInfo } from "graphql";
 
-import {
-  deleteCommentCtrl,
-  updateCommentCtrl,
-} from "@/controller/comment.controller";
+import { deleteCommentCtrl } from "@/controller/comment.controller";
 import { AuthenticationError } from "@/model";
-import { commentCreationService } from "@/services/comment";
-import type { CreateCommentInput, YogaContext } from "@/utils/types";
+import {
+  commentCreationService,
+  commentModificationService,
+} from "@/services/comment";
+import type {
+  CreateCommentInput,
+  UpdateCommentInput,
+  YogaContext,
+} from "@/utils/types";
 
 export const Mutation = {
   async createComment(
@@ -23,18 +27,14 @@ export const Mutation = {
 
   async updateComment(
     _: unknown,
-    {
-      data: { content, commentId },
-    }: { data: { commentId: string; content: string } },
+    { data }: { data: UpdateCommentInput },
     { prisma, user }: YogaContext,
     __: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
     }
-
-    const result = await updateCommentCtrl(prisma, commentId, content, user);
-    return result;
+    return await commentModificationService(prisma, user.id, data);
   },
 
   async deleteComment(

@@ -15,7 +15,7 @@ input CreateCommentInput {
 }
 
 input UpdateCommentInput {
-  commentId: ID!
+  id: ID!
   content: String!
 }
 
