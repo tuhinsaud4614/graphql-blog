@@ -1,12 +1,14 @@
-import { GraphQLError } from "graphql";
-
 import type { Comment as IComment } from "@prisma/client";
 
 import logger from "@/logger";
 import { UnknownError } from "@/model";
-import { getReplyCount } from "@/services/comment.service";
+import {
+  getCommenter,
+  getParentComment,
+  getReplyCount,
+} from "@/repositories/comment";
 import { generateEntityNotExistErrorMessage } from "@/utils/constants";
-import { YogaContext } from "@/utils/types";
+import type { YogaContext } from "@/utils/types";
 
 export const Comment = {
   async commenter(
@@ -16,12 +18,9 @@ export const Comment = {
     __: unknown,
   ) {
     try {
-      const user = await prisma.comment
-        .findUnique({ where: { id } })
-        .commenter();
-      return user;
+      return await getCommenter(prisma, id);
     } catch (error) {
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Commenter", "user"),
       );
     }
@@ -33,12 +32,9 @@ export const Comment = {
     __: unknown,
   ) {
     try {
-      const comment = await prisma.comment
-        .findUnique({ where: { id } })
-        .parentComment();
-      return comment;
+      return await getParentComment(prisma, id);
     } catch (error) {
-      return new GraphQLError(
+      return new UnknownError(
         generateEntityNotExistErrorMessage("Parent comment", "user"),
       );
     }
@@ -52,14 +48,6 @@ export const Comment = {
     try {
       const count = await getReplyCount(prisma, id);
       return count?._count.replies ?? 0;
-      // const comments = await getCommentsRepliesOnCursor(prisma, params, id);
-      // return comments;
-      // const comments = await prisma.comment
-      //   .findUnique({
-      //     where: { id },
-      //   })
-      //   .replies();
-      // return comments;
     } catch (error) {
       logger.error(error);
       return new UnknownError(`Something went wrong for comment:${id} replies`);

@@ -326,3 +326,25 @@ export async function getRepliesWithCursor(
     edges: [],
   };
 }
+
+export async function getCommenter(prisma: PrismaClient, commentId: string) {
+  return prisma.comment.findUnique({ where: { id: commentId } }).commenter();
+}
+
+export async function getParentComment(
+  prisma: PrismaClient,
+  commentId: string,
+) {
+  return prisma.comment
+    .findUnique({ where: { id: commentId } })
+    .parentComment();
+}
+
+export async function getReplyCount(prisma: PrismaClient, commentId: string) {
+  return prisma.comment.findUnique({
+    where: { id: commentId },
+    select: {
+      _count: { select: { replies: true } },
+    },
+  });
+}
