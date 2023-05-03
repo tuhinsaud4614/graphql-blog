@@ -1,13 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 import logger from "@/logger";
 import { NoContentError, UnknownError } from "@/model";
 import {
+  countPostComments,
+  countReplies,
   createComment,
   createReply,
   deleteComment,
   getCommentById,
   getCommentForCommenter,
+  getCommentsWithCursor,
+  getCommentsWithOffset,
+  getRepliesWithCursor,
   updateComment,
 } from "@/repositories/comment";
 import { getPostById } from "@/repositories/post";
@@ -15,12 +20,20 @@ import { formatError } from "@/utils";
 import {
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
+  generateFetchErrorMessage,
   generateNotExistErrorMessage,
   generateUpdateErrorMessage,
 } from "@/utils/constants";
-import type { CreateCommentInput, UpdateCommentInput } from "@/utils/types";
+import type {
+  CreateCommentInput,
+  PostCommentsCursorParams,
+  PostCommentsParams,
+  UpdateCommentInput,
+} from "@/utils/types";
 import {
   createCommentSchema,
+  postCommentsCursorParamsSchema,
+  postCommentsParamsSchema,
   updateCommentSchema,
 } from "@/validations/comment";
 
@@ -155,5 +168,110 @@ export async function commentDeletionService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateDeleteErrorMessage("Comment"));
+  }
+}
+
+export async function postCommentsWithOffsetService(
+  prisma: PrismaClient,
+  params: PostCommentsParams,
+) {
+  try {
+    await postCommentsParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "post comments with offset" });
+  }
+
+  try {
+    const { postId, limit, page } = params;
+
+    const isPostExist = await getPostById(prisma, postId);
+    if (!isPostExist) {
+      return new NoContentError(generateNotExistErrorMessage("Post"));
+    }
+
+    const count = await countPostComments(prisma, postId);
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const result = await getCommentsWithOffset(prisma, count, page, limit, {
+      orderBy: { updatedAt: "desc" },
+      where: { postId },
+    });
+    return result;
+  } catch (error: unknown) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("comments"));
+  }
+}
+
+export async function getPostCommentsWithCursorService(
+  prisma: PrismaClient,
+  params: PostCommentsCursorParams,
+) {
+  try {
+    await postCommentsCursorParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "post comments with cursor" });
+  }
+
+  try {
+    const { parentId, postId, ...cursorParams } = params;
+
+    if (parentId) {
+      const count = await countReplies(prisma, parentId);
+      if (count === 0) {
+        return {
+          total: count,
+          pageInfo: {
+            hasNext: false,
+            endCursor: null,
+          },
+          edges: [],
+        };
+      }
+
+      const result = await getRepliesWithCursor(
+        prisma,
+        parentId,
+        count,
+        cursorParams,
+      );
+      return result;
+    }
+
+    const isPostExist = await getPostById(prisma, postId);
+
+    if (!isPostExist) {
+      return new NoContentError(generateNotExistErrorMessage("Post"));
+    }
+
+    const args: Prisma.CommentFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+      where: { postId },
+    };
+
+    const count = await countPostComments(prisma, postId);
+    if (count === 0) {
+      return {
+        total: count,
+        pageInfo: {
+          hasNext: false,
+          endCursor: null,
+        },
+        edges: [],
+      };
+    }
+
+    return await getCommentsWithCursor(prisma, cursorParams, args, count);
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("comments"));
   }
 }

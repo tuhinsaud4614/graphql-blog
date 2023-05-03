@@ -37,12 +37,12 @@ type CursorCommentsResponse {
 }
 
 type Query {
-  postCommentsOnOffset(
+  postCommentsWithOffset(
     postId: ID!
     limit: Int
     page: Int
   ): OffsetCommentsResponse!
-  postCommentsOnCursor(
+  postCommentsWithCursor(
     postId: ID!
     parentId: ID
     limit: Int!

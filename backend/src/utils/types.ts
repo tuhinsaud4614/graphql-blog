@@ -18,6 +18,8 @@ import {
 } from "@/validations/category";
 import {
   createCommentSchema,
+  postCommentsCursorParamsSchema,
+  postCommentsParamsSchema,
   updateCommentSchema,
 } from "@/validations/comment";
 import {
@@ -89,3 +91,7 @@ export type TagsByTextWithOffsetParams = InferType<
 // Comment
 export type CreateCommentInput = InferType<typeof createCommentSchema>;
 export type UpdateCommentInput = InferType<typeof updateCommentSchema>;
+export type PostCommentsParams = InferType<typeof postCommentsParamsSchema>;
+export type PostCommentsCursorParams = InferType<
+  typeof postCommentsCursorParamsSchema
+>;

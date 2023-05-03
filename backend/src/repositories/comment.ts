@@ -1,6 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { Comment, Prisma, PrismaClient } from "@prisma/client";
 
-import { UpdateCommentInput } from "@/utils/types";
+import type {
+  IResponseWithCursor,
+  IResponseWithOffset,
+} from "@/utils/interfaces";
+import type { CursorParams, UpdateCommentInput } from "@/utils/types";
 
 /**
  * This function creates a comment in a Prisma database with the provided data.
@@ -88,6 +92,15 @@ export function deleteComment(prisma: PrismaClient, id: string) {
   return prisma.comment.delete({ where: { id } });
 }
 
+export function getAllComments(
+  prisma: PrismaClient,
+  condition?: Prisma.CommentFindManyArgs,
+) {
+  return prisma.comment.findMany({
+    ...condition,
+  });
+}
+
 /**
  * This function retrieves a comment from a Prisma client by its ID.
  * @param {PrismaClient} prisma - PrismaClient instance used to interact with the database.
@@ -125,4 +138,191 @@ export function getCommentForCommenter(
   commenterId: string,
 ) {
   return prisma.comment.findFirst({ where: { id, commenterId } });
+}
+
+export function countPostComments(prisma: PrismaClient, postId: string) {
+  return prisma.comment.count({ where: { postId } });
+}
+
+export function countReplies(prisma: PrismaClient, parentId?: string | null) {
+  if (!parentId) {
+    return 0;
+  }
+  return prisma.comment.count({ where: { parentCommentId: parentId } });
+}
+
+export async function getCommentsWithOffset(
+  prisma: PrismaClient,
+  count: number,
+  page?: number,
+  limit?: number,
+  condition?: Prisma.CommentFindManyArgs,
+) {
+  if (limit && page) {
+    const result = await getAllComments(prisma, {
+      skip: (page - 1) * limit,
+      take: limit,
+      ...condition,
+    });
+
+    return {
+      data: result,
+      total: count,
+      pageInfo: {
+        hasNext: limit * page < count,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        totalPages: Math.ceil(count / limit),
+      },
+    } as IResponseWithOffset<Comment>;
+  }
+
+  const result = await getAllComments(prisma, condition);
+  return { data: result, total: count } as IResponseWithOffset<Comment>;
+}
+
+export async function getCommentsWithCursor(
+  prisma: PrismaClient,
+  params: CursorParams,
+  condition: Prisma.CommentFindManyArgs,
+  total: number,
+): Promise<IResponseWithCursor<Comment>> {
+  const { after } = params;
+
+  const limit = Math.abs(params.limit);
+
+  let results: Comment[] = [];
+
+  let newFindArgs = {
+    ...condition,
+  };
+
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+
+  results = await prisma.comment.findMany({
+    ...newFindArgs,
+  });
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastComment = results[resultsLen - 1];
+    const newResults = await prisma.comment.findMany({
+      ...condition,
+      skip: 1,
+      take: 1,
+      cursor: {
+        id: lastComment.id,
+      },
+    });
+
+    return {
+      total,
+      pageInfo: {
+        hasNext: !!newResults.length,
+        endCursor: lastComment.id,
+      },
+      edges: results.map((comment) => ({ cursor: comment.id, node: comment })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
+}
+
+export async function getRepliesWithCursor(
+  prisma: PrismaClient,
+  parentId: string,
+  count: number,
+  params: CursorParams,
+): Promise<IResponseWithCursor<Comment>> {
+  const { limit, after } = params;
+
+  let newFindArgs: Prisma.CommentFindManyArgs = {
+    orderBy: { updatedAt: "desc" },
+  };
+
+  if (after) {
+    newFindArgs = {
+      ...newFindArgs,
+      skip: 1,
+      take: limit,
+      cursor: { id: after },
+    };
+  } else {
+    newFindArgs = { ...newFindArgs, take: limit };
+  }
+
+  const temp = await prisma.comment.findUnique({
+    where: { id: parentId },
+    select: {
+      replies: newFindArgs,
+    },
+  });
+
+  if (!temp) {
+    return {
+      total: 0,
+      pageInfo: {
+        hasNext: false,
+        endCursor: null,
+      },
+      edges: [],
+    };
+  }
+  const results: Comment[] = temp.replies;
+
+  // This for has next page
+  const resultsLen = results.length;
+  if (resultsLen > 0) {
+    const lastComment = results[resultsLen - 1];
+    const newResults = await prisma.comment.findUnique({
+      where: { id: parentId },
+      select: {
+        replies: {
+          orderBy: { updatedAt: "desc" },
+          skip: 1,
+          take: 1,
+          cursor: {
+            id: lastComment.id,
+          },
+        },
+      },
+    });
+
+    return {
+      total: count,
+      pageInfo: {
+        hasNext: !!newResults?.replies.length,
+        endCursor: lastComment.id,
+      },
+      edges: results.map((comment) => ({ cursor: comment.id, node: comment })),
+    };
+  }
+  // This for has next page end
+
+  return {
+    total: count,
+    pageInfo: {
+      hasNext: false,
+      endCursor: null,
+    },
+    edges: [],
+  };
 }
