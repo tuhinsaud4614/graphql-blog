@@ -14,7 +14,7 @@ type PaginateCategories {
 
 type Query {
   categoriesWithOffset(limit: Int, page: Int): PaginateCategories!
-  categoriesByTextOnOffset(
+  categoriesByTextWithOffset(
     text: String!
     limit: Int
     page: Int

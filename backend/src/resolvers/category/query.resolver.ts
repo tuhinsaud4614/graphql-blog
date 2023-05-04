@@ -19,7 +19,7 @@ export const Query = {
     return result;
   },
 
-  async categoriesByTextOnOffset(
+  async categoriesByTextWithOffset(
     _: unknown,
     params: CategoriesByTextParams,
     { prisma }: YogaContext,
