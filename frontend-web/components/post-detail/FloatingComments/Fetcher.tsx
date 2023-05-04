@@ -8,7 +8,7 @@ import _ from "lodash";
 import { Waypoint } from "react-waypoint";
 
 import { ModalHeader } from "@/components";
-import { useGetPostCommentsOnCursorQuery } from "@/graphql/generated/schema";
+import { useGetPostCommentsWithCursorQuery } from "@/graphql/generated/schema";
 import { isDev } from "@/utils";
 
 import CommentEditor from "../CommentEditor";
@@ -28,7 +28,7 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
   } = useRouter();
 
   const { data, networkStatus, loading, fetchMore } =
-    useGetPostCommentsOnCursorQuery({
+    useGetPostCommentsWithCursorQuery({
       notifyOnNetworkStatusChange: true,
       variables: { postId: postId as string, limit: 6 },
     });

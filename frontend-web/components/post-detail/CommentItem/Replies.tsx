@@ -7,7 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import _ from "lodash";
 
 import { Button } from "@/components";
-import { useGetPostCommentsOnCursorQuery } from "@/graphql/generated/schema";
+import { useGetPostCommentsWithCursorQuery } from "@/graphql/generated/schema";
 import { isDev } from "@/utils";
 
 import CommentItem from ".";
@@ -21,7 +21,7 @@ export default function Replies({ commentId }: Props) {
   const {
     query: { postId },
   } = useRouter();
-  const { data, networkStatus, fetchMore } = useGetPostCommentsOnCursorQuery({
+  const { data, networkStatus, fetchMore } = useGetPostCommentsWithCursorQuery({
     notifyOnNetworkStatusChange: true,
     variables: {
       postId: postId as string,

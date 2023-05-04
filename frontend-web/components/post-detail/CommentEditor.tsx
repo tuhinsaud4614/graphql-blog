@@ -15,8 +15,8 @@ import { selectUser } from "@/features";
 import {
   GetPostCommentsCountDocument,
   GetPostCommentsCountQuery,
-  GetPostCommentsOnCursorDocument,
-  GetPostCommentsOnCursorQuery,
+  GetPostCommentsWithCursorDocument,
+  GetPostCommentsWithCursorQuery,
   useCreateCommentMutation,
 } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
@@ -62,9 +62,9 @@ export default function CommentEditor({
             return;
           }
           try {
-            cache.updateQuery<GetPostCommentsOnCursorQuery>(
+            cache.updateQuery<GetPostCommentsWithCursorQuery>(
               {
-                query: GetPostCommentsOnCursorDocument,
+                query: GetPostCommentsWithCursorDocument,
                 variables: { postId: postId as string, limit: 6 },
               },
               (prevComments) => {

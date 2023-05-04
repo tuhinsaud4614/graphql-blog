@@ -9,7 +9,7 @@ import {
   ReactorModal,
   ReactorModalItem,
 } from "@/components";
-import { useGetPostReactionsByQuery } from "@/graphql/generated/schema";
+import { useGetPostReactedByQuery } from "@/graphql/generated/schema";
 import { useLockBody } from "@/hooks";
 import { countConvert, gplErrorHandler, isDev } from "@/utils";
 
@@ -28,7 +28,7 @@ export default function FloatingLikes({ onClose, open }: Props) {
     query: { postId },
   } = useRouter();
   const { data, loading, error, networkStatus, fetchMore } =
-    useGetPostReactionsByQuery({
+    useGetPostReactedByQuery({
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "network-only",
       variables: { id: postId as string, limit: 6 },

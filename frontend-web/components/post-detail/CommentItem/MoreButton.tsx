@@ -13,8 +13,8 @@ import {
   FCommentWithRepliesFragmentDoc,
   GetPostCommentsCountDocument,
   GetPostCommentsCountQuery,
-  GetPostCommentsOnCursorDocument,
-  GetPostCommentsOnCursorQuery,
+  GetPostCommentsWithCursorDocument,
+  GetPostCommentsWithCursorQuery,
   useDeleteCommentMutation,
 } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
@@ -63,9 +63,9 @@ export default function MoreButton({ commentId, replyFor }: Props) {
             return;
           }
           try {
-            cache.updateQuery<GetPostCommentsOnCursorQuery>(
+            cache.updateQuery<GetPostCommentsWithCursorQuery>(
               {
-                query: GetPostCommentsOnCursorDocument,
+                query: GetPostCommentsWithCursorDocument,
                 variables: {
                   postId: postId as string,
                   limit: 6,
