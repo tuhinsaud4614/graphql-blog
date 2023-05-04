@@ -2,7 +2,10 @@ import * as React from "react";
 
 import classNames from "classnames";
 
+import STYLES from "@/utils/styles";
+
 import Button from "./Button";
+import Sad from "./svg/Sad";
 
 const className = {
   root: "flex flex-col rounded-2xl border border-error-content/50",
@@ -11,7 +14,7 @@ const className = {
   title:
     "text-error dark:text-error-dark text-lg font-medium line-clamp-1 text-ellipsis",
   items: "list-item flex-col m-0 space-y-2",
-  item: "text-warning dark:text-warning-dark text-sm",
+  item: "text-warning dark:text-warning-dark text-sm text-center",
   footer:
     "px-4 py-3 flex items-center justify-end space-x-3 border-t border-error-content/50 dark:border-error-content/50",
 };
@@ -37,7 +40,10 @@ function Component({ errors, onClose, title, classes, onRetry }: Props) {
       <header className={classNames(className.header, classes?.header)}>
         <h1 className={classNames(className.title, classes?.title)}>{title}</h1>
       </header>
-      <div className="px-4 py-3">
+      <div className="space-y-3 p-4">
+        <div className="flex items-center justify-center">
+          <Sad className="h-auto w-20 text-warning dark:text-warning-dark sm:w-[6.25rem]" />
+        </div>
         {Array.isArray(errors) ? (
           <ul className={classNames(className.items, classes?.items)}>
             {errors.map((er) => (
