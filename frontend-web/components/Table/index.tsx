@@ -1,10 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type SortingState,
+} from "@tanstack/react-table";
 import classNames from "classnames";
-import { BiPencil, BiTrash } from "react-icons/bi";
 
-import { Button } from "@/components";
+import { isDev } from "@/utils";
+
+import TBody from "./Body";
+import Filter from "./Filter";
+import TPageSelector from "./PageSelector";
+import TPaginate from "./Paginate";
+import TFoot from "./TFoot";
+import THead from "./THead";
 
 const className = {
   table:
@@ -18,51 +33,86 @@ const className = {
 };
 
 interface Props<TData extends {}> {
+  title: string;
   data: TData[];
-  headers: (keyof TData)[];
+  headers: ColumnDef<TData>[];
+  addSection?: React.ReactNode;
+  filterPlaceHolder?: string;
 }
 
 export default function Table<TData extends {}>({
   data,
   headers,
+  title,
+  addSection,
+  filterPlaceHolder,
 }: Props<TData>) {
-  const columns = React.useMemo<ColumnDef<TData>[]>(
-    () => [
-      ...headers.map((header) => ({
-        header: header,
-        accessorKey: header,
-        id: header,
-      })),
-      {
-        header: "Actions",
-        cell(info) {
-          return (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="warning"
-                onClick={() => console.log(info.row.original.id)}
-                circle
-              >
-                <BiPencil />
-              </Button>
-              <Button
-                variant="error"
-                onClick={() => console.log(info.row.original.id)}
-                circle
-              >
-                <BiTrash />
-              </Button>
-            </div>
-          );
-        },
-      },
-    ],
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
-    [headers],
-  );
+  const columns = React.useMemo<ColumnDef<TData>[]>(() => headers, []);
+  const memoData = React.useMemo(() => data, []);
+
+  const {
+    getHeaderGroups,
+    getRowModel,
+    getState,
+    setPageSize,
+    getPageCount,
+    setPageIndex,
+    getCanNextPage,
+    nextPage,
+    previousPage,
+    getCanPreviousPage,
+  } = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      globalFilter,
+    },
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    debugTable: isDev(),
+  });
   return (
-    <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-200">
-      <table className={classNames(className.table, "w-full")}></table>
-    </div>
+    <>
+      <h1 className="mb-4 text-xl font-bold text-neutral dark:text-neutral-dark">
+        {title}
+      </h1>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <Filter
+            placeholder={filterPlaceHolder}
+            setFilter={(value) => setGlobalFilter(value)}
+          />
+        </div>
+        {addSection}
+      </div>
+      <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-200">
+        <table className={classNames(className.table, "w-full")}>
+          <THead headers={getHeaderGroups()} />
+          <TBody rowModel={getRowModel()} />
+          <TFoot>
+            <TPageSelector
+              pageCount={getPageCount()}
+              setPageIndex={setPageIndex}
+              state={getState()}
+            />
+            <TPaginate
+              canNextPage={getCanNextPage()}
+              canPreviousPage={getCanPreviousPage()}
+              nextPage={nextPage}
+              pageCount={getPageCount()}
+              previousPage={previousPage}
+              setPageIndex={setPageIndex}
+            />
+          </TFoot>
+        </table>
+      </div>
+    </>
   );
 }

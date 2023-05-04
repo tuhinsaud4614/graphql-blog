@@ -6,6 +6,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -22,11 +23,14 @@ import {
   BiTrash,
 } from "react-icons/bi";
 
-import { Button } from "@/components";
+import { Button, Menu } from "@/components";
 import { AdminLayout } from "@/components/Layout";
+import TableFilter from "@/components/Table/Filter";
+import TableSort from "@/components/Table/Sort";
 import { FormControl } from "@/components/account";
 import { AdminCreateCategory } from "@/components/admin-categories";
 import { Category } from "@/graphql/generated/schema";
+import { useDebounce } from "@/hooks";
 
 const className = {
   table:
@@ -75,6 +79,8 @@ const columnHelper =
 
 export default function Categories() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = React.useState("");
+
   const columns = React.useMemo<ColumnDef<ICategory>[]>(
     () => [
       {
@@ -126,7 +132,6 @@ export default function Categories() {
   );
 
   const data = React.useMemo(() => categories, []);
-
   const {
     getHeaderGroups,
     getRowModel,
@@ -143,8 +148,10 @@ export default function Categories() {
     columns,
     state: {
       sorting,
+      globalFilter,
     },
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -162,11 +169,9 @@ export default function Categories() {
       </h1>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <FormControl
-            leftIcon={<BiSearch className="shrink-0 [&_path]:stroke-current" />}
-            classes={{ box: "gap-2" }}
-            className="!text-left"
+          <TableFilter
             placeholder="Search Categories..."
+            setFilter={(value) => setGlobalFilter(value)}
           />
         </div>
         <AdminCreateCategory />
@@ -179,27 +184,17 @@ export default function Categories() {
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id}>
-                    <Button
+                    <TableSort
                       className="gap-2"
                       mode="text"
                       onClick={header.column.getToggleSortingHandler()}
+                      sorted={header.column.getIsSorted()}
                     >
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
-                      {
-                        <BiChevronDown
-                          size={20}
-                          className={classNames(
-                            "shrink-0 transition-transform duration-300",
-                            !header.column.getIsSorted() && "invisible",
-                            header.column.getIsSorted() === "desc" &&
-                              "-rotate-180",
-                          )}
-                        />
-                      }
-                    </Button>
+                    </TableSort>
                   </th>
                 ))}
               </tr>
@@ -240,18 +235,19 @@ export default function Categories() {
                   <p className="shrink-0 text-sm text-neutral dark:text-neutral-dark">
                     Rows per page:
                   </p>
-
                   <select
-                    className="text-text-neutral focus:shadow-outline-indigo inline-flex shrink-0 cursor-pointer select-none appearance-none items-center justify-center rounded-md border border-transparent bg-accent px-1 text-sm font-medium leading-5 shadow-sm transition duration-150 ease-in-out hover:bg-accent-focus focus:border-accent focus:outline-none dark:bg-accent-dark dark:text-neutral-dark sm:text-base sm:leading-6"
+                    className="text-text-neutral focus:shadow-outline-indigo inline-flex min-w-[3rem] shrink-0 cursor-pointer select-none appearance-none items-center justify-center rounded-md border border-transparent bg-accent px-1 text-sm font-medium leading-5 shadow-sm transition duration-150 ease-in-out hover:bg-accent-focus focus:border-accent focus:outline-none dark:bg-accent-dark dark:text-neutral-dark sm:text-base sm:leading-6"
                     aria-label="rows per page"
                     value={getState().pagination.pageSize}
                     onChange={(e) => {
                       setPageSize(Number(e.target.value));
                     }}
                   >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
+                    {[5, 10, 15, 20].map((r) => (
+                      <option key={r} value={r}>
+                        Show {r}
+                      </option>
+                    ))}
                   </select>
                   <p className="text-sm text-neutral dark:text-neutral-dark">
                     {from}–{Math.min(to, data.length)} of {data.length}
