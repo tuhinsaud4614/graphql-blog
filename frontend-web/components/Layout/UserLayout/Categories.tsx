@@ -6,7 +6,7 @@ import {
   SidebarContent,
   SidebarSkeleton,
 } from "@/components/Sidebar";
-import { useGetCategoriesOnOffsetQuery } from "@/graphql/generated/schema";
+import { useGetCategoriesWithOffsetQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
@@ -15,7 +15,7 @@ const className = {
 };
 
 export default function Categories() {
-  const { data, loading, refetch, error } = useGetCategoriesOnOffsetQuery({
+  const { data, loading, refetch, error } = useGetCategoriesWithOffsetQuery({
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
     variables: { limit: 6, page: 1 },

@@ -1,5 +1,5 @@
-query GetCategoriesOnOffset($limit: Int, $page: Int) {
-  categoriesOnOffset(limit: $limit, page: $page) {
+query GetCategoriesWithOffset($limit: Int, $page: Int) {
+  categoriesWithOffset(limit: $limit, page: $page) {
     total
     data {
       ...FCategory
@@ -10,8 +10,8 @@ query GetCategoriesOnOffset($limit: Int, $page: Int) {
   }
 }
 
-query GetCategoriesByTextOnOffset($text: String!, $limit: Int, $page: Int) {
-  categoriesByTextOnOffset(text: $text, limit: $limit, page: $page) {
+query GetCategoriesByTextWithOffset($text: String!, $limit: Int, $page: Int) {
+  categoriesByTextWithOffset(text: $text, limit: $limit, page: $page) {
     total
     data {
       ...FCategory

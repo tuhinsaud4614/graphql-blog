@@ -10,8 +10,8 @@ import { CommentBox, ToastErrorMessage } from "@/components";
 import {
   FCommentWithRepliesFragment,
   FCommentWithRepliesFragmentDoc,
-  GetPostCommentsOnCursorDocument,
-  GetPostCommentsOnCursorQuery,
+  GetPostCommentsWithCursorDocument,
+  GetPostCommentsWithCursorQuery,
   useCreateCommentMutation,
 } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
@@ -62,9 +62,9 @@ export default function ReplyEditor({
 
           try {
             // Update the parent comment replies cache
-            cache.updateQuery<GetPostCommentsOnCursorQuery>(
+            cache.updateQuery<GetPostCommentsWithCursorQuery>(
               {
-                query: GetPostCommentsOnCursorDocument,
+                query: GetPostCommentsWithCursorDocument,
                 variables: { postId: postId as string, limit: 6, parentId },
               },
               (prevComments) => {

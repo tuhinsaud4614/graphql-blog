@@ -27,7 +27,7 @@ import {
 import {
   UserRole,
   useCreatePostMutation,
-  useGetCategoriesByTextOnOffsetLazyQuery,
+  useGetCategoriesByTextWithOffsetLazyQuery,
   useGetTagsByTextWithOffsetLazyQuery,
 } from "@/graphql/generated/schema";
 import {
@@ -109,7 +109,7 @@ const CreatePost: NextPage = () => {
   const tagsId = useId();
   const publishedId = useId();
 
-  const [fetchCategories] = useGetCategoriesByTextOnOffsetLazyQuery({
+  const [fetchCategories] = useGetCategoriesByTextWithOffsetLazyQuery({
     notifyOnNetworkStatusChange: true,
   });
 
