@@ -5,15 +5,27 @@ query GetUserWithPost($id: ID!) {
       ...GetPostItem
     }
     followings {
-      ...FUserForCommon
+      id
+      name
+      email
+      mobile
+      avatar {
+        ...FImage
+      }
     }
     followers {
-      ...FUserForCommon
+      id
+      name
+      email
+      mobile
+      avatar {
+        ...FImage
+      }
     }
   }
 }
 
-query GetUsersOnOffset($limit: Int, $page: Int) {
+query GetUsersWithOffset($limit: Int, $page: Int) {
   usersWithOffset(limit: $limit, page: $page) {
     total
     data {

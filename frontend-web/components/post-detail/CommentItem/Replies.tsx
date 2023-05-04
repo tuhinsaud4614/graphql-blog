@@ -37,7 +37,7 @@ export default function Replies({ commentId }: Props) {
     return <CommentItemSkeleton classes={{ root: "w-[20rem]" }} />;
   }
 
-  if (!data || data.postCommentsOnCursor.total === 0) {
+  if (!data || data.postCommentsWithCursor.total === 0) {
     return (
       <p className="flex flex-col items-center justify-center font-extralight italic text-neutral/60 dark:text-neutral-dark/60">
         There are currently no reply for this comment.
@@ -45,8 +45,8 @@ export default function Replies({ commentId }: Props) {
     );
   }
 
-  const { hasNext, endCursor } = data.postCommentsOnCursor.pageInfo;
-  const { edges } = data.postCommentsOnCursor;
+  const { hasNext, endCursor } = data.postCommentsWithCursor.pageInfo;
+  const { edges } = data.postCommentsWithCursor;
 
   const fetchMoreHandler = async () => {
     try {
@@ -58,22 +58,22 @@ export default function Replies({ commentId }: Props) {
           if (!fetchMoreResult) {
             return {
               ...prev,
-              postCommentsOnCursor: {
-                ...prev.postCommentsOnCursor,
+              postCommentsWithCursor: {
+                ...prev.postCommentsWithCursor,
                 pageInfo: {
-                  ...prev.postCommentsOnCursor.pageInfo,
+                  ...prev.postCommentsWithCursor.pageInfo,
                   hasNext: false,
                 },
               },
             };
           }
           return {
-            postCommentsOnCursor: {
-              ...fetchMoreResult.postCommentsOnCursor,
+            postCommentsWithCursor: {
+              ...fetchMoreResult.postCommentsWithCursor,
               edges: _.uniqBy(
                 [
-                  ...prev.postCommentsOnCursor.edges,
-                  ...fetchMoreResult.postCommentsOnCursor.edges,
+                  ...prev.postCommentsWithCursor.edges,
+                  ...fetchMoreResult.postCommentsWithCursor.edges,
                 ],
                 "cursor",
               ),

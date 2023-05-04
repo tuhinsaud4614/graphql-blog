@@ -1,16 +1,12 @@
-fragment FUserForCommon on User {
+fragment FUser on User {
   id
   name
   email
   mobile
-  avatar {
-    ...FImage
-  }
-}
-
-fragment FUser on User {
-  ...FUserForCommon
   role
   authorStatus
   about
+  avatar {
+    ...FImage
+  }
 }
