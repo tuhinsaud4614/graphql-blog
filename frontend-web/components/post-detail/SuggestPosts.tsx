@@ -4,7 +4,7 @@ import {
   SidebarPostItem,
   SidebarPostItemSkeleton,
 } from "@/components/Sidebar";
-import { useGetPostsOnOffsetQuery } from "@/graphql/generated/schema";
+import { useGetPostsWithOffsetQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
 
 const className = {
@@ -16,7 +16,7 @@ interface Props {
 }
 
 function SuggestPosts({ currentId }: Props) {
-  const { data, loading, error, refetch } = useGetPostsOnOffsetQuery({
+  const { data, loading, error, refetch } = useGetPostsWithOffsetQuery({
     fetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,
     variables: { limit: 4 },

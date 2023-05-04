@@ -6,9 +6,9 @@ import { getCookie } from "cookies-next";
 
 import { Banner, HomeContent, HomeHeader, Tending } from "@/components/home";
 import {
-  GetPostsDocument,
-  GetPostsQuery,
-  GetPostsQueryVariables,
+  GetPostsWithCursorDocument,
+  GetPostsWithCursorQuery,
+  GetPostsWithCursorQueryVariables,
   GetTrendingPostsDocument,
 } from "@/graphql/generated/schema";
 import { addApolloState, initializeApollo } from "@/lib/apollo";
@@ -47,8 +47,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await client.query({
       query: GetTrendingPostsDocument,
     });
-    await client.query<GetPostsQuery, GetPostsQueryVariables>({
-      query: GetPostsDocument,
+    await client.query<
+      GetPostsWithCursorQuery,
+      GetPostsWithCursorQueryVariables
+    >({
+      query: GetPostsWithCursorDocument,
       variables: { limit: 1 },
     });
   } catch (error) {

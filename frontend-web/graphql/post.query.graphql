@@ -6,10 +6,7 @@ query GetTrendingPosts {
       name
       email
       avatar {
-        id
-        url
-        height
-        width
+        ...FImage
       }
     }
     title
@@ -17,8 +14,8 @@ query GetTrendingPosts {
   }
 }
 
-query GetPosts($limit: Int!, $after: ID) {
-  posts(limit: $limit, after: $after) {
+query GetPostsWithCursor($limit: Int!, $after: ID) {
+  postsWithCursor(limit: $limit, after: $after) {
     total
     pageInfo {
       ...FCursorPageInfo
@@ -32,8 +29,8 @@ query GetPosts($limit: Int!, $after: ID) {
   }
 }
 
-query GetPostsOnOffset($limit: Int, $page: Int) {
-  postsOnOffset(limit: $limit, page: $page) {
+query GetPostsWithOffset($limit: Int, $page: Int) {
+  postsWithOffset(limit: $limit, page: $page) {
     total
     pageInfo {
       ...FOffsetPageInfo

@@ -19,9 +19,9 @@ import {
   GetPostByIdQuery,
   GetPostByIdQueryVariables,
   GetPostItemFragment,
-  GetPostsOnOffsetDocument,
-  GetPostsOnOffsetQuery,
-  GetPostsOnOffsetQueryVariables,
+  GetPostsWithOffsetDocument,
+  GetPostsWithOffsetQuery,
+  GetPostsWithOffsetQueryVariables,
 } from "@/graphql/generated/schema";
 import { initializeApollo } from "@/lib/apollo";
 import { getUserName } from "@/utils";
@@ -30,10 +30,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   try {
     const client = initializeApollo();
     const { data } = await client.query<
-      GetPostsOnOffsetQuery,
-      GetPostsOnOffsetQueryVariables
+      GetPostsWithOffsetQuery,
+      GetPostsWithOffsetQueryVariables
     >({
-      query: GetPostsOnOffsetDocument,
+      query: GetPostsWithOffsetDocument,
       variables: { limit: 10 },
     });
 

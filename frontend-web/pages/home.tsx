@@ -17,9 +17,9 @@ import {
   GetFollowingAuthorPostsDocument,
   GetFollowingAuthorPostsQuery,
   GetFollowingAuthorPostsQueryVariables,
-  GetPostsDocument,
-  GetPostsQuery,
-  GetPostsQueryVariables,
+  GetPostsWithCursorDocument,
+  GetPostsWithCursorQuery,
+  GetPostsWithCursorQueryVariables,
   UserRole,
 } from "@/graphql/generated/schema";
 import { addApolloState, initializeApollo } from "@/lib/apollo";
@@ -102,8 +102,11 @@ export const getServerSideProps: GetServerSideProps = withSSRAuth(
     }
 
     try {
-      await client.query<GetPostsQuery, GetPostsQueryVariables>({
-        query: GetPostsDocument,
+      await client.query<
+        GetPostsWithCursorQuery,
+        GetPostsWithCursorQueryVariables
+      >({
+        query: GetPostsWithCursorDocument,
         variables: { limit: 10 },
         errorPolicy: "all",
       });

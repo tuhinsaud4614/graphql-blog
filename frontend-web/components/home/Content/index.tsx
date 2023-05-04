@@ -10,7 +10,7 @@ import {
   PostItem,
   PostItemSkeleton,
 } from "@/components";
-import { useGetPostsQuery } from "@/graphql/generated/schema";
+import { useGetPostsWithCursorQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler } from "@/utils";
 
 import Sidebar from "./Sidebar";
@@ -22,11 +22,12 @@ const className = {
 };
 
 export default function Content() {
-  const { data, error, refetch, networkStatus, fetchMore } = useGetPostsQuery({
-    notifyOnNetworkStatusChange: true,
-    variables: { limit: 1 },
-    errorPolicy: "all",
-  });
+  const { data, error, refetch, networkStatus, fetchMore } =
+    useGetPostsWithCursorQuery({
+      notifyOnNetworkStatusChange: true,
+      variables: { limit: 1 },
+      errorPolicy: "all",
+    });
 
   if (networkStatus === NetworkStatus.refetch) {
     return (

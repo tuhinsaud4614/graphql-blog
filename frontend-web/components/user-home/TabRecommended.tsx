@@ -9,7 +9,7 @@ import {
   PostItemSkeleton,
   TabBox,
 } from "@/components";
-import { useGetPostsQuery } from "@/graphql/generated/schema";
+import { useGetPostsWithCursorQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
@@ -18,11 +18,12 @@ const className = {
 };
 
 export default function TabRecommended() {
-  const { data, error, networkStatus, refetch, fetchMore } = useGetPostsQuery({
-    notifyOnNetworkStatusChange: true,
-    variables: { limit: 10 },
-    errorPolicy: "all",
-  });
+  const { data, error, networkStatus, refetch, fetchMore } =
+    useGetPostsWithCursorQuery({
+      notifyOnNetworkStatusChange: true,
+      variables: { limit: 10 },
+      errorPolicy: "all",
+    });
 
   if (networkStatus === NetworkStatus.refetch) {
     return (
