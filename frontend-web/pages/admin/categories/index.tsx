@@ -209,7 +209,17 @@ export default function Categories() {
             {getRowModel().rows.map((row, i) => {
               return (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
+                  {row.getVisibleCells().map((cell, index) => {
+                    if (index === 0) {
+                      return (
+                        <th key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </th>
+                      );
+                    }
                     return (
                       <td key={cell.id}>
                         {flexRender(

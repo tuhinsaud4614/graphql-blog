@@ -10,7 +10,7 @@ import {
   ReactorItemSkeleton,
   ReactorModalItem,
 } from "@/components";
-import { useGetAuthorFollowersOnCursorQuery } from "@/graphql/generated/schema";
+import { useGetAuthorFollowersWithCursorQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler } from "@/utils";
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
 
 export default function AllFollowers({ authorId }: Props) {
   const { data, fetchMore, refetch, error, networkStatus, loading } =
-    useGetAuthorFollowersOnCursorQuery({
+    useGetAuthorFollowersWithCursorQuery({
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "network-only",
       variables: { limit: 6, authorId },

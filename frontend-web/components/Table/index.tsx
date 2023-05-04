@@ -58,7 +58,7 @@ export default function Table<TData extends {}>({
       },
     ],
 
-    [],
+    [headers],
   );
   return (
     <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-200">

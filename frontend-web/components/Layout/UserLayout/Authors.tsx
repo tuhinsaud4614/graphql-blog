@@ -1,6 +1,6 @@
 import { ErrorBox, FollowItem, FollowItemSkeleton } from "@/components";
 import { SidebarContent } from "@/components/Sidebar";
-import { useGetSuggestAuthorsOnOffsetQuery } from "@/graphql/generated/schema";
+import { useRecommendAuthorsWithOffsetQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
@@ -9,7 +9,7 @@ const className = {
 };
 
 export default function Authors() {
-  const { data, loading, refetch, error } = useGetSuggestAuthorsOnOffsetQuery({
+  const { data, loading, refetch, error } = useRecommendAuthorsWithOffsetQuery({
     notifyOnNetworkStatusChange: true,
     variables: { limit: 4, page: 1 },
     fetchPolicy: "network-only",

@@ -5,34 +5,16 @@ query GetUserWithPost($id: ID!) {
       ...GetPostItem
     }
     followings {
-      id
-      name
-      email
-      mobile
-      avatar {
-        id
-        url
-        height
-        width
-      }
+      ...FUserForCommon
     }
     followers {
-      id
-      name
-      email
-      mobile
-      avatar {
-        id
-        url
-        height
-        width
-      }
+      ...FUserForCommon
     }
   }
 }
 
 query GetUsersOnOffset($limit: Int, $page: Int) {
-  usersOnOffset(limit: $limit, page: $page) {
+  usersWithOffset(limit: $limit, page: $page) {
     total
     data {
       ...FUser
@@ -43,8 +25,8 @@ query GetUsersOnOffset($limit: Int, $page: Int) {
   }
 }
 
-query GetSuggestAuthorsOnOffset($limit: Int, $page: Int) {
-  suggestAuthorsToUserOnOffset(limit: $limit, page: $page) {
+query RecommendAuthorsWithOffset($limit: Int, $page: Int) {
+  recommendAuthorsWithOffset(limit: $limit, page: $page) {
     total
     data {
       ...FUser
@@ -55,8 +37,8 @@ query GetSuggestAuthorsOnOffset($limit: Int, $page: Int) {
   }
 }
 
-query GetAuthorFollowersOnCursor($limit: Int!, $after: ID, $authorId: ID) {
-  authorFollowersOnCursor(limit: $limit, after: $after, authorId: $authorId) {
+query GetAuthorFollowersWithCursor($limit: Int!, $after: ID, $authorId: ID) {
+  authorFollowersWithCursor(limit: $limit, after: $after, authorId: $authorId) {
     total
     pageInfo {
       ...FCursorPageInfo
@@ -70,8 +52,12 @@ query GetAuthorFollowersOnCursor($limit: Int!, $after: ID, $authorId: ID) {
   }
 }
 
-query GetAuthorFollowingsOnCursor($limit: Int!, $after: ID, $authorId: ID) {
-  authorFollowingsOnCursor(limit: $limit, after: $after, authorId: $authorId) {
+query GetAuthorFollowingsWithCursor($limit: Int!, $after: ID, $authorId: ID) {
+  authorFollowingsWithCursor(
+    limit: $limit
+    after: $after
+    authorId: $authorId
+  ) {
     total
     pageInfo {
       ...FCursorPageInfo

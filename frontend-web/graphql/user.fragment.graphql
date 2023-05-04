@@ -1,12 +1,16 @@
-fragment FUser on User {
+fragment FUserForCommon on User {
   id
   name
-  mobile
   email
-  role
-  authorStatus
+  mobile
   avatar {
     ...FImage
   }
+}
+
+fragment FUser on User {
+  ...FUserForCommon
+  role
+  authorStatus
   about
 }

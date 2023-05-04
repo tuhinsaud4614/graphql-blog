@@ -3,7 +3,7 @@ import * as React from "react";
 import classNames from "classnames";
 
 import { ErrorBox, ReactorModal } from "@/components";
-import { useGetAuthorFollowingsOnCursorQuery } from "@/graphql/generated/schema";
+import { useGetAuthorFollowingsWithCursorQuery } from "@/graphql/generated/schema";
 import { useLockBody } from "@/hooks";
 import { countConvert, gplErrorHandler, isDev } from "@/utils";
 
@@ -23,13 +23,12 @@ interface Props {
 }
 
 export default function FollowingList({ authorId }: Props) {
-  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
-    {
+  const { data, error, loading, refetch } =
+    useGetAuthorFollowingsWithCursorQuery({
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "network-only",
       variables: { limit: 6, authorId },
-    },
-  );
+    });
 
   if (loading) {
     return (

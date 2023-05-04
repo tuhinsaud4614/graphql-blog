@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 
-import { ROUTES } from "@constants";
 import { UserLayout } from "components/Layout";
 import { useAppDispatch } from "store";
 import { withSSRAuth } from "utils/ssr";
 
 import { seenAll } from "@/features/notificationSlice";
+import { ROUTES } from "@/utils/constants";
 
 const className = {
   title:

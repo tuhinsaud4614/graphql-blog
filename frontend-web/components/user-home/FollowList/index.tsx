@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 
 import { ErrorBox } from "@/components";
 import { selectUser } from "@/features";
-import { useGetAuthorFollowingsOnCursorQuery } from "@/graphql/generated/schema";
+import { useGetAuthorFollowingsWithCursorQuery } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
 import { gplErrorHandler, isDev } from "@/utils";
 
@@ -56,13 +56,12 @@ const NextButton = (props: React.ComponentPropsWithoutRef<"button">) => {
 
 export default function FollowList() {
   const rdxUser = useAppSelector(selectUser);
-  const { data, error, loading, refetch } = useGetAuthorFollowingsOnCursorQuery(
-    {
+  const { data, error, loading, refetch } =
+    useGetAuthorFollowingsWithCursorQuery({
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "network-only",
       variables: { limit: 2 },
-    },
-  );
+    });
 
   const prevId = "prev-btn";
   const nextId = "next-btn";

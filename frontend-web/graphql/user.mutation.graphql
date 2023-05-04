@@ -1,9 +1,6 @@
 mutation UploadAvatar($avatar: File!) {
-  uploadAvatar(avatar: $avatar) {
-    id
-    url
-    height
-    width
+  uploadAvatar(image: $avatar) {
+    ...FImage
   }
 }
 
