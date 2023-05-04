@@ -1,7 +1,7 @@
 import { NetworkStatus } from "@apollo/client";
 
 import { ClientOnly, ErrorBox, LinkButton } from "@/components";
-import { useGetTagsOnOffsetQuery } from "@/graphql/generated/schema";
+import { useGetTagsWithOffsetQuery } from "@/graphql/generated/schema";
 import { useSynchronizeAnimation } from "@/hooks";
 import { gplErrorHandler } from "@/utils";
 import { ROUTES } from "@/utils/constants";
@@ -35,7 +35,7 @@ export default function Sidebar() {
 
 function Result() {
   const { data, loading, error, refetch, networkStatus } =
-    useGetTagsOnOffsetQuery({
+    useGetTagsWithOffsetQuery({
       notifyOnNetworkStatusChange: true,
       variables: { limit: 10, page: 1 },
     });

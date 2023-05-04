@@ -1,5 +1,5 @@
-query GetTagsOnOffset($limit: Int, $page: Int) {
-  tagsOnOffset(limit: $limit, page: $page) {
+query GetTagsWithOffset($limit: Int, $page: Int) {
+  tagsWithOffset(limit: $limit, page: $page) {
     total
     pageInfo {
       ...FOffsetPageInfo
@@ -10,8 +10,8 @@ query GetTagsOnOffset($limit: Int, $page: Int) {
   }
 }
 
-query GetTagsByTextOnOffset($text: String!, $limit: Int, $page: Int) {
-  tagsByTextOnOffset(text: $text, limit: $limit, page: $page) {
+query GetTagsByTextWithOffset($text: String!, $limit: Int, $page: Int) {
+  tagsByTextWithOffset(text: $text, limit: $limit, page: $page) {
     total
     results {
       ...TagItem

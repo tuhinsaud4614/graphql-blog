@@ -28,7 +28,7 @@ import {
   UserRole,
   useCreatePostMutation,
   useGetCategoriesByTextOnOffsetLazyQuery,
-  useGetTagsByTextOnOffsetLazyQuery,
+  useGetTagsByTextWithOffsetLazyQuery,
 } from "@/graphql/generated/schema";
 import {
   gplErrorHandler,
@@ -113,7 +113,7 @@ const CreatePost: NextPage = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const [fetchTags] = useGetTagsByTextOnOffsetLazyQuery({
+  const [fetchTags] = useGetTagsByTextWithOffsetLazyQuery({
     notifyOnNetworkStatusChange: true,
   });
 

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { ErrorBox, LinkButton } from "@/components";
 import { SidebarContent, SidebarSkeleton } from "@/components/Sidebar";
-import { useGetTagsOnOffsetQuery } from "@/graphql/generated/schema";
+import { useGetTagsWithOffsetQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler, isDev } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
@@ -13,7 +13,7 @@ const className = {
 };
 
 export default function Tags() {
-  const { data, loading, refetch, error } = useGetTagsOnOffsetQuery({
+  const { data, loading, refetch, error } = useGetTagsWithOffsetQuery({
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
     variables: { limit: 10, page: 1 },
