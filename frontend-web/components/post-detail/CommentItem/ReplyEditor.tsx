@@ -52,7 +52,7 @@ export default function ReplyEditor({
           data: {
             content: JSON.stringify(value),
             postId: postId as string,
-            parentComment: parentId,
+            parentId: parentId,
           },
         },
         update(cache, { data }) {

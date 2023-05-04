@@ -1,11 +1,11 @@
 input CreateCommentInput {
   postId: ID!
-  parentComment: ID
+  parentId: ID
   content: String!
 }
 
 input UpdateCommentInput {
-  commentId: ID!
+  id: ID!
   content: String!
 }
 
@@ -16,7 +16,7 @@ mutation CreateComment($data: CreateCommentInput!) {
 }
 
 mutation DeleteComment($commentId: ID!) {
-  deleteComment(commentId: $commentId)
+  deleteComment(id: $commentId)
 }
 
 mutation UpdateComment($data: UpdateCommentInput!) {

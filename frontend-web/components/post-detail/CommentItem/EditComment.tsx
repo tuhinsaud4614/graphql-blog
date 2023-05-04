@@ -45,7 +45,7 @@ export default function EditComment({
         variables: {
           data: {
             content: JSON.stringify(value),
-            commentId: commentId,
+            id: commentId,
           },
         },
       });
