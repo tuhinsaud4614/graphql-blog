@@ -1,39 +1,15 @@
-import { GraphQLError } from "graphql";
-
 import { has } from "lodash";
 import * as yup from "yup";
 
-import { CustomError, UserInputError } from "@/model";
-import { formatYupError, maxFileSize } from "@/utils";
+import { maxFileSize } from "@/utils";
 import {
   IMAGE_MIMES,
-  INTERNAL_SERVER_ERROR,
   NOT_IMG_ERR_MSG,
   generateNotIntegerErrorMessage,
   generateNotNumberErrorMessage,
   generateRequiredErrorMessage,
   generateTooLargeFileErrorMessage,
-  generateValidationErrorMessage,
 } from "@/utils/constants";
-
-export function getGraphqlYogaError(
-  error: unknown,
-  msg: string,
-  errFor?: string,
-  code: string = INTERNAL_SERVER_ERROR,
-) {
-  if (error instanceof CustomError) {
-    return error;
-  }
-
-  if (error instanceof yup.ValidationError) {
-    const err = formatYupError(error);
-    return new UserInputError(generateValidationErrorMessage(errFor), {
-      fields: err,
-    });
-  }
-  return new GraphQLError(msg, { extensions: { code } });
-}
 
 export const idParamsSchema = yup.object({
   id: yup.string().required(generateRequiredErrorMessage("ID")),
