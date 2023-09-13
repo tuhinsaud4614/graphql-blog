@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   label: "pointer flex items-center py-2 px-1 select-none cursor-pointer",
@@ -28,11 +28,11 @@ export default function CheckInput({
   ...rest
 }: Props) {
   return (
-    <label className={classNames(className.label, classes?.label)} htmlFor={id}>
+    <label className={cn(className.label, classes?.label)} htmlFor={id}>
       <input
         {...rest}
         id={id}
-        className={classNames(
+        className={cn(
           className.input,
           className.inputCheck,
           cls,
@@ -41,9 +41,7 @@ export default function CheckInput({
         type="checkbox"
       />
       {label && (
-        <span className={classNames(className.text, classes?.text)}>
-          {label}
-        </span>
+        <span className={cn(className.text, classes?.text)}>{label}</span>
       )}
     </label>
   );

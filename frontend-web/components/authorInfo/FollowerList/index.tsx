@@ -1,11 +1,9 @@
 import * as React from "react";
 
-import classNames from "classnames";
-
 import { ErrorBox, ReactorModal } from "@/components";
 import { useGetAuthorFollowersWithCursorQuery } from "@/graphql/generated/schema";
 import { useLockBody } from "@/hooks";
-import { countConvert, gplErrorHandler, isDev } from "@/utils";
+import { cn, countConvert, gplErrorHandler, isDev } from "@/utils";
 
 import FollowingItem from "../FollowingItem";
 import FollowingItemSkeleton from "../FollowingItemSkeleton";
@@ -32,7 +30,7 @@ export default function FollowerList({ authorId }: Props) {
 
   if (loading) {
     return (
-      <div className={classNames(className.root, "space-y-2")}>
+      <div className={cn(className.root, "space-y-2")}>
         <FollowingItemSkeleton />
         <FollowingItemSkeleton />
         <FollowingItemSkeleton />
@@ -62,7 +60,7 @@ export default function FollowerList({ authorId }: Props) {
     );
   }
 
-  if (!data || data.authorFollowersOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowersWithCursor.edges.length === 0) {
     return null;
   }
 
@@ -70,7 +68,7 @@ export default function FollowerList({ authorId }: Props) {
     pageInfo: { hasNext },
     total,
     edges,
-  } = data.authorFollowersOnCursor;
+  } = data.authorFollowersWithCursor;
 
   return (
     <div className={className.root}>

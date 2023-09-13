@@ -2,7 +2,6 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 
 import { selectReact, setToggleReact } from "@/features";
@@ -12,7 +11,7 @@ import {
 } from "@/graphql/generated/schema";
 import { useTooltip } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { countConvert } from "@/utils";
+import { cn, countConvert } from "@/utils";
 
 import FloatingLikes from "./FloatingLikes";
 
@@ -59,7 +58,7 @@ export default function LikeButton({ className: cls }: Props) {
   return (
     <React.Fragment>
       <span
-        className={classNames(cls, className.like)}
+        className={cn(cls, className.like)}
         onMouseEnter={(e) => {
           onHoverStart(e, {
             text: "View Likes",
@@ -93,7 +92,7 @@ export default function LikeButton({ className: cls }: Props) {
         <button
           aria-label="Reactor list"
           onClick={() => setOpenLikeBox(true)}
-          className={classNames(className.textBtn, "ml-1")}
+          className={cn(className.textBtn, "ml-1")}
         >
           {countConvert(count)}
         </button>

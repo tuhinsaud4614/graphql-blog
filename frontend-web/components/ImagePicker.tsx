@@ -2,12 +2,12 @@ import * as React from "react";
 
 import Image from "next/image";
 
-import classNames from "classnames";
 import { motion, useAnimation } from "framer-motion";
 import { BiX } from "react-icons/bi";
 import { FiUpload } from "react-icons/fi";
 
 import { useMediaQuery } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   container: "flex flex-col items-center",
@@ -96,20 +96,16 @@ export default function ImagePicker({
   };
 
   return (
-    <div className={classNames(className.container, classes?.container)}>
+    <div className={cn(className.container, classes?.container)}>
       <label
-        className={classNames(
-          className.label,
-          classes?.label,
-          !valid && "text-error",
-        )}
+        className={cn(className.label, classes?.label, !valid && "text-error")}
       >
         {title}
         {rest.required && <sup className="text-xs text-error">*</sup>}
       </label>
-      <div className={classNames(className.root, classes?.root)}>
+      <div className={cn(className.root, classes?.root)}>
         {value && value.type.startsWith("image/") ? (
-          <div className={classNames(className.preview, classes?.preview)}>
+          <div className={cn(className.preview, classes?.preview)}>
             <button
               aria-label="Close"
               className={className.closeBtn}
@@ -139,7 +135,7 @@ export default function ImagePicker({
               aria-label="Image picker"
               type="button"
               animate={animation}
-              className={classNames(className.picker, classes?.picker)}
+              className={cn(className.picker, classes?.picker)}
               onDragEnter={(e) => handleDrag(e, true)}
               onDragOver={(e) => handleDrag(e, true)}
               onDragLeave={(e) => handleDrag(e, false)}
@@ -155,11 +151,11 @@ export default function ImagePicker({
               }}
             >
               <FiUpload size={40} className="text-gray-400" />
-              <p className={classNames("my-2 text-sm", className.pickerTxt)}>
+              <p className={cn("my-2 text-sm", className.pickerTxt)}>
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
               </p>
-              <p className={classNames("text-xs", className.pickerTxt)}>
+              <p className={cn("text-xs", className.pickerTxt)}>
                 SVG, PNG, JPG, JPEG, WEBP or GIF (MAX. SIZE 5MB)
               </p>
             </motion.button>
@@ -167,10 +163,7 @@ export default function ImagePicker({
         )}
       </div>
       {!valid && errorText && (
-        <p
-          className={classNames(className.errTxt, classes?.errTxt)}
-          role="alert"
-        >
+        <p className={cn(className.errTxt, classes?.errTxt)} role="alert">
           {errorText}
         </p>
       )}

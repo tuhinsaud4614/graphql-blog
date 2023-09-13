@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { motion } from "framer-motion";
+
+import { cn } from "@/utils";
 
 import TabPanel from "./TabPanel";
 
@@ -58,7 +59,7 @@ export default function Tabs({
       <div className={className.list} ref={containerRef}>
         {tabs.map((text, index) => (
           <button
-            className={classNames(
+            className={cn(
               className.tabItem,
               index === selectedTab && "!text-primary dark:!text-accent-dark",
             )}

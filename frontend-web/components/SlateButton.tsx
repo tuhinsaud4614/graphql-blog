@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   root: "p-1.5 rounded flex items-center justify-center",
@@ -19,7 +19,7 @@ export default function Button({ isActive = false, ...props }: Props) {
     <button
       {...props}
       type="button"
-      className={classNames(
+      className={cn(
         className.root,
         className.rootState(isActive),
         props.className,

@@ -1,7 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
-
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 
 import MobileView from "./MobileView";
@@ -25,7 +24,7 @@ export default function Container({
   if (matches) {
     return (
       <aside
-        className={classNames(
+        className={cn(
           className.root,
           STYLES.zIndex.sidebar,
           "group duration-200 ease-in",
@@ -40,11 +39,7 @@ export default function Container({
   return (
     <MobileView
       visible={visible}
-      className={classNames(
-        className.root,
-        STYLES.zIndex.sidebar,
-        "w-[17.5rem]",
-      )}
+      className={cn(className.root, STYLES.zIndex.sidebar, "w-[17.5rem]")}
       onClose={onClose}
     >
       {children}

@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { AnimatePresence, motion, type Variants, } from "framer-motion";
 
 import { Backdrop, Portal } from "@/components";
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 
 const Variants: Variants = {
@@ -36,7 +36,7 @@ export default function MobileView({
         {visible && (
           <>
             <Backdrop
-              className={classNames(
+              className={cn(
                 STYLES.zIndex.sidebarBackdrop,
                 "cursor-pointer",
               )}

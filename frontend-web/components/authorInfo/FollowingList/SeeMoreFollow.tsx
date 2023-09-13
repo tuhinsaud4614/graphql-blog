@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { NetworkStatus } from "@apollo/client";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 
 import {
   ErrorBox,
@@ -54,7 +54,7 @@ export default function SeeMoreFollow({ authorId }: Props) {
     );
   }
 
-  if (!data || data.authorFollowingsOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowingsWithCursor.edges.length === 0) {
     return (
       <li>
         <NoResultFound
@@ -69,7 +69,7 @@ export default function SeeMoreFollow({ authorId }: Props) {
     );
   }
 
-  const { hasNext, endCursor } = data?.authorFollowingsOnCursor.pageInfo;
+  const { hasNext, endCursor } = data.authorFollowingsWithCursor.pageInfo;
 
   const onMore = async () => {
     try {
@@ -83,22 +83,22 @@ export default function SeeMoreFollow({ authorId }: Props) {
           if (!fetchMoreResult) {
             return {
               ...prev,
-              authorFollowingsOnCursor: {
-                ...prev.authorFollowingsOnCursor,
+              authorFollowingsWithCursor: {
+                ...prev.authorFollowingsWithCursor,
                 pageInfo: {
-                  ...prev.authorFollowingsOnCursor.pageInfo,
+                  ...prev.authorFollowingsWithCursor.pageInfo,
                   hasNext: false,
                 },
               },
             };
           }
           return {
-            authorFollowingsOnCursor: {
-              ...fetchMoreResult.authorFollowingsOnCursor,
-              edges: _.uniqBy(
+            authorFollowingsWithCursor: {
+              ...fetchMoreResult.authorFollowingsWithCursor,
+              edges: _uniqBy(
                 [
-                  ...prev.authorFollowingsOnCursor.edges,
-                  ...fetchMoreResult.authorFollowingsOnCursor.edges,
+                  ...prev.authorFollowingsWithCursor.edges,
+                  ...fetchMoreResult.authorFollowingsWithCursor.edges,
                 ],
                 "cursor",
               ),
@@ -111,7 +111,7 @@ export default function SeeMoreFollow({ authorId }: Props) {
 
   return (
     <React.Fragment>
-      {data?.authorFollowingsOnCursor.edges.map(({ node }) => (
+      {data.authorFollowingsWithCursor.edges.map(({ node }) => (
         <ReactorModalItem key={node.id} user={node} />
       ))}
       {networkStatus === NetworkStatus.fetchMore && <ReactorItemSkeleton />}

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { NetworkStatus } from "@apollo/client";
 import { AnimatePresence } from "framer-motion";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 import { Waypoint } from "react-waypoint";
 
 import { ModalHeader } from "@/components";
@@ -39,7 +39,7 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
     component = <CommentItemSkeleton />;
   }
 
-  if (!loading && (!data || data.postCommentsOnCursor.total === 0)) {
+  if (!loading && (!data || data.postCommentsWithCursor.total === 0)) {
     component = (
       <div className={className.noComment}>
         <p>There are currently no responses for this story.</p>
@@ -59,12 +59,12 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
             return prev;
           }
           return {
-            postCommentsOnCursor: {
-              ...fetchMoreResult.postCommentsOnCursor,
-              edges: _.uniqBy(
+            postCommentsWithCursor: {
+              ...fetchMoreResult.postCommentsWithCursor,
+              edges: _uniqBy(
                 [
-                  ...prev.postCommentsOnCursor.edges,
-                  ...fetchMoreResult.postCommentsOnCursor.edges,
+                  ...prev.postCommentsWithCursor.edges,
+                  ...fetchMoreResult.postCommentsWithCursor.edges,
                 ],
                 "cursor",
               ),
@@ -78,8 +78,8 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
   };
 
   if (data) {
-    const { hasNext, endCursor } = data.postCommentsOnCursor.pageInfo;
-    const { edges } = data.postCommentsOnCursor;
+    const { hasNext, endCursor } = data.postCommentsWithCursor.pageInfo;
+    const { edges } = data.postCommentsWithCursor;
 
     component = (
       <React.Fragment>
@@ -110,8 +110,8 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
     <React.Fragment>
       <ModalHeader onClose={onClose} className={className.bottomHeader}>
         Responses
-        {!!data?.postCommentsOnCursor.total &&
-          `  (${data.postCommentsOnCursor.total})`}
+        {!!data?.postCommentsWithCursor.total &&
+          `  (${data.postCommentsWithCursor.total})`}
       </ModalHeader>
       <div className={className.bottomBody}>{component}</div>
     </React.Fragment>

@@ -2,8 +2,7 @@ import * as React from "react";
 
 import Link, { LinkProps } from "next/link";
 
-import classNames from "classnames";
-
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 import type { ButtonModeType, ColorVariantType } from "@/utils/types";
 
@@ -22,7 +21,7 @@ export default function LinkButton({
   mode = "fill",
   ...rest
 }: Props) {
-  let style = classNames(STYLES.btn.fill, STYLES.btn.fillEnabled);
+  let style = cn(STYLES.btn.fill, STYLES.btn.fillEnabled);
   if (mode === "outline") {
     style = "border";
   } else if (mode === "text") {
@@ -32,7 +31,7 @@ export default function LinkButton({
     <Link {...rest}>
       <a
         {...anchorProps}
-        className={classNames(
+        className={cn(
           STYLES.btn.root,
           STYLES.btn.dynamic(variant, mode),
           style,

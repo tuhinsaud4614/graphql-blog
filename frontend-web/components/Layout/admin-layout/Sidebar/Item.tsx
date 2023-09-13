@@ -3,9 +3,8 @@ import * as React from "react";
 import type { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
-
 import { LinkButton } from "@/components";
+import { cn } from "@/utils";
 
 export interface ItemProps {
   href: LinkProps["href"];
@@ -22,7 +21,7 @@ export default function Item({
 
   return (
     <LinkButton
-      className={classNames("!justify-start", active && "!text-base-100")}
+      className={cn("!justify-start", active && "!text-base-100")}
       mode="text"
       href={href}
       passHref

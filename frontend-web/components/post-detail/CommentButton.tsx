@@ -1,7 +1,7 @@
-import classNames from "classnames";
 import { BsChat } from "react-icons/bs";
 
 import { useTooltip } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   commentBtn:
@@ -24,7 +24,7 @@ export default function CommentButton({
     <button
       aria-label="Comments"
       type="button"
-      className={classNames(className.commentBtn, cls)}
+      className={cn(className.commentBtn, cls)}
       onClick={onComment}
       onMouseEnter={(e) => {
         onHoverStart(e, {

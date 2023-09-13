@@ -2,11 +2,10 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { Variants, motion } from "framer-motion";
 
 import { useIsomorphicLayoutEffect } from "@/hooks";
-import { getPositions } from "@/utils";
+import { cn, getPositions } from "@/utils";
 import { IAnchorOrigin } from "@/utils/interfaces";
 import STYLES from "@/utils/styles";
 
@@ -132,7 +131,7 @@ const Menu = ({
       {!!onClose && (
         <div
           onClick={onClose}
-          className={classNames(
+          className={cn(
             className.backdrop,
             STYLES.zIndex.menuBackdrop,
             classes?.backdrop,
@@ -145,11 +144,7 @@ const Menu = ({
         initial="hidden"
         animate="visible"
         exit="hidden"
-        className={classNames(
-          className.root,
-          STYLES.zIndex.menu,
-          classes?.root,
-        )}
+        className={cn(className.root, STYLES.zIndex.menu, classes?.root)}
         style={{
           left: selfLeft,
           top: selfTop,
@@ -161,14 +156,14 @@ const Menu = ({
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className={classNames(className.arrow, classes?.arrow)}
+            className={cn(className.arrow, classes?.arrow)}
             style={{
               left: arrowLeft,
               top: arrowTop,
             }}
           />
         )}
-        <div className={classNames(className.container, classes?.container)}>
+        <div className={cn(className.container, classes?.container)}>
           {children}
         </div>
       </motion.section>

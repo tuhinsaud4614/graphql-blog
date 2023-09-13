@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Link from "next/link";
 
-import _ from "lodash";
+import _omit from "lodash/omit";
 import { toast } from "react-toastify";
 
 import { Button, ClientOnly, ErrorModal } from "@/components";
@@ -45,7 +45,7 @@ export default function AvatarEdit() {
             closeOnClick: true,
           });
           rdxDispatch(
-            updateUserAvatar(_.omit(data.uploadAvatar, ["__typename"])),
+            updateUserAvatar(_omit(data.uploadAvatar, ["__typename"])),
           );
           setEditable(false);
         }

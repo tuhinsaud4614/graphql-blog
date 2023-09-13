@@ -1,6 +1,5 @@
-import classNames from "classnames";
-
 import { useSynchronizeAnimation } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   root: "flex flex-col px-4",
@@ -21,34 +20,34 @@ interface Props {
 export default function CommentItemSkeleton({ classes }: Props) {
   const rippleRef = useSynchronizeAnimation<HTMLSpanElement>("animate-pulse");
   return (
-    <div className={classNames(className.root, classes?.root)}>
+    <div className={cn(className.root, classes?.root)}>
       <div className={className.top}>
         <span
-          className={classNames(className.common, className.avatar)}
+          className={cn(className.common, className.avatar)}
           ref={rippleRef}
         />
         <div className={className.topRight}>
           <span
-            className={classNames(className.common, className.bar1)}
+            className={cn(className.common, className.bar1)}
             ref={rippleRef}
           />
           <span
-            className={classNames(className.common, className.bar2)}
+            className={cn(className.common, className.bar2)}
             ref={rippleRef}
           />
         </div>
       </div>
       <div className={className.bottom}>
         <span
-          className={classNames(className.common, className.bar3)}
+          className={cn(className.common, className.bar3)}
           ref={rippleRef}
         />
         <span
-          className={classNames(className.common, className.bar3)}
+          className={cn(className.common, className.bar3)}
           ref={rippleRef}
         />
         <span
-          className={classNames(className.common, className.bar3)}
+          className={cn(className.common, className.bar3)}
           ref={rippleRef}
         />
       </div>

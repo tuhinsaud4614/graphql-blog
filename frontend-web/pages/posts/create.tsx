@@ -4,7 +4,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 
 import { FormikHelpers, useFormik } from "formik";
-import _ from "lodash";
+import _has from "lodash/has";
 import { toast } from "react-toastify";
 import { Descendant } from "slate";
 import * as yup from "yup";
@@ -84,7 +84,7 @@ const schema = yup.object().shape({
       "File should be image (gif, svg, jpeg, jpg, png, webp)",
       (value) => {
         if (value === undefined) return true;
-        return !!value && _.has(IMAGE_MIMES, value.type);
+        return !!value && _has(IMAGE_MIMES, value.type);
       },
     )
     .test("fileSize", "Image size should be less than 5mb", (value) => {
@@ -226,7 +226,7 @@ const CreatePost: NextPage = () => {
                     variables: { text: value || "" },
                   });
                   if (data) {
-                    return data.categoriesByTextOnOffset.data.map(
+                    return data.categoriesByTextWithOffset.data.map(
                       (category) => ({
                         name: category.title,
                         value: category.id,
@@ -265,10 +265,10 @@ const CreatePost: NextPage = () => {
                       variables: { text: value || "" },
                     });
                     if (data) {
-                      if (data.tagsByTextOnOffset.results.length === 0) {
+                      if (data.tagsByTextWithOffset.results.length === 0) {
                         return [{ name: value, value }];
                       }
-                      return data.tagsByTextOnOffset.results.map((tag) => ({
+                      return data.tagsByTextWithOffset.results.map((tag) => ({
                         name: tag.title,
                         value: tag.title,
                       }));

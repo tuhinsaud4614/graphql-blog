@@ -1,6 +1,5 @@
-import classNames from "classnames";
-
 import { useSynchronizeAnimation } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   root: "flex",
@@ -21,26 +20,17 @@ export default function PostItemSkeleton() {
         <div className={className.top}>
           <span
             ref={rippleRef}
-            className={classNames(className.avatar, className.common)}
+            className={cn(className.avatar, className.common)}
           />
           <span
             ref={rippleRef}
-            className={classNames(className.bar1, className.common)}
+            className={cn(className.bar1, className.common)}
           />
         </div>
-        <div
-          ref={rippleRef}
-          className={classNames(className.bar2, className.common)}
-        />
-        <div
-          ref={rippleRef}
-          className={classNames(className.bar2, className.common)}
-        />
+        <div ref={rippleRef} className={cn(className.bar2, className.common)} />
+        <div ref={rippleRef} className={cn(className.bar2, className.common)} />
       </section>
-      <div
-        ref={rippleRef}
-        className={classNames(className.img, className.common)}
-      />
+      <div ref={rippleRef} className={cn(className.img, className.common)} />
     </li>
   );
 }

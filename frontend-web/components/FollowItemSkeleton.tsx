@@ -1,6 +1,5 @@
-import classNames from "classnames";
-
 import { useSynchronizeAnimation } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   common: "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20",
@@ -26,27 +25,19 @@ interface Props {
 export default function FollowItemSkeleton({ classes }: Props) {
   const rippleRef = useSynchronizeAnimation<HTMLDivElement>("animate-pulse");
   return (
-    <div className={classNames(className.root, classes?.root)}>
+    <div className={cn(className.root, classes?.root)}>
       <span
         ref={rippleRef}
-        className={classNames(
-          className.common,
-          className.avatar,
-          classes?.avatar,
-        )}
+        className={cn(className.common, className.avatar, classes?.avatar)}
       />
-      <div className={classNames(className.mid, classes?.mid)}>
+      <div className={cn(className.mid, classes?.mid)}>
         <span
           ref={rippleRef}
-          className={classNames(
-            className.common,
-            className.title,
-            classes?.title,
-          )}
+          className={cn(className.common, className.title, classes?.title)}
         />
         <span
           ref={rippleRef}
-          className={classNames(
+          className={cn(
             className.common,
             className.subtitle,
             classes?.subtitle,
@@ -55,7 +46,7 @@ export default function FollowItemSkeleton({ classes }: Props) {
       </div>
       <span
         ref={rippleRef}
-        className={classNames(className.common, className.btn, classes?.btn)}
+        className={cn(className.common, className.btn, classes?.btn)}
       />
     </div>
   );

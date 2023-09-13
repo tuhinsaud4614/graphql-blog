@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { BiChevronDown } from "react-icons/bi";
 
 import { Accordion, AccordionDetails, AccordionSummary } from "@/components";
+import { cn } from "@/utils";
 
 interface Props {
   visible: boolean;
@@ -20,7 +20,7 @@ export default function List({ expanded, visible, children, title }: Props) {
           className="w-full justify-between !shadow-none"
           expandIcon={(expand) => (
             <BiChevronDown
-              className={classNames(
+              className={cn(
                 "transition-transform duration-300",
                 !visible && "xl:hidden xl:group-hover:block",
                 expand && "-rotate-90",
@@ -33,7 +33,7 @@ export default function List({ expanded, visible, children, title }: Props) {
         </AccordionSummary>
         <AccordionDetails>
           <div
-            className={classNames(
+            className={cn(
               "mt-2 gap-2",
               !visible && "xl:hidden xl:group-hover:block",
             )}

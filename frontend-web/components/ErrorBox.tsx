@@ -1,8 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
-
-import STYLES from "@/utils/styles";
+import { cn } from "@/utils";
 
 import Button from "./Button";
 import Sad from "./svg/Sad";
@@ -36,31 +34,28 @@ interface Props {
 
 function Component({ errors, onClose, title, classes, onRetry }: Props) {
   return (
-    <div className={classNames(className.root, classes?.root)}>
-      <header className={classNames(className.header, classes?.header)}>
-        <h1 className={classNames(className.title, classes?.title)}>{title}</h1>
+    <div className={cn(className.root, classes?.root)}>
+      <header className={cn(className.header, classes?.header)}>
+        <h1 className={cn(className.title, classes?.title)}>{title}</h1>
       </header>
       <div className="space-y-3 p-4">
         <div className="flex items-center justify-center">
           <Sad className="h-auto w-20 text-warning dark:text-warning-dark sm:w-[6.25rem]" />
         </div>
         {Array.isArray(errors) ? (
-          <ul className={classNames(className.items, classes?.items)}>
+          <ul className={cn(className.items, classes?.items)}>
             {errors.map((er) => (
-              <li
-                key={er}
-                className={classNames(className.item, classes?.item)}
-              >
+              <li key={er} className={cn(className.item, classes?.item)}>
                 {er}
               </li>
             ))}
           </ul>
         ) : (
-          <p className={classNames(className.item, classes?.item)}>{errors}</p>
+          <p className={cn(className.item, classes?.item)}>{errors}</p>
         )}
       </div>
       {(onClose || onRetry) && (
-        <footer className={classNames(className.footer, classes?.footer)}>
+        <footer className={cn(className.footer, classes?.footer)}>
           {onRetry && (
             <Button
               type="button"

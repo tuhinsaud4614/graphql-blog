@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiEdit } from "react-icons/bi";
 import { CgLoadbarDoc } from "react-icons/cg";
@@ -14,6 +13,7 @@ import { Badge, ClientOnly, UserAvatarBtn } from "@/components";
 import { selectNotificationUnSeenCount, selectUser } from "@/features";
 import { useMediaQuery } from "@/hooks";
 import { useAppSelector } from "@/store";
+import { cn } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 const Theme = dynamic(() => import("@/components/Theme"), { ssr: false });
@@ -50,7 +50,7 @@ export default function SideNav() {
             <Link href={ROUTES.myHome} passHref>
               <a
                 aria-label="Home"
-                className={classNames(
+                className={cn(
                   className.link,
                   pathname === ROUTES.myHome &&
                     "!text-secondary dark:!text-secondary-dark",
@@ -68,7 +68,7 @@ export default function SideNav() {
             <Link href={ROUTES.notifications} passHref>
               <a
                 aria-label="Notifications"
-                className={classNames(
+                className={cn(
                   className.link,
                   pathname === ROUTES.notifications &&
                     "!text-secondary dark:!text-secondary-dark",
@@ -91,7 +91,7 @@ export default function SideNav() {
             <Link href={ROUTES.favorite} passHref>
               <a
                 aria-label="Favorite"
-                className={classNames(
+                className={cn(
                   className.link,
                   pathname === ROUTES.favorite &&
                     "!text-secondary dark:!text-secondary-dark",
@@ -109,7 +109,7 @@ export default function SideNav() {
             <Link href={ROUTES.myPosts} passHref>
               <a
                 aria-label="My posts"
-                className={classNames(
+                className={cn(
                   className.link,
                   pathname === ROUTES.myPosts &&
                     "!text-secondary dark:!text-secondary-dark",
@@ -123,7 +123,7 @@ export default function SideNav() {
             <Link href={ROUTES.createPost} passHref>
               <a
                 aria-label="Create post"
-                className={classNames(
+                className={cn(
                   className.link,
                   pathname === ROUTES.createPost &&
                     "!text-secondary dark:!text-secondary-dark",

@@ -2,11 +2,11 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { BiX } from "react-icons/bi";
 
 import { SearchLayout } from "@/components/Layout";
 import { useIsomorphicLayoutEffect, useLocalStorage } from "@/hooks";
+import { cn } from "@/utils";
 import { RECENT_SEARCHES_KEY } from "@/utils/constants";
 
 const className = {
@@ -64,7 +64,7 @@ export default function RecentSearch() {
                 <button
                   aria-label="Clear"
                   type="button"
-                  className={classNames(className.btn, className.clear)}
+                  className={cn(className.btn, className.clear)}
                   onClick={() => {
                     setRecentSearches((prev) => {
                       const old =

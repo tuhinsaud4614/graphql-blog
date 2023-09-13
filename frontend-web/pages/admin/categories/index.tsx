@@ -11,30 +11,27 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import classNames from "classnames";
 import {
-  BiChevronDown,
   BiChevronLeft,
   BiChevronRight,
   BiFirstPage,
   BiLastPage,
   BiPencil,
-  BiSearch,
   BiTrash,
 } from "react-icons/bi";
 
-import { Button, Menu } from "@/components";
+import { Button } from "@/components";
 import { AdminLayout } from "@/components/Layout";
 import TableFilter from "@/components/Table/Filter";
 import TableSort from "@/components/Table/Sort";
 import { FormControl } from "@/components/account";
 import { AdminCreateCategory } from "@/components/admin-categories";
 import { Category } from "@/graphql/generated/schema";
-import { useDebounce } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   table:
-    "relative [&_th]:text-neutral dark:[&_th]:text-neutral-dark [&_td]:text-neutral dark:[&_td]:text-neutral-dark table text-left [&_th:first-child]:sticky [&_th:first-child]:left-0 [&_th:first-child]:z-10 [&_td]:whitespace-nowrap [&_td]:p-4 [&_td]:align-middle [&_tfoot_td]:bg-base-200 [&_tfoot_td]:text-sm [&_tfoot_td]:font-bold [&_tfoot_td]:uppercase dark:[&_tfoot_td]:bg-base-dark-200 [&_tfoot_th]:bg-base-200 [&_tfoot_th]:text-sm [&_tfoot_th]:font-bold [&_tfoot_th]:uppercase dark:[&_tfoot_th]:bg-base-dark-200 [&_th]:whitespace-nowrap [&_th]:p-4 [&_th]:align-middle [&_thead_td]:bg-base-200 [&_thead_td]:text-sm [&_thead_td]:font-bold [&_thead_td]:uppercase dark:[&_thead_td]:bg-base-dark-200 [&_thead_th]:bg-base-200 [&_thead_th]:text-sm [&_thead_th]:font-bold [&_thead_th]:uppercase dark:[&_thead_th]:bg-base-dark-200",
+    "relative [&_th]:text-neutral dark:[&_th]:text-neutral-dark [&_td]:text-neutral dark:[&_td]:text-neutral-dark table text-left [&_th:first-child]:sticky [&_th:first-child]:left-0 [&_th:first-child]:z-10 [&_td]:whitespace-nowrap [&_td]:p-4 [&_td]:align-middle [&_tfoot_td]:bg-base-200 [&_tfoot_td]:text-sm [&_tfoot_td]:font-bold [&_tfoot_td]:uppercase dark:[&_tfoot_td]:bg-base-dark-200 [&_tfoot_th]:bg-base-200 [&_tfoot_th]:text-sm [&_tfoot_th]:font-bold [&_tfoot_th]:uppercase dark:[&_tfoot_th]:bg-base-dark-200 [&_th]:whitespace-nowrap [&_th]:p-4 [&_th]:align-middle [&_thead_td]:bg-base-200 [&_thead_td]:text-sm [&_thead_td]:font-bold [&_thead_td]:uppercase dark:[&_thead_td]:bg-base-dark-200 [&_thead_th]:bg-base-200 [&_thead_th]:text-sm [&_thead_th]:font-bold [&_thead_th]:uppercase dark:[&_thead_th]:bg-base-dark-200 dark:border dark:border-base-dark-200",
   tBody:
     "[&_td]:bg-base-100 dark:[&_td]:bg-base-dark-100 [&_th]:bg-base-100 dark:[&_th]:bg-base-dark-100 [&_tr:not(:last-child)_th]:border-b [&_tr:not(:last-child)_th]:border-base-200 dark:[&_tr:not(:last-child)_th]:border-base-dark-200 [&_tr:not(:last-child)_td]:border-b [&_tr:not(:last-child)_td]:border-base-200 dark:[&_tr:not(:last-child)_td]:border-base-dark-200",
 };
@@ -177,7 +174,7 @@ export default function Categories() {
         <AdminCreateCategory />
       </div>
       <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-200">
-        <table className={classNames(className.table, "w-full")}>
+        <table className={cn(className.table, "w-full")}>
           {/* head */}
           <thead>
             {getHeaderGroups().map((headerGroup) => (
@@ -200,7 +197,7 @@ export default function Categories() {
               </tr>
             ))}
           </thead>
-          <tbody className={classNames(className.tBody)}>
+          <tbody className={cn(className.tBody)}>
             {getRowModel().rows.map((row, i) => {
               return (
                 <tr key={row.id}>

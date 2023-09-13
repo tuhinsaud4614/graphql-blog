@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Image, { ImageProps } from "next/image";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   avatar:
@@ -22,10 +22,7 @@ export default function NavAvatar({
   ...rest
 }: Props) {
   return (
-    <button
-      {...btnProps}
-      className={classNames(className.avatar, btnProps?.className)}
-    >
+    <button {...btnProps} className={cn(className.avatar, btnProps?.className)}>
       <Image
         {...rest}
         src={src}

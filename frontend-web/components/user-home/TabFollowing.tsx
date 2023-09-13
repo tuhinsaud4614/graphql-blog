@@ -1,5 +1,5 @@
 import { NetworkStatus } from "@apollo/client";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 import { Waypoint } from "react-waypoint";
 
 import {
@@ -89,7 +89,7 @@ export default function TabFollowing() {
           return {
             followingAuthorPosts: {
               ...fetchMoreResult.followingAuthorPosts,
-              edges: _.uniqBy(
+              edges: _uniqBy(
                 [
                   ...prev.followingAuthorPosts.edges,
                   ...fetchMoreResult.followingAuthorPosts.edges,

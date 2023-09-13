@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Link from "next/link";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 interface Props {
   href: string;
@@ -14,8 +14,8 @@ export default function Tag({ href, className, children }: Props) {
   return (
     <Link href={href} passHref>
       <a
-        className={classNames(
-          "rounded inline-block px-4 py-1.5 border dark:border-base-dark-300 text-sm text-neutral/75 dark:text-neutral-dark/75 active:scale-95 capitalize",
+        className={cn(
+          "inline-block rounded border px-4 py-1.5 text-sm capitalize text-neutral/75 active:scale-95 dark:border-base-dark-300 dark:text-neutral-dark/75",
           className,
         )}
       >

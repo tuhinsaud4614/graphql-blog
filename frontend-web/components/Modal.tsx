@@ -2,10 +2,10 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 
 import { useLockBody } from "@/hooks";
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 
 import Backdrop from "./Backdrop";
@@ -70,7 +70,7 @@ function Modal({
         {open && (
           <Backdrop
             onClick={onHide}
-            className={classNames(
+            className={cn(
               STYLES.zIndex.backdrop,
               onHide && "cursor-pointer",
               classes?.backdrop,
@@ -86,7 +86,7 @@ function Modal({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={classNames(
+            className={cn(
               className.container,
               STYLES.zIndex.modal,
               classes?.container,

@@ -2,8 +2,9 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { BiX } from "react-icons/bi";
+
+import { cn } from "@/utils";
 
 const className = {
   root: "flex items-center justify-between px-4 py-2.5 border-b dark:border-base-dark-300 rounded-tl-2xl rounded-tr-2xl",
@@ -34,7 +35,7 @@ export default function ModalHeader({
   return (
     <header
       {...rest}
-      className={classNames(
+      className={cn(
         className.root,
         !children && "!justify-end",
         classes?.root,
@@ -45,7 +46,7 @@ export default function ModalHeader({
       {onClose && (
         <button
           onClick={onClose}
-          className={classNames(
+          className={cn(
             className.btn,
 
             classes?.closeBtn,

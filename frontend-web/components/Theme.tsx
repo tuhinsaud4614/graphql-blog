@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import classNames from "classnames";
-
 import { useDarkMode } from "@/hooks";
+import { cn } from "@/utils";
 import { IAnchorOrigin } from "@/utils/interfaces";
 import STYLES from "@/utils/styles";
 
@@ -35,7 +34,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
       <Button
         type="button"
         aria-label="Theme"
-        className={classNames(STYLES.btn.circle, classes?.root)}
+        className={cn(STYLES.btn.circle, classes?.root)}
         mode="outline"
         onClick={(e) => setAnchorEle(e.currentTarget)}
       >
@@ -43,7 +42,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
           <LightIcon className={className.itemIcon} />
         ) : (
           <DarkIcon
-            className={classNames(
+            className={cn(
               className.itemIcon,
               "[&>path:nth-last-child(2)]:fill-current",
             )}
@@ -78,7 +77,7 @@ export default function Theme({ anchorOrigin, classes }: Props) {
             }}
           >
             <DarkIcon
-              className={classNames(
+              className={cn(
                 className.itemIcon,
                 "[&>path:nth-last-child(2)]:fill-current",
               )}
@@ -113,7 +112,7 @@ function Item({ active, children, onClick, text }: ItemProps) {
       <button
         aria-label={text}
         type="button"
-        className={classNames(
+        className={cn(
           className.item,
           active
             ? "text-accent dark:text-accent-dark"
@@ -122,9 +121,7 @@ function Item({ active, children, onClick, text }: ItemProps) {
         onClick={onClick}
       >
         {children}
-        <span className={classNames(className.itemText, "text-current")}>
-          {text}
-        </span>
+        <span className={cn(className.itemText, "text-current")}>{text}</span>
       </button>
     </li>
   );

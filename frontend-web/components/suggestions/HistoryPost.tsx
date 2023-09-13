@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import classNames from "classnames";
-
 import { Button } from "@/components";
+import { cn } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 const className = {
@@ -31,21 +30,21 @@ interface Props {
 
 export default function HistoryPost({ classes }: Props) {
   return (
-    <li className={classNames(className.root, classes?.root)}>
-      <div className={classNames(className.left, classes?.left)}>
+    <li className={cn(className.root, classes?.root)}>
+      <div className={cn(className.left, classes?.left)}>
         <Link href={ROUTES.post("1")} passHref>
-          <a className={classNames(className.title, classes?.title)}>
+          <a className={cn(className.title, classes?.title)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio.
           </a>
         </Link>
         <Link href={ROUTES.post("1234")} passHref>
-          <a className={classNames(className.body, classes?.body)}>
+          <a className={cn(className.body, classes?.body)}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod
             laborum ad eum distinctio.
           </a>
         </Link>
-        <div className={classNames(className.bottom, classes?.timeBox)}>
+        <div className={cn(className.bottom, classes?.timeBox)}>
           <time className="text-xs text-neutral/70 dark:text-neutral-dark/70">
             Jun 11
           </time>
@@ -62,9 +61,7 @@ export default function HistoryPost({ classes }: Props) {
           </Button>
         </div>
       </div>
-      <div
-        className={classNames(className.imgContainer, classes?.imgContainer)}
-      >
+      <div className={cn(className.imgContainer, classes?.imgContainer)}>
         <Image src="/demo.png" alt="Post" objectFit="cover" layout="fill" />
       </div>
     </li>

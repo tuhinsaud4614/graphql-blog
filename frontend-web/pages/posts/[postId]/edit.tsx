@@ -3,7 +3,7 @@ import * as React from "react";
 import Head from "next/head";
 
 import { FormikHelpers, useFormik } from "formik";
-import _ from "lodash";
+import _has from "lodash/has";
 import { Descendant } from "slate";
 import * as yup from "yup";
 
@@ -71,7 +71,7 @@ const schema = yup.object().shape({
       "File should be image (gif, svg, jpeg, jpg, png, webp)",
       (value) => {
         if (value === undefined) return true;
-        return !!value && _.has(IMAGE_MIMES, value.type);
+        return !!value && _has(IMAGE_MIMES, value.type);
       },
     )
     .test("fileSize", "Image size should be less than 5mb", (value) => {

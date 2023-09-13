@@ -1,6 +1,5 @@
 import NextImage from "next/image";
 
-import classNames from "classnames";
 import { BiTrash } from "react-icons/bi";
 import { Transforms } from "slate";
 import {
@@ -11,6 +10,8 @@ import {
   useSelected,
   useSlateStatic,
 } from "slate-react";
+
+import { cn } from "@/utils";
 
 const className = {
   container: "relative pt-[56.25%] w-full",
@@ -34,7 +35,7 @@ export default function SlateImage({
       {children}
       <div contentEditable={false} className={className.container}>
         <div
-          className={classNames(
+          className={cn(
             className.imgWrapper,
             !isReadOnly && selected && focused && "shadow-mui",
           )}
@@ -54,7 +55,7 @@ export default function SlateImage({
           <button
             aria-label="Remove image"
             onClick={() => Transforms.removeNodes(editor, { at: path })}
-            className={classNames(
+            className={cn(
               className.btn,
               selected && focused ? "inline" : "none",
             )}

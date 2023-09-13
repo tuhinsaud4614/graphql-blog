@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import { BiTrash } from "react-icons/bi";
 import { Transforms } from "slate";
 import {
@@ -10,6 +9,7 @@ import {
   useSlateStatic,
 } from "slate-react";
 
+import { cn } from "@/utils";
 import { SlateVideoElement } from "@/utils/interfaces";
 
 const className = {
@@ -40,7 +40,7 @@ export default function SlateEmbed({
             <button
               aria-label="Remove image"
               onClick={() => Transforms.removeNodes(editor, { at: path })}
-              className={classNames(
+              className={cn(
                 className.btn,
                 selected && focused ? "inline" : "none",
               )}

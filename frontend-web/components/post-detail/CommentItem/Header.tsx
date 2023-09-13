@@ -3,12 +3,11 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import classNames from "classnames";
 import moment from "moment";
 
 import { Badge, DemoAvatar } from "@/components";
 import { FUserFragment } from "@/graphql/generated/schema";
-import { generateFileUrl, getUserName } from "@/utils";
+import { cn, generateFileUrl, getUserName } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 const className = {
@@ -40,7 +39,7 @@ export default function Header({
   const userName = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
   return (
-    <header className={classNames(className.header, cls)}>
+    <header className={cn(className.header, cls)}>
       <div className={className.headerLeft}>
         <span className={className.headerImg}>
           {imgUrl ? (

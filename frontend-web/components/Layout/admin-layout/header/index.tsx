@@ -1,9 +1,9 @@
 import dynamic from "next/dynamic";
 
-import classNames from "classnames";
 import { BiBell, BiGlobe } from "react-icons/bi";
 
 import { Badge, Button, ClientOnly, LinkButton, Theme } from "@/components";
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 
 const Hamburger = dynamic(() => import("./Hamburger"), {
@@ -19,7 +19,7 @@ const UserAvatarBtn = dynamic(() =>
 export default function Header() {
   return (
     <header
-      className={classNames(
+      className={cn(
         "sticky left-auto top-0 bg-base-200 py-4 shadow-mui dark:bg-base-dark-200",
         STYLES.zIndex.header,
       )}
@@ -43,7 +43,7 @@ export default function Header() {
               <span className={STYLES.indicator.root}>
                 <Badge
                   variant="error"
-                  className={classNames(
+                  className={cn(
                     STYLES.indicator.item,
                     "!min-h-[0.75rem] !min-w-[0.75rem] !p-0 ring-0",
                   )}

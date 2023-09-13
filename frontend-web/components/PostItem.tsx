@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import classNames from "classnames";
 import { motion } from "framer-motion";
 import moment from "moment";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -10,6 +9,7 @@ import { selectUser } from "@/features";
 import { GetPostItemFragment } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
 import {
+  cn,
   generateFileUrl,
   getUserName,
   serializeOnlyTextSlateValue,
@@ -60,9 +60,9 @@ export default function PostItem({ classes, post }: Props) {
       initial="offscreen"
       whileInView="onscreen"
       viewport={{ once: true, amount: 0.5 }}
-      className={classNames(className.root, classes?.root)}
+      className={cn(className.root, classes?.root)}
     >
-      <div className={classNames(className.left, classes?.left)}>
+      <div className={cn(className.left, classes?.left)}>
         <UserLink
           href={ROUTES.authorProfile(post.author.id)}
           src={post.author.avatar?.url}
@@ -73,7 +73,7 @@ export default function PostItem({ classes, post }: Props) {
         <Link href={ROUTES.post(post.id)} passHref>
           <a
             aria-label={post.title}
-            className={classNames(className.title, classes?.title)}
+            className={cn(className.title, classes?.title)}
           >
             {post.title}
           </a>
@@ -81,12 +81,12 @@ export default function PostItem({ classes, post }: Props) {
         <Link href={ROUTES.post(post.id)} passHref>
           <a
             aria-label={post.title}
-            className={classNames(className.body, classes?.body)}
+            className={cn(className.body, classes?.body)}
           >
             {serializeOnlyTextSlateValue(JSON.parse(post.content))}
           </a>
         </Link>
-        <div className={classNames(className.timeBox, classes?.timeBox)}>
+        <div className={cn(className.timeBox, classes?.timeBox)}>
           <time>{moment(+post.updatedAt).startOf("second").fromNow()}</time>
           <span className="px-1.5">·</span>
           <div className={className.tags}>
@@ -94,7 +94,7 @@ export default function PostItem({ classes, post }: Props) {
               <Link key={tag.id} href={ROUTES.postsByTag(tag.id)} passHref>
                 <a
                   aria-label={tag.title}
-                  className={classNames(className.tag, classes?.tag)}
+                  className={cn(className.tag, classes?.tag)}
                 >
                   {tag.title}
                 </a>
@@ -123,9 +123,7 @@ export default function PostItem({ classes, post }: Props) {
           </button>
         </div>
       </div>
-      <div
-        className={classNames(className.imgContainer, classes?.imgContainer)}
-      >
+      <div className={cn(className.imgContainer, classes?.imgContainer)}>
         <Image
           loader={({ src, width, quality }) =>
             `${src}?w=${width}&q=${quality || 75}`

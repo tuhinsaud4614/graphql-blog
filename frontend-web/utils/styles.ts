@@ -1,6 +1,6 @@
-import classNames from "classnames";
-
 import type { ButtonModeType, ColorVariantType } from "@/utils/types";
+
+import { cn } from ".";
 
 const className = {
   btn: {
@@ -17,8 +17,8 @@ const className = {
       if (mode === "fill") {
         style = "disabled:bg-black/[12%] dark:disabled:bg-white/[12%]";
       }
-      return classNames(
-        "disabled:text-black/[26%] dark:disabled:text-white/[26%] disabled:cursor-not-allowed disabled:pointer-events-none",
+      return cn(
+        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:text-black/[26%] dark:disabled:text-white/[26%]",
         style,
       );
     },

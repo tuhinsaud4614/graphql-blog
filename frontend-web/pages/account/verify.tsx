@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { getCookie } from "cookies-next";
-import _ from "lodash";
+import _isEmpty from "lodash/isEmpty";
 import { BiError } from "react-icons/bi";
 import { toast } from "react-toastify";
 
@@ -62,7 +62,7 @@ const VerifyUser: NextPage<Props> = ({ query }) => {
 
   const errors = gplErrorHandler(error);
 
-  if (_.isEmpty(query)) {
+  if (_isEmpty(query)) {
     return (
       <div className={className.container}>
         <LoaderIcon />

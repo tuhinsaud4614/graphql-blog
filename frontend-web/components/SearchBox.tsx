@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { BiSearch } from "react-icons/bi";
+
+import { cn } from "@/utils";
 
 const className = {
   root: "relative",
@@ -24,12 +25,12 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
 const SearchBox = React.forwardRef<HTMLInputElement, Props>(
   ({ rootRef, classes, className: cls, ...rest }, ref) => {
     return (
-      <div className={classNames(className.root, classes?.root)}>
+      <div className={cn(className.root, classes?.root)}>
         <div
-          className={classNames(className.container, classes?.container)}
+          className={cn(className.container, classes?.container)}
           ref={rootRef}
         >
-          <span className={classNames(className.icon, className.icon)}>
+          <span className={cn(className.icon, className.icon)}>
             <BiSearch size={24} />
           </span>
           <input
@@ -37,7 +38,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>(
             ref={ref}
             aria-label="search"
             placeholder="Search"
-            className={classNames(className.input, className.input, cls)}
+            className={cn(className.input, className.input, cls)}
           />
         </div>
       </div>

@@ -1,11 +1,11 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import _ from "lodash";
 import { BiX } from "react-icons/bi";
 
 import { useDebounce, useOnClickOutside } from "@/hooks";
+import { cn } from "@/utils";
 
 import Label from "./Label";
 import SelectItem from "./SelectItem";
@@ -89,7 +89,7 @@ export default function Select({
   }, [debouncedValue]);
 
   return (
-    <div className={classNames(className.control, classes?.root)}>
+    <div className={cn(className.control, classes?.root)}>
       <Label
         htmlFor={id}
         className={classes?.label}
@@ -99,7 +99,7 @@ export default function Select({
         {title}
       </Label>
       <div
-        className={classNames(
+        className={cn(
           className.box,
           classes?.box,
           valid
@@ -108,9 +108,9 @@ export default function Select({
         )}
       >
         <section
-          className={classNames(
+          className={cn(
             className.boxInner,
-            values.length && "space-x-1 space-y-1 -ml-1 -mt-1",
+            values.length && "-ml-1 -mt-1 space-x-1 space-y-1",
             classes?.boxInner,
           )}
         >
@@ -145,7 +145,7 @@ export default function Select({
               }
               setInputValue(value);
             }}
-            className={classNames(className.input, classes?.input, cls)}
+            className={cn(className.input, classes?.input, cls)}
             id={id}
           />
         </section>
@@ -191,10 +191,7 @@ export default function Select({
         </AnimatePresence>
       </div>
       {!valid && errorText && (
-        <p
-          className={classNames(className.error, classes?.errText)}
-          role="alert"
-        >
+        <p className={cn(className.error, classes?.errText)} role="alert">
           {errorText}
         </p>
       )}

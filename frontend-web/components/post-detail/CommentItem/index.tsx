@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { Variants, motion } from "framer-motion";
 import { Descendant } from "slate";
 
 import { selectUser } from "@/features";
 import { FCommentFragment } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
+import { cn } from "@/utils";
 
 import Body from "./Body";
 import EditComment from "./EditComment";
@@ -73,9 +73,9 @@ export default function CommentItem({
       animate="show"
       exit="hide"
       transition={{ opacity: { duration: 0.2 } }}
-      className={classNames(className.root, classes?.root)}
+      className={cn(className.root, classes?.root)}
     >
-      <div className={classNames(className.container, classes?.container)}>
+      <div className={cn(className.container, classes?.container)}>
         <EditProvider>
           <Wrapper
             commentId={comment.id}
@@ -109,10 +109,7 @@ export default function CommentItem({
 
       {(showReplies || openReplyEditor) && (
         <section
-          className={classNames(
-            className.replyContainer,
-            classes?.replyContainer,
-          )}
+          className={cn(className.replyContainer, classes?.replyContainer)}
         >
           {openReplyEditor && (
             <ReplyEditor

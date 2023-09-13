@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 
 import { Backdrop, Portal } from "@/components";
 import { useMediaQuery } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   containerCommon:
@@ -71,7 +71,7 @@ export default function BottomSheet({
         {open && (
           <Backdrop
             onClick={staticBack ? undefined : onHide}
-            className={classNames("z-[910]", classes?.backdrop)}
+            className={cn("z-[910]", classes?.backdrop)}
           />
         )}
       </AnimatePresence>
@@ -83,7 +83,7 @@ export default function BottomSheet({
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className={classNames(
+            className={cn(
               className.containerCommon,
               classes?.container,
               matches

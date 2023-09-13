@@ -4,7 +4,7 @@ import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import _ from "lodash";
+import _omit from "lodash/omit";
 
 import { AuthGuard, ClientOnly, DemoAvatar, Tabs } from "@/components";
 import { LayoutContainer } from "@/components/Layout";
@@ -60,7 +60,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
     return null;
   }
 
-  const user = _.omit(data.user, [
+  const user = _omit(data.user, [
     "posts",
     "__typename",
     "password",

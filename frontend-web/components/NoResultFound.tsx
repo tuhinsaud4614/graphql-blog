@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   notFoundRoot: "py-[1.875rem] flex flex-col items-center",
@@ -15,10 +15,8 @@ interface Props {
 
 export default function NoResultFound({ children, classes }: Props) {
   return (
-    <div className={classNames(className.notFoundRoot, classes?.root)}>
-      <p className={classNames(className.notFoundTitle, classes?.title)}>
-        {children}
-      </p>
+    <div className={cn(className.notFoundRoot, classes?.root)}>
+      <p className={cn(className.notFoundTitle, classes?.title)}>{children}</p>
     </div>
   );
 }

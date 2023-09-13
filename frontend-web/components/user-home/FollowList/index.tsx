@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 import { Navigation, Virtual } from "swiper";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
@@ -9,7 +8,7 @@ import { ErrorBox } from "@/components";
 import { selectUser } from "@/features";
 import { useGetAuthorFollowingsWithCursorQuery } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
-import { gplErrorHandler, isDev } from "@/utils";
+import { cn, gplErrorHandler, isDev } from "@/utils";
 
 import FollowItem from "./Item";
 import FollowSkeleton from "./Skelton";
@@ -26,9 +25,9 @@ const PrevButton = (props: React.ComponentPropsWithoutRef<"button">) => {
     <button
       {...props}
       onClick={() => swiper.slidePrev()}
-      className={classNames(
+      className={cn(
         className.navBtn,
-        "left-0 bg-base-right dark:bg-base-dark-right pr-5",
+        "left-0 bg-base-right pr-5 dark:bg-base-dark-right",
         props.className,
       )}
     >
@@ -43,9 +42,9 @@ const NextButton = (props: React.ComponentPropsWithoutRef<"button">) => {
     <button
       {...props}
       onClick={() => swiper.slideNext()}
-      className={classNames(
+      className={cn(
         className.navBtn,
-        "right-0 bg-base-left dark:bg-base-dark-left pl-5",
+        "right-0 bg-base-left pl-5 dark:bg-base-dark-left",
         props.className,
       )}
     >
@@ -93,14 +92,14 @@ export default function FollowList() {
     );
   }
 
-  if (!data || data.authorFollowingsOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowingsWithCursor.edges.length === 0) {
     return null;
   }
 
   const {
     pageInfo: { hasNext, endCursor },
     edges,
-  } = data.authorFollowingsOnCursor;
+  } = data.authorFollowingsWithCursor;
 
   return (
     <Swiper

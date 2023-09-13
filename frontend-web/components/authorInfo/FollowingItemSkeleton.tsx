@@ -1,6 +1,5 @@
-import classNames from "classnames";
-
 import { useSynchronizeAnimation } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   root: "flex items-center justify-between",
@@ -16,19 +15,13 @@ export default function FollowingItemSkeleton() {
   return (
     <li className={className.root}>
       <div className={className.link}>
+        <span ref={rippleRef} className={cn(className.common, className.img)} />
         <span
           ref={rippleRef}
-          className={classNames(className.common, className.img)}
-        />
-        <span
-          ref={rippleRef}
-          className={classNames(className.common, className.text)}
+          className={cn(className.common, className.text)}
         />
       </div>
-      <span
-        ref={rippleRef}
-        className={classNames(className.common, className.more)}
-      />
+      <span ref={rippleRef} className={cn(className.common, className.more)} />
     </li>
   );
 }

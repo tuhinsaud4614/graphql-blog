@@ -2,12 +2,11 @@ import * as React from "react";
 
 import Image from "next/image";
 
-import classNames from "classnames";
 import _ from "lodash";
 
 import { Button } from "@/components";
 import { useUploadImageMutation } from "@/graphql/generated/schema";
-import { generateFileUrl, maxFileSize } from "@/utils";
+import { cn, generateFileUrl, maxFileSize } from "@/utils";
 import { IMAGE_MIMES } from "@/utils/constants";
 
 import Loader from "./Loader";
@@ -89,7 +88,7 @@ export function Upload({ onAdd }: Props) {
         aria-label="Image Picker"
         type="button"
         onClick={() => inputRef.current?.click()}
-        className={classNames(className.chooseBtn)}
+        className={cn(className.chooseBtn)}
       >
         {loading && <Loader />}
         {!image ? (

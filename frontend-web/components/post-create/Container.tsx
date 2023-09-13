@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   root: "mt-[calc(4rem+1px)] max-w-3xl p-5 mx-auto overflow-y-auto",
@@ -12,5 +12,5 @@ interface Props {
 }
 
 export default function Container({ children, className: cls }: Props) {
-  return <main className={classNames(className.root, cls)}>{children}</main>;
+  return <main className={cn(className.root, cls)}>{children}</main>;
 }

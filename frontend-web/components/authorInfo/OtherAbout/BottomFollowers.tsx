@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 import { NetworkStatus } from "@apollo/client";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 
 import {
   ErrorBox,
@@ -58,7 +58,7 @@ export default function BottomFollowers({ userId }: Props) {
     );
   }
 
-  if (!data || data.authorFollowersOnCursor.edges.length === 0) {
+  if (!data || data.authorFollowersWithCursor.edges.length === 0) {
     return (
       <li>
         <NoResultFound
@@ -73,7 +73,7 @@ export default function BottomFollowers({ userId }: Props) {
     );
   }
 
-  const { hasNext, endCursor } = data?.authorFollowersOnCursor.pageInfo;
+  const { hasNext, endCursor } = data?.authorFollowersWithCursor.pageInfo;
 
   const onMore = async () => {
     try {
@@ -87,22 +87,22 @@ export default function BottomFollowers({ userId }: Props) {
           if (!fetchMoreResult) {
             return {
               ...prev,
-              authorFollowersOnCursor: {
-                ...prev.authorFollowersOnCursor,
+              authorFollowersWithCursor: {
+                ...prev.authorFollowersWithCursor,
                 pageInfo: {
-                  ...prev.authorFollowersOnCursor.pageInfo,
+                  ...prev.authorFollowersWithCursor.pageInfo,
                   hasNext: false,
                 },
               },
             };
           }
           return {
-            authorFollowersOnCursor: {
-              ...fetchMoreResult.authorFollowersOnCursor,
-              edges: _.uniqBy(
+            authorFollowersWithCursor: {
+              ...fetchMoreResult.authorFollowersWithCursor,
+              edges: _uniqBy(
                 [
-                  ...prev.authorFollowersOnCursor.edges,
-                  ...fetchMoreResult.authorFollowersOnCursor.edges,
+                  ...prev.authorFollowersWithCursor.edges,
+                  ...fetchMoreResult.authorFollowersWithCursor.edges,
                 ],
                 "cursor",
               ),
@@ -114,7 +114,7 @@ export default function BottomFollowers({ userId }: Props) {
   };
   return (
     <Fragment>
-      {data?.authorFollowersOnCursor.edges.map(({ node }) => (
+      {data?.authorFollowersWithCursor.edges.map(({ node }) => (
         <ReactorModalItem key={node.id} user={node} />
       ))}
       {networkStatus === NetworkStatus.fetchMore && <ReactorItemSkeleton />}

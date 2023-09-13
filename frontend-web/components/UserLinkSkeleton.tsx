@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   root: "flex items-center",
@@ -10,8 +10,8 @@ const className = {
 export default function UserLinkSkeleton() {
   return (
     <div className={className.root}>
-      <span className={classNames(className.common, className.img)} />
-      <span className={classNames(className.common, className.text)} />
+      <span className={cn(className.common, className.img)} />
+      <span className={cn(className.common, className.text)} />
     </div>
   );
 }

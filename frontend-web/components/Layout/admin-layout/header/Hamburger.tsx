@@ -1,10 +1,10 @@
-import classNames from "classnames";
-import { motion, type SVGMotionProps } from "framer-motion";
+import { type SVGMotionProps, motion } from "framer-motion";
 
 import { Button } from "@/components";
 import { adminToggleSidebar, selectAdminSidebar } from "@/features";
 import { useMediaQuery } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 
 function Path(props: SVGMotionProps<SVGPathElement>) {
@@ -40,7 +40,7 @@ export default function Hamburger() {
         width="23"
         height="23"
         viewBox="0 0 23 23"
-        className={classNames(
+        className={cn(
           "mt-1 flex items-center justify-center",
           visible ? "ml-[0.1875rem]" : "ml-[0.0625rem]",
         )}

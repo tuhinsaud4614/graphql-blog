@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { NetworkStatus } from "@apollo/client";
 import { AnimatePresence } from "framer-motion";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 
 import { Button } from "@/components";
 import { useGetPostCommentsWithCursorQuery } from "@/graphql/generated/schema";
@@ -70,7 +70,7 @@ export default function Replies({ commentId }: Props) {
           return {
             postCommentsWithCursor: {
               ...fetchMoreResult.postCommentsWithCursor,
-              edges: _.uniqBy(
+              edges: _uniqBy(
                 [
                   ...prev.postCommentsWithCursor.edges,
                   ...fetchMoreResult.postCommentsWithCursor.edges,

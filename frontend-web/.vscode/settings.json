@@ -6,6 +6,13 @@
     "source.fixAll.tslint": true,
     "source.organizeImports": true
   },
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "cva(?:<[^>]*>)?(([^)]*))",
+      "[\"'`]([^\"'`]*).*?[\"'`]",
+      "(?:twMerge|twJoin)\\(([^\\);]*)[\\);]"
+    ]
+  ],
   "eslint.validate": ["typescript", "javascript"],
   "cSpell.words": [
     "atrule",

@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { BsInfoCircle } from "react-icons/bs";
+
+import { cn } from "@/utils";
 
 const className = {
   formControl: "flex flex-col items-center justify-center w-full",
@@ -45,11 +46,11 @@ const FormControl = React.forwardRef<HTMLInputElement, Props>(
     ref,
   ) => {
     return (
-      <div className={classNames(className.formControl, classes?.root)}>
+      <div className={cn(className.formControl, classes?.root)}>
         {title && (
           <label
             htmlFor={id}
-            className={classNames(
+            className={cn(
               className.formLabel,
               classes?.label,
               valid
@@ -62,7 +63,7 @@ const FormControl = React.forwardRef<HTMLInputElement, Props>(
           </label>
         )}
         <div
-          className={classNames(
+          className={cn(
             className.formInputBox,
             classes?.box,
             valid
@@ -74,22 +75,19 @@ const FormControl = React.forwardRef<HTMLInputElement, Props>(
           <input
             {...rest}
             ref={ref}
-            className={classNames(className.formInput, classes?.input, cls)}
+            className={cn(className.formInput, classes?.input, cls)}
             id={id}
             required={required}
           />
           {!valid && (
             <BsInfoCircle
               size={16}
-              className={classNames(className.errIcon, classes?.errIcon)}
+              className={cn(className.errIcon, classes?.errIcon)}
             />
           )}
         </div>
         {!valid && errorText && (
-          <p
-            className={classNames(className.error, classes?.errText)}
-            role="alert"
-          >
+          <p className={cn(className.error, classes?.errText)} role="alert">
             {errorText}
           </p>
         )}

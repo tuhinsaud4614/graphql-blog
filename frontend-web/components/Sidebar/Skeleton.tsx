@@ -1,6 +1,5 @@
-import classNames from "classnames";
-
 import { useSynchronizeAnimation } from "@/hooks";
+import { cn } from "@/utils";
 
 const className = {
   root: "flex flex-col space-y-2",
@@ -14,18 +13,9 @@ export default function Skeleton() {
   const rippleRef = useSynchronizeAnimation<HTMLSpanElement>("animate-pulse");
   return (
     <div className={className.root}>
-      <span
-        ref={rippleRef}
-        className={classNames(className.bar, className.bar1)}
-      />
-      <span
-        ref={rippleRef}
-        className={classNames(className.bar, className.bar2)}
-      />
-      <span
-        ref={rippleRef}
-        className={classNames(className.bar, className.bar3)}
-      />
+      <span ref={rippleRef} className={cn(className.bar, className.bar1)} />
+      <span ref={rippleRef} className={cn(className.bar, className.bar2)} />
+      <span ref={rippleRef} className={cn(className.bar, className.bar3)} />
     </div>
   );
 }

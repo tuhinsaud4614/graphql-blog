@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import classNames from "classnames";
-
 import { ClientOnly, DemoAvatar } from "@/components";
 import { selectUser } from "@/features";
 import { FUserFragment } from "@/graphql/generated/schema";
@@ -33,9 +31,9 @@ export default function UserProfiler({ classes, user }: Props) {
   const userName = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
   return (
-    <div className={classNames(className.root, classes?.root)}>
+    <div className={cn(className.root, classes?.root)}>
       {imgUrl ? (
-        <span className={classNames(className.img, classes?.img)}>
+        <span className={cn(className.img, classes?.img)}>
           <Image
             loader={({ src, width, quality }) =>
               `${src}?w=${width}&q=${quality || 75}`

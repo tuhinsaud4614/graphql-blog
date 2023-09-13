@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 interface Props extends React.ComponentPropsWithoutRef<"label"> {
   valid: boolean;
@@ -16,7 +16,7 @@ export default function Label({
   return (
     <label
       {...rest}
-      className={classNames(
+      className={cn(
         "mb-3 text-sm",
         valid
           ? "text-neutral dark:text-neutral-dark"

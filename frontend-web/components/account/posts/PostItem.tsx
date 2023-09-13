@@ -3,10 +3,10 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { BiChevronDown } from "react-icons/bi";
 
 import { Button, Menu, Modal, ModalHeader } from "@/components";
+import { cn } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 const className = {
@@ -41,7 +41,7 @@ export default function PostItem({ classes }: Props) {
 
   return (
     <React.Fragment>
-      <li className={classNames(className.root, classes?.root)}>
+      <li className={cn(className.root, classes?.root)}>
         <Link href={ROUTES.editPost("1")} passHref>
           <a aria-label="New post" className={className.title}>
             New Post
@@ -79,9 +79,9 @@ export default function PostItem({ classes }: Props) {
           <button
             aria-label="Edit draft"
             type="button"
-            className={classNames(
+            className={cn(
               className.actionsBtn,
-              "text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus",
+              "text-neutral hover:text-neutral-focus dark:text-neutral-dark dark:hover:text-neutral-dark-focus",
             )}
             onClick={() => {
               push(ROUTES.editPost("1"));
@@ -92,9 +92,9 @@ export default function PostItem({ classes }: Props) {
           <button
             aria-label="Delete draft"
             type="button"
-            className={classNames(
+            className={cn(
               className.actionsBtn,
-              "text-error dark:text-error-dark hover:text-error-focus dark:hover:text-error",
+              "text-error hover:text-error-focus dark:text-error-dark dark:hover:text-error",
             )}
             onClick={() => {
               setAnchorEle(null);

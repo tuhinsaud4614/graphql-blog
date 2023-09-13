@@ -3,7 +3,6 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import classNames from "classnames";
 import { Descendant } from "slate";
 
 import { DemoAvatar } from "@/components";
@@ -11,7 +10,7 @@ import {
   FUserFragment,
   useUserMentionTooltipStatsQuery,
 } from "@/graphql/generated/schema";
-import { generateFileUrl, getUserName, serializeSlateValue } from "@/utils";
+import { cn, generateFileUrl, getUserName, serializeSlateValue } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 import ReactorItemAction from "./ReactorItemAction";
@@ -83,9 +82,7 @@ export default function ReactorItem({ user }: Props) {
         </span>
       </div>
       {loading || error || !data ? (
-        <span
-          className={classNames(className.skeltonCommon, className.skeletonBtn)}
-        />
+        <span className={cn(className.skeltonCommon, className.skeletonBtn)} />
       ) : (
         <ReactorItemAction
           userId={user.id}

@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { ImSpinner2 } from "react-icons/im";
 
+import { cn } from "@/utils";
 import STYLES from "@/utils/styles";
 import { ButtonModeType, ColorVariantType } from "@/utils/types";
 
@@ -21,10 +21,7 @@ export default function Button({
   children,
   ...rest
 }: Props) {
-  let style = classNames(
-    STYLES.btn.fill,
-    !rest.disabled && STYLES.btn.fillEnabled,
-  );
+  let style = cn(STYLES.btn.fill, !rest.disabled && STYLES.btn.fillEnabled);
   if (mode === "outline") {
     style = "border";
   } else if (mode === "text") {
@@ -33,7 +30,7 @@ export default function Button({
   return (
     <button
       {...rest}
-      className={classNames(
+      className={cn(
         STYLES.btn.root,
         rest.disabled
           ? STYLES.btn.disabled(mode)

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 import BottomTab from "./BottomTab";
 import Header from "./Header";
@@ -25,11 +25,9 @@ export default function Container({ sidebar, classes, children }: Props) {
   return (
     <React.Fragment>
       <Header />
-      <section className={classNames(className.container, classes?.container)}>
+      <section className={cn(className.container, classes?.container)}>
         <SideNav />
-        <main className={classNames(className.main, classes?.main)}>
-          {children}
-        </main>
+        <main className={cn(className.main, classes?.main)}>{children}</main>
         {sidebar && <Sidebar>{sidebar}</Sidebar>}
       </section>
       <BottomTab />

@@ -1,13 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
-
-import { FollowItem, Tag } from "@/components";
-import {
-  SidebarCategory,
-  SidebarContent,
-  SidebarPostItem,
-} from "@/components/Sidebar";
+import { Tag } from "@/components";
+import { SidebarCategory, SidebarContent } from "@/components/Sidebar";
+import { cn } from "@/utils";
 
 const className = {
   divider: "bg-neutral dark:bg-base-dark-300 w-full border-b my-4",
@@ -91,10 +86,7 @@ export default function PostsSidebarContent({ query, hide }: Props) {
             />
           </SidebarContent>
           <div
-            className={classNames(
-              className.divider,
-              hide === "author" && "hidden",
-            )}
+            className={cn(className.divider, hide === "author" && "hidden")}
           />
         </React.Fragment>
       )}

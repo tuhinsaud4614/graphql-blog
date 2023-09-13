@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import { BiBold, BiItalic } from "react-icons/bi";
 import { Descendant, Editor, Transforms, createEditor } from "slate";
@@ -15,6 +14,7 @@ import {
 } from "slate-react";
 
 import { Button, SlateElement, SlateLeaf, SlateMarkButton } from "@/components";
+import { cn } from "@/utils";
 
 const className = {
   root: "shadow-mine mx-4 mb-5 bg-base-100 dark:bg-base-dark-200 rounded",
@@ -112,22 +112,19 @@ export default function CommentBox({
               },
             }
       }
-      className={classNames(className.root, classes?.root)}
+      className={cn(className.root, classes?.root)}
     >
       <AnimatePresence>{expanded && children}</AnimatePresence>
       <Slate editor={editor} value={value} onChange={onChange}>
         <section
-          className={classNames(
+          className={cn(
             "duration-[400ms]",
             expanded ? className.editorBox : "min-h-[1rem]",
             classes?.editorBox,
           )}
         >
           <div
-            className={classNames(
-              className.editorContainer,
-              classes?.editorContainer,
-            )}
+            className={cn(className.editorContainer, classes?.editorContainer)}
             onClick={() => onExpanded(true)}
           >
             <Editable
@@ -147,10 +144,10 @@ export default function CommentBox({
               }}
               exit={{ maxHeight: 0, opacity: 0 }}
               transition={{ duration: 0.3, bounce: 0 }}
-              className={classNames(className.controlBox, classes?.controlBox)}
+              className={cn(className.controlBox, classes?.controlBox)}
             >
               <div
-                className={classNames(
+                className={cn(
                   className.controlBoxContent,
                   classes?.controlBoxContent,
                 )}
@@ -173,7 +170,7 @@ export default function CommentBox({
                 </SlateMarkButton>
               </div>
               <div
-                className={classNames(
+                className={cn(
                   className.controlBoxContent,
                   classes?.controlBoxContent,
                 )}

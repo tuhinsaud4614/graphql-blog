@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { Descendant } from "slate";
 
 import { Button, ReactorModal, SlateViewer } from "@/components";
@@ -8,7 +7,7 @@ import { selectAuthorFollowerCount } from "@/features";
 import { useGetUserFollowingsQuery } from "@/graphql/generated/schema";
 import { useLockBody } from "@/hooks";
 import { useAppSelector } from "@/store";
-import { countConvert } from "@/utils";
+import { cn, countConvert } from "@/utils";
 
 import BottomFollowers from "./BottomFollowers";
 import BottomFollowings from "./BottomFollowings";
@@ -90,10 +89,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
         <div className={className.bottom}>
           {loading || error || !data ? (
             <span
-              className={classNames(
-                className.skeltonCommon,
-                className.skeletonText,
-              )}
+              className={cn(className.skeltonCommon, className.skeletonText)}
             />
           ) : (
             <Button
@@ -112,10 +108,7 @@ export default function OtherAboutTab({ userId, about }: Props) {
           <span className="mx-3 text-neutral dark:text-neutral-dark">·</span>
           {loading || error || !data ? (
             <span
-              className={classNames(
-                className.skeltonCommon,
-                className.skeletonText,
-              )}
+              className={cn(className.skeltonCommon, className.skeletonText)}
             />
           ) : (
             <Button

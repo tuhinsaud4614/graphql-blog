@@ -1,12 +1,11 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { BsChat } from "react-icons/bs";
 import { Descendant } from "slate";
 
 import { Button, SlateViewer } from "@/components";
 import { useElementSize } from "@/hooks";
-import { countConvert } from "@/utils";
+import { cn, countConvert } from "@/utils";
 
 const className = {
   body: "mt-1.5",
@@ -77,7 +76,7 @@ export default function Body({
 
       {/* Actions bar Start */}
       <div
-        className={classNames(
+        className={cn(
           className.actionsBar,
           replyCount > 0 ? "justify-between" : "justify-end",
         )}

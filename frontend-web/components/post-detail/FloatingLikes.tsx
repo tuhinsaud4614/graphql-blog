@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { NetworkStatus } from "@apollo/client";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 
 import {
   ReactorItemMoreBtn,
@@ -68,7 +68,7 @@ export default function FloatingLikes({ onClose, open }: Props) {
     );
   }
 
-  if (!data || data.postReactionsBy.edges.length === 0) {
+  if (!data || data.postReactedBy.edges.length === 0) {
     return (
       <ReactorModal title="0 like" open={open} onHide={onClose}>
         <li className={className.noText}>No one reacted!</li>
@@ -76,8 +76,8 @@ export default function FloatingLikes({ onClose, open }: Props) {
     );
   }
 
-  const { hasNext, endCursor } = data.postReactionsBy.pageInfo;
-  const { edges, total } = data.postReactionsBy;
+  const { hasNext, endCursor } = data.postReactedBy.pageInfo;
+  const { edges, total } = data.postReactedBy;
 
   const fetchMoreHandler = async () => {
     try {
@@ -89,19 +89,19 @@ export default function FloatingLikes({ onClose, open }: Props) {
           if (!fetchMoreResult) {
             return {
               ...prev,
-              postReactionsBy: {
-                ...prev.postReactionsBy,
-                pageInfo: { ...prev.postReactionsBy.pageInfo, hasNext: false },
+              postReactedBy: {
+                ...prev.postReactedBy,
+                pageInfo: { ...prev.postReactedBy.pageInfo, hasNext: false },
               },
             };
           }
           return {
-            postReactionsBy: {
-              ...fetchMoreResult.postReactionsBy,
-              edges: _.uniqBy(
+            postReactedBy: {
+              ...fetchMoreResult.postReactedBy,
+              edges: _uniqBy(
                 [
-                  ...prev.postReactionsBy.edges,
-                  ...fetchMoreResult.postReactionsBy.edges,
+                  ...prev.postReactedBy.edges,
+                  ...fetchMoreResult.postReactedBy.edges,
                 ],
                 "cursor",
               ),

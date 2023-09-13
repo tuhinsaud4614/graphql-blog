@@ -1,5 +1,5 @@
 import { NetworkStatus } from "@apollo/client";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 import { Waypoint } from "react-waypoint";
 
 import {
@@ -58,7 +58,7 @@ export default function TabRecommended() {
     );
   }
 
-  if (!data || data.posts.edges.length === 0) {
+  if (!data || data.postsWithCursor.edges.length === 0) {
     return (
       <TabBox
         notFound={
@@ -72,8 +72,8 @@ export default function TabRecommended() {
     );
   }
 
-  const { hasNext, endCursor } = data.posts.pageInfo;
-  const { edges } = data.posts;
+  const { hasNext, endCursor } = data.postsWithCursor.pageInfo;
+  const { edges } = data.postsWithCursor;
 
   const fetchMoreHandler = async () => {
     try {
@@ -86,10 +86,13 @@ export default function TabRecommended() {
             return prev;
           }
           return {
-            posts: {
-              ...fetchMoreResult.posts,
-              edges: _.uniqBy(
-                [...prev.posts.edges, ...fetchMoreResult.posts.edges],
+            postsWithCursor: {
+              ...fetchMoreResult.postsWithCursor,
+              edges: _uniqBy(
+                [
+                  ...prev.postsWithCursor.edges,
+                  ...fetchMoreResult.postsWithCursor.edges,
+                ],
                 "cursor",
               ),
             },

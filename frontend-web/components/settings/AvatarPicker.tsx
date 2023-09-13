@@ -2,12 +2,11 @@ import * as React from "react";
 
 import Image from "next/image";
 
-import classNames from "classnames";
-import _ from "lodash";
+import lodash_has from "lodash/has";
 import { AiOutlineCamera } from "react-icons/ai";
 
 import { DemoAvatar } from "@/components";
-import { maxFileSize } from "@/utils";
+import { cn, maxFileSize } from "@/utils";
 import { IMAGE_MIMES } from "@/utils/constants";
 
 const className = {
@@ -37,7 +36,7 @@ export default function AvatarPicker({
     const files = e.target.files;
     if (files?.length) {
       const file = files[0];
-      if (!_.has(IMAGE_MIMES, file.type) || file.size > maxFileSize(5)) {
+      if (!lodash_has(IMAGE_MIMES, file.type) || file.size > maxFileSize(5)) {
         return;
       }
       onImageChange(file);
@@ -45,9 +44,7 @@ export default function AvatarPicker({
   };
   return (
     <div className={className.root}>
-      <div
-        className={classNames(className.container, image && "overflow-hidden")}
-      >
+      <div className={cn(className.container, image && "overflow-hidden")}>
         {image ? (
           <Image
             loader={({ src, width, quality }) =>

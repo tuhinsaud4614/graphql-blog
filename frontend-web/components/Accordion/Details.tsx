@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
+
+import { cn } from "@/utils";
 
 import { useAccordionStore } from "./context";
 
@@ -19,7 +20,7 @@ export default function Details({
           animate={{ height: "auto" }}
           exit={{ height: 0 }}
           transition={{ duration: 0.3 }}
-          className={classNames("overflow-hidden", className)}
+          className={cn("overflow-hidden", className)}
         >
           {children}
         </motion.div>

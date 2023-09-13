@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { MotionProps, Variants, motion } from "framer-motion";
+
+import { cn } from "@/utils";
 
 const backdropVariants: Variants = {
   start: {
@@ -22,8 +23,8 @@ export default function Backdrop({ className, ...rest }: Props) {
       initial="start"
       animate="end"
       exit="start"
-      className={classNames(
-        "fixed inset-0 bg-[#1a2027]/70 bg-opacity-75 backdrop-blur-sm",
+      className={cn(
+        "fixed inset-0 bg-[#1a2027]/70 backdrop-blur-sm",
         className,
       )}
     />

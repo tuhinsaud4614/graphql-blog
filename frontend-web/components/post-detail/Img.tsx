@@ -2,12 +2,11 @@ import * as React from "react";
 
 import Image from "next/image";
 
-import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { FImageFragment } from "@/graphql/generated/schema";
 import { useEventListener, useLockBody } from "@/hooks";
-import { generateFileUrl } from "@/utils";
+import { cn, generateFileUrl } from "@/utils";
 
 const className = {
   root: "relative w-full",
@@ -39,7 +38,7 @@ const Img = ({ image, alt }: Props) => {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         className.root,
         "pt-[56.25%]",
         isOpen ? "cursor-zoom-out" : "cursor-zoom-in",
@@ -48,7 +47,7 @@ const Img = ({ image, alt }: Props) => {
       <motion.div
         animate={{ opacity: isOpen ? 1 : 0 }}
         transition={transition}
-        className={classNames(
+        className={cn(
           className.shade,
           isOpen ? className.shadeOpen : className.shadeClose,
         )}
@@ -57,7 +56,7 @@ const Img = ({ image, alt }: Props) => {
       <AnimatePresence>
         <motion.div
           onClick={() => setOpen(!isOpen)}
-          className={classNames(
+          className={cn(
             className.img,
             "scale-1",
             isOpen ? className.imgOpen : className.imgClose,

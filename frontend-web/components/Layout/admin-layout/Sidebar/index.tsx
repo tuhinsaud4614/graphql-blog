@@ -2,7 +2,6 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { BiCategory } from "react-icons/bi";
 import { MdDashboard } from "react-icons/md";
 
@@ -13,6 +12,7 @@ import {
 } from "@/features";
 import { useMediaQuery } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
+import { cn } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 import Container from "./Container";
@@ -25,7 +25,7 @@ function Title({
 }: React.PropsWithChildren<{ visible: boolean }>) {
   return (
     <span
-      className={classNames(
+      className={cn(
         "duration-300",
         !visible && "xl:hidden xl:group-hover:block",
       )}

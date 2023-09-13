@@ -2,6 +2,7 @@ import { IncomingMessage } from "http";
 
 import { ApolloError } from "@apollo/client";
 import axios from "axios";
+import classNames, { type Argument } from "classnames";
 import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
 import jwtDecode from "jwt-decode";
@@ -16,12 +17,23 @@ import {
   Transforms,
 } from "slate";
 import { ReactEditor } from "slate-react";
+import { twMerge } from "tailwind-merge";
 
 import { Value } from "@/utils/types";
 
 import { IMAGE_URL_REGEX, URL_REGEX } from "./constants";
 import { IAnchorOrigin, IUser, SlateLinkElement } from "./interfaces";
 import { isIUser } from "./isType";
+
+/**
+ * The function `cn` takes in multiple arguments and returns a merged string of class names.
+ * @param {Argument[]} inputs - The `inputs` parameter is an array of `Argument` objects.
+ * @returns The `cn` function is returning the result of calling the `twMerge` function with the result
+ * of calling the `classNames` function with the `inputs` array as its argument.
+ */
+export function cn(...inputs: Argument[]) {
+  return twMerge(classNames(inputs));
+}
 
 const ARROW_SIZE = 14;
 export const getPositions = (

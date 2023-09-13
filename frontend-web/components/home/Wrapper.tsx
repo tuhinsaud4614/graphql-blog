@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   content: "px-4 sm:mx-auto max-w-5xl pt-10 pb-4",
@@ -16,10 +16,8 @@ interface Props {
 
 export default function Wrapper({ children, classes }: Props) {
   return (
-    <section className={classNames(classes?.root)}>
-      <div className={classNames(className.content, classes?.content)}>
-        {children}
-      </div>
+    <section className={cn(classes?.root)}>
+      <div className={cn(className.content, classes?.content)}>{children}</div>
     </section>
   );
 }

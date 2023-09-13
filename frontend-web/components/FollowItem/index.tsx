@@ -3,10 +3,8 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import classNames from "classnames";
-
 import { FUserFragment } from "@/graphql/generated/schema";
-import { generateFileUrl, getUserName } from "@/utils";
+import { cn, generateFileUrl, getUserName } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 
 import DemoAvatar from "../DemoAvatar";
@@ -43,12 +41,12 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
   const userName = getUserName(user);
   const imgUrl = generateFileUrl(user.avatar?.url);
   return (
-    <li className={classNames(className.root, classes?.root)}>
+    <li className={cn(className.root, classes?.root)}>
       <Link href={ROUTES.authorProfile(user.id)} passHref>
         {imgUrl ? (
           <a
             aria-label={userName}
-            className={classNames(className.avatar, classes?.avatar)}
+            className={cn(className.avatar, classes?.avatar)}
           >
             <Image
               loader={({ src, width, quality }) =>
@@ -74,14 +72,9 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
         )}
       </Link>
       <Link href={ROUTES.authorProfile(user.id)}>
-        <a
-          aria-label={userName}
-          className={classNames(className.mid, classes?.mid)}
-        >
-          <h2 className={classNames(className.title, classes?.title)}>
-            {userName}
-          </h2>
-          <p className={classNames(className.subtitle, classes?.subtitle)}>
+        <a aria-label={userName} className={cn(className.mid, classes?.mid)}>
+          <h2 className={cn(className.title, classes?.title)}>{userName}</h2>
+          <p className={cn(className.subtitle, classes?.subtitle)}>
             {user.about ||
               `Technical Writer | Editor | Coder | Active Stackoveflow contributor
             | Love to learn More |`}
@@ -90,13 +83,13 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
       </Link>
       {isFollowed ? (
         <UnFollowButton
-          className={classNames(className.btn, classes?.btn)}
+          className={cn(className.btn, classes?.btn)}
           onUnFollow={() => setFollowed(false)}
           toId={user.id}
         />
       ) : (
         <FollowButton
-          className={classNames(className.btn, classes?.btn)}
+          className={cn(className.btn, classes?.btn)}
           onFollow={() => setFollowed(true)}
           toId={user.id}
         />

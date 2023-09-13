@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { Descendant } from "slate";
 
 import { Button, ReactorModal } from "@/components";
@@ -11,7 +10,7 @@ import {
 } from "@/graphql/generated/schema";
 import { useLockBody } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { countConvert, serializeSlateValue } from "@/utils";
+import { cn, countConvert, serializeSlateValue } from "@/utils";
 
 import AllFollowers from "../AllFollowers";
 import FollowButton from "./FollowButton";
@@ -76,12 +75,7 @@ export default function OtherInfo({ user, authenticated }: Props) {
           {countConvert(count, "follower")}
         </Button>
       ) : (
-        <span
-          className={classNames(
-            className.skeltonCommon,
-            className.skeletonText,
-          )}
-        />
+        <span className={cn(className.skeltonCommon, className.skeletonText)} />
       )}
       {aboutText && <p className={className.about}>{aboutText}</p>}
       {authenticated && (
@@ -93,10 +87,7 @@ export default function OtherInfo({ user, authenticated }: Props) {
             />
           ) : (
             <span
-              className={classNames(
-                className.skeltonCommon,
-                className.skeletonBtn,
-              )}
+              className={cn(className.skeltonCommon, className.skeletonBtn)}
             />
           )}
         </React.Fragment>

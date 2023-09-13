@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { FaUserAlt } from "react-icons/fa";
 
+import { cn } from "@/utils";
 import type { PolymorphicPropsWithRef, PolymorphicRef } from "@/utils/types";
 
 const className = {
@@ -26,11 +26,7 @@ const Comp: (<T extends React.ElementType = "div">(
     const Component = as || "div";
 
     return (
-      <Component
-        {...rest}
-        ref={ref}
-        className={classNames(className.root, cls)}
-      >
+      <Component {...rest} ref={ref} className={cn(className.root, cls)}>
         <FaUserAlt size={size} />
       </Component>
     );

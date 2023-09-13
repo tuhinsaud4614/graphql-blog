@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { NetworkStatus } from "@apollo/client";
-import _ from "lodash";
+import _uniqBy from "lodash/uniqBy";
 import { Waypoint } from "react-waypoint";
 
 import {
@@ -61,7 +61,7 @@ export default function Content() {
     );
   }
 
-  if (!data || data.posts.edges.length === 0) {
+  if (!data || data.postsWithCursor.edges.length === 0) {
     return (
       <Wrapper>
         <NoResultFound
@@ -76,8 +76,8 @@ export default function Content() {
     );
   }
 
-  const { hasNext, endCursor } = data.posts.pageInfo;
-  const { edges } = data.posts;
+  const { hasNext, endCursor } = data.postsWithCursor.pageInfo;
+  const { edges } = data.postsWithCursor;
 
   const fetchMoreHandler = async () => {
     try {
@@ -89,17 +89,20 @@ export default function Content() {
           if (!fetchMoreResult) {
             return {
               ...prev,
-              posts: {
-                ...prev.posts,
-                pageInfo: { ...prev.posts.pageInfo, hasNext: false },
+              postsWithCursor: {
+                ...prev.postsWithCursor,
+                pageInfo: { ...prev.postsWithCursor.pageInfo, hasNext: false },
               },
             };
           }
           return {
-            posts: {
-              ...fetchMoreResult.posts,
-              edges: _.uniqBy(
-                [...prev.posts.edges, ...fetchMoreResult.posts.edges],
+            postsWithCursor: {
+              ...fetchMoreResult.postsWithCursor,
+              edges: _uniqBy(
+                [
+                  ...prev.postsWithCursor.edges,
+                  ...fetchMoreResult.postsWithCursor.edges,
+                ],
                 "cursor",
               ),
             },

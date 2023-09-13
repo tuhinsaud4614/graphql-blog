@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import classNames from "classnames";
-
 import { LinkTextButton } from "@/components";
+import { cn } from "@/utils";
 
 const className = {
   title: "text-neutral dark:text-neutral-dark mb-[1.375rem] font-medium",
@@ -34,11 +33,11 @@ export default function Content({
 }: Props) {
   return (
     <React.Fragment>
-      <p className={classNames(className.title, classes?.title)}>{title}</p>
-      <ul className={classNames(className.items, classes?.items)}>
+      <p className={cn(className.title, classes?.title)}>{title}</p>
+      <ul className={cn(className.items, classes?.items)}>
         {children}
         {moreLink && moreText && (
-          <li className={classNames(className.more, classes?.more)}>
+          <li className={cn(className.more, classes?.more)}>
             <LinkTextButton
               href={moreLink}
               aria-label={moreText}

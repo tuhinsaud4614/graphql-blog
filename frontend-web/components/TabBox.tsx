@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import classNames from "classnames";
+import { cn } from "@/utils";
 
 const className = {
   root: "pt-3",
@@ -18,17 +18,11 @@ interface Props {
 
 export default function TabBox({ children, notFound, classes }: Props) {
   if (notFound) {
-    return (
-      <section className={classNames("pt-3", classes?.root)}>
-        {notFound}
-      </section>
-    );
+    return <section className={cn("pt-3", classes?.root)}>{notFound}</section>;
   }
   return (
     <React.Fragment>
-      <ul className={classNames(className.items, classes?.items)}>
-        {children}
-      </ul>
+      <ul className={cn(className.items, classes?.items)}>{children}</ul>
     </React.Fragment>
   );
 }

@@ -1,6 +1,5 @@
-import classNames from "classnames";
-
 import { UserLinkSkeleton } from "@/components";
+import { cn } from "@/utils";
 
 const className = {
   root: "basis-full md:basis-1/2 md1:basis-1/3 px-3 md:px-4",
@@ -16,13 +15,13 @@ export default function TrendingItemSkeleton() {
   return (
     <li className={className.root}>
       <section className={className.container}>
-        <span className={classNames(className.index, className.common)} />
+        <span className={cn(className.index, className.common)} />
         <div className={className.content}>
           <UserLinkSkeleton />
 
-          <span className={classNames(className.title, className.common)} />
+          <span className={cn(className.title, className.common)} />
           <span className={className.timeBox}>
-            <span className={classNames(className.common, "w-1/3 h-2")} />
+            <span className={cn(className.common, "h-2 w-1/3")} />
           </span>
         </div>
       </section>

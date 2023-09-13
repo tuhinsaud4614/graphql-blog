@@ -1,12 +1,11 @@
 import * as React from "react";
 
-import classNames from "classnames";
 import { BiImage } from "react-icons/bi";
 import { ReactEditor, useSlateStatic } from "slate-react";
 
 import { Menu, SlateButton } from "@/components";
 import { useTooltip } from "@/hooks";
-import { insertImage } from "@/utils";
+import { cn, insertImage } from "@/utils";
 
 import { Upload } from "./Upload";
 import { Url } from "./Url";
@@ -57,7 +56,7 @@ export default function ImageButton() {
             <button
               aria-label="Tab upload"
               type="button"
-              className={classNames(
+              className={cn(
                 className.tab,
                 currentTab === 0 && className.tabActive,
               )}
@@ -68,7 +67,7 @@ export default function ImageButton() {
             <button
               aria-label="Tab url"
               type="button"
-              className={classNames(
+              className={cn(
                 className.tab,
                 currentTab === 1 && className.tabActive,
               )}

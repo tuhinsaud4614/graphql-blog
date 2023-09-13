@@ -2,17 +2,16 @@
 import * as React from "react";
 
 import {
+  type ColumnDef,
+  type SortingState,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  type ColumnDef,
-  type SortingState,
 } from "@tanstack/react-table";
-import classNames from "classnames";
 
-import { isDev } from "@/utils";
+import { cn, isDev } from "@/utils";
 
 import TBody from "./Body";
 import Filter from "./Filter";
@@ -93,7 +92,7 @@ export default function Table<TData extends {}>({
         {addSection}
       </div>
       <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-200">
-        <table className={classNames(className.table, "w-full")}>
+        <table className={cn(className.table, "w-full")}>
           <THead headers={getHeaderGroups()} />
           <TBody rowModel={getRowModel()} />
           <TFoot>

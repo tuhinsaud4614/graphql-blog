@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Variants, motion } from "framer-motion";
-import _ from "lodash";
+import _sample from "lodash/sample";
 
 const smallStarVariants: Variants = {
   hidden: { opacity: 0 },
@@ -55,7 +55,7 @@ const Space = (props: React.SVGProps<SVGSVGElement>) => (
     {/* Start Big start */}
     <g>
       <motion.g
-        animate={{ rotate: _.sample([-30, 30]), origin: "50%" }}
+        animate={{ rotate: _sample([-30, 30]), origin: "50%" }}
         transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.7 }}
       >
         <line
@@ -82,7 +82,7 @@ const Space = (props: React.SVGProps<SVGSVGElement>) => (
         />
       </motion.g>
       <motion.g
-        animate={{ rotate: _.sample([-30, 30]), origin: "50%" }}
+        animate={{ rotate: _sample([-30, 30]), origin: "50%" }}
         transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.7 }}
       >
         <line
@@ -110,7 +110,7 @@ const Space = (props: React.SVGProps<SVGSVGElement>) => (
         />
       </motion.g>
       <motion.g
-        animate={{ rotate: _.sample([-30, 30]), origin: "50%" }}
+        animate={{ rotate: _sample([-30, 30]), origin: "50%" }}
         transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.7 }}
       >
         <line
@@ -138,7 +138,7 @@ const Space = (props: React.SVGProps<SVGSVGElement>) => (
         />
       </motion.g>
       <motion.g
-        animate={{ rotate: _.sample([-30, 30]), origin: "50%" }}
+        animate={{ rotate: _sample([-30, 30]), origin: "50%" }}
         transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.7 }}
       >
         <line

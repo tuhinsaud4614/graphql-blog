@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
 
-import classNames from "classnames";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiBell, BiExit } from "react-icons/bi";
 import { BsFillGearFill } from "react-icons/bs";
@@ -23,6 +22,7 @@ import { selectUser } from "@/features";
 import { useLogout, useMediaQuery } from "@/hooks";
 import { useAppSelector } from "@/store";
 import {
+  cn,
   generateFileUrl,
   getUserName,
   gplErrorHandler,
@@ -95,7 +95,7 @@ export default function BottomTab() {
             </a>
           </Link>
         </li>
-        <li className={classNames(className.item, className.link)}>
+        <li className={cn(className.item, className.link)}>
           <ClientOnly>
             <Avatar />
           </ClientOnly>

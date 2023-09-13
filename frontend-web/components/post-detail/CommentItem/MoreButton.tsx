@@ -2,7 +2,6 @@ import * as React from "react";
 
 import { useRouter } from "next/router";
 
-import classNames from "classnames";
 import produce from "immer";
 import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -17,7 +16,7 @@ import {
   GetPostCommentsWithCursorQuery,
   useDeleteCommentMutation,
 } from "@/graphql/generated/schema";
-import { gplErrorHandler, isDev } from "@/utils";
+import { cn, gplErrorHandler, isDev } from "@/utils";
 
 import { useEditorOpener } from "./context";
 
@@ -75,31 +74,31 @@ export default function MoreButton({ commentId, replyFor }: Props) {
               (prevComments) => {
                 if (
                   !prevComments ||
-                  prevComments.postCommentsOnCursor.total === 0
+                  prevComments.postCommentsWithCursor.total === 0
                 ) {
                   return;
                 }
                 const newComments = produce(prevComments, (draft) => {
                   const secondLastComment =
-                    draft.postCommentsOnCursor.edges[
-                      draft.postCommentsOnCursor.edges.length - 2
+                    draft.postCommentsWithCursor.edges[
+                      draft.postCommentsWithCursor.edges.length - 2
                     ];
-                  draft.postCommentsOnCursor.edges =
-                    draft.postCommentsOnCursor.edges.filter((comment) => {
+                  draft.postCommentsWithCursor.edges =
+                    draft.postCommentsWithCursor.edges.filter((comment) => {
                       if (comment.cursor === data.deleteComment) {
                         if (
                           secondLastComment &&
-                          draft.postCommentsOnCursor.pageInfo.endCursor ===
+                          draft.postCommentsWithCursor.pageInfo.endCursor ===
                             data.deleteComment
                         ) {
-                          draft.postCommentsOnCursor.pageInfo.endCursor =
+                          draft.postCommentsWithCursor.pageInfo.endCursor =
                             secondLastComment.cursor;
                         }
                         return false;
                       }
                       return true;
                     });
-                  draft.postCommentsOnCursor.total -= 1;
+                  draft.postCommentsWithCursor.total -= 1;
                 });
                 return newComments;
               },
@@ -223,12 +222,10 @@ export default function MoreButton({ commentId, replyFor }: Props) {
       >
         <div className={className.deleteContent}>
           <h2 className={className.deleteTitle}>Delete</h2>
-          <p className={classNames(className.deleteInfo, "mt-2.5")}>
+          <p className={cn(className.deleteInfo, "mt-2.5")}>
             Deleted responses are gone forever.
           </p>
-          <p className={classNames(className.deleteInfo, "mb-10")}>
-            Are you sure?
-          </p>
+          <p className={cn(className.deleteInfo, "mb-10")}>Are you sure?</p>
           <div className={className.deleteActions}>
             <Button
               type="button"
