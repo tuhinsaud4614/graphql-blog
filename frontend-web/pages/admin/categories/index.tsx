@@ -11,23 +11,25 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  BiChevronLeft,
-  BiChevronRight,
-  BiFirstPage,
-  BiLastPage,
-  BiPencil,
-  BiTrash,
-} from "react-icons/bi";
+import { BiPencil, BiTrash } from "react-icons/bi";
 
 import { Button } from "@/components";
 import { AdminLayout } from "@/components/Layout";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/Table";
 import TableFilter from "@/components/Table/Filter";
+import TablePaginate from "@/components/Table/Paginate";
 import TableSort from "@/components/Table/Sort";
-import { FormControl } from "@/components/account";
 import { AdminCreateCategory } from "@/components/admin-categories";
 import { Category } from "@/graphql/generated/schema";
-import { cn } from "@/utils";
+import { isDev } from "@/utils";
 
 const className = {
   table:
@@ -152,12 +154,8 @@ export default function Categories() {
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true,
+    debugTable: isDev(),
   });
-
-  const to =
-    getState().pagination.pageSize * (getState().pagination.pageIndex + 1);
-  const from = to + 1 - getState().pagination.pageSize;
 
   return (
     <AdminLayout>
@@ -173,14 +171,13 @@ export default function Categories() {
         </div>
         <AdminCreateCategory />
       </div>
-      <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-200">
-        <table className={cn(className.table, "w-full")}>
-          {/* head */}
-          <thead>
+      <div className="overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-dark-100">
+        <Table>
+          <TableHeader>
             {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
+                  <TableHead key={header.id}>
                     <TableSort
                       className="gap-2"
                       mode="text"
@@ -192,110 +189,55 @@ export default function Categories() {
                         header.getContext(),
                       )}
                     </TableSort>
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody className={cn(className.tBody)}>
-            {getRowModel().rows.map((row, i) => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell, index) => {
-                    if (index === 0) {
-                      return (
-                        <th key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </th>
-                      );
-                    }
+          </TableHeader>
+          <TableBody>
+            {getRowModel().rows.map((row, i) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell, index) => {
+                  if (index === 0) {
                     return (
-                      <td key={cell.id}>
+                      <TableHead key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
                         )}
-                      </td>
+                      </TableHead>
                     );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={4}>
-                <div className="flex items-center justify-end gap-3">
-                  <p className="shrink-0 text-sm text-neutral dark:text-neutral-dark">
-                    Rows per page:
-                  </p>
-                  <select
-                    className="text-text-neutral focus:shadow-outline-indigo inline-flex min-w-[3rem] shrink-0 cursor-pointer select-none appearance-none items-center justify-center rounded-md border border-transparent bg-accent px-1 text-sm font-medium leading-5 shadow-sm transition duration-150 ease-in-out hover:bg-accent-focus focus:border-accent focus:outline-none dark:bg-accent-dark dark:text-neutral-dark sm:text-base sm:leading-6"
-                    aria-label="rows per page"
-                    value={getState().pagination.pageSize}
-                    onChange={(e) => {
-                      setPageSize(Number(e.target.value));
-                    }}
-                  >
-                    {[5, 10, 15, 20].map((r) => (
-                      <option key={r} value={r}>
-                        Show {r}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-sm text-neutral dark:text-neutral-dark">
-                    {from}–{Math.min(to, data.length)} of {data.length}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    Go to page:
-                    <FormControl
-                      type="number"
-                      className="w-[2.5625rem]"
-                      defaultValue={getState().pagination.pageIndex + 1}
-                      onChange={(e) => {
-                        const page = e.target.value
-                          ? Number(e.target.value) - 1
-                          : 0;
-                        setPageIndex(Math.min(getPageCount() - 1, page));
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() => setPageIndex(0)}
-                      disabled={!getCanPreviousPage()}
-                    >
-                      <BiFirstPage />
-                    </Button>
-                    <Button
-                      onClick={() => previousPage()}
-                      disabled={!getCanPreviousPage()}
-                    >
-                      <BiChevronLeft />
-                    </Button>
-                    <Button
-                      onClick={() => nextPage()}
-                      disabled={!getCanNextPage()}
-                    >
-                      <BiChevronRight />
-                    </Button>
-                    <Button
-                      type="button"
-                      aria-label="Last page"
-                      onClick={() => setPageIndex(getPageCount() - 1)}
-                      disabled={!getCanNextPage()}
-                    >
-                      <BiLastPage />
-                    </Button>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+                  }
+                  return (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={4}>
+                <TablePaginate
+                  state={getState()}
+                  pageCount={getPageCount()}
+                  dataLength={data.length}
+                  setPageSize={setPageSize}
+                  setPageIndex={setPageIndex}
+                  nextPage={nextPage}
+                  previousPage={previousPage}
+                  canPreviousPage={getCanPreviousPage()}
+                  canNextPage={getCanNextPage()}
+                />
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
       </div>
     </AdminLayout>
   );
