@@ -2,55 +2,64 @@ import { GetServerSideProps } from "next";
 
 import { NetworkStatus } from "@apollo/client";
 
-import { ErrorBox } from "@/components";
+import { AuthGuard, ErrorBox } from "@/components";
 import { AdminLayout } from "@/components/Layout";
 import { AdminCreateCategory } from "@/components/admin-categories";
 import AdminCategories from "@/components/admin-categories/List";
+import AdminCategorySkeleton from "@/components/admin-categories/Skeleton";
 import {
   GetCategoriesWithOffsetDocument,
   GetCategoriesWithOffsetQuery,
   GetCategoriesWithOffsetQueryVariables,
+  UserRole,
   useGetCategoriesWithOffsetQuery,
 } from "@/graphql/generated/schema";
 import { addApolloState, initializeApollo } from "@/lib/apollo";
-import { gplErrorHandler, isDev } from "@/utils";
+import { convertDateToLocale, gplErrorHandler, isDev } from "@/utils";
 import { ROUTES } from "@/utils/constants";
 import { withSSRAuth } from "@/utils/ssr";
 
 export default function Categories() {
   const { data, refetch, error, loading, networkStatus } =
     useGetCategoriesWithOffsetQuery({
-      variables: { limit: 10, page: 10 },
+      variables: { limit: 10, page: 1 },
       notifyOnNetworkStatusChange: true,
     });
 
-  if (loading || networkStatus === NetworkStatus.refetch) {
-    return <AdminLayout>Loading</AdminLayout>;
-  }
+  let content = (
+    <AdminCategories
+      categories={
+        data?.categoriesWithOffset.data.map((category) => ({
+          ...category,
+          updatedAt: convertDateToLocale(category.updatedAt),
+        })) || []
+      }
+    >
+      <AdminCreateCategory />
+    </AdminCategories>
+  );
 
-  if (error) {
-    return (
-      <AdminLayout>
-        <ErrorBox
-          title="Fetching categories errors"
-          errors={gplErrorHandler(error)}
-          onRetry={refetch}
-        />
-      </AdminLayout>
+  if (loading || networkStatus === NetworkStatus.refetch) {
+    content = <AdminCategorySkeleton />;
+  } else if (error) {
+    content = (
+      <ErrorBox
+        title="Fetching categories errors"
+        errors={gplErrorHandler(error)}
+        onRetry={refetch}
+      />
     );
   }
   return (
-    <AdminLayout>
-      <AdminCategories categories={data?.categoriesWithOffset.data || []}>
-        <AdminCreateCategory />
-      </AdminCategories>
-    </AdminLayout>
+    <AuthGuard role={UserRole.Admin}>
+      <AdminLayout>{content}</AdminLayout>
+    </AuthGuard>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = withSSRAuth(
   ROUTES.login,
-  async (_, { query }, accessToken) => {
+  async (_, __, accessToken) => {
     const client = initializeApollo(undefined, accessToken);
 
     try {

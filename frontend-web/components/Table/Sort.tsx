@@ -12,7 +12,7 @@ interface Props extends React.ComponentProps<typeof Button> {
 
 export default function TSort({ children, sorted, ...rest }: Props) {
   return (
-    <Button {...rest}>
+    <Button {...rest} className={cn("p-0.5", rest.className)}>
       {children}
       {
         <BiChevronDown

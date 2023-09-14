@@ -1,10 +1,9 @@
-import { IncomingMessage } from "http";
-
 import { ApolloError } from "@apollo/client";
 import axios from "axios";
 import classNames, { type Argument } from "classnames";
 import escapeHtml from "escape-html";
 import { User } from "graphql/generated/schema";
+import { IncomingMessage } from "http";
 import jwtDecode from "jwt-decode";
 import {
   BaseEditor,
@@ -499,3 +498,25 @@ let accessToken: string | null = null;
 
 export const getAccessToken = () => accessToken;
 export const setAccessToken = (token: string | null) => (accessToken = token);
+
+export function convertDateToLocale(
+  date: Date | string | number,
+  options: Intl.DateTimeFormatOptions = {
+    year: "numeric", // "numeric", "2-digit"
+    month: "long", // "short", "long"
+    day: "numeric", // "numeric", "2-digit"
+  },
+): string {
+  try {
+    // Example locale (replace with your desired locale, e.g., "en-US" for US English)
+    const locale = "en-US";
+
+    // Create the DateTimeFormat object with the specified locale and options
+    const formatter = new Intl.DateTimeFormat(locale, options);
+
+    // Format the date
+    return formatter.format(new Date(isNaN(date as any) ? date : +date));
+  } catch (error) {
+    return date.toString();
+  }
+}

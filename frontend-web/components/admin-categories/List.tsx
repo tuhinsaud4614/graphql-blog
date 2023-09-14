@@ -16,7 +16,6 @@ import { Category } from "@/graphql/generated/schema";
 import { isDev } from "@/utils";
 
 import Button from "../Button";
-import { AdminLayout } from "../Layout";
 import {
   Table,
   TableBody,
@@ -58,7 +57,7 @@ export default function AdminCategories({ categories, children }: Props) {
         },
       },
       {
-        header: "Created at",
+        header: "Modify at",
         accessorKey: "updatedAt",
         cell(info) {
           return info.getValue();
@@ -68,7 +67,7 @@ export default function AdminCategories({ categories, children }: Props) {
         header: "Actions",
         cell(info) {
           return (
-            <div className="flex items-center gap-2">
+            <div className="mx-auto flex w-fit items-center gap-2">
               <Button
                 variant="warning"
                 onClick={() => console.log(info.row.original.id)}
@@ -118,7 +117,7 @@ export default function AdminCategories({ categories, children }: Props) {
   });
 
   return (
-    <AdminLayout>
+    <>
       <h1 className="mb-4 text-xl font-bold text-neutral dark:text-neutral-dark">
         Categories
       </h1>
@@ -139,7 +138,7 @@ export default function AdminCategories({ categories, children }: Props) {
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
                     <TableSort
-                      className="gap-2"
+                      className="mx-auto gap-2"
                       mode="text"
                       onClick={header.column.getToggleSortingHandler()}
                       sorted={header.column.getIsSorted()}
@@ -160,7 +159,7 @@ export default function AdminCategories({ categories, children }: Props) {
                 {row.getVisibleCells().map((cell, index) => {
                   if (index === 0) {
                     return (
-                      <TableHead key={cell.id}>
+                      <TableHead key={cell.id} className="!text-center">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -199,6 +198,6 @@ export default function AdminCategories({ categories, children }: Props) {
           </TableFooter>
         </Table>
       </div>
-    </AdminLayout>
+    </>
   );
 }
