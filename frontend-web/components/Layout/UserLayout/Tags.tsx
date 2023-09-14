@@ -47,7 +47,7 @@ export default function Tags() {
     );
   }
 
-  if (!data || data.tagsOnOffset.results.length === 0) {
+  if (!data || data.tagsWithOffset.results.length === 0) {
     return null;
   }
 
@@ -57,7 +57,7 @@ export default function Tags() {
         title="Recommended tags"
         classes={{ items: className.items }}
       >
-        {data.tagsOnOffset.results.map((tag) => (
+        {data.tagsWithOffset.results.map((tag) => (
           <li className="first:ml-3 first:mt-3" key={tag.id}>
             <LinkButton
               variant="neutral"

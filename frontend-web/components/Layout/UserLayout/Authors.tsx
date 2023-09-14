@@ -45,7 +45,7 @@ export default function Authors() {
     );
   }
 
-  if (!data || data.suggestAuthorsToUserOnOffset.data.length === 0) {
+  if (!data || data.recommendAuthorsWithOffset.data.length === 0) {
     return null;
   }
 
@@ -54,13 +54,13 @@ export default function Authors() {
       moreLink={ROUTES.mySuggestions}
       title="Who to follow"
       moreText={
-        data.suggestAuthorsToUserOnOffset.pageInfo?.hasNext
+        data.recommendAuthorsWithOffset.pageInfo?.hasNext
           ? "See more suggestions"
           : undefined
       }
       classes={{ items: "pb-8 overflow-x-hidden" }}
     >
-      {data.suggestAuthorsToUserOnOffset.data.map((user) => (
+      {data.recommendAuthorsWithOffset.data.map((user) => (
         <FollowItem key={user.id} user={user} />
       ))}
     </SidebarContent>

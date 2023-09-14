@@ -7,7 +7,7 @@ import { BiX } from "react-icons/bi";
 import { cn } from "@/utils";
 
 const className = {
-  root: "flex items-center justify-between px-4 py-2.5 border-b dark:border-base-dark-300 rounded-tl-2xl rounded-tr-2xl",
+  root: "flex items-center justify-between px-4 py-2.5 border-b dark:border-base-dark-200 rounded-tl-2xl rounded-tr-2xl",
   btn: "shrink-0 text-error hover:text-error-focus dark:text-error-dark dark:hover:text-error active:scale-95 flex items-center justify-center p-1 rounded-full",
 };
 

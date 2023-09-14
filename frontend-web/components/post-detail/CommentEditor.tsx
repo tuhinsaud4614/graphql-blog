@@ -75,7 +75,7 @@ export default function CommentEditor({
 
                 if (
                   !prevComments ||
-                  prevComments.postCommentsOnCursor.total === 0
+                  prevComments.postCommentsWithCursor.total === 0
                 ) {
                   return {
                     postCommentsOnCursor: {
@@ -87,11 +87,11 @@ export default function CommentEditor({
                 }
 
                 const newComments = produce(prevComments, (draft) => {
-                  draft.postCommentsOnCursor.edges = [
+                  draft.postCommentsWithCursor.edges = [
                     newComment,
-                    ...draft.postCommentsOnCursor.edges,
+                    ...draft.postCommentsWithCursor.edges,
                   ];
-                  draft.postCommentsOnCursor.total += 1;
+                  draft.postCommentsWithCursor.total += 1;
                 });
                 return newComments;
               },

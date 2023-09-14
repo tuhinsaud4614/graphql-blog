@@ -69,7 +69,7 @@ function Result() {
 
   return (
     <section className={className.items}>
-      {data?.tagsOnOffset.results.map((tag, index) => (
+      {data?.tagsWithOffset.results.map((tag, index) => (
         <LinkButton
           key={tag.id}
           variant="neutral"

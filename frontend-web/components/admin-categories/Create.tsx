@@ -39,7 +39,7 @@ export default function CreateCategory() {
             Create Category
           </h3>
         </ModalHeader>
-        <CreateForm />
+        <CreateForm onClose={handleClose} />
       </Modal>
     </>
   );

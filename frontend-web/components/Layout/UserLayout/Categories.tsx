@@ -49,7 +49,7 @@ export default function Categories() {
     );
   }
 
-  if (!data || data.categoriesOnOffset.data.length === 0) {
+  if (!data || data.categoriesWithOffset.data.length === 0) {
     return null;
   }
 
@@ -59,12 +59,12 @@ export default function Categories() {
         title="Categories"
         moreLink={ROUTES.categories}
         moreText={
-          data.categoriesOnOffset.pageInfo?.hasNext
+          data.categoriesWithOffset.pageInfo?.hasNext
             ? "See all the categories"
             : undefined
         }
       >
-        {data.categoriesOnOffset.data.map((category) => (
+        {data.categoriesWithOffset.data.map((category) => (
           <SidebarCategory
             key={category.id}
             title={category.title}
