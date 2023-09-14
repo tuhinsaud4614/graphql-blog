@@ -20,7 +20,7 @@ services:
       - 5555:5555
     networks:
       - shared-network
-    command: bash -c 'npx prisma generate && npm run dev'
+    command: bash -c 'npx prisma generate && npx prisma migrate dev --name init && npm run dev'
 
   db:
     image: postgres:15.2-alpine
