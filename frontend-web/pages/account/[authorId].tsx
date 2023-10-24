@@ -71,7 +71,7 @@ const AboutPage: NextPage<Props> = ({ query }) => {
   const userName = getUserName(user);
 
   return (
-    <AuthGuard role={UserRole.Author}>
+    <AuthGuard role={[UserRole.Admin, UserRole.Author]}>
       <LayoutContainer
         sidebar={
           <React.Fragment>

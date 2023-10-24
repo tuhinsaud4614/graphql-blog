@@ -173,7 +173,7 @@ const CreatePost: NextPage = () => {
   });
 
   return (
-    <AuthGuard role={UserRole.Author}>
+    <AuthGuard role={[UserRole.Admin, UserRole.Author]}>
       <ClientOnly>
         <PostCreateHeader />
         <PostCreateContainer>

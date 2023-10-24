@@ -8,7 +8,7 @@ import { useAppSelector } from "@/store";
 import { ROUTES } from "@/utils/constants";
 
 interface Props {
-  role?: UserRole;
+  role?: UserRole | UserRole[];
   children?: React.ReactNode;
 }
 
@@ -21,7 +21,10 @@ export default function AuthGuard({ role, children }: Props) {
       return;
     }
 
-    if (role && rdxUser.role !== role) {
+    if (
+      role &&
+      (Array.isArray(role) ? !(rdxUser.role in role) : rdxUser.role !== role)
+    ) {
       Router.replace(ROUTES.home);
     }
   }, [rdxUser, role]);

@@ -37,8 +37,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
       variables: { limit: 10 },
     });
 
-    if (data?.postsOnOffset) {
-      const paths = data.postsOnOffset.data.map((post) => ({
+    if (data?.postsWithOffset) {
+      const paths = data?.postsWithOffset.data.map((post) => ({
         params: { postId: post.id },
       }));
       return {

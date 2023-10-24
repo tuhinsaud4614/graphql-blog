@@ -125,7 +125,7 @@ const VerifyResetPassword: NextPage<Props> = ({ query }) => {
 
 function Wrapper({ children }: React.PropsWithChildren) {
   return (
-    <AuthGuard role={UserRole.Author}>
+    <AuthGuard role={[UserRole.Admin, UserRole.Author]}>
       <Head>
         <title>The RAT Diary | Reset Password Verification</title>
       </Head>

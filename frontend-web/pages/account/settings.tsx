@@ -9,7 +9,6 @@ import {
   SettingsPasswordChange,
 } from "@/components/settings";
 import { selectUser } from "@/features";
-import { UserRole } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
 import { ROUTES } from "@/utils/constants";
 import { withSSRAuth } from "@/utils/ssr";
@@ -23,7 +22,7 @@ const className = {
 const SettingsPage: NextPage = () => {
   const user = useAppSelector(selectUser);
   return (
-    <AuthGuard role={UserRole.Author}>
+    <AuthGuard>
       <LayoutContainer>
         <Head>
           <title>The RAT Diary | Your settings</title>

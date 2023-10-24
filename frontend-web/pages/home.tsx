@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 import { BsPlusLg } from "react-icons/bs";
 
-import { AuthGuard, ClientOnly, Tabs } from "@/components";
+import { ClientOnly, Tabs } from "@/components";
 import { UserLayout } from "@/components/Layout";
 import {
   UserHomeFollowList,
@@ -18,9 +18,6 @@ import {
   GetFollowingAuthorPostsQuery,
   GetFollowingAuthorPostsQueryVariables,
   GetPostsWithCursorDocument,
-  GetPostsWithCursorQuery,
-  GetPostsWithCursorQueryVariables,
-  UserRole,
 } from "@/graphql/generated/schema";
 import { addApolloState, initializeApollo } from "@/lib/apollo";
 import { isDev, queryChecking } from "@/utils";
@@ -50,31 +47,31 @@ const MyHome: NextPage<Props> = ({ query }) => {
   }, [query]);
 
   return (
-    <AuthGuard role={UserRole.Author}>
-      <UserLayout>
-        <Link href={ROUTES.mySuggestions}>
-          <a aria-label="Suggestions" className={className.top}>
-            <span className={className.topIcon}>
-              <BsPlusLg size={12} />
-            </span>
-            <p>Keep up with the latest in any topic</p>
-          </a>
-        </Link>
-        <ClientOnly>
-          <UserHomeFollowList />
-        </ClientOnly>
-        <Tabs
-          tabs={tabs}
-          onTab={(index) => {
-            replace(index === 0 ? ROUTES.myHomeFollowing : ROUTES.myHome);
-          }}
-          selectedTab={currentTab}
-        >
-          {currentTab === 0 ? <UserHomeTabFollowing /> : <Fragment />}
-          {currentTab === 1 ? <UserHomeTabRecommended /> : <Fragment />}
-        </Tabs>
-      </UserLayout>
-    </AuthGuard>
+    // <AuthGuard>
+    <UserLayout>
+      <Link href={ROUTES.mySuggestions}>
+        <a aria-label="Suggestions" className={className.top}>
+          <span className={className.topIcon}>
+            <BsPlusLg size={12} />
+          </span>
+          <p>Keep up with the latest in any topic</p>
+        </a>
+      </Link>
+      <ClientOnly>
+        <UserHomeFollowList />
+      </ClientOnly>
+      <Tabs
+        tabs={tabs}
+        onTab={(index) => {
+          replace(index === 0 ? ROUTES.myHomeFollowing : ROUTES.myHome);
+        }}
+        selectedTab={currentTab}
+      >
+        {currentTab === 0 ? <UserHomeTabFollowing /> : <Fragment />}
+        {currentTab === 1 ? <UserHomeTabRecommended /> : <Fragment />}
+      </Tabs>
+    </UserLayout>
+    // </AuthGuard>
   );
 };
 
@@ -83,30 +80,15 @@ export const getServerSideProps: GetServerSideProps = withSSRAuth(
   async (_, { query }, accessToken) => {
     const client = initializeApollo(undefined, accessToken);
 
-    if ("tab" in query && query["tab"] === "following") {
-      try {
-        await client.query<
-          GetFollowingAuthorPostsQuery,
-          GetFollowingAuthorPostsQueryVariables
-        >({
-          query: GetFollowingAuthorPostsDocument,
-          variables: { limit: 10 },
-          errorPolicy: "all",
-        });
-
-        return addApolloState(client, { props: { query } });
-      } catch (error) {
-        isDev() && console.log(error);
-        return addApolloState(client, { props: { query } });
-      }
-    }
-
     try {
       await client.query<
-        GetPostsWithCursorQuery,
-        GetPostsWithCursorQueryVariables
+        GetFollowingAuthorPostsQuery,
+        GetFollowingAuthorPostsQueryVariables
       >({
-        query: GetPostsWithCursorDocument,
+        query:
+          "tab" in query && query["tab"] === "following"
+            ? GetFollowingAuthorPostsDocument
+            : GetPostsWithCursorDocument,
         variables: { limit: 10 },
         errorPolicy: "all",
       });

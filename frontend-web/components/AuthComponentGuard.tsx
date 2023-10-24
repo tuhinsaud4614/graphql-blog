@@ -5,7 +5,7 @@ import { UserRole } from "@/graphql/generated/schema";
 import { useAppSelector } from "@/store";
 
 interface Props {
-  role?: UserRole;
+  role?: UserRole | UserRole[];
   children?: React.ReactNode;
 }
 
@@ -16,7 +16,10 @@ export default function AuthComponentGuard({ role, children }: Props) {
     return null;
   }
 
-  if (role && user.role !== role) {
+  if (
+    role &&
+    (Array.isArray(role) ? !(user.role in role) : user.role !== role)
+  ) {
     return null;
   }
 

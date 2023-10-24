@@ -12,7 +12,7 @@ import * as yup from "yup";
 import { Button, ErrorModal } from "@/components";
 import { Form, FormContainer, FormControl } from "@/components/account";
 import { setAuthUser } from "@/features";
-import { useLoginMutation } from "@/graphql/generated/schema";
+import { UserRole, useLoginMutation } from "@/graphql/generated/schema";
 import { useAppDispatch } from "@/store";
 import { getAuthUser, gplErrorHandler } from "@/utils";
 import {
@@ -77,7 +77,11 @@ const Login: NextPage = () => {
         const user = getAuthUser(accessToken);
         rdxDispatch(setAuthUser({ user, token: accessToken }));
 
-        replace(ROUTES.myHome);
+        replace(
+          user?.role === UserRole.Admin
+            ? ROUTES.admin.dashboard
+            : ROUTES.myHome,
+        );
       }
     } catch (error) {
       resetForm();

@@ -48,7 +48,16 @@ export { default as SlateMarkButton } from "./SlateMarkButton";
 export { default as SlateViewer } from "./SlateViewer";
 export { default as SubscriptionContainer } from "./SubscriptionContainer";
 export { default as TabBox } from "./TabBox";
-export { default as Table } from "./Table";
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./Table";
 export { default as Tabs } from "./Tabs";
 export { default as TabPanel } from "./Tabs/TabPanel";
 export { default as Tag } from "./Tag";
