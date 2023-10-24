@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import ThemeProvider from "@/components/providers/ThemeProvider";
 import { cn } from "@/lib/utils";
 
 import { ApolloWrapper } from "../components/wrappers/ApolloWrapper";
@@ -21,12 +22,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "bg-base-100")}>
-        <ApolloWrapper>{children}</ApolloWrapper>
-        <RouteChangeProgress />
-        <div id="presentational" role="presentation" />
-        <div id="tooltip" role="tooltip" aria-label="tooltip" />
-      </body>
+      <ThemeProvider>
+        <body className={cn(inter.className, "bg-base-100")}>
+          <ApolloWrapper>{children}</ApolloWrapper>
+          <RouteChangeProgress />
+          <div id="presentational" role="presentation" />
+          <div id="tooltip" role="tooltip" aria-label="tooltip" />
+        </body>
+      </ThemeProvider>
     </html>
   );
 }

@@ -1,9 +1,14 @@
 import Link from "next/link";
 
+import Header from "./_components/Header";
+
 export default function Home() {
   return (
-    <main className="bg-primary">
-      <Link href="/dashboard">Dashboard</Link>
-    </main>
+    <>
+      <Header />
+      <main className="h-[2000px] bg-primary">
+        <Link href="/dashboard">Dashboard</Link>
+      </main>
+    </>
   );
 }

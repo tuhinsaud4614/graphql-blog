@@ -312,7 +312,11 @@ const myPlugin = plugin(
 const preset = {
   darkMode: ["class"],
   content: [],
-  plugins: [require("tailwind-scrollbar-hide"), myPlugin],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar-hide"),
+    myPlugin,
+  ],
 } satisfies Config;
 
 export default preset;
