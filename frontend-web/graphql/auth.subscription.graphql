@@ -1,6 +1,0 @@
-subscription VerifyUser($userId: ID!) {
-  userVerify(userId: $userId) {
-    userId
-    mutation
-  }
-}

@@ -1,0 +1,96 @@
+fragment FOffsetPageInfo on OffsetPageInfo {
+  hasNext
+  nextPage
+  previousPage
+  totalPages
+}
+
+fragment FCursorPageInfo on CursorPageInfo {
+  hasNext
+  endCursor
+}
+
+fragment FImage on Picture {
+  id
+  url
+  height
+  width
+}
+
+fragment FUser on User {
+  id
+  name
+  email
+  mobile
+  role
+  authorStatus
+  about
+  avatar {
+    ...FImage
+  }
+}
+
+fragment FCategory on Category {
+  id
+  title
+  createdAt
+  updatedAt
+}
+
+fragment GetPostItem on Post {
+  id
+  author {
+    ...FUser
+  }
+  title
+  categories {
+    id
+    title
+  }
+  image {
+    ...FImage
+  }
+  published
+  publishedAt
+  content
+  tags {
+    id
+    title
+  }
+  createdAt
+  updatedAt
+}
+
+fragment TagItem on Tag {
+  id
+  title
+  createdAt
+  updatedAt
+}
+
+fragment FComment on Comment {
+  id
+  commenter {
+    ...FUser
+  }
+  content
+  parentComment {
+    id
+  }
+  createdAt
+  updatedAt
+}
+
+fragment FCommentWithReplies on Comment {
+  id
+  commenter {
+    ...FUser
+  }
+  content
+  parentComment {
+    id
+  }
+  createdAt
+  updatedAt
+  replies
+}

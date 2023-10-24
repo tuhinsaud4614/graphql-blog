@@ -1,38 +1,14 @@
 {
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.addMissingImports": true,
     "source.fixAll.eslint": true,
-    "source.fixAll.tslint": true,
-    "source.organizeImports": true
+    "source.organizeImports": true,
+    "source.addMissingImports": true
   },
-  "tailwindCSS.experimental.classRegex": [
-    [
-      "cva(?:<[^>]*>)?(([^)]*))",
-      "[\"'`]([^\"'`]*).*?[\"'`]",
-      "(?:twMerge|twJoin)\\(([^\\);]*)[\\);]"
-    ]
-  ],
-  "eslint.validate": ["typescript", "javascript"],
-  "cSpell.words": [
-    "atrule",
-    "codegen",
-    "eventsource",
-    "extralight",
-    "Formik",
-    "immer",
-    "Loadbar",
-    "prismjs",
-    "reduxjs",
-    "semibold",
-    "Swiper",
-    "tailwindcss",
-    "toastify",
-    "unhang",
-    "unoptimized",
-    "webp"
-  ],
-  "docwriter.style": "Auto-detect",
-  "docwriter.progress.trackClasses": true,
-  "docwriter.progress.trackTypes": false
+  "cSpell.words": ["shadcn", "tailwindcss"]
 }
