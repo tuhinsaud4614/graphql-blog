@@ -1,7 +1,10 @@
+import { ApolloError } from "@apollo/client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { IAnchorOrigin } from "./types";
+import { User } from "@/graphql/generated/schema";
+
+import { IAnchorOrigin, IUser } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -98,4 +101,67 @@ export const getPositions = (
     arrowTop,
     vertical,
   } as const;
+};
+
+/**
+ * The function `generateFileUrl` takes an optional `fileUrl` parameter and returns a URL by
+ * concatenating it with the server endpoint if both `fileUrl` and `serverEndpoint` are provided.
+ * @param {string} [fileUrl] - The `fileUrl` parameter is a string that represents the URL of a file.
+ * @returns the concatenated string of the server endpoint and the file URL if both `fileUrl` and
+ * `serverEndpoint` are provided. Otherwise, it returns `undefined`.
+ */
+export function generateFileUrl(fileUrl?: string) {
+  const serverEndpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
+
+  if (fileUrl && serverEndpoint) {
+    return serverEndpoint + "/" + fileUrl;
+  }
+  return undefined;
+}
+
+/**
+ * The function `getUserName` takes an object with properties `email` and `name`, and returns the name
+ * if it exists, otherwise it returns the part of the email before the "@" symbol.
+ * @param user - The `user` parameter is an object that should have either an `email` property or a
+ * `name` property, or both. The `email` property should be a string representing the user's email
+ * address, and the `name` property should be a string representing the user's name.
+ * @returns the name of the user if it exists and is not empty. If the name is not available or empty,
+ * it will return the part of the email before the "@" symbol.
+ */
+export function getUserName(user: Pick<IUser | User, "email" | "name">) {
+  return user.name ? user.name.trim() : user.email.split("@")[0];
+}
+
+/**
+ * The `gplErrorHandler` function handles errors returned from a GraphQL API and extracts error
+ * messages from the response.
+ * @param {ApolloError | undefined} error - The `error` parameter is of type `ApolloError | undefined`.
+ * This means it can either be an instance of the `ApolloError` class or `undefined`.
+ * @returns The function `gplErrorHandler` returns an array of error messages if there are any errors
+ * in the `extensions.fields` array. If there are no errors in the `extensions.fields` array, it
+ * returns the error message from the `ApolloError` object. If there is no error object, it returns
+ * nothing.
+ */
+export const gplErrorHandler = (error: ApolloError | undefined) => {
+  if (!error) {
+    return;
+  }
+  const extensions = error.graphQLErrors[0]?.extensions;
+
+  if (
+    extensions &&
+    "fields" in extensions &&
+    Array.isArray(extensions.fields)
+  ) {
+    const results: string[] = [];
+
+    extensions.fields.forEach((err) => {
+      if ("message" in err && typeof err.message === "string") {
+        results.push(err.message);
+      }
+    });
+
+    return results.length ? results : error.message;
+  }
+  return error.message;
 };

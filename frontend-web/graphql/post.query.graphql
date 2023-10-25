@@ -1,0 +1,15 @@
+query GetTrendingPosts {
+  trendingPosts {
+    id
+    author {
+      id
+      name
+      email
+      avatar {
+        ...FImage
+      }
+    }
+    title
+    updatedAt
+  }
+}

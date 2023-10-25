@@ -49,13 +49,7 @@ export default function Header() {
     >
       <nav className={className.main}>
         <Link href="/" className={className.homeLink} aria-label="Home">
-          <Image
-            src="/logo.svg"
-            alt="The Rat Diary"
-            height={60}
-            width={60}
-            layout="fixed"
-          />
+          <Image src="/logo.svg" alt="The Rat Diary" height={60} width={60} />
         </Link>
         <ul className={className.items}>
           <li>
