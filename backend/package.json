@@ -7,6 +7,9 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/app.js",
     "dev": "nodemon",
+    "db:gen": "npx prisma generate",
+    "db:mig": "npx prisma migrate dev",
+    "db:pull": "npx prisma db pull",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix"
   },
