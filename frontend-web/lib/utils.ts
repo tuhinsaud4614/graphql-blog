@@ -155,8 +155,13 @@ export const gplErrorHandler = (error: ApolloError | undefined) => {
   ) {
     const results: string[] = [];
 
-    extensions.fields.forEach((err) => {
-      if ("message" in err && typeof err.message === "string") {
+    extensions.fields.forEach((err: unknown) => {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "message" in err &&
+        typeof err.message === "string"
+      ) {
         results.push(err.message);
       }
     });

@@ -2,10 +2,6 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const className = {
-  content: "px-4 sm:mx-auto max-w-5xl pt-10 pb-4",
-};
-
 interface Props {
   classes?: {
     root?: string;

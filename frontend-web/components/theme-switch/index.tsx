@@ -32,7 +32,7 @@ export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
   const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
     null,
   );
-  const { systemTheme, theme, setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   return (
     <React.Fragment>

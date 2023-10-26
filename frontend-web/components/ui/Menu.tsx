@@ -90,16 +90,16 @@ const Menu = ({
     };
   }, [anchorEle]);
 
-  //   useIsomorphicLayoutEffect(() => {
-  //     const ele = ref.current;
-  //     if (open && ele) {
-  //       const rect = ele.getBoundingClientRect();
-  //       if (selfRect?.width !== rect.width || selfRect?.height !== rect.height) {
-  //         setSelfRect(ele.getBoundingClientRect());
-  //       }
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [open, anchorRect]);
+  useIsomorphicLayoutEffect(() => {
+    const ele = ref.current;
+    if (open && ele) {
+      const rect = ele.getBoundingClientRect();
+      if (selfRect?.width !== rect.width || selfRect?.height !== rect.height) {
+        setSelfRect(ele.getBoundingClientRect());
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, anchorRect]);
 
   //   React.useEffect(() => {
   //     if (onClose) {
