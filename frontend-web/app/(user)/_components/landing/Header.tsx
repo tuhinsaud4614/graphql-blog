@@ -10,17 +10,9 @@ import { useTheme } from "next-themes";
 import ThemeSwitch from "@/components/theme-switch";
 import { ROUTES } from "@/lib/constants";
 
-const className = {
-  root: "fixed top-0 left-0 right-0 border-b border-secondary dark:border-secondary-dark h-16 z-50",
-  main: "px-4 sm:mx-auto max-w-5xl flex items-center justify-between h-full",
-  homeLink: "flex items-center justify-center h-[3.75rem] w-[3.75rem]",
-  items: "list-none m-0 flex items-center space-x-3",
-  loginLink: "inline-block cursor-pointer select-none active:scale-95",
-};
-
 export default function Header() {
   const pathname = usePathname();
-  const { theme, resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const { scrollY } = useScroll();
 
   const rootBG = useTransform(
@@ -44,14 +36,18 @@ export default function Header() {
 
   return (
     <motion.header
-      className={className.root}
+      className="fixed inset-x-0 top-0 z-50 h-16 border-b border-secondary"
       style={{ backgroundColor: rootBG }}
     >
-      <nav className={className.main}>
-        <Link href="/" className={className.homeLink} aria-label="Home">
+      <nav className="flex h-full max-w-5xl items-center justify-between px-4 sm:mx-auto">
+        <Link
+          href="/"
+          className="flex h-[3.75rem] w-[3.75rem] items-center justify-center"
+          aria-label="Home"
+        >
           <Image src="/logo.svg" alt="The Rat Diary" height={60} width={60} />
         </Link>
-        <ul className={className.items}>
+        <ul className="m-0 flex list-none items-center space-x-3">
           <li>
             <Link
               href={pathname === ROUTES.login ? ROUTES.register : ROUTES.login}
@@ -60,7 +56,7 @@ export default function Header() {
             >
               <motion.a
                 style={{ color: linkColor }}
-                className={className.loginLink}
+                className="inline-block cursor-pointer select-none active:scale-95"
                 aria-label={pathname === ROUTES.login ? "Sign Up" : "Sign In"}
               >
                 {pathname === ROUTES.login ? "Sign Up" : "Sign In"}

@@ -40,7 +40,12 @@ export default async function TrendingList() {
 
   if (!data || !data.trendingPosts || data.trendingPosts.length === 0) {
     return (
-      <NoResultFound classes={{ root: "!items-start", title: "text-lg" }}>
+      <NoResultFound
+        classes={{
+          root: "!items-start",
+          title: "text-lg selection:bg-neutral selection:text-base-100",
+        }}
+      >
         No trending posts for you
       </NoResultFound>
     );

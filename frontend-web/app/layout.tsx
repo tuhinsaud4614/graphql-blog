@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Nunito_Sans, Quicksand } from "next/font/google";
 
 import ThemeProvider from "@/components/providers/ThemeProvider";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,17 @@ import { ApolloWrapper } from "../components/wrappers/ApolloWrapper";
 import RouteChangeProgress from "../components/wrappers/RouteChangeProgress";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const nunitoSans = Nunito_Sans({
+  display: "swap",
+  variable: "--font-nunito-sans",
+  subsets: ["cyrillic"],
+});
+
+const quickSand = Quicksand({
+  display: "swap",
+  variable: "--font-quick-sand",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "The RAT Diary",
@@ -27,7 +37,13 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
-      <body className={cn(inter.className, "bg-base-100")}>
+      <body
+        className={cn(
+          nunitoSans.variable,
+          quickSand.variable,
+          "bg-base-100 font-nunito-sans",
+        )}
+      >
         <ThemeProvider>
           <ApolloWrapper>{children}</ApolloWrapper>
           <RouteChangeProgress />
