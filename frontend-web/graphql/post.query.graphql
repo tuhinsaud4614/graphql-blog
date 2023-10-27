@@ -13,3 +13,30 @@ query GetTrendingPosts {
     updatedAt
   }
 }
+
+query GetPostsWithCursor($limit: Int!, $after: ID) {
+  postsWithCursor(limit: $limit, after: $after) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...GetPostItem
+      }
+    }
+  }
+}
+
+query GetPostsWithOffset($limit: Int, $page: Int) {
+  postsWithOffset(limit: $limit, page: $page) {
+    total
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+    data {
+      ...GetPostItem
+    }
+  }
+}

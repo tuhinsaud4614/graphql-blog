@@ -13,28 +13,10 @@ export default async function TrendingList() {
   const { data, error } = await getClient().query<GetTrendingPostsQuery>({
     query: GetTrendingPostsDocument,
   });
-  console.log("error", error);
-
-  // const { data, error, loading, refetch, networkStatus } =
-  //   useGetTrendingPostsQuery({
-  //     notifyOnNetworkStatusChange: true,
-  //   });
-
-  // if (loading || networkStatus === NetworkStatus.refetch) {
-  //   return "loading";
-  // }
 
   if (error) {
     return (
-      <ErrorBox
-        title="Trends posts errors"
-        errors={gplErrorHandler(error)}
-        // onRetry={async () => {
-        //   try {
-        //     await refetch();
-        //   } catch (error) {}
-        // }}
-      />
+      <ErrorBox title="Trends posts errors" errors={gplErrorHandler(error)} />
     );
   }
 

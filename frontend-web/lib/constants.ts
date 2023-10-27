@@ -1,3 +1,10 @@
+// Local Storage key
+export const RECENT_SEARCHES_KEY = "recent-searches";
+export const USER_KEY = "user";
+export const NOTIFICATIONS_KEY = "notifications";
+export const ABOUT_ME_KEY = "about-me";
+export const CREATE_POST_KEY = "create-post";
+
 export const ROUTES = {
   home: "/",
   login: "/account/login",

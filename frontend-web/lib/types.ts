@@ -1,4 +1,6 @@
-import { AuthorStatus, UserRole } from "@/graphql/generated/schema";
+import { z } from "zod";
+
+import { pictureSchema, userSchema } from "./schema";
 
 export interface IAnchorOrigin {
   horizontal?: "center" | "right" | "left";
@@ -17,22 +19,5 @@ export type ColorVariantType =
 
 export type ButtonModeType = "outline" | "fill" | "text";
 
-export interface IPicture {
-  id: string;
-  height: number;
-  width: number;
-  url: string;
-}
-
-export interface IUser {
-  about: null | string;
-  authorStatus: AuthorStatus | null;
-  avatar: null | IPicture;
-  email: string;
-  exp: number;
-  iat: number;
-  id: string;
-  mobile: string;
-  name?: string | null;
-  role: UserRole;
-}
+export type IPicture = z.infer<typeof pictureSchema>;
+export type IUser = z.infer<typeof userSchema>;

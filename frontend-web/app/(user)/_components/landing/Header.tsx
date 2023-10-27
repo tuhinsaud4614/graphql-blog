@@ -65,7 +65,7 @@ export default function Header() {
           </li>
           <li>
             <ThemeSwitch
-              anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             />
           </li>
         </ul>

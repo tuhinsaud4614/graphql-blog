@@ -10,5 +10,5 @@
     "source.organizeImports": true,
     "source.addMissingImports": true
   },
-  "cSpell.words": ["shadcn", "tailwindcss"]
+  "cSpell.words": ["Numberish", "shadcn", "tailwindcss"]
 }

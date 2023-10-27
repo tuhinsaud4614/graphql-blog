@@ -11,6 +11,7 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{ts,tsx}",
+    "./hooks/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {

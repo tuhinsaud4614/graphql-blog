@@ -1,0 +1,11 @@
+query GetTagsWithOffset($limit: Int, $page: Int) {
+  tagsWithOffset(limit: $limit, page: $page) {
+    total
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+    results {
+      ...TagItem
+    }
+  }
+}

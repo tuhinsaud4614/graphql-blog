@@ -1,9 +1,12 @@
 import { ApolloError } from "@apollo/client";
 import { type ClassValue, clsx } from "clsx";
+import { Descendant, Node } from "slate";
 import { twMerge } from "tailwind-merge";
+import { ZodType, z } from "zod";
 
 import { User } from "@/graphql/generated/schema";
 
+import { isDev } from "./isType";
 import { IAnchorOrigin, IUser } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -169,4 +172,103 @@ export const gplErrorHandler = (error: ApolloError | undefined) => {
     return results.length ? results : error.message;
   }
   return error.message;
+};
+
+/**
+ * The function `serializeOnlyTextSlateValue` takes a Slate value and returns a string containing only
+ * the text content of the paragraphs in the value's children.
+ * @param {Descendant[]} value - The `value` parameter is an array of Descendant objects. Each
+ * Descendant object represents a node in a Slate editor value.
+ * @returns The function `serializeOnlyTextSlateValue` returns a string that represents the text
+ * content of the given `value` parameter.
+ */
+export const serializeOnlyTextSlateValue = (value: Descendant[]) => {
+  return (
+    value
+      // Return the string content of each paragraph in the value's children.
+      .map((n) => {
+        return ("type" in n &&
+          ["heading-one", "heading-two"].includes(n["type"] as string)) ||
+          "bold" in n ||
+          "italic" in n ||
+          "underline" in n
+          ? Node.string(n)
+          : " ";
+      })
+      .join("\n")
+  );
+};
+
+/**
+ * The function `readLocalStorageValue` reads a value from the browser's local storage and parses it
+ * using a given schema, returning the parsed value or null if there is an error.
+ * @param {T} schema - The `schema` parameter is a Zod schema that defines the expected shape and type
+ * of the data stored in the local storage. It is used to parse and validate the data retrieved from
+ * the local storage.
+ * @param {string} key - The `key` parameter is a string that represents the key of the value you want
+ * to read from the local storage.
+ * @returns The function `readLocalStorageValue` returns a value of type `z.infer<T> | null`.
+ */
+export function readLocalStorageValue<T extends ZodType<unknown>>(
+  schema: T,
+  key: string,
+): z.infer<T> | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const item = window.localStorage.getItem(key);
+    if (!item) {
+      return null;
+    }
+    const data = JSON.parse(item) as unknown;
+    const parsed = schema.parse(data);
+    return parsed;
+  } catch (error) {
+    isDev() && console.warn(`Error reading localStorage key “${key}”:`, error);
+
+    return null;
+  }
+}
+
+/**
+ * The function sets a value in the local storage using the provided key and value.
+ * @param {string} key - The `key` parameter is a string that represents the key under which the value
+ * will be stored in the local storage.
+ * @param {T} value - The `value` parameter is the value that you want to store in the local storage.
+ * It can be of any type, as the function is generic and can handle any type of value.
+ * @returns The function does not have an explicit return statement. Therefore, it returns `undefined`
+ * by default.
+ */
+export const setLocalStorageValue = <T>(key: string, value: T) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    isDev() && console.warn(`Error writing localStorage “${key}”:`, error);
+  }
+};
+
+/**
+ * The function removes a value from the local storage using the provided key.
+ * @param {string} key - The `key` parameter is a string that represents the key of the value you want
+ * to remove from the local storage.
+ * @returns The function does not have an explicit return statement. If the condition `typeof window
+ * === "undefined"` is true, the function will return undefined. If the condition is false and the try
+ * block is executed successfully, the function will also return undefined.
+ */
+export const removeLocalStorageValue = (key: string) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    isDev() && console.warn(`Error removing localStorage “${key}”:`, error);
+  }
 };

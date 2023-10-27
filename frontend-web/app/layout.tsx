@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito_Sans, Quicksand } from "next/font/google";
 
 import ThemeProvider from "@/components/providers/ThemeProvider";
+import AuthProvider from "@/components/providers/context/authContext";
 import { cn } from "@/lib/utils";
 
 import { ApolloWrapper } from "../components/wrappers/ApolloWrapper";
@@ -37,20 +38,22 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
-      <body
-        className={cn(
-          nunitoSans.variable,
-          quickSand.variable,
-          "bg-base-100 font-nunito-sans",
-        )}
-      >
-        <ThemeProvider>
-          <ApolloWrapper>{children}</ApolloWrapper>
-          <RouteChangeProgress />
-          <div id="presentational" role="presentation" />
-          <div id="tooltip" role="tooltip" aria-label="tooltip" />
-        </ThemeProvider>
-      </body>
+      <AuthProvider>
+        <body
+          className={cn(
+            nunitoSans.variable,
+            quickSand.variable,
+            "bg-base-100 font-nunito-sans",
+          )}
+        >
+          <ThemeProvider>
+            <ApolloWrapper>{children}</ApolloWrapper>
+            <RouteChangeProgress />
+            <div id="presentational" role="presentation" />
+            <div id="tooltip" role="tooltip" aria-label="tooltip" />
+          </ThemeProvider>
+        </body>
+      </AuthProvider>
     </html>
   );
 }
