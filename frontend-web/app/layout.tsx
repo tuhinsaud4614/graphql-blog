@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Quicksand } from "next/font/google";
+import { Playfair_Display, Roboto } from "next/font/google";
 
 import ThemeProvider from "@/components/providers/ThemeProvider";
 import AuthProvider from "@/components/providers/context/authContext";
@@ -9,16 +9,17 @@ import { ApolloWrapper } from "../components/wrappers/ApolloWrapper";
 import RouteChangeProgress from "../components/wrappers/RouteChangeProgress";
 import "./globals.css";
 
-const nunitoSans = Nunito_Sans({
+const playfairDisplay = Playfair_Display({
   display: "swap",
-  variable: "--font-nunito-sans",
-  subsets: ["cyrillic"],
+  variable: "--font-title",
+  subsets: ["latin"],
 });
 
-const quickSand = Quicksand({
+const roboto = Roboto({
   display: "swap",
-  variable: "--font-quick-sand",
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["100" , "300" , "400" , "500" , "700" , "900" ,]
 });
 
 export const metadata: Metadata = {
@@ -41,15 +42,14 @@ export default function RootLayout({
       <AuthProvider>
         <body
           className={cn(
-            nunitoSans.variable,
-            quickSand.variable,
-            "bg-base-100 font-nunito-sans",
+            "bg-base-100 font-body",
+            roboto.variable,
+            playfairDisplay.variable,
           )}
         >
           <ThemeProvider>
             <ApolloWrapper>{children}</ApolloWrapper>
             <RouteChangeProgress />
-            <div id="presentational" role="presentation" />
             <div id="tooltip" role="tooltip" aria-label="tooltip" />
           </ThemeProvider>
         </body>

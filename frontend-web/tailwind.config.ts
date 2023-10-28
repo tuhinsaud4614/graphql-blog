@@ -16,8 +16,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        "nunito-sans": ["var(--font-nunito-sans)", ...fontFamily.sans],
-        "quick-sand": ["var(--font-quick-sand)", ...fontFamily.sans],
+        "body": ["var(--font-body)", ...fontFamily.sans],
+        "title": ["var(--font-title)", ...fontFamily.serif],
       },
     },
   },

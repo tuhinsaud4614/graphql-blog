@@ -1,27 +1,16 @@
 "use client";
 
-import * as React from "react";
-
-import { usePathname, useSearchParams } from "next/navigation";
-
-import ProgressBar from "@/components/ProgressBar";
+import { Next13ProgressBar } from "next13-progressbar";
 
 export default function RouteChangeProgress() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [progress, setProgress] = React.useState<string>(
-    `${pathname}?${searchParams}`,
+  return (
+    <>
+      <Next13ProgressBar
+        height="0.25rem"
+        color="hsl(var(--secondary))"
+        options={{ showSpinner: false }}
+        showOnShallow
+      />
+    </>
   );
-
-  const current = `${pathname}?${searchParams}`;
-
-  React.useEffect(() => {
-    setProgress(current);
-  }, [current]);
-
-  if (current === progress) {
-    return null;
-  }
-
-  return <ProgressBar className="fixed inset-x-0 top-0 z-[99999]" />;
 }

@@ -15,3 +15,29 @@ export const itemInVariants: Variants = {
     },
   },
 };
+
+export const backdropVariants: Variants = {
+  start: {
+    opacity: 0,
+  },
+  end: {
+    opacity: 1,
+  },
+};
+
+export const modalContainerVariants: Variants = {
+  hidden: {
+    scale: 1.05,
+    opacity: 0,
+    x: "-50%",
+    y: "-50%",
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+  },
+  exit: {
+    scale: 1.05,
+    opacity: 0,
+  },
+};
