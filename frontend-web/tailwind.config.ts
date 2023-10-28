@@ -16,8 +16,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        "body": ["var(--font-body)", ...fontFamily.sans],
-        "title": ["var(--font-title)", ...fontFamily.serif],
+        body: ["var(--font-body)", ...fontFamily.sans],
+        title: ["var(--font-title)", ...fontFamily.sans],
       },
     },
   },

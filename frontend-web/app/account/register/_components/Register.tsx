@@ -28,7 +28,7 @@ const schema = z
       .email("Must be a valid email address."),
     mobile: z
       .string()
-      .min(1, "Mobile is required!")
+      .min(1, "Mobile is required.")
       .refine((value) => !!value && VALID_MOBILE_REGEX.test(value), {
         message: "Mobile is invalid",
       }),
@@ -99,7 +99,10 @@ export default function Register() {
         onSubmit={onSubmit}
       >
         <Input
-          classes={{ root: "mb-4" }}
+          classes={{
+            root: "mb-4",
+            label: "selection:text-base-100 selection:bg-neutral",
+          }}
           id={nameId}
           title="Your name"
           aria-label="name"
@@ -110,7 +113,10 @@ export default function Register() {
           {...register("name")}
         />
         <Input
-          classes={{ root: "mb-4" }}
+          classes={{
+            root: "mb-4",
+            label: "selection:text-base-100 selection:bg-neutral",
+          }}
           id={emailId}
           title="Your email"
           aria-label="email"
@@ -122,7 +128,10 @@ export default function Register() {
           required
         />
         <Input
-          classes={{ root: "mb-4" }}
+          classes={{
+            root: "mb-4",
+            label: "selection:text-base-100 selection:bg-neutral",
+          }}
           id={mobileId}
           title="Your mobile"
           aria-label="mobile"
@@ -134,7 +143,10 @@ export default function Register() {
           required
         />
         <Input
-          classes={{ root: "mb-4" }}
+          classes={{
+            root: "mb-4",
+            label: "selection:text-base-100 selection:bg-neutral",
+          }}
           id={passwordId}
           title="Your password"
           aria-label="password"
@@ -146,7 +158,10 @@ export default function Register() {
           required
         />
         <Input
-          classes={{ root: "mb-4" }}
+          classes={{
+            root: "mb-4",
+            label: "selection:text-base-100 selection:bg-neutral",
+          }}
           id={confirmPasswordId}
           title="Your confirm password"
           aria-label="confirmPassword"
@@ -162,7 +177,7 @@ export default function Register() {
             className="w-[14.125rem] !py-2 px-5 "
             type="submit"
             aria-label="Register"
-            loading={isSubmitting}
+            loading={isSubmitting || loading}
             disabled={!(isDirty && isValid) || isSubmitting}
           >
             Register
@@ -178,14 +193,3 @@ export default function Register() {
     </>
   );
 }
-
-// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-//   const token = getCookie("jwt", { req, res });
-//   if (token) {
-//     return {
-//       redirect: { destination: ROUTES.myHome, permanent: false },
-//       props: {},
-//     };
-//   }
-//   return { props: {} };
-// };

@@ -2,8 +2,6 @@
 
 import * as React from "react";
 
-import { useRouter } from "next/router";
-
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -24,16 +22,6 @@ export default function ModalHeader({
   children,
   ...rest
 }: Props) {
-  const { events } = useRouter();
-  React.useEffect(() => {
-    if (onClose) {
-      events.on("routeChangeStart", onClose);
-      return () => {
-        events.off("routeChangeStart", onClose);
-      };
-    }
-  }, [onClose, events]);
-
   return (
     <header
       {...rest}

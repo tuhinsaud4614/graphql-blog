@@ -4,9 +4,9 @@ import Button from "./ui/Button";
 
 const className = {
   title:
-    "text-error text-lg font-medium flex-1 line-clamp-1 text-ellipsis pr-2 text-center",
+    "text-error selection:bg-error selection:text-base-100 text-lg font-medium flex-1 line-clamp-1 text-ellipsis pr-2 text-center",
   items: "list-item flex-col m-0 space-y-2",
-  item: "text-warning text-sm",
+  item: "text-warning text-sm selection:bg-warning selection:text-base-100",
   footer: "px-4 py-3 flex items-center justify-end border-t",
 };
 

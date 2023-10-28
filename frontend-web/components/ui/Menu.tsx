@@ -2,13 +2,13 @@
 
 import * as React from "react";
 
-import { Variants, motion, useIsomorphicLayoutEffect } from "framer-motion";
+import { Variants, motion } from "framer-motion";
 
 import STYLES from "@/lib/styles";
 import { IAnchorOrigin } from "@/lib/types";
 import { cn, getPositions } from "@/lib/utils";
 
-import Portal from "./Portal";
+import Portal from "../Portal";
 
 const variants: Variants = {
   hidden: {
@@ -73,7 +73,7 @@ const Menu = ({
   const [selfRect, setSelfRect] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement | null>(null);
 
-  useIsomorphicLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     const handler = () => {
       if (anchorEle) {
         setAnchorRect(anchorEle.getBoundingClientRect());
@@ -90,7 +90,7 @@ const Menu = ({
     };
   }, [anchorEle]);
 
-  useIsomorphicLayoutEffect(() => {
+  React.useEffect(() => {
     const ele = ref.current;
     if (open && ele) {
       const rect = ele.getBoundingClientRect();
@@ -98,17 +98,7 @@ const Menu = ({
         setSelfRect(ele.getBoundingClientRect());
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, anchorRect]);
-
-  //   React.useEffect(() => {
-  //     if (onClose) {
-  //       events.on("routeChangeStart", onClose);
-  //       return () => {
-  //         events.off("routeChangeStart", onClose);
-  //       };
-  //     }
-  //   }, [onClose, events]);
+  }, [open, anchorRect, selfRect?.width, selfRect?.height]);
 
   if (!open) {
     return null;

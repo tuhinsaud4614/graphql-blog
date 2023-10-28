@@ -2,9 +2,11 @@
 
 import * as React from "react";
 
-import { Info } from "lucide-react";
+import { Eye, EyeOff, Info } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+import Button from "./Button";
 
 interface Props extends React.ComponentPropsWithoutRef<"input"> {
   leftIcon?: React.ReactNode;
@@ -34,6 +36,7 @@ function Component(
   }: Props,
   ref: React.Ref<HTMLInputElement>,
 ) {
+  const [show, setShow] = React.useState(false);
   return (
     <div
       className={cn(
@@ -51,7 +54,9 @@ function Component(
           )}
         >
           {title}
-          {required && <sup className="ml-0.5 text-xs text-error">*</sup>}
+          {required && (
+            <sup className="ml-0.5 select-none text-xs text-error">*</sup>
+          )}
         </label>
       )}
       <div
@@ -64,6 +69,9 @@ function Component(
         {leftIcon}
         <input
           {...rest}
+          type={
+            rest.type === "password" ? (show ? "text" : "password") : rest.type
+          }
           ref={ref}
           className={cn(
             "min-w-0 basis-full border-0 bg-transparent text-center leading-6 outline-none",
@@ -73,13 +81,32 @@ function Component(
           id={id}
           required={required}
         />
-        {!valid && (
-          <Info size={16} className={cn("ml-2 text-error", classes?.errIcon)} />
+        {rest.type === "password" ? (
+          <Button
+            type="button"
+            mode="text"
+            variant="accent"
+            className="h-5 w-5 shrink-0 rounded-full p-0.5"
+            aria-label={show ? "hide" : "show"}
+            onClick={() => setShow((prev) => !prev)}
+          >
+            {show ? <EyeOff /> : <Eye />}
+          </Button>
+        ) : (
+          !valid && (
+            <Info
+              size={16}
+              className={cn("ml-2 shrink-0 text-error", classes?.errIcon)}
+            />
+          )
         )}
       </div>
       {!valid && errorText && (
         <p
-          className={cn("mt-2 text-sm text-error", classes?.errText)}
+          className={cn(
+            "mt-2 text-sm text-error selection:bg-error selection:text-base-100",
+            classes?.errText,
+          )}
           role="alert"
         >
           {errorText}

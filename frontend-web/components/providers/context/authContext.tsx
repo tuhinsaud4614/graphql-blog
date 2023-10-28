@@ -6,7 +6,7 @@ import { produce } from "immer";
 import { createContext } from "use-context-selector";
 
 import { USER_KEY } from "@/lib/constants";
-import { userSchema } from "@/lib/schema";
+import { userAuthSchema } from "@/lib/schema";
 import { IPicture, IUser } from "@/lib/types";
 import {
   readLocalStorageValue,
@@ -32,7 +32,7 @@ export type AuthAction =
   | { type: typeof AuthActionTypes.updateUsername; payload: string }
   | { type: typeof AuthActionTypes.updateAbout; payload: string };
 
-const getUser = () => readLocalStorageValue(userSchema, USER_KEY);
+const getUser = () => readLocalStorageValue(userAuthSchema, USER_KEY);
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   if (action.type === AuthActionTypes.setUser) {

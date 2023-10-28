@@ -1,3 +1,7 @@
+mutation Login($emailOrMobile: String!, $password: String!) {
+  login(data: { emailOrMobile: $emailOrMobile, password: $password })
+}
+
 mutation Register(
   $name: String
   $email: String!

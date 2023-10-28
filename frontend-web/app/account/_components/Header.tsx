@@ -24,7 +24,7 @@ export default function AccountHeader() {
           <li>
             <Link
               href={pathname === ROUTES.login ? ROUTES.register : ROUTES.login}
-              className="inline-block cursor-pointer select-none text-base-100 hover:text-base-300 active:scale-95"
+              className="inline-block cursor-pointer select-none text-base-100 hover:text-base-300 active:scale-95 dark:hover:text-base-200"
               aria-label={pathname === ROUTES.login ? "Sign Up" : "Sign In"}
             >
               {pathname === ROUTES.login ? "Sign Up" : "Sign In"}

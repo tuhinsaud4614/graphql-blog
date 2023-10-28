@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Roboto } from "next/font/google";
+import { Raleway } from "next/font/google";
+import localFont from "next/font/local";
 
 import ThemeProvider from "@/components/providers/ThemeProvider";
 import AuthProvider from "@/components/providers/context/authContext";
@@ -9,17 +10,27 @@ import { ApolloWrapper } from "../components/wrappers/ApolloWrapper";
 import RouteChangeProgress from "../components/wrappers/RouteChangeProgress";
 import "./globals.css";
 
-const playfairDisplay = Playfair_Display({
+const title = Raleway({
   display: "swap",
   variable: "--font-title",
   subsets: ["latin"],
 });
 
-const roboto = Roboto({
+const body = localFont({
+  src: [
+    {
+      path: "./fonts/Matter-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Matter-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+  ],
   display: "swap",
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["100" , "300" , "400" , "500" , "700" , "900" ,]
 });
 
 export const metadata: Metadata = {
@@ -35,18 +46,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn(body.variable, title.variable)}>
       <head>
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
       <AuthProvider>
-        <body
-          className={cn(
-            "bg-base-100 font-body",
-            roboto.variable,
-            playfairDisplay.variable,
-          )}
-        >
+        <body className="bg-base-100 font-body">
           <ThemeProvider>
             <ApolloWrapper>{children}</ApolloWrapper>
             <RouteChangeProgress />

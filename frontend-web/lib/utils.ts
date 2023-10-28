@@ -1,12 +1,13 @@
 import { ApolloError } from "@apollo/client";
 import { type ClassValue, clsx } from "clsx";
+import { jwtDecode } from "jwt-decode";
 import { Descendant, Node } from "slate";
 import { twMerge } from "tailwind-merge";
 import { ZodType, z } from "zod";
 
 import { User } from "@/graphql/generated/schema";
 
-import { isDev } from "./isType";
+import { isDev, isIUser } from "./isType";
 import { IAnchorOrigin, IUser } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -271,4 +272,25 @@ export const removeLocalStorageValue = (key: string) => {
   } catch (error) {
     isDev() && console.warn(`Error removing localStorage “${key}”:`, error);
   }
+};
+
+/**
+ * The function `getAuthUser` decodes a JWT token and returns the decoded user information if it is
+ * valid, otherwise it returns null.
+ * @param {string} [token] - The `token` parameter is a string that represents a JSON Web Token (JWT).
+ * It is used for authentication and contains information about the user.
+ * @returns The function `getAuthUser` returns the decoded token if it exists and is a valid user,
+ * otherwise it returns `null`.
+ */
+export const getAuthUser = (token?: string) => {
+  if (!token) {
+    return null;
+  }
+
+  const decoded = jwtDecode<any>(token);
+  if (!isIUser(decoded)) {
+    return null;
+  }
+
+  return decoded;
 };

@@ -7,7 +7,7 @@ export const pictureSchema = z.object({
   url: z.string().url(),
 });
 
-export const userSchema = z.object({
+export const userAuthSchema = z.object({
   about: z.string().nullable(),
   authorStatus: z.enum(["PENDING", "VERIFIED"]).nullable(),
   avatar: pictureSchema.nullable(),

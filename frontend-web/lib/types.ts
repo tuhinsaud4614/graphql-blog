@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { pictureSchema, userSchema } from "./schema";
+import { pictureSchema, userAuthSchema } from "./schema";
 
 export interface IAnchorOrigin {
   horizontal?: "center" | "right" | "left";
@@ -20,4 +20,4 @@ export type ColorVariantType =
 export type ButtonModeType = "outline" | "fill" | "text";
 
 export type IPicture = z.infer<typeof pictureSchema>;
-export type IUser = z.infer<typeof userSchema>;
+export type IUser = z.infer<typeof userAuthSchema>;
