@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import ThemeSwitch from "@/components/theme-switch";
 import { ROUTES } from "@/lib/constants";
 
-export default function AccountHeader() {
+export default function AuthHeader() {
   const pathname = usePathname();
 
   return (

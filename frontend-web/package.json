@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo --port 8001",
+    "dev": "next dev --port 8001",
+    "dev:turbo": "next dev --turbo --port 8001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

@@ -50,7 +50,9 @@ function Component(
           className={cn(
             "mb-3 text-sm",
             classes?.label,
-            valid ? "text-neutral" : "text-error",
+            valid
+              ? "text-neutral"
+              : "text-error selection:bg-error selection:text-neutral",
           )}
         >
           {title}

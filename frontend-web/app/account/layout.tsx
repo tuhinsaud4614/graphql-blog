@@ -1,20 +1,23 @@
+"use client";
+
 import * as React from "react";
 
-import AccountHeader from "./_components/Header";
+import { usePathname } from "next/navigation";
+
+import { ROUTES } from "@/lib/constants";
+
+import AuthLayout from "./_components/AuthLayout";
+import VerifyAccountLayout from "./verify/_components/VerifyAccountLayout";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function AccountLayout({ children }: Props) {
-  return (
-    <section className="flex h-screen w-screen items-center justify-center bg-base-200 pt-16">
-      <AccountHeader />
-      <div className="shadow-mui-hover max-h-[calc(100vh-6rem)] w-[90%] max-w-sm overflow-y-auto rounded-2xl bg-base-100 p-4">
-        <main className="flex flex-col items-center justify-center">
-          {children}
-        </main>
-      </div>
-    </section>
-  );
+  const pathname = usePathname();
+  if (pathname === ROUTES.accountVerify) {
+    return <VerifyAccountLayout>{children}</VerifyAccountLayout>;
+  }
+
+  return <AuthLayout>{children}</AuthLayout>;
 }

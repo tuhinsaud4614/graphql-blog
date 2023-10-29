@@ -11,14 +11,12 @@ import { cn } from "@/lib/utils";
 interface Props extends LinkProps {
   children?: React.ReactNode;
   className?: string;
-  anchorProps?: Omit<React.HTMLAttributes<HTMLAnchorElement>, "className">;
   mode?: ButtonModeType;
   variant?: ColorVariantType;
 }
 
 export default function LinkButton({
   children,
-  anchorProps,
   variant = "accent",
   mode = "fill",
   ...rest
@@ -30,18 +28,16 @@ export default function LinkButton({
     style = STYLES.btn.text;
   }
   return (
-    <Link {...rest}>
-      <a
-        {...anchorProps}
-        className={cn(
-          STYLES.btn.root,
-          STYLES.btn.dynamic(variant, mode),
-          style,
-          rest.className,
-        )}
-      >
-        {children}
-      </a>
+    <Link
+      {...rest}
+      className={cn(
+        STYLES.btn.root,
+        STYLES.btn.dynamic(variant, mode),
+        style,
+        rest.className,
+      )}
+    >
+      {children}
     </Link>
   );
 }

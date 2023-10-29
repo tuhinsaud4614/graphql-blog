@@ -19,3 +19,11 @@ mutation Register(
     }
   )
 }
+
+mutation UserVerification($userId: ID!, $code: String!) {
+  verifyUser(id: $userId, code: $code)
+}
+
+mutation ResendActivationLink($userId: ID!) {
+  resendActivation(id: $userId)
+}

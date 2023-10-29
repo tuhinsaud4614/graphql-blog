@@ -7,8 +7,6 @@ export const CREATE_POST_KEY = "create-post";
 
 export const ROUTES = {
   home: "/",
-  login: "/account/login",
-  register: "/account/register",
   myHome: "/home",
   myHomeFollowing: "/home?tab=following",
   search: "/search",
@@ -18,13 +16,16 @@ export const ROUTES = {
   postsByTag: (id: string) => `/posts/tag/${id}`,
   createPost: "/posts/create",
   editPost: (id: string) => `/posts/${id}/edit`,
+  login: "/account/login",
+  register: "/account/register",
+  mySuggestions: "/account/suggestions",
+  myPostsQuery: (tab: string) => `/account/posts?tab=${tab}`,
   authorProfile: (authorId: string) => `/account/${authorId}`,
   favorite: "/account/favorite",
   myPosts: "/account/posts",
-  mySuggestions: "/account/suggestions",
-  myPostsQuery: (tab: string) => `/account/posts?tab=${tab}`,
   notifications: "/account/notifications",
   accountSettings: "/account/settings",
+  accountVerify: "/account/verify",
   admin: {
     dashboard: "/admin",
     categories: "/admin/categories",

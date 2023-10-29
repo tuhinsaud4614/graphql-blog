@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import localFont from "next/font/local";
 
-import ThemeProvider from "@/components/providers/ThemeProvider";
-import AuthProvider from "@/components/providers/context/authContext";
+import RouteChangeProgress from "@/components/RouteChangeProgress";
+import Providers from "@/components/providers";
 import { cn } from "@/lib/utils";
 
-import { ApolloWrapper } from "../components/wrappers/ApolloWrapper";
-import RouteChangeProgress from "../components/wrappers/RouteChangeProgress";
 import "./globals.css";
 
 const title = Raleway({
@@ -50,15 +48,13 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
-      <AuthProvider>
-        <body className="bg-base-100 font-body">
-          <ThemeProvider>
-            <ApolloWrapper>{children}</ApolloWrapper>
-            <RouteChangeProgress />
-            <div id="tooltip" role="tooltip" aria-label="tooltip" />
-          </ThemeProvider>
-        </body>
-      </AuthProvider>
+      <body className="bg-base-100 font-body">
+        <Providers>
+          {children}
+          <div id="tooltip" role="tooltip" aria-label="tooltip" />
+        </Providers>
+        <RouteChangeProgress />
+      </body>
     </html>
   );
 }
