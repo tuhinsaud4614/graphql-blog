@@ -1,3 +1,5 @@
+import React from "react";
+
 import { z } from "zod";
 
 import { pictureSchema, userAuthSchema } from "./schema";
@@ -21,3 +23,23 @@ export type ButtonModeType = "outline" | "fill" | "text";
 
 export type IPicture = z.infer<typeof pictureSchema>;
 export type IUser = z.infer<typeof userAuthSchema>;
+
+// Component Props
+export type AsProps<T extends React.ElementType> = { as?: T };
+
+export type PropsToOmit<T extends React.ElementType, P> = keyof (AsProps<T> &
+  P);
+
+export type PolymorphicProps<
+  T extends React.ElementType,
+  Props = {},
+> = React.PropsWithChildren<Props & AsProps<T>> &
+  Omit<React.ComponentPropsWithoutRef<T>, PropsToOmit<T, Props>>;
+
+export type PolymorphicRef<T extends React.ElementType> =
+  React.ComponentPropsWithRef<T>["ref"];
+
+export type PolymorphicPropsWithRef<
+  T extends React.ElementType,
+  Props = {},
+> = PolymorphicProps<T, Props> & { ref?: PolymorphicRef<T> };

@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { usePathname } from "next/navigation";
 
+import GeneralLayout from "./_components/general-layout";
 import LandingLayout from "./_components/landing/LandingLayout";
 
 interface Props {
@@ -15,5 +16,5 @@ export default function UserLayout({ children }: Props) {
   if (pathname === "/") {
     return <LandingLayout>{children}</LandingLayout>;
   }
-  return children;
+  return <GeneralLayout>{children}</GeneralLayout>;
 }

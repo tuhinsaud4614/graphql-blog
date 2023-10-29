@@ -27,3 +27,7 @@ mutation UserVerification($userId: ID!, $code: String!) {
 mutation ResendActivationLink($userId: ID!) {
   resendActivation(id: $userId)
 }
+
+mutation Logout {
+  logout
+}

@@ -19,6 +19,7 @@
     "@apollo/experimental-nextjs-app-support": "^0.4.3",
     "@hookform/resolvers": "^3.3.2",
     "@types/lodash": "^4.14.200",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "framer-motion": "^10.16.4",
     "immer": "^10.0.3",
