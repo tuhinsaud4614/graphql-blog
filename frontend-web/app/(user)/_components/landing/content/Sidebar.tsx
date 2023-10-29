@@ -3,6 +3,7 @@
 import { NetworkStatus } from "@apollo/client";
 
 import ErrorBox from "@/components/ErrorBox";
+import NoResultFound from "@/components/NoResultFound";
 import LinkButton from "@/components/ui/LinkButton";
 import { useGetTagsWithOffsetQuery } from "@/graphql/generated/schema";
 import useSynchronizeAnimation from "@/hooks/useSynchronizeAnimation";
@@ -57,13 +58,23 @@ function Result() {
       <ErrorBox
         title="Fetching tags errors"
         errors={gplErrorHandler(error)}
-        classes={{
-          root: "",
-        }}
         onRetry={async () => {
           await refetch();
         }}
       />
+    );
+  }
+
+  if (!data || data.tagsWithOffset.total === 0) {
+    return (
+      <NoResultFound
+        classes={{
+          root: "!items-start md1:basis-full p-0",
+          title: "text-lg selection:bg-neutral selection:text-base-100",
+        }}
+      >
+        No tags found for you
+      </NoResultFound>
     );
   }
 
@@ -75,8 +86,6 @@ function Result() {
           variant="neutral"
           mode="outline"
           className="!rounded text-sm first:ml-2 first:mt-2"
-          anchorProps={{ "aria-label": tag.title }}
-          passHref
           href={ROUTES.postsByTag(tag.id)}
         >
           {tag.title}

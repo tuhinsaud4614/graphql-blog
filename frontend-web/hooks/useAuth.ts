@@ -5,8 +5,8 @@ import {
   AuthDispatchContext,
   AuthStateContext,
 } from "@/components/providers/context/authContext";
-import { isDev } from "@/lib/isType";
 import { useLogoutMutation } from "@/graphql/generated/schema";
+import { isDev } from "@/lib/isType";
 
 /**
  * The `useAuthDispatch` function returns the dispatch function from the `AuthDispatchContext` and

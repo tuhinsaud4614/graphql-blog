@@ -21,7 +21,7 @@ export default function ThemeSwitchItem({
         aria-label={text}
         type="button"
         className={cn(
-          "flex w-full items-center border-none px-2 py-1 outline-none hover:bg-base-200",
+          "flex w-full items-center border-none px-2 py-1 outline-none hover:bg-base-200 dark:hover:bg-base-100",
           active ? "text-accent" : "text-neutral",
         )}
         onClick={onClick}

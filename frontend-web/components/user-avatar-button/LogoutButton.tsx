@@ -14,7 +14,7 @@ export default function LogoutButton() {
       <button
         type="button"
         aria-label="Logout"
-        className="flex w-full items-center border-none px-4 py-2 text-sm text-neutral outline-none hover:bg-base-200 hover:text-accent"
+        className="flex w-full items-center border-none px-4 py-2 text-sm text-neutral outline-none hover:text-accent"
         disabled={loading}
         onClick={logoutHandler}
       >

@@ -3,12 +3,9 @@ import * as React from "react";
 import { IAnchorOrigin } from "@/lib/types";
 import { getPositions } from "@/lib/utils";
 
-
-
 const className = {
   tip: "fixed select-none z-[999] w-auto px-1.5 py-1 min-w-max rounded-sm text-base-100 bg-neutral text-xs font-bold",
-  arrow:
-    "fixed bg-neutral transform rotate-45 w-3.5 h-3.5 z-[998]",
+  arrow: "fixed bg-neutral transform rotate-45 w-3.5 h-3.5 z-[998]",
 };
 
 interface Props {

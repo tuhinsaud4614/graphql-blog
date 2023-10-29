@@ -5,6 +5,7 @@ import * as React from "react";
 import { MoonStar, Sun, Tv2 } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import useTooltip from "@/hooks/useTooltip";
 import STYLES from "@/lib/styles";
 import { IAnchorOrigin } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -22,17 +23,22 @@ const className = {
 
 interface Props {
   anchorOrigin: IAnchorOrigin;
+  tooltipOrigin?: IAnchorOrigin;
   classes?: {
     root?: string;
     menuRoot?: string;
   };
 }
 
-export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
-  const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
-    null,
-  );
+export default function ThemeSwitch({
+  anchorOrigin,
+  tooltipOrigin,
+  classes,
+}: Props) {
+  const [anchorEle, setAnchorEle] =
+    React.useState<React.ElementRef<"button">>();
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const { onHoverEnd, onHoverStart } = useTooltip();
 
   return (
     <React.Fragment>
@@ -42,6 +48,19 @@ export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
         className={cn(STYLES.btn.circle, classes?.root)}
         mode="outline"
         onClick={(e) => setAnchorEle(e.currentTarget)}
+        onMouseEnter={(e) => {
+          onHoverStart(e, {
+            text: "Switch Theme",
+            anchorOrigin: {
+              vertical: tooltipOrigin?.vertical || "bottom",
+              horizontal: tooltipOrigin?.horizontal || "center",
+            },
+            className: "p-1",
+          });
+        }}
+        onMouseLeave={() => {
+          onHoverEnd();
+        }}
       >
         {resolvedTheme === "light" ? (
           <Sun className={className.itemIcon} />
@@ -52,7 +71,7 @@ export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
       <Menu
         open={Boolean(anchorEle)}
         anchorEle={anchorEle}
-        onClose={() => setAnchorEle(null)}
+        onClose={() => setAnchorEle(undefined)}
         anchorOrigin={anchorOrigin}
         classes={{ root: classes?.menuRoot }}
         hideArrow
@@ -63,7 +82,7 @@ export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
             active={theme === "light"}
             onClick={() => {
               setTheme("light");
-              setAnchorEle(null);
+              setAnchorEle(undefined);
             }}
           >
             <Sun className={className.itemIcon} />
@@ -73,7 +92,7 @@ export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
             active={theme === "dark"}
             onClick={() => {
               setTheme("dark");
-              setAnchorEle(null);
+              setAnchorEle(undefined);
             }}
           >
             <MoonStar className={cn(className.itemIcon)} />
@@ -83,7 +102,7 @@ export default function ThemeSwitch({ anchorOrigin, classes }: Props) {
             active={theme === "system"}
             onClick={() => {
               setTheme("system");
-              setAnchorEle(null);
+              setAnchorEle(undefined);
             }}
           >
             <Tv2 className={className.itemIcon} />

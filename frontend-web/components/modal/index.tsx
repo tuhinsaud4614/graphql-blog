@@ -2,14 +2,13 @@
 
 import * as React from "react";
 
-
 import { AnimatePresence, motion } from "framer-motion";
 
 import useLockedBody from "@/hooks/useLockBody";
 import STYLES from "@/lib/styles";
 import { cn } from "@/lib/utils";
-
 import { modalContainerVariants } from "@/lib/variants/framer-variants";
+
 import Backdrop from "../Backdrop";
 import Portal from "../Portal";
 
@@ -17,7 +16,6 @@ const className = {
   container:
     "fixed top-1/2 left-1/2 max-h-[calc(100vh-32px)] w-[calc(100%-32px)] sm:max-w-[calc(640px-32px)] flex flex-col bg-base-100 shadow-mui rounded-2xl overflow-hidden",
 };
-
 
 interface Props {
   classes?: {
@@ -38,8 +36,6 @@ function Modal({
   children,
 }: Props) {
   useLockedBody(open && locked);
-
-  
 
   return (
     <Portal>

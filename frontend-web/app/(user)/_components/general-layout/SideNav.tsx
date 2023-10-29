@@ -87,7 +87,7 @@ export default function GeneralLayoutSideNav() {
   const matches = useMediaQuery("(min-width: 1024px)");
 
   return (
-    <aside className="relative hidden min-h-screen w-20 shrink-0 border-r dark:border-base-300 lg:block">
+    <aside className="relative hidden min-h-screen w-20 shrink-0 border-r dark:border-base-300 dark:bg-base-200 lg:block">
       <nav className="sticky inset-0 z-10 flex h-screen flex-col items-center justify-between overflow-y-auto py-4 scrollbar-hide">
         <Link
           href={ROUTES.myHome}
@@ -117,6 +117,7 @@ export default function GeneralLayoutSideNav() {
             {matches && (
               <ThemeSwitch
                 anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+                tooltipOrigin={{ horizontal: "right", vertical: "bottom" }}
               />
             )}
           </li>

@@ -12,7 +12,7 @@ import { useAuthUser } from "@/hooks/useAuth";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
 import { IAnchorOrigin } from "@/lib/types";
-import { generateFileUrl, getUserName } from "@/lib/utils";
+import { cn, generateFileUrl, getUserName } from "@/lib/utils";
 
 import DemoAvatar from "../DemoAvatar";
 import NavAvatar from "../NavAvatar";
@@ -23,7 +23,7 @@ const className = {
   avatarMenu: "w-60 py-2",
   avatarMenuItems: "list-none m-0 flex flex-col",
   avatarMenuLink:
-    "w-full outline-none border-none flex items-center px-4 py-2 text-sm hover:bg-base-200 text-neutral hover:text-accent",
+    "w-full outline-none border-none flex items-center px-4 py-2 text-sm text-neutral hover:text-accent",
   avatarInfo: "flex px-4 hover:bg-base-200 py-2 group",
   avatarInfoImg:
     "shrink-0 w-8 h-8 inline-block rounded-full overflow-hidden border dark:border-none dark:ring-1 dark:group-hover:ring-2 dark:ring-secondary mr-3",
@@ -109,10 +109,10 @@ export default function UserAvatarButton({
       >
         <div className={className.avatarMenu}>
           <ul className={className.avatarMenuItems}>
-            <li>
+            <li className="hover:bg-base-200 dark:hover:bg-base-100">
               <LogoutButton />
             </li>
-            <li>
+            <li className="hover:bg-base-200 dark:hover:bg-base-100">
               <Link
                 href={ROUTES.accountSettings}
                 aria-label="Settings"
@@ -127,7 +127,10 @@ export default function UserAvatarButton({
           <Link
             href={ROUTES.authorProfile(user.id)}
             aria-label={userName}
-            className={className.avatarInfo}
+            className={cn(
+              className.avatarInfo,
+              "hover:bg-base-200 dark:hover:bg-base-100",
+            )}
           >
             {imgUrl ? (
               <span className={className.avatarInfoImg}>

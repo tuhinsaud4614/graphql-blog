@@ -86,7 +86,7 @@ const className = {
           if (mode === "text") {
             return "text-accent hover:bg-accent/5 dark:text-accent-content dark:hover:bg-accent-content/[8%]";
           }
-          return "bg-accent hover:bg-accent-focus text-neutral dark:hover:bg-accent dark:text-black/[87%]";
+          return "bg-accent hover:bg-accent-focus text-base-100 dark:hover:bg-accent dark:text-black/[87%]";
       }
     },
   },

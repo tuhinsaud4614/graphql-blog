@@ -2,12 +2,13 @@
 
 import * as React from "react";
 
-import { Variants, motion } from "framer-motion";
+import { AnimatePresence, Variants, motion } from "framer-motion";
 
 import STYLES from "@/lib/styles";
 import { IAnchorOrigin } from "@/lib/types";
-import { cn, getPositions } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
+import usePopup from "@/hooks/usePopup";
 import Portal from "../Portal";
 
 const variants: Variants = {
@@ -36,13 +37,6 @@ const arrowVariants: Variants = {
   },
 };
 
-const className = {
-  backdrop: "fixed inset-0",
-  root: "fixed bg-base-100 shadow-mui rounded",
-  arrow: "fixed block bg-base-100 transform rotate-45 shadow-mui w-3.5 h-3.5",
-  container: "relative z-10 w-full h-full bg-base-100 rounded overflow-hidden",
-};
-
 interface Props {
   open: boolean;
   anchorEle?: null | Element;
@@ -69,71 +63,40 @@ const Menu = ({
   fraction,
   children,
 }: Props) => {
-  const [anchorRect, setAnchorRect] = React.useState<DOMRect | null>(null);
-  const [selfRect, setSelfRect] = React.useState<DOMRect | null>(null);
-  const ref = React.useRef<HTMLDivElement | null>(null);
 
-  React.useLayoutEffect(() => {
-    const handler = () => {
-      if (anchorEle) {
-        setAnchorRect(anchorEle.getBoundingClientRect());
-      }
-    };
-
-    handler();
-    window.addEventListener("resize", handler);
-    window.addEventListener("scroll", handler);
-
-    return () => {
-      window.removeEventListener("resize", handler);
-      window.removeEventListener("scroll", handler);
-    };
-  }, [anchorEle]);
-
-  React.useEffect(() => {
-    const ele = ref.current;
-    if (open && ele) {
-      const rect = ele.getBoundingClientRect();
-      if (selfRect?.width !== rect.width || selfRect?.height !== rect.height) {
-        setSelfRect(ele.getBoundingClientRect());
-      }
-    }
-  }, [open, anchorRect, selfRect?.width, selfRect?.height]);
-
-  if (!open) {
-    return null;
-  }
-
-  const { arrowLeft, arrowTop, selfLeft, selfTop } = getPositions(
-    anchorRect,
-    selfRect,
-    anchorOrigin,
-    fraction,
-    hideArrow,
+  const { arrowLeft, arrowTop, popupRef,popupLeft,popupTop } = usePopup<HTMLDivElement>(
+    {anchorOrigin,open,anchorEle,fraction,hideArrow}
   );
+
+  
 
   return (
     <Portal>
-      {!!onClose && (
+      {open && !!onClose && (
         <div
           onClick={onClose}
           className={cn(
-            className.backdrop,
+            "fixed inset-0",
             STYLES.zIndex.menuBackdrop,
             classes?.backdrop,
           )}
         />
       )}
-      <motion.section
-        ref={ref}
+      <AnimatePresence>
+      {open && <motion.div
+        ref={popupRef}
         variants={variants}
         initial="hidden"
         animate="visible"
         exit="hidden"
-        className={cn(className.root, STYLES.zIndex.menu, classes?.root)}
+        className={cn(
+          "shadow-mui fixed rounded bg-base-100 dark:bg-base-200",
+          STYLES.zIndex.menu,
+          classes?.root,
+        )}
         style={{
-          left: selfLeft,
-          top: selfTop,
+          left: popupLeft,
+          top: popupTop,
         }}
       >
         {!hideArrow && (
@@ -142,17 +105,26 @@ const Menu = ({
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className={cn(className.arrow, classes?.arrow)}
+            className={cn(
+              "shadow-mui fixed block h-3.5 w-3.5 rotate-45 bg-base-100 dark:bg-base-200",
+              classes?.arrow,
+            )}
             style={{
               left: arrowLeft,
               top: arrowTop,
             }}
           />
         )}
-        <div className={cn(className.container, classes?.container)}>
+        <div
+          className={cn(
+            "relative z-10 h-full w-full overflow-hidden rounded bg-base-100 dark:bg-base-200",
+            classes?.container,
+          )}
+        >
           {children}
         </div>
-      </motion.section>
+      </motion.div>}
+      </AnimatePresence>
     </Portal>
   );
 };
