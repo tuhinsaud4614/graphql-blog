@@ -374,7 +374,7 @@ export async function loginService(
       sameSite: "none", // cross-site cookie
       maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
     });
-    return accessToken;
+    return { accessToken, refreshToken };
   } catch (error) {
     logger.error(error);
     return new UnknownError(AUTH_FAIL_ERR_MSG);

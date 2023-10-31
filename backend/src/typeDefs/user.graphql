@@ -83,6 +83,11 @@ type UserFollowResponse {
   followingCount: Int!
 }
 
+type TokensResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   token(refreshToken: String): String!
   usersWithOffset(limit: Int, page: Int): PaginateUsers!
@@ -108,7 +113,7 @@ type Mutation {
   register(data: RegisterInput): ID!
   resendActivation(id: ID!): ID!
   verifyUser(id: ID!, code: String!): ID!
-  login(data: LoginInput): String! @rateLimit(
+  login(data: LoginInput): TokensResponse! @rateLimit(
     window: "1m",
     max: 5,
     message: "Too many calls made by login"
