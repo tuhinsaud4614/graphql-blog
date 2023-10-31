@@ -1,12 +1,12 @@
 "use client";
 
 import { Heart } from "lucide-react";
+import { useSession } from "next-auth/react";
 
-import { useAuthUser } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 export default function FavoriteButton() {
-  const user = useAuthUser();
+  const { data: user } = useSession();
   if (!user) {
     return null;
   }

@@ -22,7 +22,7 @@ export type ColorVariantType =
 export type ButtonModeType = "outline" | "fill" | "text";
 
 export type IPicture = z.infer<typeof pictureSchema>;
-export type IUser = z.infer<typeof userAuthSchema>;
+export type IAuthUser = z.infer<typeof userAuthSchema>;
 
 // Component Props
 export type AsProps<T extends React.ElementType> = { as?: T };

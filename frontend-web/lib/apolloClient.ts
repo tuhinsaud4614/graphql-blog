@@ -11,5 +11,6 @@ export const { getClient } = registerApolloClient(() => {
       // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
       // fetchOptions: { cache: "no-store" },
     }),
+    credentials: "include",
   });
 });

@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 
 import { produce } from "immer";
 import { createContext } from "use-context-selector";
 
 import { USER_KEY } from "@/lib/constants";
 import { userAuthSchema } from "@/lib/schema";
-import { IPicture, IUser } from "@/lib/types";
+import { IAuthUser, IPicture } from "@/lib/types";
 import {
   readLocalStorageValue,
   removeLocalStorageValue,
@@ -15,7 +15,7 @@ import {
 } from "@/lib/utils";
 
 export interface AuthState {
-  user: IUser | null;
+  user: IAuthUser | null;
   token: string | null;
 }
 

@@ -63,7 +63,7 @@ export default function PostItem({ classes, post }: Props) {
     >
       <div className={cn(className.left, classes?.left)}>
         <UserLink
-          href={ROUTES.authorProfile(post.author.id)}
+          href={ROUTES.user.userProfile(post.author.id)}
           src={post.author.avatar?.url}
           classes={{ root: "dark:ml-0.5" }}
           text={userName || "Anonymous"}
@@ -91,7 +91,7 @@ export default function PostItem({ classes, post }: Props) {
           <span className="px-1.5">·</span>
           <div className={className.tags}>
             {post.tags.slice(0, 3).map((tag) => (
-              <Link key={tag.id} href={ROUTES.postsByTag(tag.id)} passHref>
+              <Link key={tag.id} href={ROUTES.user.postsByTag(tag.id)} passHref>
                 <a
                   aria-label={tag.title}
                   className={cn(className.tag, classes?.tag)}

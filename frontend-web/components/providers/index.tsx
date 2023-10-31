@@ -2,9 +2,10 @@
 
 import * as React from "react";
 
+import { SessionProvider } from "next-auth/react";
+
 import { ApolloProvider } from "./ApolloProvider";
 import ThemeProvider from "./ThemeProvider";
-import AuthProvider from "./context/authContext";
 
 interface Props {
   children: React.ReactNode;
@@ -12,10 +13,10 @@ interface Props {
 
 export default function Providers({ children }: Props) {
   return (
-    <AuthProvider>
+    <SessionProvider>
       <ThemeProvider>
         <ApolloProvider>{children}</ApolloProvider>
       </ThemeProvider>
-    </AuthProvider>
+    </SessionProvider>
   );
 }

@@ -2,24 +2,18 @@
 
 import * as React from "react";
 
-import { useRouter } from "next/navigation";
-
 import { useApolloClient } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { Toaster } from "sonner";
 import { z } from "zod";
 
+import AccountForm from "@/app/account/_components/Form";
 import ErrorModal from "@/components/ErrorModal";
-import { AuthActionTypes } from "@/components/providers/context/authContext";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { UserRole, useLoginMutation } from "@/graphql/generated/schema";
-import { useAuthDispatch } from "@/hooks/useAuth";
 import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "@/lib/constants";
-import { getAuthUser, gplErrorHandler } from "@/lib/utils";
-
-import AccountForm from "../../_components/Form";
 
 const schema = z.object({
   emailMobile: z
@@ -35,16 +29,11 @@ const schema = z.object({
 });
 
 export default function Login() {
+  const [error, setError] = React.useState<string | undefined>(undefined);
   const emailOrPasswordId = React.useId();
   const passwordId = React.useId();
 
   const client = useApolloClient();
-  const { replace } = useRouter();
-  const authDispatch = useAuthDispatch();
-
-  const [login, { loading, error, reset: mutationReset }] = useLoginMutation({
-    errorPolicy: "all",
-  });
 
   const {
     handleSubmit,
@@ -61,26 +50,17 @@ export default function Login() {
   });
 
   const onSubmit = handleSubmit(async ({ emailMobile, password }) => {
-    try {
-      await client.resetStore();
-      const { data } = await login({
-        variables: { password, emailOrMobile: emailMobile },
-      });
-      if (data && data.login) {
-        const accessToken = data.login;
-        const user = getAuthUser(accessToken);
-        authDispatch({
-          type: AuthActionTypes.setUser,
-          payload: { user, token: accessToken },
-        });
+    await client.resetStore();
 
-        replace(
-          user?.role === UserRole.Admin
-            ? ROUTES.admin.dashboard
-            : ROUTES.myHome,
-        );
-      }
-    } catch (error) {
+    const response = await signIn("credentials", {
+      emailOrMobile: emailMobile,
+      password,
+      redirect: true,
+      callbackUrl: ROUTES.user.home,
+    });
+
+    if (response && !response.ok && response.error) {
+      setError(response.error);
       reset();
     }
   });
@@ -131,7 +111,7 @@ export default function Login() {
             className="w-[14.125rem] !py-2 px-5 "
             type="submit"
             aria-label="Login"
-            loading={isSubmitting || loading}
+            loading={isSubmitting}
             disabled={!(isDirty && isValid) || isSubmitting}
           >
             Login
@@ -140,9 +120,9 @@ export default function Login() {
       </AccountForm>
       <Toaster richColors />
       <ErrorModal
-        onClose={mutationReset}
+        onClose={() => setError(undefined)}
         title="Login Errors"
-        errors={gplErrorHandler(error)}
+        errors={error}
       />
     </>
   );

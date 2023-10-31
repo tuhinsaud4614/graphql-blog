@@ -25,7 +25,7 @@ export default function TrendingItem({ index, post }: Props) {
         <div className="flex flex-col">
           {userName && (
             <UserLink
-              href={ROUTES.authorProfile(post.author.id)}
+              href={ROUTES.user.userProfile(post.author.id)}
               src={post.author.avatar?.url}
               text={userName}
             />

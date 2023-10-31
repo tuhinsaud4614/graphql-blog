@@ -8,10 +8,9 @@ import { useRouter } from "next/navigation";
 
 import { Settings } from "lucide-react";
 
-import { useAuthUser } from "@/hooks/useAuth";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
-import { IAnchorOrigin } from "@/lib/types";
+import { IAnchorOrigin, IAuthUser } from "@/lib/types";
 import { cn, generateFileUrl, getUserName } from "@/lib/utils";
 
 import DemoAvatar from "../DemoAvatar";
@@ -35,13 +34,14 @@ const className = {
 interface Props {
   hideOnSmallDevice?: boolean;
   anchorOrigin: IAnchorOrigin;
+  user?: IAuthUser;
 }
 
 export default function UserAvatarButton({
   hideOnSmallDevice = false,
   anchorOrigin,
+  user,
 }: Props) {
-  const user = useAuthUser();
   const { push } = useRouter();
   const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
     null,
@@ -91,6 +91,7 @@ export default function UserAvatarButton({
         />
       ) : (
         <DemoAvatar
+          key="Demo avatar"
           as="button"
           aria-label="Demo avatar"
           type="button"
@@ -106,6 +107,7 @@ export default function UserAvatarButton({
         anchorEle={anchorEle}
         onClose={() => setAnchorEle(null)}
         anchorOrigin={anchorOrigin}
+        hideArrow
       >
         <div className={className.avatarMenu}>
           <ul className={className.avatarMenuItems}>
@@ -114,7 +116,7 @@ export default function UserAvatarButton({
             </li>
             <li className="hover:bg-base-200 dark:hover:bg-base-100">
               <Link
-                href={ROUTES.accountSettings}
+                href={ROUTES.user.settings}
                 aria-label="Settings"
                 className={className.avatarMenuLink}
               >
@@ -125,7 +127,7 @@ export default function UserAvatarButton({
           </ul>
           <hr className="my-2 border-t" />
           <Link
-            href={ROUTES.authorProfile(user.id)}
+            href={ROUTES.user.userProfile(user.id)}
             aria-label={userName}
             className={cn(
               className.avatarInfo,

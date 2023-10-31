@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 
 const Component = (
@@ -76,5 +74,5 @@ const Component = (
     </svg>
   );
 };
-const ForwardRef = React.forwardRef(Component);
-export default ForwardRef;
+const Loader = React.forwardRef(Component);
+export default Loader;

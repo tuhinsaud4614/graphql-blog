@@ -86,7 +86,7 @@ function Result() {
           variant="neutral"
           mode="outline"
           className="!rounded text-sm first:ml-2 first:mt-2"
-          href={ROUTES.postsByTag(tag.id)}
+          href={ROUTES.user.postsByTag(tag.id)}
         >
           {tag.title}
         </LinkButton>

@@ -19,13 +19,15 @@ export default function NotificationBell({ pathname }: Props) {
 
   return (
     <Link
-      href={ROUTES.notifications}
+      href={ROUTES.user.notifications}
       className="flex h-9 w-9 cursor-pointer select-none items-center justify-center rounded-full border border-accent text-accent hover:border-accent-focus hover:text-accent-focus active:scale-95 dark:hover:border-accent dark:hover:text-accent"
       aria-label="Notifications"
     >
       <span className="relative">
         <Bell
-          className={cn(pathname === ROUTES.notifications && "fill-current")}
+          className={cn(
+            pathname === ROUTES.user.notifications && "fill-current",
+          )}
           size={20}
         />
 

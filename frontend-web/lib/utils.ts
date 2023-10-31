@@ -1,14 +1,16 @@
 import { ApolloError } from "@apollo/client";
+import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { jwtDecode } from "jwt-decode";
+import _has from "lodash/has";
 import { Descendant, Node } from "slate";
 import { twMerge } from "tailwind-merge";
 import { ZodType, z } from "zod";
 
 import { User } from "@/graphql/generated/schema";
 
-import { isDev, isIUser } from "./isType";
-import { IAnchorOrigin, IUser } from "./types";
+import { isAuthUser, isDev } from "./isType";
+import { IAnchorOrigin, IAuthUser } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -132,7 +134,7 @@ export function generateFileUrl(fileUrl?: string) {
  * @returns the name of the user if it exists and is not empty. If the name is not available or empty,
  * it will return the part of the email before the "@" symbol.
  */
-export function getUserName(user: Pick<IUser | User, "email" | "name">) {
+export function getUserName(user: Pick<IAuthUser | User, "email" | "name">) {
   return user.name ? user.name.trim() : user.email.split("@")[0];
 }
 
@@ -282,15 +284,45 @@ export const removeLocalStorageValue = (key: string) => {
  * @returns The function `getAuthUser` returns the decoded token if it exists and is a valid user,
  * otherwise it returns `null`.
  */
-export const getAuthUser = (token?: string) => {
+export const getAuthUser = (token?: string | null) => {
   if (!token) {
     return null;
   }
 
   const decoded = jwtDecode<any>(token);
-  if (!isIUser(decoded)) {
+  if (!isAuthUser(decoded)) {
     return null;
   }
 
   return decoded;
 };
+
+/**
+ * The function fetchRefreshToken is an asynchronous function that sends a POST request to a GraphQL
+ * endpoint to retrieve a token using a refresh token, and returns the token if it exists, otherwise it
+ * returns null.
+ * @returns The function `fetchRefreshToken` returns a `Promise` that resolves to a string, `null`, or
+ * `undefined`.
+ */
+export async function fetchRefreshToken(
+  refreshToken?: string,
+): Promise<string | null | undefined> {
+  const { data } = await axios.post(
+    `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
+    {
+      query: `
+      query Token($refreshToken: String) {
+        token(refreshToken: $refreshToken)
+      }
+    `,
+      variables: { refreshToken: refreshToken },
+    },
+    {
+      withCredentials: true,
+    },
+  );
+  if (data && _has(data, "data") && _has(data.data, "token")) {
+    return data.data.token as string;
+  }
+  return null;
+}

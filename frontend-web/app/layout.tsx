@@ -6,6 +6,7 @@ import RouteChangeProgress from "@/components/RouteChangeProgress";
 import Providers from "@/components/providers";
 import { cn } from "@/lib/utils";
 
+import DynamicLayout from "./_components/DynamicLayout";
 import "./globals.css";
 
 const title = Raleway({
@@ -50,8 +51,8 @@ export default function RootLayout({
       </head>
       <body className="bg-base-100 font-body">
         <Providers>
-          {children}
-          <div id="tooltip" role="tooltip" aria-label="tooltip" />
+          <DynamicLayout>{children}</DynamicLayout>
+          {/* <div id="tooltip" role="tooltip" aria-label="tooltip" /> */}
         </Providers>
         <RouteChangeProgress />
       </body>

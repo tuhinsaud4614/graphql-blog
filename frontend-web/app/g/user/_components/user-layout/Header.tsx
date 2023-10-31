@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 import ThemeSwitch from "@/components/theme-switch";
-import { useAuthUser } from "@/hooks/useAuth";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
 
@@ -19,15 +20,15 @@ const className = {
   link: "cursor-pointer select-none active:scale-95 text-accent hover:text-accent-focus dark:hover:text-accent",
 };
 
-export default function GeneralLayoutHeader() {
-  const user = useAuthUser();
+export default function UserHeader() {
+  const { data: user } = useSession();
   const pathname = usePathname();
   const matches = useMediaQuery("(min-width: 1024px)");
   return (
     <header className={className.root}>
       <nav className={className.nav}>
         <Link
-          href={ROUTES.myHome}
+          href={ROUTES.user.home}
           className={className.homeLink}
           aria-label="Home"
         >

@@ -13,7 +13,7 @@ export default function StartReading() {
       type="button"
       className="!py-2 px-5 text-xl capitalize"
       onClick={() => {
-        replace(ROUTES.myHome);
+        replace(ROUTES.user.home);
       }}
     >
       Start reading

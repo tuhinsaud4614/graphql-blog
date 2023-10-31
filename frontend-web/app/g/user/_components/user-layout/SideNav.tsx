@@ -18,13 +18,13 @@ import SideNavNotifyCount from "./SideNavNotifyCount";
 const getLinks = (pathname: string) => {
   const list = [
     {
-      href: ROUTES.myHome,
-      active: pathname === ROUTES.myHome,
+      href: ROUTES.user.home,
+      active: pathname === ROUTES.user.home,
       label: "Home",
       icon: (
         <Home
           className={cn(
-            pathname === ROUTES.myHome
+            pathname === ROUTES.user.home
               ? "[&_path]:fill-secondary [&_polyline]:fill-base-200 [&_polyline]:stroke-base-200"
               : "[&_path]:hover:fill-secondary [&_polyline]:hover:fill-base-200 [&_polyline]:hover:stroke-base-200",
           )}
@@ -33,14 +33,14 @@ const getLinks = (pathname: string) => {
       ),
     },
     {
-      href: ROUTES.notifications,
-      active: pathname === ROUTES.notifications,
+      href: ROUTES.user.notifications,
+      active: pathname === ROUTES.user.notifications,
       label: "Notifications",
       icon: (
         <span className="relative">
           <Bell
             className={cn(
-              pathname === ROUTES.notifications
+              pathname === ROUTES.user.notifications
                 ? "fill-secondary"
                 : "hover:fill-secondary",
             )}
@@ -51,13 +51,13 @@ const getLinks = (pathname: string) => {
       ),
     },
     {
-      href: ROUTES.favorite,
-      active: pathname === ROUTES.favorite,
+      href: ROUTES.user.favorite,
+      active: pathname === ROUTES.user.favorite,
       label: "Favorite",
       icon: (
         <Heart
           className={cn(
-            pathname === ROUTES.favorite
+            pathname === ROUTES.user.favorite
               ? "fill-secondary"
               : "hover:fill-secondary",
           )}
@@ -66,14 +66,14 @@ const getLinks = (pathname: string) => {
       ),
     },
     {
-      href: ROUTES.myPosts,
-      active: pathname === ROUTES.myPosts,
+      href: ROUTES.user.posts,
+      active: pathname === ROUTES.user.posts,
       label: "My Posts",
       icon: <FileText size={24} />,
     },
     {
-      href: ROUTES.createPost,
-      active: pathname === ROUTES.createPost,
+      href: ROUTES.user.postCreate,
+      active: pathname === ROUTES.user.postCreate,
       label: "Create Post",
       icon: <FileEdit size={24} />,
     },
@@ -82,7 +82,7 @@ const getLinks = (pathname: string) => {
   return list;
 };
 
-export default function GeneralLayoutSideNav() {
+export default function UserSideNav() {
   const pathname = usePathname();
   const matches = useMediaQuery("(min-width: 1024px)");
 
@@ -90,7 +90,7 @@ export default function GeneralLayoutSideNav() {
     <aside className="relative hidden min-h-screen w-20 shrink-0 border-r dark:border-base-300 dark:bg-base-200 lg:block">
       <nav className="sticky inset-0 z-10 flex h-screen flex-col items-center justify-between overflow-y-auto py-4 scrollbar-hide">
         <Link
-          href={ROUTES.myHome}
+          href={ROUTES.user.home}
           className="flex h-[3.125rem] w-[3.125rem] items-center justify-center"
           aria-label="Home"
         >

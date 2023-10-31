@@ -4,11 +4,11 @@ import * as React from "react";
 
 import { AnimatePresence, Variants, motion } from "framer-motion";
 
+import usePopup from "@/hooks/usePopup";
 import STYLES from "@/lib/styles";
 import { IAnchorOrigin } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-import usePopup from "@/hooks/usePopup";
 import Portal from "../Portal";
 
 const variants: Variants = {
@@ -63,12 +63,14 @@ const Menu = ({
   fraction,
   children,
 }: Props) => {
-
-  const { arrowLeft, arrowTop, popupRef,popupLeft,popupTop } = usePopup<HTMLDivElement>(
-    {anchorOrigin,open,anchorEle,fraction,hideArrow}
-  );
-
-  
+  const { arrowLeft, arrowTop, popupRef, popupLeft, popupTop } =
+    usePopup<HTMLDivElement>({
+      anchorOrigin,
+      open,
+      anchorEle,
+      fraction,
+      hideArrow,
+    });
 
   return (
     <Portal>
@@ -83,47 +85,49 @@ const Menu = ({
         />
       )}
       <AnimatePresence>
-      {open && <motion.div
-        ref={popupRef}
-        variants={variants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        className={cn(
-          "shadow-mui fixed rounded bg-base-100 dark:bg-base-200",
-          STYLES.zIndex.menu,
-          classes?.root,
-        )}
-        style={{
-          left: popupLeft,
-          top: popupTop,
-        }}
-      >
-        {!hideArrow && (
-          <motion.span
-            variants={arrowVariants}
+        {open && (
+          <motion.div
+            ref={popupRef}
+            variants={variants}
             initial="hidden"
             animate="visible"
             exit="hidden"
             className={cn(
-              "shadow-mui fixed block h-3.5 w-3.5 rotate-45 bg-base-100 dark:bg-base-200",
-              classes?.arrow,
+              "fixed rounded bg-base-100 shadow-mui dark:bg-base-200",
+              STYLES.zIndex.menu,
+              classes?.root,
             )}
             style={{
-              left: arrowLeft,
-              top: arrowTop,
+              left: popupLeft,
+              top: popupTop,
             }}
-          />
+          >
+            {!hideArrow && (
+              <motion.span
+                variants={arrowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className={cn(
+                  "fixed block h-3.5 w-3.5 rotate-45 bg-base-100 shadow-mui dark:bg-base-200",
+                  classes?.arrow,
+                )}
+                style={{
+                  left: arrowLeft,
+                  top: arrowTop,
+                }}
+              />
+            )}
+            <div
+              className={cn(
+                "relative z-10 h-full w-full overflow-hidden rounded bg-base-100 dark:bg-base-200",
+                classes?.container,
+              )}
+            >
+              {children}
+            </div>
+          </motion.div>
         )}
-        <div
-          className={cn(
-            "relative z-10 h-full w-full overflow-hidden rounded bg-base-100 dark:bg-base-200",
-            classes?.container,
-          )}
-        >
-          {children}
-        </div>
-      </motion.div>}
       </AnimatePresence>
     </Portal>
   );
