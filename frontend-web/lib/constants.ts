@@ -31,8 +31,9 @@ export const ROUTES = {
   register: "/account/register",
   accountVerify: "/account/verify",
   admin: {
-    dashboard: "/admin",
-    categories: "/admin/categories",
+    startWith: "/g/admin",
+    dashboard: "/g/admin/dashboard",
+    categories: "/g/admin/categories",
   },
 } as const;
 

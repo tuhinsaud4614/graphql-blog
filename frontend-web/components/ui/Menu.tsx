@@ -84,7 +84,7 @@ const Menu = ({
           )}
         />
       )}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {open && (
           <motion.div
             ref={popupRef}

@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 
 import RouteChangeProgress from "@/components/RouteChangeProgress";
 import Providers from "@/components/providers";
+import { isDev } from "@/lib/isType";
 import { cn } from "@/lib/utils";
 
 import DynamicLayout from "./_components/DynamicLayout";
@@ -45,14 +46,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(body.variable, title.variable)}>
+    <html
+      lang="en"
+      className={cn(body.variable, title.variable)}
+      suppressHydrationWarning={isDev()}
+    >
       <head>
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
-      <body className="bg-base-100 font-body">
+      <body
+        className="bg-base-100 font-body"
+        suppressHydrationWarning={isDev()}
+      >
         <Providers>
           <DynamicLayout>{children}</DynamicLayout>
-          {/* <div id="tooltip" role="tooltip" aria-label="tooltip" /> */}
         </Providers>
         <RouteChangeProgress />
       </body>

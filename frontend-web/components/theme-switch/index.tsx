@@ -1,4 +1,4 @@
-"user client";
+"use client";
 
 import * as React from "react";
 
@@ -41,7 +41,7 @@ export default function ThemeSwitch({
   const { onHoverEnd, onHoverStart } = useTooltip();
 
   return (
-    <React.Fragment>
+    <>
       <Button
         type="button"
         aria-label="Theme"
@@ -109,6 +109,6 @@ export default function ThemeSwitch({
           </ThemeSwitchItem>
         </ul>
       </Menu>
-    </React.Fragment>
+    </>
   );
 }

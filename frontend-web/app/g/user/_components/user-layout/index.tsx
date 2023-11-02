@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import UserHeader from "./Header";
-import UserLayoutSideNav from "./SideNav";
+import UserHeader from "./header";
+import UserLayoutSideNav from "./side-nav";
 
 interface Props {
   children: React.ReactNode;

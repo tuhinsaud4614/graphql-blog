@@ -1,19 +1,31 @@
-"use client";
-
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Bell, FileEdit, FileText, Heart, Home } from "lucide-react";
 
-import ThemeSwitch from "@/components/theme-switch";
-import UserAvatarButton from "@/components/user-avatar-button";
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { skeletonVariant } from "@/lib/variants/classVariants";
 
-import SideNavItem from "./SideNavItem";
-import SideNavNotifyCount from "./SideNavNotifyCount";
+import SideNavItem from "../SideNavItem";
+import SideNavNotifyCount from "../SideNavNotifyCount";
+import UserShortProfile from "../UserShortProfile";
+
+const ThemeButton = dynamic(() => import("./ThemeButton"), {
+  ssr: false,
+  loading() {
+    return (
+      <li
+        className={skeletonVariant({
+          className: "h-9 w-9",
+          shape: "circle",
+        })}
+      />
+    );
+  },
+});
 
 const getLinks = (pathname: string) => {
   const list = [
@@ -84,7 +96,6 @@ const getLinks = (pathname: string) => {
 
 export default function UserSideNav() {
   const pathname = usePathname();
-  const matches = useMediaQuery("(min-width: 1024px)");
 
   return (
     <aside className="relative hidden min-h-screen w-20 shrink-0 border-r dark:border-base-300 dark:bg-base-200 lg:block">
@@ -113,19 +124,9 @@ export default function UserSideNav() {
               {item.icon}
             </SideNavItem>
           ))}
-          <li>
-            {matches && (
-              <ThemeSwitch
-                anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-                tooltipOrigin={{ horizontal: "right", vertical: "bottom" }}
-              />
-            )}
-          </li>
+          <ThemeButton />
         </ul>
-        <UserAvatarButton
-          anchorOrigin={{ horizontal: "left", vertical: "top" }}
-          hideOnSmallDevice
-        />
+        <UserShortProfile />
       </nav>
     </aside>
   );

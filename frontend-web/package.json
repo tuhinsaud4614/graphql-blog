@@ -14,11 +14,16 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "codegen": "graphql-codegen --config codegen.ts --require dotenv/config",
-    "check:unused-package": "npx depcheck"
+    "check:unused-package": "npx depcheck",
+    "prepare": "husky install",
+    "lint-pretty": "npm run lint && npm run format"
+  },
+  "lint-staged": {
+    "/**/*.{ts,tsx}": "npm run lint-pretty"
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
-    "@apollo/experimental-nextjs-app-support": "^0.4.3",
+    "@apollo/experimental-nextjs-app-support": "^0.5.0",
     "@hookform/resolvers": "^3.3.2",
     "@types/lodash": "^4.14.200",
     "axios": "^1.6.0",
@@ -30,7 +35,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.288.0",
     "moment": "^2.29.4",
-    "next": "^14.0.0",
+    "next": "^14.0.1",
     "next-auth": "^4.24.4",
     "next-themes": "^0.2.1",
     "next13-progressbar": "^1.0.4",
@@ -60,10 +65,11 @@
     "@typescript-eslint/parser": "^6.9.0",
     "autoprefixer": "^10",
     "eslint": "^8",
-    "eslint-config-next": "^14.0.0",
+    "eslint-config-next": "^14.0.1",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-tailwindcss": "^3.13.0",
+    "lint-staged": "^15.0.2",
     "postcss": "^8",
     "prettier": "^3.0.3",
     "pretty-quick": "^3.1.3",

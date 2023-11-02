@@ -1,6 +1,8 @@
 "use client";
 
 /* This is setup with https://www.npmjs.com/package/@apollo/experimental-nextjs-app-support */
+import * as React from "react";
+
 import { ApolloLink, HttpLink, fromPromise } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
@@ -12,11 +14,12 @@ import {
 } from "@apollo/experimental-nextjs-app-support/ssr";
 import { useSession } from "next-auth/react";
 
+import { updateSession } from "@/lib/updateSession";
 import { fetchRefreshToken, getAuthUser } from "@/lib/utils";
 
 export function ApolloProvider({ children }: React.PropsWithChildren) {
-  const { data: user, update } = useSession();
-  const currentAccessToken = user?.accessToken;
+  const { data, update } = useSession();
+  const currentAccessToken = data?.accessToken;
 
   const errorLink = onError(({ graphQLErrors, operation, forward }) => {
     if (graphQLErrors) {
@@ -25,18 +28,22 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
           err?.extensions?.code &&
           err.extensions.code === "UNAUTHENTICATED"
         ) {
-          return fromPromise(fetchRefreshToken().catch(() => null))
+          return fromPromise(
+            fetchRefreshToken()
+              .then((newAccessToken) => {
+                if (newAccessToken) {
+                  return updateSession(
+                    { accessToken: newAccessToken },
+                    update,
+                  ).then(() => newAccessToken);
+                }
+                return newAccessToken;
+              })
+              .catch(() => null),
+          )
             .filter((value) => Boolean(value))
             .flatMap((newAccessToken) => {
               const oldHeaders = operation.getContext().headers;
-
-              const user = getAuthUser(newAccessToken);
-              // update({})
-              // dispatch({
-              //   type: AuthActionTypes.setUser,
-              //   payload: { user, token: newAccessToken || null },
-              // });
-
               operation.setContext({
                 headers: {
                   ...oldHeaders,
@@ -69,11 +76,9 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
 
     try {
       const newAccessToken = await fetchRefreshToken();
-      const user = getAuthUser(newAccessToken);
-      // dispatch({
-      //   type: AuthActionTypes.setUser,
-      //   payload: { user, token: newAccessToken || null },
-      // });
+      if (newAccessToken) {
+        await updateSession({ accessToken: newAccessToken }, update);
+      }
 
       return {
         headers: {

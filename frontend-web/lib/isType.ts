@@ -11,6 +11,14 @@ export function isDev() {
 }
 
 /**
+ * The function checks if the current environment is set to production.
+ * @returns a boolean value indicating whether the current environment is set to "production" or not.
+ */
+export function isProduction() {
+  return process.env.NODE_ENV === "production";
+}
+
+/**
  * The function `isAuthUser` checks if the provided data is of type `IAuthUser` by verifying the presence of
  * specific properties.
  * @param {unknown} data - The `data` parameter is of type `unknown`, which means it can be any type.

@@ -21,7 +21,7 @@ export default async function RSCAuthGuard({ roles, children }: Props) {
     const { user } = session;
     const authUser = isAuthUser(user);
     if (authUser && roles && !(user.role in roles)) {
-      redirect(ROUTES.home);
+      redirect(ROUTES.user.home);
     }
   }
 

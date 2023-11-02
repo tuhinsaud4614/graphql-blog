@@ -1,16 +1,30 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
-import ThemeSwitch from "@/components/theme-switch";
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
+import { skeletonVariant } from "@/lib/variants/classVariants";
 
-import NotificationBell from "./NotificationBell";
+import NotificationBell from "../NotificationBell";
+
+const ThemeButton = dynamic(() => import("./ThemeButton"), {
+  ssr: false,
+  loading() {
+    return (
+      <li
+        className={skeletonVariant({
+          className: "h-9 w-9",
+          shape: "circle",
+        })}
+      />
+    );
+  },
+});
 
 const className = {
   root: "lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-200/50 backdrop-blur-sm shadow-mui px-4",
@@ -23,7 +37,7 @@ const className = {
 export default function UserHeader() {
   const { data: user } = useSession();
   const pathname = usePathname();
-  const matches = useMediaQuery("(min-width: 1024px)");
+
   return (
     <header className={className.root}>
       <nav className={className.nav}>
@@ -52,14 +66,7 @@ export default function UserHeader() {
               </Link>
             </li>
           )}
-          <li>
-            {!matches && (
-              <ThemeSwitch
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                classes={{ menuRoot: "mt-6" }}
-              />
-            )}
-          </li>
+          <ThemeButton />
           {!!user && (
             <li>
               <NotificationBell pathname={pathname} />

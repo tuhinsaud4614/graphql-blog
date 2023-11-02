@@ -1,7 +1,6 @@
-import _has from "lodash/has";
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import credentials from "next-auth/providers/credentials";
 
 import {
   LoginDocument,
@@ -9,7 +8,9 @@ import {
   LoginMutationVariables,
 } from "@/graphql/generated/schema";
 import { getClient } from "@/lib/apolloClient";
-import { IAuthUser } from "@/lib/types";
+import { ROUTES } from "@/lib/constants";
+import { isDev, isProduction } from "@/lib/isType";
+import { UpdateSessionParams } from "@/lib/updateSession";
 import { fetchRefreshToken, getAuthUser } from "@/lib/utils";
 
 export const authOptions: AuthOptions = {
@@ -38,7 +39,7 @@ export const authOptions: AuthOptions = {
               accessToken: data.login.accessToken,
               refreshToken: data.login.refreshToken,
               user: user,
-            };
+            } as User;
           }
           return null;
         } catch (error) {
@@ -48,44 +49,58 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        return user;
+        return {
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+          user: user.user,
+        };
       }
 
-      if (
-        _has(token, "user") &&
-        _has(token.user, "exp") &&
-        token.user.exp &&
-        Date.now() < token.user.exp * 1000
-      ) {
+      if (trigger === "update" && session) {
+        const newInfo = session as UpdateSessionParams;
+        if (newInfo.accessToken) {
+          const newUser = getAuthUser(newInfo.accessToken);
+          token.accessToken = newInfo.accessToken;
+          newUser && (token.user = newUser);
+        } else {
+          newInfo.name && (token.user.name = newInfo.name);
+          newInfo.avatar && (token.user.avatar = newInfo.avatar);
+        }
+      }
+
+      if (token.user.exp && Date.now() < token.user.exp * 1000) {
         return token;
       }
 
-      const accessToken = await fetchRefreshToken(token.refreshToken as string);
+      const accessToken = await fetchRefreshToken(token.refreshToken);
       const updatedUser = getAuthUser(accessToken);
       if (accessToken && updatedUser) {
-        return { ...token, user: updatedUser, accessToken };
+        return { ...token, user: updatedUser, accessToken } as JWT;
       }
 
       return {
         ...token,
         error: "RefreshTokenTokenError",
-      };
+      } as JWT;
     },
 
     async session({ session, token }) {
       if (token) {
-        session.user = token.user as IAuthUser;
-        session.accessToken = token.accessToken as string;
+        session.user = token.user;
+        session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
         session.expires = new Date(token.user.exp * 1000).toISOString();
         session.error = token.error as string | undefined;
       }
       return Promise.resolve(session);
     },
   },
+  pages: { signIn: ROUTES.login },
   secret: process.env.NEXTAUTH_SECRET,
-  pages: { signIn: "/account/login" },
+  debug: isDev(),
+  useSecureCookies: isProduction(),
 };
 
 const handler = NextAuth(authOptions);

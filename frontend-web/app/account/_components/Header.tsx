@@ -1,11 +1,26 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import ThemeSwitch from "@/components/theme-switch";
 import { ROUTES } from "@/lib/constants";
+import { skeletonVariant } from "@/lib/variants/classVariants";
+
+const ThemeSwitch = dynamic(() => import("@/components/theme-switch"), {
+  ssr: false,
+  loading() {
+    return (
+      <span
+        className={skeletonVariant({
+          className: "h-9 w-9",
+          shape: "circle",
+        })}
+      />
+    );
+  },
+});
 
 export default function AuthHeader() {
   const pathname = usePathname();
