@@ -7,10 +7,11 @@ import { usePathname } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
+import UserAvatarButton from "@/components/user-avatar-button";
 import { ROUTES } from "@/lib/constants";
 import { skeletonVariant } from "@/lib/variants/classVariants";
 
-import NotificationBell from "../NotificationBell";
+import NotificationBell from "./NotificationBell";
 
 const ThemeButton = dynamic(() => import("./ThemeButton"), {
   ssr: false,
@@ -28,14 +29,14 @@ const ThemeButton = dynamic(() => import("./ThemeButton"), {
 
 const className = {
   root: "lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-base-200 [@supports(backdrop-filter:blur(0px))]:bg-slate-200/50 dark:[@supports(backdrop-filter:blur(0px))]:bg-base-200/50 backdrop-blur-sm shadow-mui px-4",
-  nav: "flex items-center justify-between",
+  nav: "flex items-center justify-between h-full",
   homeLink: "flex items-center justify-center h-[3.125rem] w-[3.125rem]",
   items: "list-none m-0 flex items-center space-x-3",
   link: "cursor-pointer select-none active:scale-95 text-accent hover:text-accent-focus dark:hover:text-accent",
 };
 
 export default function UserHeader() {
-  const { data: user } = useSession();
+  const { data: session } = useSession();
   const pathname = usePathname();
 
   return (
@@ -55,23 +56,28 @@ export default function UserHeader() {
           />
         </Link>
         <ul className={className.items}>
-          {!user && (
-            <li>
-              <Link
-                href={ROUTES.login}
-                className={className.link}
-                aria-label="Sign In"
-              >
-                Sign In
-              </Link>
-            </li>
-          )}
-          <ThemeButton />
-          {!!user && (
+          <li>
+            {session?.user ? (
+              <UserAvatarButton
+                user={session.user}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                hideOnSmallDevice
+              />
+            ) : (
+              <span
+                className={skeletonVariant({
+                  className: "h-9 w-9",
+                  shape: "circle",
+                })}
+              />
+            )}
+          </li>
+          {!!session?.user && (
             <li>
               <NotificationBell pathname={pathname} />
             </li>
           )}
+          <ThemeButton />
         </ul>
       </nav>
     </header>

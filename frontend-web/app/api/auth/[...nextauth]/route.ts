@@ -90,8 +90,6 @@ export const authOptions: AuthOptions = {
       if (token) {
         session.user = token.user;
         session.accessToken = token.accessToken;
-        session.refreshToken = token.refreshToken;
-        session.expires = new Date(token.user.exp * 1000).toISOString();
         session.error = token.error as string | undefined;
       }
       return Promise.resolve(session);
