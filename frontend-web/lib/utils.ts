@@ -120,7 +120,9 @@ export function generateFileUrl(fileUrl?: string) {
   const serverEndpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
 
   if (fileUrl && serverEndpoint) {
-    return serverEndpoint + "/" + fileUrl;
+    return `${serverEndpoint}${
+      fileUrl.startsWith("/") ? fileUrl : "/" + fileUrl
+    }`;
   }
   return undefined;
 }

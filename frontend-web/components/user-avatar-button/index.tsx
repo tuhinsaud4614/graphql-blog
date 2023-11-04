@@ -95,7 +95,7 @@ export default function UserAvatarButton({
           as="button"
           aria-label="Demo avatar"
           type="button"
-          className="dark:border-secondary-dark h-9 w-9 border-secondary"
+          className="h-9 w-9 rounded-full border border-secondary/50 text-secondary hover:border-secondary hover:bg-secondary/5 dark:border-secondary-content/50 dark:text-secondary-content dark:hover:border-secondary-content dark:hover:bg-secondary-content/[8%]"
           onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
             setAnchorEle(e.currentTarget)
           }

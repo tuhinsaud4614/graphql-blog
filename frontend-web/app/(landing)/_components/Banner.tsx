@@ -1,4 +1,5 @@
-import StartReading from "./StartReading";
+import LinkButton from "@/components/ui/LinkButton";
+import { ROUTES } from "@/lib/constants";
 
 export default function Banner() {
   return (
@@ -11,7 +12,15 @@ export default function Banner() {
           <h3 className="mb-12 w-[80%] text-2xl leading-6 text-base-100 selection:bg-base-100 selection:text-primary dark:text-neutral dark:selection:bg-neutral">
             Discover stories, thinking, and expertise from writers on any topic.
           </h3>
-          <StartReading />
+          <LinkButton
+            aria-label="Start reading"
+            className="!py-2 px-5 text-xl capitalize"
+            href={ROUTES.user.home}
+            variant="secondary"
+            replace
+          >
+            Start reading
+          </LinkButton>
         </div>
       </div>
     </section>

@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 
 import useTooltip from "@/hooks/useTooltip";
 import STYLES from "@/lib/styles";
-import { IAnchorOrigin } from "@/lib/types";
+import { ColorVariantType, IAnchorOrigin } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import Button from "../ui/Button";
@@ -24,6 +24,7 @@ const className = {
 interface Props {
   anchorOrigin: IAnchorOrigin;
   tooltipOrigin?: IAnchorOrigin;
+  variant?: ColorVariantType;
   classes?: {
     root?: string;
     menuRoot?: string;
@@ -33,6 +34,7 @@ interface Props {
 export default function ThemeSwitch({
   anchorOrigin,
   tooltipOrigin,
+  variant,
   classes,
 }: Props) {
   const [anchorEle, setAnchorEle] =
@@ -46,6 +48,7 @@ export default function ThemeSwitch({
         type="button"
         aria-label="Theme"
         className={cn(STYLES.btn.circle, classes?.root)}
+        variant={variant}
         mode="outline"
         onClick={(e) => setAnchorEle(e.currentTarget)}
         onMouseEnter={(e) => {

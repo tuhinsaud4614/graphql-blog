@@ -105,7 +105,9 @@ export default function LandingHeader() {
           />
           <li>
             <ThemeSwitch
+              variant="secondary"
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              tooltipOrigin={{ horizontal: "right" }}
             />
           </li>
         </ul>

@@ -2,6 +2,7 @@ import * as React from "react";
 
 import UserHeader from "./header";
 import UserLayoutSideNav from "./side-nav";
+import Sidebar from "./sidebar";
 
 interface Props {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ export default function UserLayout({ children }: Props) {
         <main className="mx-auto max-w-[45.25rem] flex-auto overflow-x-hidden px-4 py-[4.5rem] lg:py-4">
           {children}
         </main>
-        {/* {sidebar && <Sidebar>{sidebar}</Sidebar>} */}
+        <Sidebar />
       </section>
     </>
   );

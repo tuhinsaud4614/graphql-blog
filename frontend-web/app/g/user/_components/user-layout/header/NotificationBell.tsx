@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
-
 import { Bell } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
+import LinkButton from "@/components/ui/LinkButton";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +17,10 @@ export default function NotificationBell({ pathname }: Props) {
   const count = 10;
 
   return (
-    <Link
+    <LinkButton
       href={ROUTES.user.notifications}
-      className="flex h-9 w-9 cursor-pointer select-none items-center justify-center rounded-full border border-accent text-accent hover:border-accent-focus hover:text-accent-focus active:scale-95 dark:hover:border-accent dark:hover:text-accent"
+      mode="outline"
+      className="h-9 w-9"
       aria-label="Notifications"
     >
       <span className="relative">
@@ -35,6 +35,6 @@ export default function NotificationBell({ pathname }: Props) {
           <Badge variant="secondary">{count >= 100 ? "99+" : count}</Badge>
         )}
       </span>
-    </Link>
+    </LinkButton>
   );
 }

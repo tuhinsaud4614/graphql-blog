@@ -20,43 +20,41 @@ export default function UserLink({ href, src, classes, text }: Props) {
   const imgUrl = generateFileUrl(src);
   return (
     <div className={cn("flex items-center", classes?.root)}>
-      <Link href={href} passHref>
-        {imgUrl ? (
-          <a
-            aria-label={text}
-            className={cn(
-              "h-5 w-5 overflow-hidden rounded-full dark:ring-1 dark:ring-secondary dark:hover:ring-2",
-              classes?.img,
-            )}
-          >
-            <Image
-              loader={({ src, width, quality }) =>
-                `${src}?w=${width}&q=${quality || 75}`
-              }
-              src={imgUrl}
-              alt={text}
-              width={20}
-              height={20}
-              objectFit="cover"
-              layout="responsive"
-            />
-          </a>
-        ) : (
-          <DemoAvatar
-            as="a"
-            aria-label={text}
-            className="h-5 w-5"
-            size={20 / 1.8}
-          />
-        )}
-      </Link>
-      <Link href={href} passHref>
-        <a
-          className={cn("ml-2 text-sm text-neutral", classes?.text)}
+      {imgUrl ? (
+        <Link
+          href={href}
           aria-label={text}
+          className={cn(
+            "h-5 w-5 overflow-hidden rounded-full dark:ring-1 dark:ring-secondary dark:hover:ring-2",
+            classes?.img,
+          )}
         >
-          {text}
-        </a>
+          <Image
+            loader={({ src, width, quality }) =>
+              `${src}?w=${width}&q=${quality || 75}`
+            }
+            src={imgUrl}
+            alt={text}
+            width={20}
+            height={20}
+            className="object-cover"
+          />
+        </Link>
+      ) : (
+        <DemoAvatar
+          as={Link}
+          href={href}
+          aria-label={text}
+          className="h-5 w-5"
+          size={20 / 1.8}
+        />
+      )}
+      <Link
+        href={href}
+        className={cn("ml-2 text-sm text-neutral", classes?.text)}
+        aria-label={text}
+      >
+        {text}
       </Link>
     </div>
   );

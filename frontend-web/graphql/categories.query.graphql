@@ -1,0 +1,11 @@
+query GetCategoriesWithOffset($limit: Int, $page: Int) {
+  categoriesWithOffset(limit: $limit, page: $page) {
+    total
+    data {
+      ...FCategory
+    }
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+  }
+}

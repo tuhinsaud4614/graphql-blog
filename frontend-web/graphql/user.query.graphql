@@ -1,0 +1,11 @@
+query RecommendAuthorsWithOffset($limit: Int, $page: Int) {
+  recommendAuthorsWithOffset(limit: $limit, page: $page) {
+    total
+    data {
+      ...FUser
+    }
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+  }
+}

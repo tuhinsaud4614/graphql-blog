@@ -7,6 +7,10 @@ export const CREATE_POST_KEY = "create-post";
 
 export const ROUTES = {
   landing: "/",
+  search: "/search",
+  login: "/account/login",
+  register: "/account/register",
+  accountVerify: "/account/verify",
   user: {
     startWith: "/g/user",
     home: "/g/user/home",
@@ -26,10 +30,6 @@ export const ROUTES = {
     search: "/g/user/search",
     categories: "/g/user/categories",
   },
-
-  login: "/account/login",
-  register: "/account/register",
-  accountVerify: "/account/verify",
   admin: {
     startWith: "/g/admin",
     dashboard: "/g/admin/dashboard",
