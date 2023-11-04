@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
-import UserAvatarButton from "@/components/user-avatar-button";
 import { ROUTES } from "@/lib/constants";
 import { skeletonVariant } from "@/lib/variants/classVariants";
 
@@ -56,22 +55,6 @@ export default function UserHeader() {
           />
         </Link>
         <ul className={className.items}>
-          <li>
-            {session?.user ? (
-              <UserAvatarButton
-                user={session.user}
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                hideOnSmallDevice
-              />
-            ) : (
-              <span
-                className={skeletonVariant({
-                  className: "h-9 w-9",
-                  shape: "circle",
-                })}
-              />
-            )}
-          </li>
           {!!session?.user && (
             <li>
               <NotificationBell pathname={pathname} />

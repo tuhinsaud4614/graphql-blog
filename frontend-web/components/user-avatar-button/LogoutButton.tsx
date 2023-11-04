@@ -1,34 +1,14 @@
 "use client";
 
-import * as React from "react";
-
 import { Loader, LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
 
-import { useLogoutMutation } from "@/graphql/generated/schema";
-import { ROUTES } from "@/lib/constants";
-import { isDev } from "@/lib/isType";
+import useLogout from "@/hooks/useLogout";
 import { cn, gplErrorHandler } from "@/lib/utils";
 
 import ErrorModal from "../ErrorModal";
 
 export default function LogoutButton() {
-  const [loading, setLoading] = React.useState(false);
-  const [logout, { error, reset }] = useLogoutMutation({
-    errorPolicy: "all",
-  });
-
-  const clickHandler = async () => {
-    try {
-      setLoading(true);
-      await signOut({ callbackUrl: ROUTES.landing, redirect: true });
-      await logout();
-    } catch (error) {
-      isDev() && console.error("Logout errors: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { error, loading, logoutHandler, reset } = useLogout();
 
   return (
     <>
@@ -40,7 +20,7 @@ export default function LogoutButton() {
           loading ? "text-accent-disabled" : "text-neutral hover:text-accent",
         )}
         disabled={loading}
-        onClick={clickHandler}
+        onClick={logoutHandler}
       >
         <LogOut size={18} />
         <span className="ml-2 mr-auto">Logout</span>
@@ -49,10 +29,7 @@ export default function LogoutButton() {
         )}
       </button>
       <ErrorModal
-        onClose={() => {
-          reset();
-          setLoading(false);
-        }}
+        onClose={() => reset()}
         title="Logout Errors"
         errors={gplErrorHandler(error)}
       />

@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import BottomTab from "./bottom-tab";
 import UserHeader from "./header";
 import UserLayoutSideNav from "./side-nav";
 import Sidebar from "./sidebar";
@@ -19,6 +20,7 @@ export default function UserLayout({ children }: Props) {
         </main>
         <Sidebar />
       </section>
+      <BottomTab />
     </>
   );
 }
