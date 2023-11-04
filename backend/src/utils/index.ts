@@ -222,7 +222,7 @@ export const verifyAccessTokenFromExtensions = (extensions: unknown) => {
  * `expires`. If the `settable` argument is set to `true`, the function also sets
  */
 export const generateToken = async (
-  user: UserWithAvatar,
+  user: Omit<UserWithAvatar, "password">,
   key: string,
   expires: string,
   settable = false,
