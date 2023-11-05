@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
 import { imageSize } from "image-size";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { random } from "lodash";
+import { omit, random } from "lodash";
 import ms from "ms";
 import path from "path";
 import { promisify } from "util";
@@ -222,12 +222,13 @@ export const verifyAccessTokenFromExtensions = (extensions: unknown) => {
  * `expires`. If the `settable` argument is set to `true`, the function also sets
  */
 export const generateToken = async (
-  user: Omit<UserWithAvatar, "password">,
+  user: UserWithAvatar,
   key: string,
   expires: string,
   settable = false,
 ) => {
-  const token = sign({ ...user }, key, {
+  const omittedUser = omit(user, ["password"]);
+  const token = sign({ ...omittedUser }, key, {
     expiresIn: expires,
   });
 

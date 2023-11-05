@@ -3,7 +3,7 @@ import { hash, verify } from "argon2";
 import type { Request, Response } from "express";
 import { unlink } from "fs";
 import { verify as jwtVerify } from "jsonwebtoken";
-import { omit, pick } from "lodash";
+import { pick } from "lodash";
 import ms from "ms";
 import path from "path";
 
@@ -108,7 +108,7 @@ import {
  * `user` object, secret keys, and expiration times. The `refreshToken` is generated with an additional
  * parameter `true` to indicate that it is a refresh token. The `as const` assertion is used to
  */
-async function generateTokensService(user: Omit<UserWithAvatar, "password">) {
+async function generateTokensService(user: UserWithAvatar) {
   const accessToken = await generateToken(
     user,
     config.ACCESS_TOKEN_SECRET_KEY,
@@ -366,9 +366,7 @@ export async function loginService(
       return new UserInputError(INVALID_CREDENTIAL);
     }
 
-    const { accessToken, refreshToken } = await generateTokensService(
-      omit(user, ["password"]),
-    );
+    const { accessToken, refreshToken } = await generateTokensService(user);
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true, // accessible only by web server
@@ -617,7 +615,8 @@ export async function updateNameService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    return await updateUserName(prisma, user.id, params.name);
+    const updatedUser = await updateUserName(prisma, user.id, params.name);
+    return updatedUser.name;
   } catch (error) {
     logger.error(error);
     return new UnknownError("User name update failed.");
