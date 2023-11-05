@@ -8,7 +8,6 @@ import { useApolloClient } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { Toaster } from "sonner";
 import { z } from "zod";
 
 import AccountForm from "@/app/account/_components/Form";
@@ -130,7 +129,6 @@ export default function Login() {
           </Button>
         </div>
       </AccountForm>
-      <Toaster richColors />
       <ErrorModal
         onClose={() => setError(undefined)}
         title="Login Errors"

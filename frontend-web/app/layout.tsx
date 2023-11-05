@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import localFont from "next/font/local";
 
+import { Toaster } from "sonner";
+
 import RouteChangeProgress from "@/components/RouteChangeProgress";
 import Providers from "@/components/providers";
 import { isDev } from "@/lib/isType";
@@ -62,6 +64,7 @@ export default function RootLayout({
           <DynamicLayout>{children}</DynamicLayout>
         </Providers>
         <RouteChangeProgress />
+        <Toaster richColors />
       </body>
     </html>
   );

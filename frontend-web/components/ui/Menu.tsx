@@ -2,6 +2,8 @@
 
 import * as React from "react";
 
+import { usePathname, useSearchParams } from "next/navigation";
+
 import { AnimatePresence, Variants, motion } from "framer-motion";
 
 import usePopup from "@/hooks/usePopup";
@@ -63,6 +65,8 @@ const Menu = ({
   fraction,
   children,
 }: Props) => {
+  // For unknown function pass as dependency for unnecessary re-render
+  const closeHandler = React.useRef(onClose);
   const { arrowLeft, arrowTop, popupRef, popupLeft, popupTop } =
     usePopup<HTMLDivElement>({
       anchorOrigin,
@@ -71,6 +75,15 @@ const Menu = ({
       fraction,
       hideArrow,
     });
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const url = `${pathname}?${searchParams}`;
+
+  React.useEffect(() => {
+    closeHandler.current?.();
+  }, [url]);
 
   return (
     <Portal>

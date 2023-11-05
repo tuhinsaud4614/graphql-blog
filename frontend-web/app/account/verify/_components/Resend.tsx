@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { useRouter } from "next/navigation";
 
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
 import Button from "@/components/ui/Button";
 import { useResendActivationLinkMutation } from "@/graphql/generated/schema";
@@ -47,7 +47,6 @@ export default function ResendButton({ userId }: { userId: string }) {
       >
         Resend verification link
       </Button>
-      <Toaster richColors />
     </React.Fragment>
   );
 }

@@ -7,6 +7,7 @@ const myPlugin = plugin(
     addBase({
       ":root": {
         "--primary": "258.89 94.38% 51.18%",
+        "--primary-foreground": "210 20% 98%",
         "--primary-focus": "258.89 94.38% 51.18% / 0.9",
         "--primary-content": "258.9 87.72% 55.29%",
         "--primary-disabled": "259.19 94.26% 40.98% / 34.9%",
@@ -43,6 +44,7 @@ const myPlugin = plugin(
       },
       ".dark": {
         "--primary": "264 79.91% 42.94%",
+        "--primary-foreground": "210 20% 98%",
         "--primary-focus": "264 79.91% 42.94% / 0.9",
         "--primary-content": "264 59.83% 54.12%",
         "--primary-disabled": "264 79.91% 42.94% / 34.9%",
@@ -107,105 +109,57 @@ const myPlugin = plugin(
           foreground: "hsl(var(--foreground))",
           primary: {
             DEFAULT: "hsl(var(--primary))",
+            foreground: "hsl(var(--primary-foreground))",
+            focus: "hsl(var(--primary-focus))",
+            content: "hsl(var(--primary-content))",
+            disabled: "hsl(var(--primary-disabled))",
           },
-          "primary-focus": {
-            DEFAULT: "hsl(var(--primary-focus))",
-          },
-          "primary-content": {
-            DEFAULT: "hsl(var(--primary-content))",
-          },
-          "primary-disabled": {
-            DEFAULT: "hsl(var(--primary-disabled))",
-          },
+
           secondary: {
             DEFAULT: "hsl(var(--secondary))",
-          },
-          "secondary-focus": {
-            DEFAULT: "hsl(var(--secondary-focus))",
-          },
-          "secondary-content": {
-            DEFAULT: "hsl(var(--secondary-content))",
-          },
-          "secondary-disabled": {
-            DEFAULT: "hsl(var(--secondary-disabled))",
+            focus: "hsl(var(--secondary-focus))",
+            content: "hsl(var(--secondary-content))",
+            disabled: "hsl(var(--secondary-disabled))",
           },
           accent: {
             DEFAULT: "hsl(var(--accent))",
-          },
-          "accent-focus": {
-            DEFAULT: "hsl(var(--accent-focus))",
-          },
-          "accent-content": {
-            DEFAULT: "hsl(var(--accent-content))",
-          },
-          "accent-disabled": {
-            DEFAULT: "hsl(var(--accent-disabled))",
-          },
-          neutral: {
-            DEFAULT: "hsl(var(--neutral))",
-          },
-          "neutral-focus": {
-            DEFAULT: "hsl(var(--neutral-focus))",
-          },
-          "base-100": {
-            DEFAULT: "hsl(var(--base-100))",
-          },
-          "base-200": {
-            DEFAULT: "hsl(var(--base-200))",
-          },
-          "base-300": {
-            DEFAULT: "hsl(var(--base-300))",
-          },
-          "base-content": {
-            DEFAULT: "hsl(var(--base-content))",
+            focus: "hsl(var(--accent-focus))",
+            content: "hsl(var(--accent-content))",
+            disabled: "hsl(var(--accent-disabled))",
           },
           info: {
             DEFAULT: "hsl(var(--info))",
-          },
-          "info-focus": {
-            DEFAULT: "hsl(var(--info-focus))",
-          },
-          "info-content": {
-            DEFAULT: "hsl(var(--info-content))",
-          },
-          "info-disabled": {
-            DEFAULT: "hsl(var(--info-disabled))",
+            focus: "hsl(var(--info-focus))",
+            content: "hsl(var(--info-content))",
+            disabled: "hsl(var(--info-disabled))",
           },
           success: {
             DEFAULT: "hsl(var(--success))",
-          },
-          "success-focus": {
-            DEFAULT: "hsl(var(--success-focus))",
-          },
-          "success-content": {
-            DEFAULT: "hsl(var(--success-content))",
-          },
-          "success-disabled": {
-            DEFAULT: "hsl(var(--success-disabled))",
+            focus: "hsl(var(--success-focus))",
+            content: "hsl(var(--success-content))",
+            disabled: "hsl(var(--success-disabled))",
           },
           warning: {
             DEFAULT: "hsl(var(--warning))",
-          },
-          "warning-focus": {
-            DEFAULT: "hsl(var(--warning-focus))",
-          },
-          "warning-content": {
-            DEFAULT: "hsl(var(--warning-content))",
-          },
-          "warning-disabled": {
-            DEFAULT: "hsl(var(--warning-disabled))",
+            focus: "hsl(var(--warning-focus))",
+            content: "hsl(var(--warning-content))",
+            disabled: "hsl(var(--warning-disabled))",
           },
           error: {
             DEFAULT: "hsl(var(--error))",
+            focus: "hsl(var(--error-focus))",
+            content: "hsl(var(--error-content))",
+            disabled: "hsl(var(--error-disabled))",
           },
-          "error-focus": {
-            DEFAULT: "hsl(var(--error-focus))",
+          neutral: {
+            DEFAULT: "hsl(var(--neutral))",
+            focus: "hsl(var(--neutral-focus))",
           },
-          "error-content": {
-            DEFAULT: "hsl(var(--error-content))",
-          },
-          "error-disabled": {
-            DEFAULT: "hsl(var(--error-disabled))",
+          base: {
+            100: "hsl(var(--base-100))",
+            200: "hsl(var(--base-200))",
+            300: "hsl(var(--base-300))",
+            content: "hsl(var(--base-content))",
           },
         },
         screens: {

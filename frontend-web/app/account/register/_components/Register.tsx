@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import ErrorModal from "@/components/ErrorModal";
@@ -184,7 +184,6 @@ export default function Register() {
           </Button>
         </div>
       </AccountForm>
-      <Toaster richColors />
       <ErrorModal
         onClose={mutationReset}
         title="Registration Errors"
