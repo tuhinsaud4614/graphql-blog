@@ -12,9 +12,25 @@ import {
   NextSSRInMemoryCache,
   SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
+import { signOut } from "next-auth/react";
 
+import { ROUTES } from "@/lib/constants";
 import { getNextAuthJWTToken } from "@/lib/next-server-api";
 import { getAuthUser } from "@/lib/utils";
+
+async function retryRefreshToken() {
+  try {
+    const newAccessToken = await getNextAuthJWTToken();
+    if (!newAccessToken) {
+      await signOut({ callbackUrl: ROUTES.landing, redirect: true });
+      return null;
+    }
+
+    return newAccessToken;
+  } catch (e) {
+    return null;
+  }
+}
 
 export function ApolloProvider({ children }: React.PropsWithChildren) {
   const client = React.useMemo(() => {
@@ -25,7 +41,7 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
             err?.extensions?.code &&
             err.extensions.code === "UNAUTHENTICATED"
           ) {
-            return fromPromise(getNextAuthJWTToken())
+            return fromPromise(retryRefreshToken())
               .filter((value) => Boolean(value))
               .flatMap((newAccessToken) => {
                 const oldHeaders = operation.getContext().headers;
