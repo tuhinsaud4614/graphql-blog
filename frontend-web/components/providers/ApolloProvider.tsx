@@ -15,12 +15,12 @@ import {
 import { signOut } from "next-auth/react";
 
 import { ROUTES } from "@/lib/constants";
-import { getNextAuthJWTToken } from "@/lib/next-server-api";
+import { getAccessTokenAfterRotation } from "@/lib/next-server-api";
 import { getAuthUser } from "@/lib/utils";
 
 async function retryRefreshToken() {
   try {
-    const newAccessToken = await getNextAuthJWTToken();
+    const newAccessToken = await getAccessTokenAfterRotation();
     if (!newAccessToken) {
       await signOut({ callbackUrl: ROUTES.landing, redirect: true });
       return null;
@@ -63,10 +63,9 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
     });
 
     const authLink = setContext(async (_, { headers }) => {
-      const newAccessToken = await getNextAuthJWTToken();
-
+      const newAccessToken = await getAccessTokenAfterRotation();
       const user = getAuthUser(newAccessToken);
-      if (user && user.exp * 1000 < Date.now()) {
+      if (user && user.exp * 1000 > Date.now()) {
         return {
           headers: {
             ...headers,

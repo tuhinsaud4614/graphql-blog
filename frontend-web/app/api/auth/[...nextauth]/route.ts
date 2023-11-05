@@ -70,7 +70,7 @@ export const authOptions: AuthOptions = {
         }
       }
 
-      if (token.user.exp && Date.now() < token.user.exp * 1000) {
+      if (token.user.exp && token.user.exp * 1000 > Date.now()) {
         return token;
       }
 
@@ -79,11 +79,10 @@ export const authOptions: AuthOptions = {
       if (accessToken && updatedUser) {
         return { ...token, user: updatedUser, accessToken } as JWT;
       }
-
       return {
         ...token,
         error: REFRESH_TOKEN_ERROR,
-      } as JWT;
+      };
     },
 
     async session({ session, token }) {

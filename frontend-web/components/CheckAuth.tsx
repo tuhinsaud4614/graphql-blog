@@ -11,17 +11,13 @@ interface Props {
 }
 
 export default function CheckAuth({ children }: Props) {
-  const { data: session, status } = useSession();
-
+  const { data: session } = useSession();
+  const sessionError = session?.error;
   React.useEffect(() => {
-    if (
-      status !== "loading" &&
-      session?.error &&
-      session.error === REFRESH_TOKEN_ERROR
-    ) {
+    if (sessionError === REFRESH_TOKEN_ERROR) {
       void signOut({ callbackUrl: ROUTES.landing, redirect: true });
     }
-  }, [session, status]);
+  }, [sessionError]);
 
   return children;
 }
