@@ -32,8 +32,7 @@ export default function NavAvatar({
         alt={alt}
         width={size}
         height={size}
-        objectFit="cover"
-        className="rounded-full"
+        className="rounded-full object-cover"
       />
     </button>
   );

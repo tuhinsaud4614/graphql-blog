@@ -16,6 +16,7 @@ import ErrorModal from "@/components/ErrorModal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "@/lib/constants";
+import { isDev } from "@/lib/isType";
 
 const schema = z.object({
   emailMobile: z
@@ -72,7 +73,7 @@ export default function Login() {
         setError(response.error);
       }
     } catch (error) {
-      console.error("Login@Errors: ", error);
+      isDev() && console.error("Login@Errors: ", error);
     }
   });
 

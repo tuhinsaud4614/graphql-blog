@@ -32,7 +32,7 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
                 operation.setContext({
                   headers: {
                     ...oldHeaders,
-                    authorization: newAccessToken
+                    Authorization: newAccessToken
                       ? `Bearer ${newAccessToken}`
                       : undefined,
                   },
@@ -59,21 +59,11 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
         };
       }
 
-      try {
-        const newAccessToken = await getNextAuthJWTToken();
-        return {
-          headers: {
-            ...headers,
-            Authorization: newAccessToken ? `Bearer ${newAccessToken}` : null,
-          },
-        };
-      } catch (error) {
-        return {
-          headers: {
-            ...headers,
-          },
-        };
-      }
+      return {
+        headers: {
+          ...headers,
+        },
+      };
     });
 
     const httpLink = new HttpLink({

@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { SessionProvider } from "next-auth/react";
 
+import CheckAuth from "../CheckAuth";
 import { ApolloProvider } from "./ApolloProvider";
 import ThemeProvider from "./ThemeProvider";
 
@@ -15,7 +16,9 @@ export default function Providers({ children }: Props) {
   return (
     <SessionProvider>
       <ThemeProvider>
-        <ApolloProvider>{children}</ApolloProvider>
+        <ApolloProvider>
+          <CheckAuth>{children}</CheckAuth>
+        </ApolloProvider>
       </ThemeProvider>
     </SessionProvider>
   );

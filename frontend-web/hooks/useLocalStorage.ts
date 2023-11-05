@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { isDev } from "@/lib/isType";
+
 import useEventCallback from "./useEventCallback";
 import useEventListener from "./useEventListener";
 
@@ -92,7 +94,7 @@ function parseJSON<T>(value: string | null): T | undefined {
   try {
     return value === "undefined" ? undefined : JSON.parse(value ?? "");
   } catch {
-    console.log("parsing error on", { value });
+    isDev() && console.error("parsing error on", { value });
     return undefined;
   }
 }

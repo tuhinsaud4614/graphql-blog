@@ -10,7 +10,7 @@ export default withAuth(
     if (
       request.nextUrl.pathname.startsWith(ROUTES.admin.startWith) &&
       request.nextauth.token &&
-      request.nextauth.token.user.role !== UserRole.Admin
+      request.nextauth.token.user?.role !== UserRole.Admin
     ) {
       const url = new URL(request.nextUrl.origin);
       url.pathname = ROUTES.landing;

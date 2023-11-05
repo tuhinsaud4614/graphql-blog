@@ -8,7 +8,7 @@ import {
   LoginMutationVariables,
 } from "@/graphql/generated/schema";
 import { getClient } from "@/lib/apolloClient";
-import { ROUTES } from "@/lib/constants";
+import { REFRESH_TOKEN_ERROR, ROUTES } from "@/lib/constants";
 import { isDev, isProduction } from "@/lib/isType";
 import { UpdateSessionParams } from "@/lib/updateSession";
 import { fetchRefreshToken, getAuthUser } from "@/lib/utils";
@@ -82,7 +82,7 @@ export const authOptions: AuthOptions = {
 
       return {
         ...token,
-        error: "RefreshTokenTokenError",
+        error: REFRESH_TOKEN_ERROR,
       } as JWT;
     },
 
@@ -90,7 +90,8 @@ export const authOptions: AuthOptions = {
       if (token) {
         session.user = token.user;
         session.accessToken = token.accessToken;
-        session.error = token.error as string | undefined;
+        session.expires = new Date(token.user.exp * 1000).toISOString();
+        session.error = token.error;
       }
       return Promise.resolve(session);
     },

@@ -11,7 +11,12 @@ interface Props {
 export default function SearchResultItem({ children, link, src }: Props) {
   return (
     <li className="mb-3 last:mb-0">
-      <UserLink href={link} src={src} text={children} />
+      <UserLink
+        classes={{ text: "hover:text-accent" }}
+        href={link}
+        src={src}
+        text={children}
+      />
     </li>
   );
 }

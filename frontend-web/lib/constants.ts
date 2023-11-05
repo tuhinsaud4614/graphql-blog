@@ -5,6 +5,8 @@ export const NOTIFICATIONS_KEY = "notifications";
 export const ABOUT_ME_KEY = "about-me";
 export const CREATE_POST_KEY = "create-post";
 
+export const REFRESH_TOKEN_ERROR = "RefreshTokenError";
+
 export const ROUTES = {
   landing: "/",
   search: "/search",

@@ -1,6 +1,9 @@
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 import { getToken } from "next-auth/jwt";
+
+import { REFRESH_TOKEN_ERROR } from "@/lib/constants";
 
 /**
  * The above function is an asynchronous function that handles a GET request and returns an access
@@ -18,6 +21,13 @@ export async function GET(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
   if (token) {
+    if (
+      token.error === REFRESH_TOKEN_ERROR &&
+      cookies().has("next-auth.session-token")
+    ) {
+      cookies().delete("next-auth.session-token");
+      return Response.json({ accessToken: null });
+    }
     return Response.json({ accessToken: token.accessToken });
   } else {
     return Response.json({ accessToken: null });
