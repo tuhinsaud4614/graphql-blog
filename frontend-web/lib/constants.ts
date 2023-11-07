@@ -1,3 +1,6 @@
+export const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
+export const BACKEND_GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+
 // Local Storage key
 export const RECENT_SEARCHES_KEY = "recent-searches";
 export const USER_KEY = "user";
@@ -37,6 +40,15 @@ export const ROUTES = {
     dashboard: "/g/admin/dashboard",
     categories: "/g/admin/categories",
   },
+} as const;
+
+export const IMAGE_MIMES = {
+  "image/gif": "gif",
+  "image/svg+xml": "svg",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
 } as const;
 
 export const IMAGE_URL_REGEX =

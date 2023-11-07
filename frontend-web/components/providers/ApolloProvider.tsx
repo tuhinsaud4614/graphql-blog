@@ -3,7 +3,7 @@
 /* This is setup with https://www.npmjs.com/package/@apollo/experimental-nextjs-app-support */
 import * as React from "react";
 
-import { ApolloLink, HttpLink, fromPromise } from "@apollo/client";
+import { ApolloLink, fromPromise, split } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import {
@@ -12,11 +12,13 @@ import {
   NextSSRInMemoryCache,
   SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
+import { YogaLink } from "@graphql-yoga/apollo-link";
+import { Kind, OperationTypeNode, getOperationAST } from "graphql";
 import { signOut } from "next-auth/react";
 
 import { ROUTES } from "@/lib/constants";
 import { getAccessTokenAfterRotation } from "@/lib/next-server-api";
-import { getAuthUser } from "@/lib/utils";
+import createUploadLink from "@/lib/uploadLink";
 
 async function retryRefreshToken() {
   try {
@@ -31,6 +33,25 @@ async function retryRefreshToken() {
     return null;
   }
 }
+
+const uri = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+
+const yogaLink = split(
+  ({ query, operationName }) => {
+    const definition = getOperationAST(query, operationName);
+
+    return (
+      definition?.kind === Kind.OPERATION_DEFINITION &&
+      definition.operation === OperationTypeNode.SUBSCRIPTION
+    );
+  },
+  new YogaLink({ credentials: "include", endpoint: uri }),
+  createUploadLink({
+    uri,
+    credentials: "include",
+    fetchOptions: { cache: "no-store" },
+  }),
+);
 
 export function ApolloProvider({ children }: React.PropsWithChildren) {
   const client = React.useMemo(() => {
@@ -64,8 +85,7 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
 
     const authLink = setContext(async (_, { headers }) => {
       const newAccessToken = await getAccessTokenAfterRotation();
-      const user = getAuthUser(newAccessToken);
-      if (user && user.exp * 1000 > Date.now()) {
+      if (newAccessToken) {
         return {
           headers: {
             ...headers,
@@ -81,11 +101,11 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
       };
     });
 
-    const httpLink = new HttpLink({
-      uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-      fetchOptions: { cache: "no-store" },
-      credentials: "include",
-    });
+    // const httpLink = new HttpLink({
+    //   uri: uri,
+    //   fetchOptions: { cache: "no-store" },
+    //   credentials: "include",
+    // });
 
     return new NextSSRApolloClient({
       cache: new NextSSRInMemoryCache(),
@@ -97,9 +117,9 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
               }),
               authLink,
               errorLink,
-              httpLink,
+              yogaLink,
             ])
-          : ApolloLink.from([authLink, errorLink, httpLink]),
+          : ApolloLink.from([authLink, errorLink, yogaLink]),
     });
   }, []);
 

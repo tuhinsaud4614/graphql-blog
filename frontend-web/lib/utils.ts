@@ -9,6 +9,7 @@ import { ZodType, z } from "zod";
 
 import { User } from "@/graphql/generated/schema";
 
+import { BACKEND_API_URL } from "./constants";
 import { isAuthUser, isDev } from "./isType";
 import { IAnchorOrigin, IAuthUser } from "./types";
 
@@ -117,7 +118,7 @@ export const getPositions = (
  * `serverEndpoint` are provided. Otherwise, it returns `undefined`.
  */
 export function generateFileUrl(fileUrl?: string) {
-  const serverEndpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
+  const serverEndpoint = BACKEND_API_URL;
 
   if (fileUrl && serverEndpoint) {
     return `${serverEndpoint}${
@@ -328,3 +329,17 @@ export async function fetchRefreshToken(
   }
   return null;
 }
+
+/**
+ * The function `maxFileSize` calculates the maximum file size in bytes based on the given size in
+ * megabytes. With `Decimal Prefixes` (10^n)
+ * @param {number} mb - The parameter `mb` represents the size in megabytes.
+ */
+export const maxFileSize = (mb: number) => mb * 1000000;
+
+/**
+ * The function calculates the maximum file size in bytes based on the input size in MiB.
+ * With `Binary Prefixes` (2^n)
+ * @param {number} MiB - The parameter "MiB" represents the size of a file in Mebibytes (MiB).
+ */
+export const maxFileSizeInIb = (MiB: number) => MiB * 1024 * 1024;

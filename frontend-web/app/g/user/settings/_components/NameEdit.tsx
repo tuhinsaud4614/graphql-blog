@@ -77,10 +77,11 @@ export default function NameEdit({ user, update }: Props) {
           <Input
             ref={inputRef}
             classes={{
-              label: "text-left self-start font-bold !text-xl ",
+              label:
+                "text-left self-start font-bold !text-xl selection:text-primary-foreground selection:bg-primary",
               box: cn(
                 !nameEdit &&
-                  "selection:text-primary-foreground selection:bg-primary",
+                  "selection:bg-primary selection:text-primary-foreground",
               ),
               input: "pb-2 !text-left",
             }}
@@ -96,7 +97,7 @@ export default function NameEdit({ user, update }: Props) {
             }}
             disabled={!nameEdit}
           />
-          <p className="selection:text-primary-foreground mt-2 text-sm text-neutral/60 selection:bg-primary">
+          <p className="mt-2 text-sm text-neutral/60 selection:bg-primary selection:text-primary-foreground">
             Your name appears on your{" "}
             <Link
               href={ROUTES.user.userProfile(user.id)}

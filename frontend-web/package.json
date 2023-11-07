@@ -15,7 +15,6 @@
     "format:fix": "prettier --write .",
     "codegen": "graphql-codegen --config codegen.ts --require dotenv/config",
     "check:unused-package": "npx depcheck",
-    "prepare": "husky install",
     "lint-pretty": "npm run lint && npm run format"
   },
   "lint-staged": {
@@ -24,8 +23,10 @@
   "dependencies": {
     "@apollo/client": "^3.8.6",
     "@apollo/experimental-nextjs-app-support": "^0.5.0",
+    "@graphql-yoga/apollo-link": "^3.0.0",
     "@hookform/resolvers": "^3.3.2",
     "@types/lodash": "^4.14.200",
+    "apollo-upload-client": "^18.0.1",
     "axios": "^1.6.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -57,6 +58,7 @@
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-codegen/typescript-react-apollo": "^4.0.0",
     "@trivago/prettier-plugin-sort-imports": "^4.2.1",
+    "@types/apollo-upload-client": "^17.0.5",
     "@types/eslint": "^8.44.6",
     "@types/node": "^20",
     "@types/react": "^18",

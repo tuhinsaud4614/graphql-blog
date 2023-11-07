@@ -5,6 +5,7 @@ import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import useLockedBody from "@/hooks/useLockBody";
+import useRouteChangeEffect from "@/hooks/useRouteChangeEffect";
 import STYLES from "@/lib/styles";
 import { cn } from "@/lib/utils";
 import { modalContainerVariants } from "@/lib/variants/framer-variants";
@@ -36,6 +37,7 @@ function Modal({
   children,
 }: Props) {
   useLockedBody(open && locked);
+  useRouteChangeEffect(onHide);
 
   return (
     <Portal>

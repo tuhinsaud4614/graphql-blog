@@ -64,7 +64,7 @@ export default function BottomTabAvatar() {
             onClick() {
               setOpen((prev) => !prev);
             },
-            className: "w-7 h-7",
+            className: "w-7 h-7 [&>img]:h-full [&>img]:w-full",
           }}
           loader={({ src, width, quality }) =>
             `${src}?w=${width}&q=${quality || 75}`
@@ -106,7 +106,7 @@ export default function BottomTabAvatar() {
                 alt={username || ""}
                 width={32}
                 height={32}
-                className="object-fit"
+                className="object-fit h-full w-full"
               />
             </span>
           ) : (

@@ -77,7 +77,7 @@ export default function UserAvatarButton({
             onClick(e) {
               setAnchorEle(e.currentTarget);
             },
-            className: "w-9 h-9 shrink-0",
+            className: "w-9 h-9 shrink-0 [&>img]:h-full [&>img]:w-full",
           }}
           loader={({ src, width, quality }) =>
             `${src}?w=${width}&q=${quality || 75}`
@@ -144,7 +144,7 @@ export default function UserAvatarButton({
                   alt={userName || ""}
                   width={32}
                   height={32}
-                  objectFit="cover"
+                  objectFit="cover h-full w-full"
                 />
               </span>
             ) : (

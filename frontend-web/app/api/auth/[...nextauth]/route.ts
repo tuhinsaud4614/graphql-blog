@@ -60,6 +60,7 @@ export const authOptions: AuthOptions = {
 
       if (trigger === "update" && session) {
         const newInfo = session as UpdateSessionParams;
+        console.log(newInfo);
         if (newInfo.accessToken) {
           const newUser = getAuthUser(newInfo.accessToken);
           token.accessToken = newInfo.accessToken;
