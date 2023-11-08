@@ -452,7 +452,7 @@ export async function resetPasswordService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    const { newPassword, oldPassword } = params;
+    const { newPassword, oldPassword, verificationLink } = params;
 
     if (!(await verify(user.password, oldPassword))) {
       return new UserInputError("Invalid credentials");
@@ -464,6 +464,7 @@ export async function resetPasswordService(
       userId,
       user.email,
       hashNewPassword,
+      verificationLink,
       host,
     );
 

@@ -77,6 +77,9 @@ export const resetPasswordSchema = yup.object({
     .required(generateRequiredErrorMessage("New password"))
     .min(3, PASSWORD_NOT_LONG_ENOUGH)
     .max(255, PASSWORD_TOO_LONG),
+  verificationLink: yup
+    .string()
+    .required(generateRequiredErrorMessage("Reset password verification link")),
 });
 
 export const updateNameSchema = yup.object({

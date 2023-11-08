@@ -119,7 +119,7 @@ type Mutation {
     message: "Too many calls made by login"
   )
   logout: ID!
-  resetPassword(oldPassword: String!, newPassword: String!): String! @rateLimit(
+  resetPassword(oldPassword: String!, newPassword: String!, verificationLink: String!): String! @rateLimit(
     window: "1m",
     max: 3,
     message: "Too many calls for resetting password"

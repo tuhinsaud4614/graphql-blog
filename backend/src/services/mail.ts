@@ -73,12 +73,11 @@ export async function sendResetPasswordVerificationCodeService(
   userId: string,
   email: string,
   password: string,
+  verificationLink: string,
   host?: string,
 ) {
   const verificationCode = nanoid(6);
-  const href = `${
-    host || "http://localhost:4000"
-  }/account/verify-reset-password?code=${verificationCode}`;
+  const href = `${host}${verificationLink}?code=${verificationCode}`;
 
   const html = generateVerificationMail(userId, email, verificationCode, href);
 
