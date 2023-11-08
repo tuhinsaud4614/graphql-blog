@@ -34,3 +34,11 @@ mutation ResendActivationLink($userId: ID!) {
 mutation Logout {
   logout
 }
+
+mutation ResetPassword($oldPassword: String!, $newPassword: String!) {
+  resetPassword(oldPassword: $oldPassword, newPassword: $newPassword)
+}
+
+mutation VerifyResetPassword($code: String!) {
+  verifyResetPassword(code: $code)
+}

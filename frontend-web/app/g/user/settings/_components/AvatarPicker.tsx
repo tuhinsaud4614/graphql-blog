@@ -51,8 +51,9 @@ export default function AvatarPicker({
             }
             src={image}
             alt="Avatar"
-            fill
-            className="rounded-full object-cover"
+            width={80}
+            height={80}
+            className="h-full w-full rounded-full object-cover"
           />
         ) : (
           <DemoAvatar className="h-20 w-20" size={80 / 1.8} />

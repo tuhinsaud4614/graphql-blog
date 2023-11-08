@@ -144,7 +144,7 @@ export default function UserAvatarButton({
                   alt={userName || ""}
                   width={32}
                   height={32}
-                  objectFit="cover h-full w-full"
+                  className="h-full w-full object-cover"
                 />
               </span>
             ) : (
