@@ -275,8 +275,8 @@ export async function fileUpload(
 
   const newName = name ? name + path.extname(file.name) : file.name;
   const filePath = path.join(newDest, newName);
-
-  await fs.promises.writeFile(filePath, file.stream());
+  const fileArrayBuffer = await file.arrayBuffer();
+  await fs.promises.writeFile(filePath, Buffer.from(fileArrayBuffer));
   return { ...file, name: newName, ext: path.extname(newName), filePath };
 }
 
