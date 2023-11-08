@@ -60,7 +60,7 @@ export default function UserAvatarButton({
         as="button"
         aria-label="Demo avatar"
         className="h-9 w-9 border-secondary"
-        onClick={() => push(ROUTES.login)}
+        onClick={() => push(ROUTES.account.login)}
       />
     );
   }

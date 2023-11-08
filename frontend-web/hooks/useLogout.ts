@@ -24,10 +24,7 @@ export default function useLogout() {
     }
   };
 
-  const resetHandler = () => {
-    reset();
-    setLoading(false);
-  };
+  const resetHandler = () => reset();
 
   return {
     logoutHandler: clickHandler,

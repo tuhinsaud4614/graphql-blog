@@ -28,7 +28,7 @@ export default function ResendButton({ userId }: { userId: string }) {
       toast.success(data?.resendActivation, {
         position: "top-center",
       });
-      replace(ROUTES.login);
+      replace(ROUTES.account.login);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);

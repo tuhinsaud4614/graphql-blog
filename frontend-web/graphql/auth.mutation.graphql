@@ -35,8 +35,16 @@ mutation Logout {
   logout
 }
 
-mutation ResetPassword($oldPassword: String!, $newPassword: String!) {
-  resetPassword(oldPassword: $oldPassword, newPassword: $newPassword)
+mutation ResetPassword(
+  $oldPassword: String!
+  $newPassword: String!
+  $verificationLink: String!
+) {
+  resetPassword(
+    oldPassword: $oldPassword
+    newPassword: $newPassword
+    verificationLink: $verificationLink
+  )
 }
 
 mutation VerifyResetPassword($code: String!) {

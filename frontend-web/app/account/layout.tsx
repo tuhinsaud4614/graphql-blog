@@ -13,10 +13,22 @@ interface Props {
   children: React.ReactNode;
 }
 
+const VERIFICATION_ROUTES: string[] = [
+  ROUTES.account.userVerify,
+  ROUTES.account.verifyPasswordReset,
+];
+
 export default function AccountLayout({ children }: Props) {
   const pathname = usePathname();
-  if (pathname === ROUTES.accountVerify) {
-    return <VerifyAccountLayout>{children}</VerifyAccountLayout>;
+
+  if (VERIFICATION_ROUTES.includes(pathname)) {
+    return (
+      <VerifyAccountLayout
+        hideUserAvatar={pathname === ROUTES.account.userVerify}
+      >
+        {children}
+      </VerifyAccountLayout>
+    );
   }
 
   return <AuthLayout>{children}</AuthLayout>;

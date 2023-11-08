@@ -5,13 +5,13 @@ import { usePathname } from "next/navigation";
 
 import { Bell, FileEdit, FileText, Heart, Home } from "lucide-react";
 
+import UserShortProfile from "@/components/UserShortProfile";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { skeletonVariant } from "@/lib/variants/classVariants";
 
 import SideNavItem from "../SideNavItem";
 import SideNavNotifyCount from "../SideNavNotifyCount";
-import UserShortProfile from "../UserShortProfile";
 
 const ThemeButton = dynamic(() => import("./ThemeButton"), {
   ssr: false,

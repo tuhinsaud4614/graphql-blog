@@ -81,7 +81,7 @@ export default function Register() {
         dismissible: true,
       });
       const timer = window.setTimeout(() => {
-        replace(ROUTES.login);
+        replace(ROUTES.account.login);
       }, 3000);
       return () => {
         clearTimeout(timer);
@@ -92,7 +92,7 @@ export default function Register() {
   return (
     <>
       <AccountForm
-        changeLink={ROUTES.login}
+        changeLink={ROUTES.account.login}
         changeLinkText="Sign in"
         changeText="Already have an account?"
         title="Sign up with email or mobile"

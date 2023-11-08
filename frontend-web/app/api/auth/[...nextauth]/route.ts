@@ -95,7 +95,7 @@ export const authOptions: AuthOptions = {
       return Promise.resolve(session);
     },
   },
-  pages: { signIn: ROUTES.login },
+  pages: { signIn: ROUTES.account.login },
   secret: process.env.NEXTAUTH_SECRET,
   debug: isDev(),
   useSecureCookies: isProduction(),

@@ -76,7 +76,9 @@ export default function LandingHeader() {
               <li>
                 <Link
                   href={
-                    pathname === ROUTES.login ? ROUTES.register : ROUTES.login
+                    pathname === ROUTES.account.login
+                      ? ROUTES.account.register
+                      : ROUTES.account.login
                   }
                   passHref
                   legacyBehavior
@@ -85,10 +87,10 @@ export default function LandingHeader() {
                     style={{ color: linkColor }}
                     className="inline-block cursor-pointer select-none active:scale-95"
                     aria-label={
-                      pathname === ROUTES.login ? "Sign Up" : "Sign In"
+                      pathname === ROUTES.account.login ? "Sign Up" : "Sign In"
                     }
                   >
-                    {pathname === ROUTES.login ? "Sign Up" : "Sign In"}
+                    {pathname === ROUTES.account.login ? "Sign Up" : "Sign In"}
                   </motion.a>
                 </Link>
               </li>

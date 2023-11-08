@@ -38,15 +38,22 @@ export default function AuthHeader() {
         <ul className="m-0 flex list-none items-center space-x-3">
           <li>
             <Link
-              href={pathname === ROUTES.login ? ROUTES.register : ROUTES.login}
+              href={
+                pathname === ROUTES.account.login
+                  ? ROUTES.account.register
+                  : ROUTES.account.login
+              }
               className="inline-block cursor-pointer select-none text-base-100 hover:text-base-300 active:scale-95 dark:hover:text-base-200"
-              aria-label={pathname === ROUTES.login ? "Sign Up" : "Sign In"}
+              aria-label={
+                pathname === ROUTES.account.login ? "Sign Up" : "Sign In"
+              }
             >
-              {pathname === ROUTES.login ? "Sign Up" : "Sign In"}
+              {pathname === ROUTES.account.login ? "Sign Up" : "Sign In"}
             </Link>
           </li>
           <li>
             <ThemeSwitch
+              variant="secondary"
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             />
           </li>

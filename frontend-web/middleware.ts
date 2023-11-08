@@ -19,7 +19,7 @@ export default withAuth(
   },
   {
     callbacks: { authorized: ({ token }) => !!token },
-    pages: { signIn: ROUTES.login },
+    pages: { signIn: ROUTES.account.login },
     secret: process.env.NEXTAUTH_SECRET,
   },
 );

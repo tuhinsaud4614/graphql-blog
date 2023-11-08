@@ -11,6 +11,7 @@ import ErrorModal from "@/components/ErrorModal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useResetPasswordMutation } from "@/graphql/generated/schema";
+import { ROUTES } from "@/lib/constants";
 import { gplErrorHandler } from "@/lib/utils";
 
 const schema = z.object({
@@ -45,7 +46,11 @@ export default function PasswordChange() {
   const onSubmit = handleSubmit(async ({ newPassword, oldPassword }) => {
     try {
       const { data } = await resetPassword({
-        variables: { newPassword, oldPassword },
+        variables: {
+          newPassword,
+          oldPassword,
+          verificationLink: ROUTES.account.verifyPasswordReset,
+        },
       });
       if (data) {
         toast.success(data.resetPassword, {

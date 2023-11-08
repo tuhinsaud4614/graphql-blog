@@ -13,9 +13,12 @@ export const REFRESH_TOKEN_ERROR = "RefreshTokenError";
 export const ROUTES = {
   landing: "/",
   search: "/search",
-  login: "/account/login",
-  register: "/account/register",
-  accountVerify: "/account/verify",
+  account: {
+    login: "/account/login",
+    register: "/account/register",
+    userVerify: "/account/verify",
+    verifyPasswordReset: "/account/verify/reset-password",
+  },
   user: {
     startWith: "/g/user",
     home: "/g/user/home",
@@ -23,7 +26,7 @@ export const ROUTES = {
     postsByTag: (id: string) => `/g/user/posts/tag/${id}`,
     userProfile: (id: string) => `/g/user/${id}`,
     notifications: "/g/user/notifications",
-    favorite: "/g/user/account/favorite",
+    favorite: "/g/user/favorite",
     posts: "/g/user/posts",
     postCreate: "/posts/create",
     post: (id: string) => `/g/user/posts/${id}`,

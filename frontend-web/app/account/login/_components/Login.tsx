@@ -56,13 +56,13 @@ export default function Login() {
     try {
       const callbackUrl = searchParams.get("callbackUrl") ?? undefined;
 
+      await client.resetStore();
       const response = await signIn("credentials", {
         emailOrMobile: emailMobile,
         password,
         redirect: false,
       });
 
-      await client.resetStore();
       if (response?.ok) {
         reset();
         // For solving not replacing login url with redirect url
@@ -79,7 +79,7 @@ export default function Login() {
   return (
     <>
       <AccountForm
-        changeLink={ROUTES.register}
+        changeLink={ROUTES.account.register}
         changeLinkText="Create one"
         changeText="No account?"
         title="Sign in with email or mobile"

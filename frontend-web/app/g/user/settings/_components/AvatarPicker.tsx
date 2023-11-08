@@ -40,7 +40,7 @@ export default function AvatarPicker({
     <div className="ml-5 shrink-0">
       <div
         className={cn(
-          "relative h-20 w-20 rounded-full border",
+          "relative h-20 w-20 rounded-full",
           image && "overflow-hidden",
         )}
       >

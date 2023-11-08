@@ -43,7 +43,7 @@ export default function VerifyAccountContent() {
           });
 
           if (data?.verifyUser && data.verifyUser === userId) {
-            replace(ROUTES.login);
+            replace(ROUTES.account.login);
           }
         } catch (error) {}
       };
@@ -82,7 +82,7 @@ export default function VerifyAccountContent() {
             <div className="mt-4 flex items-center justify-center space-x-3">
               <LinkButton
                 replace
-                href={ROUTES.home}
+                href={ROUTES.landing}
                 variant="warning"
                 mode="outline"
               >
