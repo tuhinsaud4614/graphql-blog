@@ -60,7 +60,6 @@ export const authOptions: AuthOptions = {
 
       if (trigger === "update" && session) {
         const newInfo = session as UpdateSessionParams;
-        console.log(newInfo);
         if (newInfo.accessToken) {
           const newUser = getAuthUser(newInfo.accessToken);
           token.accessToken = newInfo.accessToken;
@@ -76,9 +75,9 @@ export const authOptions: AuthOptions = {
       }
 
       const accessToken = await fetchRefreshToken(token.refreshToken);
-      const updatedUser = getAuthUser(accessToken);
-      if (accessToken && updatedUser) {
-        return { ...token, user: updatedUser, accessToken } as JWT;
+
+      if (accessToken) {
+        return { ...token, accessToken } as JWT;
       }
       return {
         ...token,
