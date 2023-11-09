@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import _isEmpty from "lodash/isEmpty";
 import { ShieldAlert } from "lucide-react";
+import { toast } from "sonner";
 
 import Loader from "@/components/svg/Loader";
 import LinkButton from "@/components/ui/LinkButton";
@@ -35,6 +36,7 @@ export default function VerifyAccountContent() {
   const userId = searchParams.get("userId");
 
   React.useEffect(() => {
+    let timeout: number = 0;
     if ((effectRan.current || !isDev()) && code && userId) {
       const handler = async () => {
         try {
@@ -43,13 +45,20 @@ export default function VerifyAccountContent() {
           });
 
           if (data?.verifyUser && data.verifyUser === userId) {
-            replace(ROUTES.account.login);
+            toast.success("User verified successfully", {
+              position: "top-center",
+              duration: 2000,
+            });
+            timeout = window.setTimeout(() => {
+              replace(ROUTES.account.login);
+            }, 2000);
           }
         } catch (error) {}
       };
       void handler();
     }
     return () => {
+      clearTimeout(timeout);
       effectRan.current = true;
     };
   }, [code, replace, userId, verifyUser]);

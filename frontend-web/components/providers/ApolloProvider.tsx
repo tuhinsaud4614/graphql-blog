@@ -16,7 +16,7 @@ import { YogaLink } from "@graphql-yoga/apollo-link";
 import { Kind, OperationTypeNode, getOperationAST } from "graphql";
 import { signOut } from "next-auth/react";
 
-import { ROUTES } from "@/lib/constants";
+import { BACKEND_GRAPHQL_URL, ROUTES } from "@/lib/constants";
 import { getAccessTokenAfterRotation } from "@/lib/next-server-api";
 import createUploadLink from "@/lib/uploadLink";
 
@@ -34,8 +34,6 @@ async function retryRefreshToken() {
   }
 }
 
-const uri = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
-
 const yogaLink = split(
   ({ query, operationName }) => {
     const definition = getOperationAST(query, operationName);
@@ -45,9 +43,9 @@ const yogaLink = split(
       definition.operation === OperationTypeNode.SUBSCRIPTION
     );
   },
-  new YogaLink({ credentials: "include", endpoint: uri }),
+  new YogaLink({ credentials: "include", endpoint: BACKEND_GRAPHQL_URL }),
   createUploadLink({
-    uri,
+    uri: BACKEND_GRAPHQL_URL,
     credentials: "include",
     fetchOptions: { cache: "no-store" },
   }),

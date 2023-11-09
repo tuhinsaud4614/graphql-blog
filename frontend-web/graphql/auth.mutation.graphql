@@ -11,6 +11,7 @@ mutation Register(
   $password: String!
   $confirmPassword: String!
   $mobile: String!
+  $verificationLink: String!
 ) {
   register(
     data: {
@@ -19,6 +20,7 @@ mutation Register(
       password: $password
       confirmPassword: $confirmPassword
       mobile: $mobile
+      verificationLink: $verificationLink
     }
   )
 }

@@ -69,7 +69,9 @@ export default function Register() {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    await registerAuthor({ variables: data });
+    await registerAuthor({
+      variables: { ...data, verificationLink: ROUTES.account.userVerify },
+    });
     reset();
   });
 
