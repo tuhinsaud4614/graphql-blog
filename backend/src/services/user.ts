@@ -181,7 +181,7 @@ export async function userRegistrationService(
   }
 
   try {
-    const { email, password, mobile, name } = params;
+    const { email, password, mobile, name, verificationLink } = params;
     const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
 
     if (isUserExist?.authorStatus === "VERIFIED") {
@@ -206,7 +206,7 @@ export async function userRegistrationService(
       password: hashPassword,
     });
 
-    await sendVerificationCodeService(user.id, email, host);
+    await sendVerificationCodeService(user.id, email, verificationLink, host);
 
     return user.id;
   } catch (error) {

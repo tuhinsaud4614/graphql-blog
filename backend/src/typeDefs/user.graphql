@@ -44,6 +44,7 @@ enum RegisterUserRole {
 }
 
 input RegisterInput {
+  verificationLink: String!
   email: String!
   password: String!
   confirmPassword: String!

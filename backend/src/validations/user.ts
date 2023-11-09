@@ -41,6 +41,9 @@ export const registerSchema = userEmailMobileSchema.shape({
       [yup.ref("password"), null],
       generateMatchedErrorMessage("Password"),
     ),
+  verificationLink: yup
+    .string()
+    .required(generateRequiredErrorMessage("User verification link")),
 });
 
 export const verifyCodeSchema = yup.object({

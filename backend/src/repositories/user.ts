@@ -15,7 +15,12 @@ import type { CursorParams, RegisterInput } from "@/utils/types";
  */
 export function createUser(
   prisma: PrismaClient,
-  { email, mobile, password, name }: Omit<RegisterInput, "confirmPassword">,
+  {
+    email,
+    mobile,
+    password,
+    name,
+  }: Omit<RegisterInput, "confirmPassword" | "verificationLink">,
 ) {
   return prisma.user.create({
     data: {
