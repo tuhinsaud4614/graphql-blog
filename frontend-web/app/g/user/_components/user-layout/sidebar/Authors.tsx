@@ -1,8 +1,8 @@
 "use client";
 
 import ErrorBox from "@/components/ErrorBox";
-import FollowItem from "@/components/FollowItem";
-import FollowItemSkeleton from "@/components/FollowItem/Skeleton";
+import FollowItem from "@/components/follow-item";
+import FollowItemSkeleton from "@/components/follow-item/Skeleton";
 import { useRecommendAuthorsWithOffsetQuery } from "@/graphql/generated/schema";
 import { ROUTES } from "@/lib/constants";
 import { isDev } from "@/lib/isType";
