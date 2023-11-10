@@ -3,7 +3,6 @@
 import { LayoutDashboard } from "lucide-react";
 
 import CategoryIcon from "@/components/svg/Category";
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
 
 import { useAdminDrawerController } from "../../_context-hooks/useDrawerController";
@@ -13,7 +12,6 @@ import AdminSidebarTitle from "./Title";
 import Top from "./Top";
 
 export default function AdminLayoutSidebar() {
-  const matches = useMediaQuery("(min-width: 1280px)");
   const { isOpen, setIsOpen } = useAdminDrawerController();
 
   const handleToggle = () => setIsOpen?.((prev) => !prev);
@@ -21,7 +19,7 @@ export default function AdminLayoutSidebar() {
   const handleClose = () => setIsOpen?.(false);
 
   return (
-    <SidebarContainer onClose={handleClose} matches={matches} visible={isOpen}>
+    <SidebarContainer onClose={handleClose} visible={isOpen}>
       <Top visible={isOpen} onToggle={handleToggle} />
       <ul className="flex flex-col gap-2 overflow-hidden px-4">
         <AdminSidebarItem

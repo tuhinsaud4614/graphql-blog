@@ -25,10 +25,13 @@ export async function GET(req: NextRequest) {
       // If REFRESH_TOKEN_ERROR thrawed, but the 'next-auth.session-token' still exists in the cookies, remove it.
       const JWT_TOKEN_KEY = "next-auth.session-token";
       cookies().has(JWT_TOKEN_KEY) && cookies().delete(JWT_TOKEN_KEY);
-      return Response.json({ refreshToken: null });
+      return Response.json(null);
     }
-    return Response.json({ refreshToken: token.refreshToken });
+    return Response.json({
+      refreshToken: token.refreshToken,
+      accessToken: token.accessToken,
+    });
   } else {
-    return Response.json({ refreshToken: null });
+    return Response.json(null);
   }
 }

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import useMediaQuery from "@/hooks/useMediaQuery";
 import STYLES from "@/lib/styles";
 import { cn } from "@/lib/utils";
 
@@ -9,21 +10,20 @@ import SidebarMobileView from "./MobileView";
 
 interface Props {
   visible: boolean;
-  matches: boolean;
   onClose?(): void;
 }
 
 export default function SidebarContainer({
-  matches,
   visible,
   children,
   onClose,
 }: React.PropsWithChildren<Props>) {
+  const matches = useMediaQuery("(min-width: 1280px)");
   if (matches) {
     return (
       <aside
         className={cn(
-          "fixed left-0 top-0 h-screen bg-primary",
+          "bg-admin-sidebar fixed left-0 top-0 h-screen",
           STYLES.zIndex.sidebar,
           "group duration-200 ease-in",
           visible ? "w-[17.5rem]" : "w-[5.375rem] hover:w-[17.5rem]",
@@ -38,7 +38,7 @@ export default function SidebarContainer({
     <SidebarMobileView
       visible={visible}
       className={cn(
-        "fixed left-0 top-0 h-screen bg-primary",
+        "bg-admin-sidebar fixed left-0 top-0 h-screen",
         STYLES.zIndex.sidebar,
         "w-[17.5rem]",
       )}

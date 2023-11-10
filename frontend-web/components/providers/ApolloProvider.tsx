@@ -17,12 +17,12 @@ import { Kind, OperationTypeNode, getOperationAST } from "graphql";
 import { signOut } from "next-auth/react";
 
 import { BACKEND_GRAPHQL_URL, ROUTES } from "@/lib/constants";
-import { getAccessTokenAfterRotation } from "@/lib/next-server-api";
+import { getAccessTokenFromNextAuth } from "@/lib/next-server-api";
 import createUploadLink from "@/lib/uploadLink";
 
 async function retryRefreshToken() {
   try {
-    const newAccessToken = await getAccessTokenAfterRotation();
+    const newAccessToken = await getAccessTokenFromNextAuth();
     if (!newAccessToken) {
       await signOut({ callbackUrl: ROUTES.landing, redirect: true });
       return null;
@@ -82,7 +82,7 @@ export function ApolloProvider({ children }: React.PropsWithChildren) {
     });
 
     const authLink = setContext(async (_, { headers }) => {
-      const newAccessToken = await getAccessTokenAfterRotation();
+      const newAccessToken = await getAccessTokenFromNextAuth();
       if (newAccessToken) {
         return {
           headers: {

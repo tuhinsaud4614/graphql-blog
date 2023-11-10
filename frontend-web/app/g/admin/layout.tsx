@@ -3,12 +3,24 @@ import * as React from "react";
 import dynamic from "next/dynamic";
 
 import AdminDrawerControllerProvider from "@/app/g/admin/_context-hooks/adminDrawerControllerContext";
+import STYLES from "@/lib/styles";
+import { cn } from "@/lib/utils";
 
 import AdminLayoutContainer from "./_components/Container";
 import AdminLayoutHeader from "./_components/header";
 
 const AdminLayoutSidebar = dynamic(() => import("./_components/sidebar"), {
   ssr: false,
+  loading() {
+    return (
+      <div
+        className={cn(
+          "lg1:block bg-admin-sidebar fixed left-0 top-0 hidden h-screen w-[5.375rem]",
+          STYLES.zIndex.sidebar,
+        )}
+      />
+    );
+  },
 });
 
 interface Props {

@@ -70,7 +70,7 @@ export const authOptions: AuthOptions = {
         }
       }
 
-      if (token.user.exp && token.user.exp * 1000 > Date.now()) {
+      if (token.user.exp * 1000 > Date.now()) {
         return token;
       }
 
