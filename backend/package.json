@@ -10,8 +10,12 @@
     "db:gen": "npx prisma generate",
     "db:mig": "npx prisma migrate dev",
     "db:pull": "npx prisma db pull",
+    "db:seed": "npx prisma db seed",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
