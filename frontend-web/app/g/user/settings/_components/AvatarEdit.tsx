@@ -119,6 +119,7 @@ export default function AvatarEdit({ update, user }: Props) {
             mode="outline"
             onClick={() => {
               setEditable((prev) => !prev);
+              reset();
               setImage(null);
             }}
           >

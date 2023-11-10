@@ -38,3 +38,16 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 Create Unique Hash Code
 
 `openssl rand -base64 32`
+
+#### Page Information
+
+| Route                                         |            Page Title            |                     Description                     |
+| :-------------------------------------------- | :------------------------------: | :-------------------------------------------------: |
+| `/`                                           |           Landing Page           |           This serves as the landing page           |
+| `/account/login`                              |            Login Page            |            This serves as the login page            |
+| `/account/register`                           |      Register/Sign Up Page       |          This serves as the register page           |
+| `/account/verify?userId=<userId>&code=<code>` |      User Verification Page      |      This serves as the user verification page      |
+| `/account/verify/reset-password?code=<code>`  | Reset Password Verification Page | This serves as the reset password verification page |
+| `/g/user/home`                                |            Home Page             |            This serves as the home page             |
+| `/g/user/settings`                            |        User Settings Page        |        This serves as the user settings page        |
+| `/g/admin/dashboard`                          |          Dashboard Page          |       This serves as the admin dashboard page       |

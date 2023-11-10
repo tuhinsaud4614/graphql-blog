@@ -12,6 +12,7 @@ const myPlugin = plugin(
         "--primary-content": "258.9 87.72% 55.29%",
         "--primary-disabled": "259.19 94.26% 40.98% / 34.9%",
         "--secondary": "314 100% 47.06%",
+        "--secondary-foreground": "0 0% 100%",
         "--secondary-focus": "314 100% 47.06% / 0.9",
         "--secondary-content": "314 84% 52%",
         "--secondary-disabled": "314 100% 47.06% / 34.9%",
@@ -49,8 +50,9 @@ const myPlugin = plugin(
         "--primary-content": "264 59.83% 54.12%",
         "--primary-disabled": "264 79.91% 42.94% / 34.9%",
         "--secondary": "314.06 88.89% 57.65%",
+        "--secondary-foreground": "0 0% 100%",
         "--secondary-focus": "313.92 100% 38.04%",
-        "--secondary-content": "314 84% 52%",
+        "--secondary-content": "314.03 88.51% 65.88%",
         "--secondary-disabled": "314 100% 47.06% / 34.9%",
         "--accent": "141.22 50.00% 67.84%",
         "--accent-focus": "140.98 50.20% 48.04%",
@@ -117,6 +119,7 @@ const myPlugin = plugin(
 
           secondary: {
             DEFAULT: "hsl(var(--secondary))",
+            foreground: "hsl(var(--secondary-foreground))",
             focus: "hsl(var(--secondary-focus))",
             content: "hsl(var(--secondary-content))",
             disabled: "hsl(var(--secondary-disabled))",
