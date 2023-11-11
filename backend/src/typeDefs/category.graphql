@@ -19,6 +19,7 @@ type Query {
     limit: Int
     page: Int
   ): PaginateCategories!
+  categoryCount: Int!
 }
 
 type Mutation {

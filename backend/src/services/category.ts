@@ -118,7 +118,29 @@ export async function categoriesByTextWithOffsetService(
   } catch (error) {
     logger.error(error);
     return formatError(error, {
-      message: generateFetchErrorMessage("categories bt text"),
+      message: generateFetchErrorMessage("categories by text"),
+    });
+  }
+}
+
+/**
+ * The function `categoryCountService` retrieves the count of categories from a Prisma client and
+ * returns it.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database. It provides methods for querying, creating, updating,
+ * and deleting data in the database. In this case, the `categoryCountService` function uses the
+ * `prisma` instance
+ * @returns the count of categories in the database.
+ */
+export async function categoryCountService(prisma: PrismaClient) {
+  try {
+    const count = await prisma.category.count();
+
+    return count;
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, {
+      message: generateFetchErrorMessage("category count"),
     });
   }
 }
