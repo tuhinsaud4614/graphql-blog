@@ -9,3 +9,7 @@ query GetTagsWithOffset($limit: Int, $page: Int) {
     }
   }
 }
+
+query GetTagCount {
+  tagCount
+}
