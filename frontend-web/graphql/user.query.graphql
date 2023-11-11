@@ -9,3 +9,7 @@ query RecommendAuthorsWithOffset($limit: Int, $page: Int) {
     }
   }
 }
+
+query GetUserCount {
+  userCount
+}

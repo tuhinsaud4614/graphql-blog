@@ -21,8 +21,8 @@ export default function AdminDashboardCard({ title, icon, value }: Props) {
           <div className="mt-2 text-2xl font-medium text-secondary selection:bg-secondary selection:text-secondary-foreground">
             {value === undefined ? (
               <Loader className="animate-spin text-secondary" />
-            ) : value === 0 ? (
-              0
+            ) : value < 2 ? (
+              value
             ) : (
               <Counter value={value} />
             )}
