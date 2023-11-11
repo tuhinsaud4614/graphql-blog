@@ -108,6 +108,7 @@ type Query {
   userFollow(id: ID!): UserFollowResponse!
   userFollowers(id: ID!): Int!
   userFollowings(id: ID!): Int!
+  userCount: Int!
 }
 
 type Mutation {

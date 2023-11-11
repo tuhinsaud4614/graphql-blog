@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, UserRole } from "@prisma/client";
 import { hash, verify } from "argon2";
 import type { Request, Response } from "express";
 import { unlink } from "fs";
@@ -957,6 +957,29 @@ export async function authorFollowingsWithCursorService(
   } catch (error) {
     logger.error(error);
     return new UnknownError(generateFetchErrorMessage("authors following"));
+  }
+}
+
+/**
+ * The function `userCountService` retrieves the count of users from a Prisma client and returns it.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class.
+ * Prisma is an open-source database toolkit that provides an Object-Relational Mapping (ORM) for
+ * Node.js and TypeScript. The PrismaClient instance is used to interact with the database and perform
+ * CRUD operations. In this
+ * @returns the count of users in the database.
+ */
+export async function userCountService(
+  prisma: PrismaClient,
+  withAdmin = false,
+) {
+  try {
+    const count = await prisma.user.count(
+      withAdmin ? undefined : { where: { role: { not: UserRole.ADMIN } } },
+    );
+    return count;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("user count"));
   }
 }
 
