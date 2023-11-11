@@ -15,4 +15,5 @@ type OffsetTagsResponse {
 type Query {
   tagsWithOffset(limit: Int, page: Int): OffsetTagsResponse!
   tagsByTextWithOffset(text: String!, limit: Int, page: Int): OffsetTagsResponse!
+  tagCount: Int!
 }

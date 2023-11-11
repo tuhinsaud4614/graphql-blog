@@ -138,3 +138,23 @@ export async function tagsByTextWithOffsetService(
     return new UnknownError(generateFetchErrorMessage("tags by text"));
   }
 }
+
+/**
+ * The function `tagCountService` retrieves the count of tags from a Prisma client and returns it.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class. It
+ * is used to interact with the database and perform CRUD operations. In this code snippet, it is used
+ * to count the number of records in the `tag` table.
+ * @returns the count of tags in the database.
+ */
+export async function tagCountService(prisma: PrismaClient) {
+  try {
+    const count = await prisma.tag.count();
+
+    return count;
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, {
+      message: generateFetchErrorMessage("tag count"),
+    });
+  }
+}
