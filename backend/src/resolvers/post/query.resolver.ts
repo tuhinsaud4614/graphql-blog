@@ -3,6 +3,7 @@ import {
   followingAuthorPostsService,
   postByIdService,
   postCommentsCountService,
+  postCountService,
   postReactedByService,
   postReactionsCountService,
   postsByTagWithOffsetService,
@@ -110,5 +111,13 @@ export const Query = {
     }
 
     return await postReactedByService(prisma, params);
+  },
+  async postCount(
+    _: unknown,
+    __: unknown,
+    { prisma }: YogaContext,
+    ___: unknown,
+  ) {
+    return await postCountService(prisma);
   },
 };
