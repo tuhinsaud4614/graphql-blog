@@ -270,7 +270,6 @@ const myPlugin = plugin(
           scrollbar: `linear-gradient(180deg, transparent, ${theme(
             "colors.accent",
           )})`,
-          "admin-sidebar": `linear-gradient(168deg, hsl(var(--primary-content)) 1.62%, hsl(var(--primary)) 95.72%)`,
         }),
       },
     },

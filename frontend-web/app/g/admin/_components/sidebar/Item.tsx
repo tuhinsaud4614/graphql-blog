@@ -23,7 +23,10 @@ export default function AdminSidebarItem({
 
   return (
     <LinkButton
-      className={cn("!justify-start", active && "text-base-100")}
+      className={cn(
+        "!justify-start",
+        active && "text-base-100 dark:text-neutral",
+      )}
       mode="text"
       variant="secondary"
       href={href}

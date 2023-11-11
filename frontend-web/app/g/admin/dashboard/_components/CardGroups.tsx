@@ -1,7 +1,24 @@
-import AdminDashboardCategoryCount from "./CategoryCount";
-import AdminDashboardPostCount from "./PostCount";
-import AdminDashboardTagCount from "./TagCount";
-import AdminDashboardUserCount from "./UserCount";
+import dynamic from "next/dynamic";
+
+import AdminDashboardCardSkeleton from "./CardSkeleton";
+
+const AdminDashboardCategoryCount = dynamic(() => import("./CategoryCount"), {
+  ssr: false,
+  loading: () => <AdminDashboardCardSkeleton />,
+});
+const AdminDashboardPostCount = dynamic(() => import("./PostCount"), {
+  ssr: false,
+  loading: () => <AdminDashboardCardSkeleton />,
+});
+const AdminDashboardTagCount = dynamic(() => import("./TagCount"), {
+  ssr: false,
+  loading: () => <AdminDashboardCardSkeleton />,
+});
+
+const AdminDashboardUserCount = dynamic(() => import("./UserCount"), {
+  ssr: false,
+  loading: () => <AdminDashboardCardSkeleton />,
+});
 
 export default function AdminDashboardCardGroups() {
   return (

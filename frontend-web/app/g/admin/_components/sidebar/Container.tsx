@@ -23,7 +23,7 @@ export default function SidebarContainer({
     return (
       <aside
         className={cn(
-          "bg-admin-sidebar fixed left-0 top-0 h-screen",
+          "fixed left-0 top-0 h-screen bg-primary dark:bg-base-200",
           STYLES.zIndex.sidebar,
           "group duration-200 ease-in",
           visible ? "w-[17.5rem]" : "w-[5.375rem] hover:w-[17.5rem]",
@@ -38,7 +38,7 @@ export default function SidebarContainer({
     <SidebarMobileView
       visible={visible}
       className={cn(
-        "bg-admin-sidebar fixed left-0 top-0 h-screen",
+        "fixed left-0 top-0 h-screen bg-primary dark:bg-base-200",
         STYLES.zIndex.sidebar,
         "w-[17.5rem]",
       )}

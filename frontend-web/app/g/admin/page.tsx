@@ -1,5 +1,7 @@
-import { notFound } from "next/navigation";
+import { RedirectType, redirect } from "next/navigation";
+
+import { ROUTES } from "@/lib/constants";
 
 export default function AdminRootPage() {
-  notFound();
+  redirect(ROUTES.admin.dashboard, RedirectType.replace);
 }

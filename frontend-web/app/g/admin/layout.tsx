@@ -15,7 +15,7 @@ const AdminLayoutSidebar = dynamic(() => import("./_components/sidebar"), {
     return (
       <div
         className={cn(
-          "lg1:block bg-admin-sidebar fixed left-0 top-0 hidden h-screen w-[5.375rem]",
+          "fixed left-0 top-0 hidden h-screen w-[5.375rem] bg-primary dark:bg-base-200 lg1:block",
           STYLES.zIndex.sidebar,
         )}
       />

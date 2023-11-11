@@ -9,3 +9,7 @@ query GetCategoriesWithOffset($limit: Int, $page: Int) {
     }
   }
 }
+
+query GetCategoryCount {
+  categoryCount
+}

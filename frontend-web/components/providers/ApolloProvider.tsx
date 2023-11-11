@@ -34,10 +34,34 @@ async function retryRefreshToken() {
   }
 }
 
+const errorLink = onError(({ graphQLErrors, operation, forward }) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      if (err?.extensions?.code && err.extensions.code === "UNAUTHENTICATED") {
+        return fromPromise(retryRefreshToken())
+          .filter((value) => Boolean(value))
+          .flatMap((newAccessToken) => {
+            const oldHeaders = operation.getContext().headers;
+            operation.setContext({
+              headers: {
+                ...oldHeaders,
+                Authorization: newAccessToken
+                  ? `Bearer ${newAccessToken}`
+                  : undefined,
+              },
+            });
+
+            // retry the request, returning the new observable
+            return forward(operation);
+          });
+      }
+    }
+  }
+});
+
 const yogaLink = split(
   ({ query, operationName }) => {
     const definition = getOperationAST(query, operationName);
-
     return (
       definition?.kind === Kind.OPERATION_DEFINITION &&
       definition.operation === OperationTypeNode.SUBSCRIPTION
@@ -51,60 +75,26 @@ const yogaLink = split(
   }),
 );
 
+const authLink = setContext(async (_, { headers }) => {
+  const newAccessToken = await getAccessTokenFromNextAuth();
+  if (newAccessToken) {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${newAccessToken}`,
+      },
+    };
+  }
+
+  return {
+    headers: {
+      ...headers,
+    },
+  };
+});
+
 export function ApolloProvider({ children }: React.PropsWithChildren) {
   const client = React.useMemo(() => {
-    const errorLink = onError(({ graphQLErrors, operation, forward }) => {
-      if (graphQLErrors) {
-        for (const err of graphQLErrors) {
-          if (
-            err?.extensions?.code &&
-            err.extensions.code === "UNAUTHENTICATED"
-          ) {
-            return fromPromise(retryRefreshToken())
-              .filter((value) => Boolean(value))
-              .flatMap((newAccessToken) => {
-                const oldHeaders = operation.getContext().headers;
-                operation.setContext({
-                  headers: {
-                    ...oldHeaders,
-                    Authorization: newAccessToken
-                      ? `Bearer ${newAccessToken}`
-                      : undefined,
-                  },
-                });
-
-                // retry the request, returning the new observable
-                return forward(operation);
-              });
-          }
-        }
-      }
-    });
-
-    const authLink = setContext(async (_, { headers }) => {
-      const newAccessToken = await getAccessTokenFromNextAuth();
-      if (newAccessToken) {
-        return {
-          headers: {
-            ...headers,
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        };
-      }
-
-      return {
-        headers: {
-          ...headers,
-        },
-      };
-    });
-
-    // const httpLink = new HttpLink({
-    //   uri: uri,
-    //   fetchOptions: { cache: "no-store" },
-    //   credentials: "include",
-    // });
-
     return new NextSSRApolloClient({
       cache: new NextSSRInMemoryCache(),
       link:

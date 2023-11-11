@@ -2,7 +2,12 @@
 
 import * as React from "react";
 
-import { useInView, useMotionValue, useSpring } from "framer-motion";
+import {
+  AnimatePresence,
+  useInView,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 
 interface Props {
   value: number;
@@ -37,5 +42,9 @@ export default function Counter({ value, direction = "up" }: Props) {
     [springValue],
   );
 
-  return <span ref={ref} />;
+  return (
+    <AnimatePresence>
+      <span ref={ref} />
+    </AnimatePresence>
+  );
 }
