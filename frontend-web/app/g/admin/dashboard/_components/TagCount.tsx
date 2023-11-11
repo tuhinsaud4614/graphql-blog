@@ -3,6 +3,7 @@
 import { Tag } from "lucide-react";
 import { toast } from "sonner";
 
+import Counter from "@/components/Counter";
 import { useGetTagCountQuery } from "@/graphql/generated/schema";
 
 import AdminDashboardCard from "./Card";
@@ -15,11 +16,16 @@ export default function AdminDashboardTagCount() {
       toast.error(error.message, { position: "bottom-right" });
     },
   });
+  const value = data?.tagCount || 0;
   return (
     <AdminDashboardCard
       icon={<Tag className="h-8 w-8 text-primary" />}
       title="Tags"
-      value={loading ? undefined : data?.tagCount || 0}
-    />
+      loading={loading}
+    >
+      <span className="text-secondary selection:bg-secondary selection:text-secondary-foreground">
+        <Counter value={value} />
+      </span>
+    </AdminDashboardCard>
   );
 }

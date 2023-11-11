@@ -40,3 +40,10 @@ query GetPostsWithOffset($limit: Int, $page: Int) {
     }
   }
 }
+
+query GetPostCount {
+  postCount {
+    published
+    unpublished
+  }
+}

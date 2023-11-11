@@ -31,6 +31,7 @@ const myPlugin = plugin(
         "--info-content": "206.57 89.74% 54.12%",
         "--info-disabled": "205.38 86.67% 94.12%",
         "--success": "122.79 43.43% 38.82%",
+        "--success-foreground": "0 0% 100%",
         "--success-focus": "122.79 43.43% 38.82% / 0.9",
         "--success-content": "122.42 39.44% 49.22%",
         "--success-disabled": "124.62 39.39% 93.53%",
@@ -39,6 +40,7 @@ const myPlugin = plugin(
         "--warning-content": "35.76 100% 50%",
         "--warning-disabled": "36.77 100% 93.92%",
         "--error": "0 65.08% 50.59%",
+        "--error-foreground": "0 0% 100%",
         "--error-focus": "0 65.08% 50.59% / 0.9",
         "--error-content": "4.11 89.62% 58.43%",
         "--error-disabled": "351 100% 96.08%",
@@ -69,6 +71,7 @@ const myPlugin = plugin(
         "--info-content": "206.57 89.74% 54.12%",
         "--info-disabled": "205.38 86.67% 94.12%",
         "--success": "122.82 38.46% 56.67%",
+        "--success-foreground": "0 0% 0% / 87%",
         "--success-focus": "123.04 46.20% 33.53%",
         "--success-content": "122.42 39.44% 49.22%",
         "--success-disabled": "124.62 39.39% 93.53%",
@@ -77,6 +80,7 @@ const myPlugin = plugin(
         "--warning-content": "35.76 100% 50%",
         "--warning-disabled": "36.77 100% 93.92%",
         "--error": "1.13 83.25% 62.55%",
+        "--error-foreground": "0 0% 100%",
         "--error-focus": "0 66.39% 46.67%",
         "--error-content": "4.11 89.62% 58.43%",
         "--error-disabled": "351 100% 96.08%",
@@ -116,7 +120,6 @@ const myPlugin = plugin(
             content: "hsl(var(--primary-content))",
             disabled: "hsl(var(--primary-disabled))",
           },
-
           secondary: {
             DEFAULT: "hsl(var(--secondary))",
             foreground: "hsl(var(--secondary-foreground))",
@@ -138,6 +141,7 @@ const myPlugin = plugin(
           },
           success: {
             DEFAULT: "hsl(var(--success))",
+            foreground: "hsl(var(--success-foreground))",
             focus: "hsl(var(--success-focus))",
             content: "hsl(var(--success-content))",
             disabled: "hsl(var(--success-disabled))",
@@ -150,6 +154,7 @@ const myPlugin = plugin(
           },
           error: {
             DEFAULT: "hsl(var(--error))",
+            foreground: "hsl(var(--error-foreground))",
             focus: "hsl(var(--error-focus))",
             content: "hsl(var(--error-content))",
             disabled: "hsl(var(--error-disabled))",
