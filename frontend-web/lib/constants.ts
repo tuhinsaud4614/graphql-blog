@@ -54,6 +54,18 @@ export const IMAGE_MIMES = {
   "image/webp": "webp",
 } as const;
 
+export const FORMAT_LOCALE_DATE_VARIANTS = {
+  /** The Format: `November 12, 2023 at 10:12 PM` */
+  a: {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  },
+} satisfies Record<string, Intl.DateTimeFormatOptions>;
+
 export const IMAGE_URL_REGEX =
   /(https?:\/\/.*\.(?:png|jpg|svg|jpeg|webp|gif))/i;
 export const VALID_MOBILE_REGEX = /^(\+\d{1,3}[- ]?)?\d{11}$/;

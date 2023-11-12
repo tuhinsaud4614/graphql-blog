@@ -343,3 +343,36 @@ export const maxFileSize = (mb: number) => mb * 1000000;
  * @param {number} MiB - The parameter "MiB" represents the size of a file in Mebibytes (MiB).
  */
 export const maxFileSizeInIb = (MiB: number) => MiB * 1024 * 1024;
+
+/**
+ * The `formatLocaleDate` function formats a given date into a string representation based on the
+ * specified locale and options.
+ * @param {Date | string | number} date - The `date` parameter can be of type `Date`, `string`, or
+ * `number`. It represents the date that you want to format.
+ * @param options - The `options` parameter is an optional object that allows you to customize the
+ * formatting of the date. It accepts the following properties:
+ * @returns a formatted string representation of the input date. If the formatting is successful, it
+ * will return the formatted date string. If there is an error during formatting, it will return the
+ * original input date as a string.
+ */
+export function formatLocaleDate(
+  date: Date | string | number,
+  options: Intl.DateTimeFormatOptions = {
+    year: "numeric", // "numeric", "2-digit"
+    month: "long", // "short", "long"
+    day: "numeric", // "numeric", "2-digit",
+  },
+): string {
+  try {
+    // Example locale (replace with your desired locale, e.g., "en-US" for US English)
+    const locale = "en-US";
+
+    // Create the DateTimeFormat object with the specified locale and options
+    const formatter = new Intl.DateTimeFormat(locale, options);
+
+    // Format the date
+    return formatter.format(new Date(isNaN(date as any) ? date : +date));
+  } catch (error) {
+    return date.toString();
+  }
+}

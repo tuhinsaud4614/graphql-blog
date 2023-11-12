@@ -25,6 +25,7 @@
     "@apollo/experimental-nextjs-app-support": "^0.5.0",
     "@graphql-yoga/apollo-link": "^3.0.0",
     "@hookform/resolvers": "^3.3.2",
+    "@tanstack/react-table": "^8.10.7",
     "@types/lodash": "^4.14.200",
     "apollo-upload-client": "^18.0.1",
     "axios": "^1.6.0",
