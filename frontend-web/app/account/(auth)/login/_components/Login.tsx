@@ -10,7 +10,7 @@ import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import AccountForm from "@/app/account/_components/Form";
+import AccountForm from "@/app/account/(auth)/_components/Form";
 import ErrorModal from "@/components/ErrorModal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";

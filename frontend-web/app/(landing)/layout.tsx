@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Header from "./Header";
+import LandingHeader from "./_components/Header";
 
 interface Props {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ interface Props {
 export default function LandingLayout({ children }: Props) {
   return (
     <>
-      <Header />
+      <LandingHeader />
       <main className="bg-base-100">{children}</main>
     </>
   );

@@ -9,7 +9,6 @@ import Providers from "@/components/providers";
 import { isDev } from "@/lib/isType";
 import { cn } from "@/lib/utils";
 
-import DynamicLayout from "./_components/DynamicLayout";
 import "./globals.css";
 
 const title = Raleway({
@@ -60,9 +59,7 @@ export default function RootLayout({
         className="bg-base-100 font-body"
         suppressHydrationWarning={isDev()}
       >
-        <Providers>
-          <DynamicLayout>{children}</DynamicLayout>
-        </Providers>
+        <Providers>{children}</Providers>
         <RouteChangeProgress />
         <Toaster richColors />
       </body>
