@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import Counter from "@/components/Counter";
 import { useGetPostCountQuery } from "@/graphql/generated/schema";
+import { ROUTES } from "@/lib/constants";
 
 import AdminDashboardCard from "./Card";
 
@@ -24,14 +25,15 @@ export default function AdminDashboardPostCount() {
       icon={<FileText className="h-8 w-8 text-primary" />}
       title="Posts"
       loading={loading}
+      href={ROUTES.admin.posts}
     >
       {!!published && !!unpublished && (
         <>
-          <span className="selection:text-success-foreground text-success selection:bg-success">
+          <span className="text-success selection:bg-success selection:text-success-foreground">
             <Counter value={published} />
           </span>
           <span className="inline-block select-none px-1 text-neutral">+</span>
-          <span className="selection:text-error-foreground text-error selection:bg-error">
+          <span className="text-error selection:bg-error selection:text-error-foreground">
             <Counter value={unpublished} />
           </span>
           <span className="inline-block select-none px-1 text-neutral">=</span>

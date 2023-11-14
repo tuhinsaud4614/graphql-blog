@@ -3,7 +3,6 @@
 import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { produce } from "immer";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -11,13 +10,8 @@ import { z } from "zod";
 import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import {
-  GetCategoriesWithOffsetDocument,
-  GetCategoriesWithOffsetQuery,
-  GetCategoriesWithOffsetQueryVariables,
-  useCreateCategoryMutation,
-} from "@/graphql/generated/schema";
-import { isDev } from "@/lib/isType";
+import { useCreateCategoryMutation } from "@/graphql/generated/schema";
+import { modifyGetCategoriesWithOffsetQuery } from "@/lib/cache-utils";
 import { gplErrorHandler } from "@/lib/utils";
 
 // validation
@@ -75,43 +69,11 @@ export default function AdminCategoryCreationForm({ onClose }: Props) {
           if (!data) {
             return;
           }
-          try {
-            cache.updateQuery<
-              GetCategoriesWithOffsetQuery,
-              GetCategoriesWithOffsetQueryVariables
-            >(
-              {
-                query: GetCategoriesWithOffsetDocument,
-                variables: { limit: 10, page: 1 },
-              },
-              (prevCategories) => {
-                const newCategory = data.createCategory;
-
-                if (
-                  !prevCategories ||
-                  prevCategories.categoriesWithOffset.total === 0
-                ) {
-                  return {
-                    categoriesWithOffset: {
-                      data: [newCategory],
-                      total: 1,
-                    },
-                  };
-                }
-
-                const newCategories = produce(prevCategories, (draft) => {
-                  draft.categoriesWithOffset.data = [
-                    newCategory,
-                    ...draft.categoriesWithOffset.data,
-                  ];
-                  draft.categoriesWithOffset.total += 1;
-                });
-                return newCategories;
-              },
-            );
-          } catch (error) {
-            isDev() && console.log(error);
-          }
+          modifyGetCategoriesWithOffsetQuery({
+            cache,
+            category: data.createCategory,
+            mode: "ADD",
+          });
         },
       });
       onClose();
@@ -132,6 +94,7 @@ export default function AdminCategoryCreationForm({ onClose }: Props) {
         valid={!errors.title}
         errorText={errors.title?.message}
         {...register("title")}
+        disabled={isSubmitting || loading}
         required
       />
       <Button

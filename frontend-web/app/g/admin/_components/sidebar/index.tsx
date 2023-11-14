@@ -24,6 +24,7 @@ export default function AdminLayoutSidebar() {
       <ul className="flex flex-col gap-2 overflow-hidden px-4">
         <AdminSidebarItem
           href={ROUTES.admin.dashboard}
+          onClick={handleClose}
           icon={
             <LayoutDashboard
               size={24}
@@ -38,6 +39,7 @@ export default function AdminLayoutSidebar() {
           icon={
             <CategoryIcon className="h-6 w-6 shrink-0 [&_path]:fill-current" />
           }
+          onClick={handleClose}
         >
           <AdminSidebarTitle visible={isOpen}>Categories</AdminSidebarTitle>
         </AdminSidebarItem>

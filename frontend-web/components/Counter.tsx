@@ -16,7 +16,7 @@ export default function Counter({ value, direction = "up" }: Props) {
     damping: 100,
     stiffness: 100,
   });
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, amount: "all" });
 
   React.useEffect(() => {
     if (isInView) {
@@ -37,7 +37,7 @@ export default function Counter({ value, direction = "up" }: Props) {
     [springValue],
   );
 
-  if (value < 2) {
+  if (value === 0) {
     return value;
   }
 

@@ -16,7 +16,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 
 import TableBody from "@/components/data-table/Body";
 import TableCell from "@/components/data-table/Cell";
@@ -32,6 +32,8 @@ import Button from "@/components/ui/Button";
 import { Category } from "@/graphql/generated/schema";
 import { FORMAT_LOCALE_DATE_VARIANTS } from "@/lib/constants";
 import { formatLocaleDate } from "@/lib/utils";
+
+import AdminCategoryDelete from "./DeleteItem";
 
 type ICategory = Pick<Category, "id" | "title" | "updatedAt">;
 
@@ -109,13 +111,10 @@ export default function AdminCategoryList({ categories, children }: Props) {
             >
               <Pencil size={16} />
             </Button>
-            <Button
-              variant="error"
-              onClick={() => console.log(row.original.id)}
-              circle
-            >
-              <Trash2 size={16} />
-            </Button>
+            <AdminCategoryDelete
+              id={row.original.id}
+              title={row.original.title}
+            />
           </div>
         ),
         enableSorting: false,
@@ -157,7 +156,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
         searchPlaceholder="Search Categories..."
         outerChildren={children}
       />
-      <div className="mt-4 overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-200">
+      <div className="mt-6 overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-200">
         <Table>
           <TableHeader className="bg-base-200">
             {table.getHeaderGroups().map((headerGroup) => (

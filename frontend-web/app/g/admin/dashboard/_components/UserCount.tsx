@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import Counter from "@/components/Counter";
 import { useGetUserCountQuery } from "@/graphql/generated/schema";
+import { ROUTES } from "@/lib/constants";
 
 import AdminDashboardCard from "./Card";
 
@@ -22,6 +23,7 @@ export default function AdminDashboardUserCount() {
       icon={<Users className="h-8 w-8 text-primary" />}
       title="Users"
       loading={loading}
+      href={ROUTES.admin.posts}
     >
       <span className="text-secondary selection:bg-secondary selection:text-secondary-foreground">
         <Counter value={value} />

@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import Counter from "@/components/Counter";
 import CategoryIcon from "@/components/svg/Category";
 import { useGetCategoryCountQuery } from "@/graphql/generated/schema";
+import { ROUTES } from "@/lib/constants";
 
 import AdminDashboardCard from "./Card";
 
 export default function AdminDashboardCategoryCount() {
   const { data, loading } = useGetCategoryCountQuery({
-    fetchPolicy: "network-only",
     errorPolicy: "all",
     onError(error) {
       toast.error(error.message, { position: "bottom-right" });
@@ -24,6 +24,7 @@ export default function AdminDashboardCategoryCount() {
       icon={<CategoryIcon className="h-8 w-8 text-primary" />}
       title="Categories"
       loading={loading}
+      href={ROUTES.admin.categories}
     >
       <span className="text-secondary selection:bg-secondary selection:text-secondary-foreground">
         <Counter value={value} />

@@ -42,6 +42,9 @@ export const ROUTES = {
     startWith: "/g/admin",
     dashboard: "/g/admin/dashboard",
     categories: "/g/admin/categories",
+    tags: "/g/admin/tags",
+    users: "/g/admin/users",
+    posts: "/g/admin/posts",
   },
 } as const;
 

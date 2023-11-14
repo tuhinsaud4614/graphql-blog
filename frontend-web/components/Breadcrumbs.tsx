@@ -11,7 +11,7 @@ import { Link } from "next13-progressbar";
 
 import { cn } from "@/lib/utils";
 
-interface Props {
+export interface BreadcrumbsProps {
   /** List of items. */
   items: {
     /** Pathname of the item. */
@@ -36,7 +36,7 @@ interface Props {
   };
 }
 
-export default function Breadcrumbs({ items, classes }: Props) {
+export default function Breadcrumbs({ items, classes }: BreadcrumbsProps) {
   if (items.length === 0) {
     return null;
   }
@@ -71,10 +71,8 @@ export default function Breadcrumbs({ items, classes }: Props) {
               className={cn(
                 "flex items-center capitalize",
                 active
-                  ? "text-accent"
-                  : "select-none text-accent-content duration-200 hover:text-accent",
-                active &&
-                  "selection:bg-accent selection:text-primary-foreground",
+                  ? "text-neutral/75 selection:bg-primary selection:text-primary-foreground"
+                  : "select-none text-neutral duration-200 hover:text-neutral/75",
                 classes?.item &&
                   (_isFunction(classes.item)
                     ? classes.item(active)
