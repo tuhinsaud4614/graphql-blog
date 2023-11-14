@@ -10,7 +10,7 @@ function Root(
     <tfoot
       ref={ref}
       className={cn(
-        "border-t bg-base-200 font-medium [&>tr]:last:border-b-0",
+        "border-t bg-base-200 font-medium dark:border-base-300 [&>tr]:last:border-b-0",
         className,
       )}
       {...rest}

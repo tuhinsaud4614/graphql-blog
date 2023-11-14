@@ -9,7 +9,10 @@ function Root(
   return (
     <tr
       ref={ref}
-      className={cn("border-b transition-colors", className)}
+      className={cn(
+        "border-b transition-colors dark:border-base-300",
+        className,
+      )}
       {...rest}
     />
   );

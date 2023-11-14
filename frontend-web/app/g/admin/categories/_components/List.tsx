@@ -152,7 +152,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
         searchPlaceholder="Search Categories..."
         outerChildren={children}
       />
-      <div className="mt-6 overflow-x-auto rounded-2xl shadow-mui scrollbar-hide dark:border">
+      <div className="mt-6 overflow-x-auto rounded-2xl shadow-mui scrollbar-hide dark:border dark:border-base-300">
         <Table>
           <TableHeader className="bg-base-200">
             {table.getHeaderGroups().map((headerGroup) => (

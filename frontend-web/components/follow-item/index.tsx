@@ -14,7 +14,7 @@ import FollowButton from "./FollowButton";
 import UnFollowButton from "./UnFollowButton";
 
 const className = {
-  root: "space-y-3 flex items-center",
+  root: "space-y-3 flex items-center dark:ml-0.5",
   avatar: "h-8 w-8 min-w-0 rounded-full shrink-0 overflow-hidden inline-block",
   mid: "flex flex-col ml-2 mr-4 flex-1",
   title: "font-bold text-neutral line-clamp-2 text-ellipsis break-all",
@@ -66,7 +66,7 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
           href={href}
           aria-label={userName || ""}
           type="button"
-          className="h-8 w-8"
+          className="h-8 w-8 dark:ml-0.5"
           size={32 / 1.8}
         />
       )}

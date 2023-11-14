@@ -33,7 +33,7 @@ export default function BottomTab() {
               className={cn(
                 "transition-all duration-300",
                 pathname === ROUTES.user.home
-                  ? "[&_path]:fill-secondary [&_polyline]:fill-base-200 [&_polyline]:stroke-base-200"
+                  ? "text-secondary [&_path]:fill-secondary [&_polyline]:fill-base-200 [&_polyline]:stroke-base-200"
                   : "[&_path]:hover:fill-secondary [&_path]:hover:stroke-secondary [&_polyline]:hover:fill-base-200 [&_polyline]:hover:stroke-base-200",
               )}
               size={24}

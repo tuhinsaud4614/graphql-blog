@@ -21,7 +21,7 @@ export default function AdminLayoutSidebar() {
   return (
     <SidebarContainer onClose={handleClose} visible={isOpen}>
       <Top visible={isOpen} onToggle={handleToggle} />
-      <ul className="flex flex-col gap-2 overflow-hidden px-4">
+      <ul className="flex flex-col overflow-hidden px-4">
         <AdminSidebarItem
           href={ROUTES.admin.dashboard}
           onClick={handleClose}
