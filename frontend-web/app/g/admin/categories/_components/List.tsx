@@ -16,7 +16,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Pencil } from "lucide-react";
 
 import TableBody from "@/components/data-table/Body";
 import TableCell from "@/components/data-table/Cell";
@@ -28,12 +27,12 @@ import { DataTablePagination } from "@/components/data-table/Pagination";
 import TableRow from "@/components/data-table/Row";
 import Table from "@/components/data-table/Table";
 import { DataTableToolbar } from "@/components/data-table/Toolbar";
-import Button from "@/components/ui/Button";
 import { Category } from "@/graphql/generated/schema";
 import { FORMAT_LOCALE_DATE_VARIANTS } from "@/lib/constants";
 import { formatLocaleDate } from "@/lib/utils";
 
 import AdminCategoryDelete from "./DeleteItem";
+import AdminCategoryEdit from "./EditButton";
 
 type ICategory = Pick<Category, "id" | "title" | "updatedAt">;
 
@@ -104,13 +103,10 @@ export default function AdminCategoryList({ categories, children }: Props) {
         ),
         cell: ({ row }) => (
           <div className="mx-auto flex w-fit items-center gap-2">
-            <Button
-              variant="warning"
-              onClick={() => console.log(row.original.id)}
-              circle
-            >
-              <Pencil size={16} />
-            </Button>
+            <AdminCategoryEdit
+              categoryId={row.original.id}
+              oldTitle={row.original.title}
+            />
             <AdminCategoryDelete
               id={row.original.id}
               title={row.original.title}
@@ -156,7 +152,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
         searchPlaceholder="Search Categories..."
         outerChildren={children}
       />
-      <div className="mt-6 overflow-x-auto rounded-2xl bg-base-100 shadow-mui dark:bg-base-200">
+      <div className="mt-6 overflow-x-auto rounded-2xl shadow-mui scrollbar-hide dark:border">
         <Table>
           <TableHeader className="bg-base-200">
             {table.getHeaderGroups().map((headerGroup) => (

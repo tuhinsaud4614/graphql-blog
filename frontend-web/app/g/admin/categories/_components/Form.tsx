@@ -4,15 +4,10 @@ import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 
-import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { useCreateCategoryMutation } from "@/graphql/generated/schema";
-import { modifyGetCategoriesWithOffsetQuery } from "@/lib/cache-utils";
-import { gplErrorHandler } from "@/lib/utils";
 
 // validation
 const schema = z.object({
@@ -20,33 +15,19 @@ const schema = z.object({
 });
 
 interface Props {
-  onClose(): void;
+  submitBtnLabel: string;
+  submitHandler: (title: string) => Promise<void>;
+  loading: boolean;
+  defaultValue?: string;
 }
 
-export default function AdminCategoryCreationForm({ onClose }: Props) {
+export default function AdminCategoryForm({
+  submitBtnLabel,
+  submitHandler,
+  loading,
+  defaultValue,
+}: Props) {
   const titleId = React.useId();
-  const [createCategory, { loading }] = useCreateCategoryMutation({
-    notifyOnNetworkStatusChange: true,
-    onError(error) {
-      const tempErrors = gplErrorHandler(error);
-      if (tempErrors) {
-        toast.error(<ToastErrorMessage error={tempErrors} />, {
-          position: "bottom-right",
-        });
-      }
-    },
-    onCompleted(data) {
-      toast.success(
-        <>
-          <b className="capitalize">{data.createCategory.title}</b> created
-          successfully.
-        </>,
-        {
-          position: "top-right",
-        },
-      );
-    },
-  });
 
   const {
     handleSubmit,
@@ -57,29 +38,13 @@ export default function AdminCategoryCreationForm({ onClose }: Props) {
     resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
-      title: "",
+      title: defaultValue ?? "",
     },
   });
 
   const onSubmit = handleSubmit(async ({ title }) => {
-    try {
-      await createCategory({
-        variables: { title },
-        update(cache, { data }) {
-          if (!data) {
-            return;
-          }
-          modifyGetCategoriesWithOffsetQuery({
-            cache,
-            category: data.createCategory,
-            mode: "ADD",
-          });
-        },
-      });
-      onClose();
-    } catch (error) {
-      reset();
-    }
+    await submitHandler(title);
+    reset();
   });
 
   return (
@@ -100,11 +65,11 @@ export default function AdminCategoryCreationForm({ onClose }: Props) {
       <Button
         className="mx-auto w-full capitalize sm:w-[14.125rem]"
         type="submit"
-        aria-label="Save Category"
+        aria-label={submitBtnLabel}
         loading={isSubmitting || loading}
         disabled={!(isDirty && isValid) || isSubmitting || loading}
       >
-        Save Category
+        {submitBtnLabel}
       </Button>
     </form>
   );

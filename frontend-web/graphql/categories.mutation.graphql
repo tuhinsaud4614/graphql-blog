@@ -6,3 +6,9 @@ mutation CreateCategory($title: String!) {
 mutation DeleteCategory($id: String!) {
   deleteCategory(id: $id)
 }
+
+mutation UpdateCategory($id: String!, $title: String!) {
+  updateCategory(id: $id, title: $title) {
+    ...FCategory
+  }
+}

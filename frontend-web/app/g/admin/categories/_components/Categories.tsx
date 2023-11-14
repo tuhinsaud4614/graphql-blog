@@ -6,7 +6,7 @@ import ErrorBox from "@/components/ErrorBox";
 import { useGetCategoriesWithOffsetQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler } from "@/lib/utils";
 
-import AdminCategoryCreateButton from "./CreateButton";
+import AdminCreateCategory from "./CreateCategory";
 import AdminCategoryList from "./List";
 import AdminCategorySkeleton from "./Skeleton";
 
@@ -33,7 +33,7 @@ export default function AdminCategories() {
 
   return (
     <AdminCategoryList categories={data?.categoriesWithOffset.data || []}>
-      <AdminCategoryCreateButton />
+      <AdminCreateCategory />
     </AdminCategoryList>
   );
 }
