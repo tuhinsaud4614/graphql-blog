@@ -2,8 +2,6 @@ import { createYoga } from "graphql-yoga";
 
 import { useGraphQlJit } from "@envelop/graphql-jit";
 import { useRateLimiter } from "@envelop/rate-limiter";
-import { useResponseCache } from "@envelop/response-cache";
-import { createRedisCache } from "@envelop/response-cache-redis";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -53,11 +51,11 @@ async function startServer() {
     },
     plugins: [
       useGraphQlJit(),
-      useResponseCache({
-        session: () => null,
-        cache: createRedisCache({ redis: redisClient }),
-        ttl: 1000 * 60,
-      }),
+      // useResponseCache({
+      //   session: () => null,
+      //   cache: createRedisCache({ redis: redisClient }),
+      //   ttl: 1000 * 60,
+      // }),
       useRateLimiter({
         identifyFn: (context) => (context as YogaContextType).req.ip,
         onRateLimitError({ error }) {

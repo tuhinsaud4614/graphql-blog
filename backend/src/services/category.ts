@@ -246,6 +246,7 @@ export async function categoryDeletionService(
     const isExist = await getCategoryById(prisma, id);
 
     if (!isExist) {
+      logger.error(generateNotExistErrorMessage("Category"));
       return new GraphQLError(generateNotExistErrorMessage("Category"), {
         extensions: { code: NOT_EXIST },
       });
