@@ -79,11 +79,16 @@ export function modifyGetCategoriesWithOffsetQuery<T>({
         }
 
         const newCategories = produce(prevCategories, (draft) => {
-          draft.categoriesWithOffset.data = [
-            category,
-            ...draft.categoriesWithOffset.data,
-          ];
-          if (mode === "ADD") {
+          if (mode === "UPDATE") {
+            draft.categoriesWithOffset.data =
+              draft.categoriesWithOffset.data.map((cat) =>
+                cat.id === category.id ? category : cat,
+              );
+          } else {
+            draft.categoriesWithOffset.data = [
+              category,
+              ...draft.categoriesWithOffset.data,
+            ];
             draft.categoriesWithOffset.total += 1;
             updateGetCategoriesCount(cache, draft.categoriesWithOffset.total);
           }

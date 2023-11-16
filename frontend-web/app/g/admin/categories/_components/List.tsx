@@ -42,6 +42,8 @@ interface Props {
 }
 
 export default function AdminCategoryList({ categories, children }: Props) {
+  console.log("categories", categories);
+
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -101,18 +103,20 @@ export default function AdminCategoryList({ categories, children }: Props) {
             title="Actions"
           />
         ),
-        cell: ({ row }) => (
-          <div className="mx-auto flex w-fit items-center gap-2">
-            <AdminCategoryEdit
-              categoryId={row.original.id}
-              oldTitle={row.original.title}
-            />
-            <AdminCategoryDelete
-              id={row.original.id}
-              title={row.original.title}
-            />
-          </div>
-        ),
+        cell: ({ row }) => {
+          return (
+            <div className="mx-auto flex w-fit items-center gap-2">
+              <AdminCategoryEdit
+                categoryId={row.original.id}
+                oldTitle={row.original.title}
+              />
+              <AdminCategoryDelete
+                id={row.original.id}
+                title={row.original.title}
+              />
+            </div>
+          );
+        },
         enableSorting: false,
         enableHiding: false,
       },

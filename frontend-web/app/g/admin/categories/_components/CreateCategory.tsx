@@ -38,7 +38,7 @@ export default function AdminCreateCategory() {
           successfully.
         </>,
         {
-          position: "top-right",
+          position: "bottom-right",
         },
       );
     },

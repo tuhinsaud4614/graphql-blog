@@ -34,7 +34,7 @@ export default function AdminDashboardCard({
           </Link>
           <div className="mt-2 flex items-center text-2xl font-medium">
             {loading ? (
-              <Loader className="animate-spin text-secondary" />
+              <Loader size={32} className="animate-spin text-secondary" />
             ) : (
               children
             )}

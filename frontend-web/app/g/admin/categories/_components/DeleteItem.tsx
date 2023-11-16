@@ -25,7 +25,7 @@ export default function AdminCategoryDelete({ id, title }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const closeHandler = () => setIsOpen(false);
 
-  const [deleteHandler, { loading }] = useDeleteCategoryMutation({
+  const [deleteMutation, { loading }] = useDeleteCategoryMutation({
     errorPolicy: "all",
     onError(error) {
       const tempErrors = gplErrorHandler(error);
@@ -47,6 +47,17 @@ export default function AdminCategoryDelete({ id, title }: Props) {
       closeHandler();
     },
   });
+
+  const deleteHandler = async () => {
+    await deleteMutation({
+      variables: { id },
+      update(cache, { data }) {
+        if (data?.deleteCategory) {
+          deleteGetCategoriesWithOffsetQuery(cache, data.deleteCategory);
+        }
+      },
+    });
+  };
 
   return (
     <>
@@ -83,19 +94,7 @@ export default function AdminCategoryDelete({ id, title }: Props) {
               variant="error"
               aria-label="Delete"
               type="button"
-              onClick={() => {
-                void deleteHandler({
-                  variables: { id },
-                  update(cache, { data }) {
-                    if (data?.deleteCategory) {
-                      deleteGetCategoriesWithOffsetQuery(
-                        cache,
-                        data.deleteCategory,
-                      );
-                    }
-                  },
-                });
-              }}
+              onClick={deleteHandler}
               className="!px-4 !py-1.5 text-sm"
               loading={loading}
               disabled={loading}
