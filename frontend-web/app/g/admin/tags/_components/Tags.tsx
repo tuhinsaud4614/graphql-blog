@@ -4,15 +4,15 @@ import { NetworkStatus } from "@apollo/client";
 
 import ErrorBox from "@/components/ErrorBox";
 import TableSkeleton from "@/components/data-table/Skeleton";
-import { useGetCategoriesWithOffsetQuery } from "@/graphql/generated/schema";
+import { useGetTagsWithOffsetQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler } from "@/lib/utils";
 
-import AdminCreateCategory from "./CreateCategory";
-import AdminCategoryList from "./List";
+import AdminCreateTag from "./CreateTag";
+import AdminTagList from "./List";
 
-export default function AdminCategories() {
+export default function AdminTags() {
   const { data, refetch, error, loading, networkStatus } =
-    useGetCategoriesWithOffsetQuery({
+    useGetTagsWithOffsetQuery({
       notifyOnNetworkStatusChange: true,
     });
 
@@ -23,7 +23,7 @@ export default function AdminCategories() {
   if (error) {
     return (
       <ErrorBox
-        title="Fetching categories errors"
+        title="Fetching tags errors"
         errors={gplErrorHandler(error)}
         onRetry={refetch}
       />
@@ -31,8 +31,8 @@ export default function AdminCategories() {
   }
 
   return (
-    <AdminCategoryList categories={data?.categoriesWithOffset.data || []}>
-      <AdminCreateCategory />
-    </AdminCategoryList>
+    <AdminTagList tags={data?.tagsWithOffset.results || []}>
+      <AdminCreateTag />
+    </AdminTagList>
   );
 }

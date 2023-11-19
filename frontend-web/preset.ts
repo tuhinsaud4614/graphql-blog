@@ -64,7 +64,7 @@ const myPlugin = plugin(
         "--neutral-focus": "0 0% 61.96%",
         "--base-100": "20 14.29% 4.12%",
         "--base-200": "240 5.88% 10%",
-        "--base-300": "240 5.26% 26.08% / 50%",
+        "--base-300": "240 5.15% 19.02%",
         "--base-content": "215 27.91% 16.86%",
         "--info": "206.82 89.95% 60.98%",
         "--info-focus": "211.93 80.28% 41.76%",
@@ -98,6 +98,10 @@ const myPlugin = plugin(
         },
       },
       extend: {
+        transitionTimingFunction: {
+          custom: "cubic-bezier(0.3, 0, 0.5, 1)",
+          icon: "cubic-bezier(0.2, 0, 0.13, 2)",
+        },
         boxShadow: {
           mine: "rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px",
           top: "0 0 10px rgb(0 0 0 / 10%), 0 0 10px rgb(0 0 0 / 10%)",

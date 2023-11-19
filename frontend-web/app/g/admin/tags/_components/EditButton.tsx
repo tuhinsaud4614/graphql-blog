@@ -2,25 +2,30 @@
 
 import * as React from "react";
 
-import { Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Modal from "@/components/modal";
 import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
-import { useCreateCategoryMutation } from "@/graphql/generated/schema";
-import { modifyGetCategoriesWithOffsetQuery } from "@/lib/cache-utils";
+import { useUpdateTagMutation } from "@/graphql/generated/schema";
+import { modifyGetTagWithOffsetQuery } from "@/lib/cache-utils";
 import { gplErrorHandler } from "@/lib/utils";
 
-import AdminCategoryForm from "./Form";
+import AdminTagForm from "./Form";
 
-export default function AdminCreateCategory() {
+interface Props {
+  oldTitle: string;
+  tagId: string;
+}
+
+export default function AdminTagEdit({ tagId, oldTitle }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  const [createCategory, { loading }] = useCreateCategoryMutation({
+  const [updateCategory, { loading }] = useUpdateTagMutation({
     notifyOnNetworkStatusChange: true,
     onError(error) {
       const tempErrors = gplErrorHandler(error);
@@ -33,7 +38,7 @@ export default function AdminCreateCategory() {
     onCompleted(data) {
       toast.success(
         <>
-          <b className="capitalize">{data.createCategory.title}</b> created
+          <b className="capitalize">{data.updateTag.title}</b> updated
           successfully.
         </>,
         {
@@ -44,31 +49,32 @@ export default function AdminCreateCategory() {
   });
 
   const submitHandler = async (title: string) => {
-    await createCategory({
-      variables: { title },
+    await updateCategory({
+      variables: { title, id: tagId },
       update(cache, { data }) {
         if (!data) {
           return;
         }
-        modifyGetCategoriesWithOffsetQuery({
+        modifyGetTagWithOffsetQuery({
           cache,
-          category: data.createCategory,
-          mode: "ADD",
+          tag: data.updateTag,
+          mode: "UPDATE",
         });
       },
     });
     handleClose();
   };
+
   return (
     <>
       <Button
-        aria-label="Add Category"
-        className="gap-2 capitalize"
+        type="button"
+        variant="warning"
         onClick={handleOpen}
         disabled={isOpen}
+        circle
       >
-        <Plus size={24} className="text-current" />
-        Add Category
+        <Pencil size={16} />
       </Button>
       <Modal
         open={isOpen}
@@ -78,13 +84,14 @@ export default function AdminCreateCategory() {
       >
         <ModalHeader onClose={handleClose}>
           <h3 className="flex-1 text-center text-xl font-extrabold text-neutral">
-            Create Category
+            Edit Tag
           </h3>
         </ModalHeader>
-        <AdminCategoryForm
+        <AdminTagForm
           loading={loading}
-          submitBtnLabel="Save category"
+          submitBtnLabel="Update tag"
           submitHandler={submitHandler}
+          defaultValue={oldTitle}
         />
       </Modal>
     </>

@@ -11,7 +11,6 @@ import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
 import { useUpdateCategoryMutation } from "@/graphql/generated/schema";
 import { modifyGetCategoriesWithOffsetQuery } from "@/lib/cache-utils";
-import { isDev } from "@/lib/isType";
 import { gplErrorHandler } from "@/lib/utils";
 
 import AdminCategoryForm from "./Form";
@@ -50,24 +49,20 @@ export default function AdminCategoryEdit({ categoryId, oldTitle }: Props) {
   });
 
   const submitHandler = async (title: string) => {
-    try {
-      await updateCategory({
-        variables: { title, id: categoryId },
-        update(cache, { data }) {
-          if (!data) {
-            return;
-          }
-          modifyGetCategoriesWithOffsetQuery({
-            cache,
-            category: data.updateCategory,
-            mode: "UPDATE",
-          });
-        },
-      });
-      handleClose();
-    } catch (error) {
-      isDev() && console.log("Admin Category modification @Error: ", error);
-    }
+    await updateCategory({
+      variables: { title, id: categoryId },
+      update(cache, { data }) {
+        if (!data) {
+          return;
+        }
+        modifyGetCategoriesWithOffsetQuery({
+          cache,
+          category: data.updateCategory,
+          mode: "UPDATE",
+        });
+      },
+    });
+    handleClose();
   };
 
   return (

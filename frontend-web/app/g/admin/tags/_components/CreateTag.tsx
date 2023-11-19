@@ -9,18 +9,18 @@ import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Modal from "@/components/modal";
 import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
-import { useCreateCategoryMutation } from "@/graphql/generated/schema";
-import { modifyGetCategoriesWithOffsetQuery } from "@/lib/cache-utils";
+import { useCreateTagMutation } from "@/graphql/generated/schema";
+import { modifyGetTagWithOffsetQuery } from "@/lib/cache-utils";
 import { gplErrorHandler } from "@/lib/utils";
 
-import AdminCategoryForm from "./Form";
+import AdminTagForm from "./Form";
 
-export default function AdminCreateCategory() {
+export default function AdminCreateTag() {
   const [isOpen, setIsOpen] = React.useState(false);
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  const [createCategory, { loading }] = useCreateCategoryMutation({
+  const [createTag, { loading }] = useCreateTagMutation({
     notifyOnNetworkStatusChange: true,
     onError(error) {
       const tempErrors = gplErrorHandler(error);
@@ -33,7 +33,7 @@ export default function AdminCreateCategory() {
     onCompleted(data) {
       toast.success(
         <>
-          <b className="capitalize">{data.createCategory.title}</b> created
+          <b className="capitalize">{data.createTag.title}</b> created
           successfully.
         </>,
         {
@@ -44,15 +44,15 @@ export default function AdminCreateCategory() {
   });
 
   const submitHandler = async (title: string) => {
-    await createCategory({
+    await createTag({
       variables: { title },
       update(cache, { data }) {
         if (!data) {
           return;
         }
-        modifyGetCategoriesWithOffsetQuery({
+        modifyGetTagWithOffsetQuery({
           cache,
-          category: data.createCategory,
+          tag: data.createTag,
           mode: "ADD",
         });
       },
@@ -62,13 +62,13 @@ export default function AdminCreateCategory() {
   return (
     <>
       <Button
-        aria-label="Add Category"
+        aria-label="Add Tag"
         className="gap-2 capitalize"
         onClick={handleOpen}
         disabled={isOpen}
       >
         <Plus size={24} className="text-current" />
-        Add Category
+        Add Tag
       </Button>
       <Modal
         open={isOpen}
@@ -78,12 +78,12 @@ export default function AdminCreateCategory() {
       >
         <ModalHeader onClose={handleClose}>
           <h3 className="flex-1 text-center text-xl font-extrabold text-neutral">
-            Create Category
+            Create Tag
           </h3>
         </ModalHeader>
-        <AdminCategoryForm
+        <AdminTagForm
           loading={loading}
-          submitBtnLabel="Save category"
+          submitBtnLabel="Save tag"
           submitHandler={submitHandler}
         />
       </Modal>

@@ -37,6 +37,13 @@ fragment FCategory on Category {
   updatedAt
 }
 
+fragment FTag on Tag {
+  id
+  title
+  createdAt
+  updatedAt
+}
+
 fragment GetPostItem on Post {
   id
   author {

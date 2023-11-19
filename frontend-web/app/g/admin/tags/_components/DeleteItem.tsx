@@ -9,23 +9,20 @@ import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Modal from "@/components/modal";
 import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
-import {
-  Category,
-  useDeleteCategoryMutation,
-} from "@/graphql/generated/schema";
-import { deleteGetCategoriesWithOffsetQuery } from "@/lib/cache-utils";
+import { Tag, useDeleteTagMutation } from "@/graphql/generated/schema";
+import { deleteGetTagsWithOffsetQuery } from "@/lib/cache-utils";
 import { gplErrorHandler } from "@/lib/utils";
 
 interface Props {
-  id: Category["id"];
-  title: Category["title"];
+  id: Tag["id"];
+  title: Tag["title"];
 }
 
-export default function AdminCategoryDelete({ id, title }: Props) {
+export default function AdminTagDelete({ id, title }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const closeHandler = () => setIsOpen(false);
 
-  const [deleteMutation, { loading }] = useDeleteCategoryMutation({
+  const [deleteMutation, { loading }] = useDeleteTagMutation({
     errorPolicy: "all",
     onError(error) {
       const tempErrors = gplErrorHandler(error);
@@ -52,8 +49,8 @@ export default function AdminCategoryDelete({ id, title }: Props) {
     await deleteMutation({
       variables: { id },
       update(cache, { data }) {
-        if (data?.deleteCategory) {
-          deleteGetCategoriesWithOffsetQuery(cache, data.deleteCategory);
+        if (data?.deleteTag) {
+          deleteGetTagsWithOffsetQuery(cache, data?.deleteTag);
         }
       },
     });
@@ -73,10 +70,10 @@ export default function AdminCategoryDelete({ id, title }: Props) {
         <ModalHeader onClose={closeHandler} className="border-none" />
         <div className="flex flex-col items-center justify-center p-4 !pt-0 md:p-6">
           <h2 className="font-title text-2xl font-medium text-primary selection:bg-primary selection:text-primary-foreground">
-            Delete Category
+            Delete Tag
           </h2>
           <p className="pb-4 pt-1.5 text-center text-sm text-neutral/60 selection:bg-secondary selection:text-secondary-foreground md:pb-6 md:text-base">
-            Are you sure want to delete category{" "}
+            Are you sure want to delete tag{" "}
             <b className="text-neutral">{title}</b>
           </p>
           <div className="flex items-center">

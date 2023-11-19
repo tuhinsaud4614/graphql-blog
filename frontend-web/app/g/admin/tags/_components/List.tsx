@@ -27,30 +27,30 @@ import { DataTablePagination } from "@/components/data-table/Pagination";
 import TableRow from "@/components/data-table/Row";
 import Table from "@/components/data-table/Table";
 import { DataTableToolbar } from "@/components/data-table/Toolbar";
-import { Category } from "@/graphql/generated/schema";
+import { Tag } from "@/graphql/generated/schema";
 import { FORMAT_LOCALE_DATE_VARIANTS } from "@/lib/constants";
 import { formatLocaleDate } from "@/lib/utils";
 
-import AdminCategoryDelete from "./DeleteItem";
-import AdminCategoryEdit from "./EditButton";
+import AdminTagDelete from "./DeleteItem";
+import AdminTagEdit from "./EditButton";
 
-const MemoAdminCategoryDelete = React.memo(
-  AdminCategoryDelete,
+const MemoAdminTagDelete = React.memo(
+  AdminTagDelete,
   (prev, curr) => prev.id === curr.id,
 );
-const MemoAdminCategoryEdit = React.memo(
-  AdminCategoryEdit,
-  (prev, curr) => prev.categoryId === curr.categoryId,
+const MemoAdminTagEdit = React.memo(
+  AdminTagEdit,
+  (prev, curr) => prev.tagId === curr.tagId,
 );
 
-type ICategory = Pick<Category, "id" | "title" | "updatedAt">;
+type ITag = Pick<Tag, "id" | "title" | "updatedAt">;
 
 interface Props {
-  categories: ICategory[];
+  tags: ITag[];
   children: React.ReactNode;
 }
 
-export default function AdminCategoryList({ categories, children }: Props) {
+export default function AdminTagList({ tags, children }: Props) {
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -60,7 +60,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
     [],
   );
 
-  const columns = React.useMemo<ColumnDef<ICategory>[]>(
+  const columns = React.useMemo<ColumnDef<ITag>[]>(
     () => [
       {
         accessorKey: "id",
@@ -113,11 +113,11 @@ export default function AdminCategoryList({ categories, children }: Props) {
         cell: ({ row }) => {
           return (
             <div className="mx-auto flex w-fit items-center gap-2">
-              <MemoAdminCategoryEdit
-                categoryId={row.original.id}
+              <MemoAdminTagEdit
+                tagId={row.original.id}
                 oldTitle={row.original.title}
               />
-              <MemoAdminCategoryDelete
+              <MemoAdminTagDelete
                 id={row.original.id}
                 title={row.original.title}
               />
@@ -133,7 +133,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
   );
 
   const table = useReactTable({
-    data: categories,
+    data: tags,
     columns,
     state: {
       sorting,
@@ -160,7 +160,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
       <DataTableToolbar
         onSearch={setGlobalFilter}
         table={table}
-        searchPlaceholder="Search Categories..."
+        searchPlaceholder="Search tags..."
         outerChildren={children}
       />
       <div className="mt-6 overflow-x-auto rounded-2xl shadow-mui scrollbar-hide dark:border dark:border-base-300">
@@ -213,7 +213,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No categories.
+                  No tags.
                 </TableCell>
               </TableRow>
             )}
@@ -221,10 +221,7 @@ export default function AdminCategoryList({ categories, children }: Props) {
           <TableFooter>
             <TableRow>
               <TableCell colSpan={4}>
-                <DataTablePagination
-                  dataLength={categories.length}
-                  table={table}
-                />
+                <DataTablePagination dataLength={tags.length} table={table} />
               </TableCell>
             </TableRow>
           </TableFooter>

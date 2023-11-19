@@ -4,10 +4,10 @@ import Breadcrumbs, { BreadcrumbsProps } from "@/components/Breadcrumbs";
 import { ROUTES } from "@/lib/constants";
 
 import Title from "../_components/Title";
-import AdminCategories from "./_components/Categories";
+import AdminTags from "./_components/Tags";
 
 export const metadata: Metadata = {
-  title: "The RAT Diary | Categories",
+  title: "The RAT Diary | Tags",
 };
 
 const links: BreadcrumbsProps["items"] = [
@@ -17,19 +17,19 @@ const links: BreadcrumbsProps["items"] = [
     link: { href: ROUTES.admin.dashboard },
   },
   {
-    children: "Categories",
+    children: "Tags",
     active: true,
   },
 ];
 
-export default function AdminCategoryPage() {
+export default function AdminTagsPage() {
   return (
     <>
       <Title className="text-primary selection:bg-primary selection:text-primary-foreground">
-        Categories
+        Tags
       </Title>
       <Breadcrumbs classes={{ root: "pt-1 mb-2" }} items={links} />
-      <AdminCategories />
+      <AdminTags />
     </>
   );
 }

@@ -3,7 +3,7 @@ import { cn } from "./utils";
 
 const className = {
   btn: {
-    root: "px-4 py-1.5 rounded-full select-none flex items-center justify-center active:scale-95",
+    root: "px-4 py-1.5 rounded-full select-none flex items-center justify-center active:scale-95 transition-all ease-custom hover:[&_svg]:ease-icon [&_svg]:transition-transform",
     circle: "h-9 w-9 rounded-full !p-0",
     fill: "outline-none border-0",
     fillEnabled: "shadow-mui hover:shadow-mui-hover active:shadow-mui-active",
