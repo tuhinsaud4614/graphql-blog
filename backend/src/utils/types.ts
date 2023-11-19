@@ -15,6 +15,8 @@ import {
   categoriesByTextSchema,
   categoryCreationSchema,
   categoryModificationSchema,
+  tagCreationSchema,
+  tagModificationSchema,
 } from "@/validations/category";
 import {
   createCommentSchema,
@@ -87,6 +89,8 @@ export type CategoryModificationParams = InferType<
 export type TagsByTextWithOffsetParams = InferType<
   typeof tagsByTextWithOffsetSchema
 >;
+export type TagCreationParams = InferType<typeof tagCreationSchema>;
+export type TagModificationParams = InferType<typeof tagModificationSchema>;
 
 // Comment
 export type CreateCommentInput = InferType<typeof createCommentSchema>;

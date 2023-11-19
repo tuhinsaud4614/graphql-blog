@@ -15,3 +15,9 @@ export const categoryCreationSchema = yup.object({
 export const categoryModificationSchema = idParamsSchema.concat(
   categoryCreationSchema,
 );
+
+// Tags
+export const tagCreationSchema = yup.object({
+  title: yup.string().required(generateRequiredErrorMessage("Title")),
+});
+export const tagModificationSchema = idParamsSchema.concat(tagCreationSchema);
