@@ -10,6 +10,19 @@ query RecommendAuthorsWithOffset($limit: Int, $page: Int) {
   }
 }
 
+query GetUsersWithOffset($limit: Int, $page: Int) {
+  usersWithOffset(limit: $limit, page: $page) {
+    total
+    data {
+      ...FUser
+      updatedAt
+    }
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+  }
+}
+
 query GetUserCount {
   userCount
 }

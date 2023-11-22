@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Tag } from "lucide-react";
+import { LayoutDashboard, Tag, Users } from "lucide-react";
 
 import CategoryIcon from "@/components/svg/Category";
 import { ROUTES } from "@/lib/constants";
@@ -49,6 +49,13 @@ export default function AdminLayoutSidebar() {
           onClick={handleClose}
         >
           <AdminSidebarTitle visible={isOpen}>Tags</AdminSidebarTitle>
+        </AdminSidebarItem>
+        <AdminSidebarItem
+          href={ROUTES.admin.users}
+          icon={<Users className="h-6 w-6 shrink-0" />}
+          onClick={handleClose}
+        >
+          <AdminSidebarTitle visible={isOpen}>Users</AdminSidebarTitle>
         </AdminSidebarItem>
       </ul>
     </SidebarContainer>

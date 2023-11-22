@@ -23,7 +23,7 @@ export default function AdminDashboardUserCount() {
       icon={<Users className="h-8 w-8 text-primary" />}
       title="Users"
       loading={loading}
-      href={ROUTES.admin.posts}
+      href={ROUTES.admin.users}
     >
       <span className="text-secondary selection:bg-secondary selection:text-secondary-foreground">
         <Counter value={value} />
