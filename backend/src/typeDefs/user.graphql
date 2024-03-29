@@ -132,6 +132,8 @@ type Mutation {
   updateAbout(value: String): String!
   followRequest(toId: ID!): User!
   unFollowRequest(toId: ID!): ID!
+  # Admin side
+  deleteUser(id: String!): ID!
 }
 
 enum FollowingMutationStatus {

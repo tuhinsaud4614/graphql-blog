@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { Prisma, PrismaClient, UserRole } from "@prisma/client";
 import { hash, verify } from "argon2";
 import type { Request, Response } from "express";
@@ -18,6 +20,7 @@ import { getAllPosts } from "@/repositories/post";
 import {
   createOrUpdateAvatar,
   createUser,
+  deleteUser,
   followTo,
   getUserAvatar,
   getUserByEmailOrMobile,
@@ -49,9 +52,12 @@ import config from "@/utils/config";
 import {
   AUTH_FAIL_ERR_MSG,
   FOLLOW_ERR_MSG,
+  FORBIDDEN,
   INVALID_CREDENTIAL,
+  NOT_EXIST,
   UN_AUTH_ERR_MSG,
   generateCreationErrorMessage,
+  generateDeleteErrorMessage,
   generateEntityNotExistErrorMessage,
   generateExistErrorMessage,
   generateFetchErrorMessage,
@@ -1162,6 +1168,63 @@ export async function userPostsService(prisma: PrismaClient, id: string) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Avatar", "user"),
     );
+  }
+}
+
+// Admin side
+/**
+ * The userDeletionService function handles the deletion of a user, performing validation, checking for
+ * existence, and role restrictions.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database in your application. It provides methods for querying,
+ * creating, updating, and deleting data from the database. In your `userDeletionService` function, the
+ * `prisma`
+ * @param {IDParams} params - The `params` object in the `userDeletionService` function likely contains
+ * information needed to identify and delete a user. It seems to include at least an `id` property,
+ * which is used to find the user to be deleted. The `IDParams` type is probably a custom type defined
+ * @returns The function `userDeletionService` is returning the ID of the deleted user if the deletion
+ * is successful. If there are any validation errors or if the user does not exist, appropriate error
+ * messages are logged and returned. If the user to be deleted is an admin account, an error message is
+ * logged and returned as well.
+ */
+export async function userDeletionService(
+  prisma: PrismaClient,
+  params: IDParams,
+) {
+  try {
+    await idParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "User deletion" });
+  }
+
+  try {
+    const { id } = params;
+    const isExist = await getUserById(prisma, id);
+
+    if (!isExist) {
+      logger.error(generateNotExistErrorMessage("User"));
+      return new GraphQLError(generateNotExistErrorMessage("User"), {
+        extensions: { code: NOT_EXIST },
+      });
+    }
+
+    if (isExist.role === UserRole.ADMIN) {
+      logger.error("Can't delete admin account.");
+      return new GraphQLError(generateDeleteErrorMessage("User"), {
+        extensions: { code: FORBIDDEN },
+      });
+    }
+
+    const user = await deleteUser(prisma, id);
+    return user.id;
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, {
+      message: generateDeleteErrorMessage("User"),
+    });
   }
 }
 

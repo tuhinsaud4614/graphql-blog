@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:15.2-alpine
+    image: postgres:16.2-alpine
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
@@ -14,7 +14,7 @@ services:
       - ./.env
 
   cache:
-    image: redis:7.2.1-alpine
+    image: redis:7.2.4-alpine
     volumes:
       - rediscache:/data
     env_file:
