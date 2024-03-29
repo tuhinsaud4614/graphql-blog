@@ -15,6 +15,11 @@ import {
   GetTagsWithOffsetDocument,
   GetTagsWithOffsetQuery,
   GetTagsWithOffsetQueryVariables,
+  GetUserCountDocument,
+  GetUserCountQuery,
+  GetUsersWithOffsetDocument,
+  GetUsersWithOffsetQuery,
+  GetUsersWithOffsetQueryVariables,
 } from "@/graphql/generated/schema";
 
 import { isDev } from "./isType";
@@ -262,5 +267,72 @@ export function deleteGetTagsWithOffsetQuery<T>(
     );
   } catch (error) {
     isDev() && console.error("DeleteGetTagWithOffsetQuery@Errors: ", error);
+  }
+}
+
+/**
+ * The function `updateGetUserCount` updates the user count in the Apollo cache with the provided
+ * value.
+ * @param cache - The `cache` parameter is an instance of ApolloCache, which is used for caching data
+ * in Apollo Client. It allows you to read and write data to the cache, as well as perform other
+ * cache-related operations. In this function, the `cache` parameter is being used to write a query to
+ * @param {number} value - The `value` parameter is the number that will be used to update the user
+ * count in the cache.
+ */
+export function updateGetUserCount<T>(cache: ApolloCache<T>, value: number) {
+  cache.writeQuery<GetUserCountQuery>({
+    query: GetUserCountDocument,
+    data: {
+      userCount: value,
+    },
+  });
+}
+
+/**
+ * The function `deleteGetUsersWithOffsetQuery` updates a cached query by removing a user with a
+ * specific ID and updating the total count of users.
+ * @param cache - The `cache` parameter in the `deleteGetUsersWithOffsetQuery` function is an instance
+ * of ApolloCache, which is used for managing cached data in an Apollo Client application. It allows
+ * you to read and write data to and from the cache, as well as update the cache based on mutations or
+ * @param id - The `id` parameter in the `deleteGetUsersWithOffsetQuery` function is of type
+ * `FTagFragment["id"]`. This means that it expects an `id` value that corresponds to the `id` field in
+ * the `FTagFragment` type. This `id` value will
+ * @param {GetUsersWithOffsetQueryVariables} [variables] - The `variables` parameter in the
+ * `deleteGetUsersWithOffsetQuery` function is of type `GetUsersWithOffsetQueryVariables`. It is an
+ * optional parameter that allows you to pass additional variables to the query when updating the
+ * cache. These variables can be used to filter or modify the data that is
+ */
+export function deleteGetUsersWithOffsetQuery<T>(
+  cache: ApolloCache<T>,
+  id: FTagFragment["id"],
+  variables?: GetUsersWithOffsetQueryVariables,
+) {
+  try {
+    cache.updateQuery<
+      GetUsersWithOffsetQuery,
+      GetUsersWithOffsetQueryVariables
+    >(
+      {
+        query: GetUsersWithOffsetDocument,
+        variables,
+      },
+      (prevTags) => {
+        if (!prevTags) {
+          return null;
+        }
+        const updatedUsers = produce(prevTags, (draft) => {
+          if (draft.usersWithOffset.total > 0) {
+            draft.usersWithOffset.data = draft.usersWithOffset.data.filter(
+              (user) => user.id !== id,
+            );
+            draft.usersWithOffset.total -= 1;
+            updateGetUserCount(cache, draft.usersWithOffset.total);
+          }
+        });
+        return updatedUsers;
+      },
+    );
+  } catch (error) {
+    isDev() && console.error("DeleteGetUserWithOffsetQuery@Errors: ", error);
   }
 }

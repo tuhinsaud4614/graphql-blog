@@ -3,7 +3,6 @@
 import * as React from "react";
 
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 
 import {
   ColumnDef,
@@ -32,24 +31,21 @@ import { DataTablePagination } from "@/components/data-table/Pagination";
 import TableRow from "@/components/data-table/Row";
 import Table from "@/components/data-table/Table";
 import { DataTableToolbar } from "@/components/data-table/Toolbar";
-import { AuthorStatus, FUserFragment, Tag } from "@/graphql/generated/schema";
-import useSetQueryOnPage from "@/hooks/useSetQueryOnPage";
+import { AuthorStatus, FUserFragment } from "@/graphql/generated/schema";
 import { FORMAT_LOCALE_DATE_VARIANTS } from "@/lib/constants";
-import { formatLocaleDate, generateFileUrl } from "@/lib/utils";
+import { formatLocaleDate, generateFileUrl, getUserName } from "@/lib/utils";
 
-import AdminTagDelete from "./DeleteItem";
-import AdminTagEdit from "./EditButton";
+import AdminUserDelete from "./DeleteItem";
+import AdminUserEdit from "./EditButton";
 
-const MemoAdminTagDelete = React.memo(
-  AdminTagDelete,
+const MemoAdminUserDelete = React.memo(
+  AdminUserDelete,
   (prev, curr) => prev.id === curr.id,
 );
-const MemoAdminTagEdit = React.memo(
-  AdminTagEdit,
-  (prev, curr) => prev.tagId === curr.tagId,
+const MemoAdminUserEdit = React.memo(
+  AdminUserEdit,
+  (prev, curr) => prev.userId === curr.userId,
 );
-
-type ITag = Pick<Tag, "id" | "title" | "updatedAt">;
 
 interface Props {
   users: FUserFragment[];
@@ -182,14 +178,14 @@ export default function AdminUserList({ users }: Props) {
         cell: ({ row }) => {
           return (
             <div className="mx-auto flex w-fit items-center gap-2">
-              {/* <MemoAdminTagEdit
-                tagId={row.original.id}
-                oldTitle={row.original.}
+              <MemoAdminUserEdit
+                userId={row.original.id}
+                username={getUserName(row.original)}
               />
-              <MemoAdminTagDelete
+              <MemoAdminUserDelete
                 id={row.original.id}
-                title={row.original.title}
-              /> */}
+                username={getUserName(row.original)}
+              />
             </div>
           );
         },
@@ -224,20 +220,20 @@ export default function AdminUserList({ users }: Props) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const router = useRouter();
-  const pathname = usePathname();
+  // const router = useRouter();
+  // const pathname = usePathname();
 
-  const setQueryString = useSetQueryOnPage(pathname);
+  // const setQueryString = useSetQueryOnPage(pathname);
 
-  const limit = table.getState().pagination.pageSize;
-  const page = table.getState().pagination.pageIndex + 1;
+  // const limit = table.getState().pagination.pageSize;
+  // const page = table.getState().pagination.pageIndex + 1;
 
-  React.useEffect(() => {
-    router.replace(
-      setQueryString({ page: page.toString(), limit: limit.toString() }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, limit, setQueryString]);
+  // React.useEffect(() => {
+  //   router.replace(
+  //     setQueryString({ page: page.toString(), limit: limit.toString() }),
+  //   );
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [page, limit, setQueryString]);
 
   return (
     <>

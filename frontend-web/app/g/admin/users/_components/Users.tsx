@@ -5,17 +5,16 @@ import { NetworkStatus } from "@apollo/client";
 import ErrorBox from "@/components/ErrorBox";
 import TableSkeleton from "@/components/data-table/Skeleton";
 import { useGetUsersWithOffsetQuery } from "@/graphql/generated/schema";
-import useIntegerQueryValue from "@/hooks/useIntegerQueryValue";
 import { gplErrorHandler } from "@/lib/utils";
 
 import AdminUserList from "./List";
 
 export default function AdminUsers() {
-  const { limit, page } = useIntegerQueryValue(["page", "limit"]);
+  // const { limit, page } = useIntegerQueryValue(["page", "limit"]);
   const { data, refetch, error, loading, networkStatus } =
     useGetUsersWithOffsetQuery({
       notifyOnNetworkStatusChange: true,
-      variables: { limit: limit || 10, page: page || 1 },
+      // variables: { limit: limit || 10, page: page || 1 },
     });
 
   if (loading || networkStatus === NetworkStatus.refetch) {

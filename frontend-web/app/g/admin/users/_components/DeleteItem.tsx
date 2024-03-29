@@ -9,20 +9,20 @@ import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Modal from "@/components/modal";
 import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
-import { Tag, useDeleteTagMutation } from "@/graphql/generated/schema";
-import { deleteGetTagsWithOffsetQuery } from "@/lib/cache-utils";
+import { User, useDeleteUserMutation } from "@/graphql/generated/schema";
+import { deleteGetUsersWithOffsetQuery } from "@/lib/cache-utils";
 import { gplErrorHandler } from "@/lib/utils";
 
 interface Props {
-  id: Tag["id"];
-  title: Tag["title"];
+  id: User["id"];
+  username: User["name"];
 }
 
-export default function AdminTagDelete({ id, title }: Props) {
+export default function AdminUserDelete({ id, username }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const closeHandler = () => setIsOpen(false);
 
-  const [deleteMutation, { loading }] = useDeleteTagMutation({
+  const [deleteMutation, { loading }] = useDeleteUserMutation({
     errorPolicy: "all",
     onError(error) {
       const tempErrors = gplErrorHandler(error);
@@ -35,7 +35,7 @@ export default function AdminTagDelete({ id, title }: Props) {
     onCompleted() {
       toast.success(
         <>
-          <b className="text-error">{title}</b> deleted successfully.
+          <b className="text-error">{username}</b> deleted successfully.
         </>,
         {
           position: "bottom-right",
@@ -49,8 +49,8 @@ export default function AdminTagDelete({ id, title }: Props) {
     await deleteMutation({
       variables: { id },
       update(cache, { data }) {
-        if (data?.deleteTag) {
-          deleteGetTagsWithOffsetQuery(cache, data?.deleteTag);
+        if (data?.deleteUser) {
+          deleteGetUsersWithOffsetQuery(cache, data?.deleteUser);
         }
       },
     });
@@ -70,11 +70,11 @@ export default function AdminTagDelete({ id, title }: Props) {
         <ModalHeader onClose={closeHandler} className="border-none" />
         <div className="flex flex-col items-center justify-center p-4 !pt-0 md:p-6">
           <h2 className="font-title text-2xl font-medium text-primary selection:bg-primary selection:text-primary-foreground">
-            Delete Tag
+            Delete User
           </h2>
           <p className="pb-4 pt-1.5 text-center text-sm text-neutral/60 selection:bg-secondary selection:text-secondary-foreground md:pb-6 md:text-base">
-            Are you sure want to delete tag{" "}
-            <b className="text-neutral">{title}</b>
+            Are you sure want to delete user{" "}
+            <b className="text-neutral">{username}</b>
           </p>
           <div className="flex items-center">
             <Button

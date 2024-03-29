@@ -52,3 +52,8 @@ mutation ResetPassword(
 mutation VerifyResetPassword($code: String!) {
   verifyResetPassword(code: $code)
 }
+
+# Admin side
+mutation DeleteUser($id: String!) {
+  deleteUser(id: $id)
+}

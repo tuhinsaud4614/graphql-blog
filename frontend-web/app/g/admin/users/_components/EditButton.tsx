@@ -9,18 +9,18 @@ import ToastErrorMessage from "@/components/ToastErrorMessage";
 import Modal from "@/components/modal";
 import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
-import { useUpdateTagMutation } from "@/graphql/generated/schema";
+import { User, useUpdateTagMutation } from "@/graphql/generated/schema";
 import { modifyGetTagWithOffsetQuery } from "@/lib/cache-utils";
 import { gplErrorHandler } from "@/lib/utils";
 
 import AdminTagForm from "./Form";
 
 interface Props {
-  oldTitle: string;
-  tagId: string;
+  username: User["name"];
+  userId: User["id"];
 }
 
-export default function AdminTagEdit({ tagId, oldTitle }: Props) {
+export default function AdminUserEdit({ userId, username }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
@@ -50,7 +50,7 @@ export default function AdminTagEdit({ tagId, oldTitle }: Props) {
 
   const submitHandler = async (title: string) => {
     await updateCategory({
-      variables: { title, id: tagId },
+      variables: { title, id: userId },
       update(cache, { data }) {
         if (!data) {
           return;
@@ -91,7 +91,7 @@ export default function AdminTagEdit({ tagId, oldTitle }: Props) {
           loading={loading}
           submitBtnLabel="Update tag"
           submitHandler={submitHandler}
-          defaultValue={oldTitle}
+          defaultValue={username || ""}
         />
       </Modal>
     </>
