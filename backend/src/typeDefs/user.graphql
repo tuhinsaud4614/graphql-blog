@@ -44,6 +44,7 @@ enum RegisterUserRole {
 }
 
 input RegisterInput {
+  verificationLink: String!
   email: String!
   password: String!
   confirmPassword: String!
@@ -83,6 +84,11 @@ type UserFollowResponse {
   followingCount: Int!
 }
 
+type TokensResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   token(refreshToken: String): String!
   usersWithOffset(limit: Int, page: Int): PaginateUsers!
@@ -102,19 +108,20 @@ type Query {
   userFollow(id: ID!): UserFollowResponse!
   userFollowers(id: ID!): Int!
   userFollowings(id: ID!): Int!
+  userCount: Int!
 }
 
 type Mutation {
   register(data: RegisterInput): ID!
   resendActivation(id: ID!): ID!
   verifyUser(id: ID!, code: String!): ID!
-  login(data: LoginInput): String! @rateLimit(
+  login(data: LoginInput): TokensResponse! @rateLimit(
     window: "1m",
     max: 5,
     message: "Too many calls made by login"
   )
   logout: ID!
-  resetPassword(oldPassword: String!, newPassword: String!): String! @rateLimit(
+  resetPassword(oldPassword: String!, newPassword: String!, verificationLink: String!): String! @rateLimit(
     window: "1m",
     max: 3,
     message: "Too many calls for resetting password"
@@ -125,6 +132,8 @@ type Mutation {
   updateAbout(value: String): String!
   followRequest(toId: ID!): User!
   unFollowRequest(toId: ID!): ID!
+  # Admin side
+  deleteUser(id: String!): ID!
 }
 
 enum FollowingMutationStatus {

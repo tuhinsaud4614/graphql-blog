@@ -40,3 +40,63 @@ export function getTagPosts(prisma: PrismaClient, id: string) {
     })
     .posts();
 }
+
+/**
+ * The function `getTagById` retrieves a tag from the database using its unique identifier.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class. It
+ * is used to interact with the database and perform CRUD operations.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a tag.
+ * @returns the result of the `prisma.tag.findUnique` method, which is a single tag object that matches
+ * the provided `id`.
+ */
+export function getTagById(prisma: PrismaClient, id: string) {
+  return prisma.tag.findUnique({ where: { id } });
+}
+
+/**
+ * The function creates a new tag with the given title using the Prisma client.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database. It provides methods for performing CRUD operations on
+ * the database tables.
+ * @param {string} title - The `title` parameter is a string that represents the title of the tag that
+ * you want to create.
+ * @returns a promise that resolves to the created tag object.
+ */
+export async function createTag(prisma: PrismaClient, title: string) {
+  return prisma.tag.create({
+    data: {
+      title,
+    },
+  });
+}
+
+/**
+ * The function updates the title of a tag in a Prisma database.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database. It provides methods for querying, creating, updating,
+ * and deleting data.
+ * @param {string} id - The `id` parameter is the unique identifier of the tag that you want to update.
+ * @param {string} title - The `title` parameter is a string that represents the new title of the tag
+ * that you want to update.
+ * @returns the result of the `prisma.tag.update` method.
+ */
+export function updateTag(prisma: PrismaClient, id: string, title: string) {
+  return prisma.tag.update({
+    where: { id },
+    data: { title },
+  });
+}
+
+/**
+ * The function deletes a tag from the Prisma database based on its ID.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database. It provides methods for performing CRUD operations on
+ * the database tables.
+ * @param {string} id - The `id` parameter is the unique identifier of the tag that you want to delete.
+ * @returns The deleteTag function is returning the result of the prisma.tag.delete operation.
+ */
+export function deleteTag(prisma: PrismaClient, id: string) {
+  return prisma.tag.delete({
+    where: { id },
+  });
+}

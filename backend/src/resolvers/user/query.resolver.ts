@@ -1,9 +1,12 @@
-import { AuthenticationError } from "@/model";
+import { UserRole } from "@prisma/client";
+
+import { AuthenticationError, ForbiddenError } from "@/model";
 import {
   authorFollowersWithCursorService,
   authorFollowingsWithCursorService,
   suggestAuthorsWithOffsetService,
   tokenService,
+  userCountService,
   userFollowByCountService,
   userFollowService,
   userFollowersCountService,
@@ -126,5 +129,17 @@ export const Query = {
     { prisma }: YogaContext,
   ) {
     return await userFollowByCountService(prisma, id);
+  },
+
+  async userCount(_: unknown, __: unknown, { prisma, user }: YogaContext) {
+    if (user === null) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+
+    if (user.role !== UserRole.ADMIN) {
+      return new ForbiddenError(generateRoleErrorMessage("admin"));
+    }
+
+    return await userCountService(prisma);
   },
 };

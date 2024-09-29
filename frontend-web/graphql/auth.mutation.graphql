@@ -1,9 +1,17 @@
+mutation Login($emailOrMobile: String!, $password: String!) {
+  login(data: { emailOrMobile: $emailOrMobile, password: $password }) {
+    accessToken
+    refreshToken
+  }
+}
+
 mutation Register(
   $name: String
   $email: String!
   $password: String!
   $confirmPassword: String!
   $mobile: String!
+  $verificationLink: String!
 ) {
   register(
     data: {
@@ -12,6 +20,7 @@ mutation Register(
       password: $password
       confirmPassword: $confirmPassword
       mobile: $mobile
+      verificationLink: $verificationLink
     }
   )
 }
@@ -24,18 +33,27 @@ mutation ResendActivationLink($userId: ID!) {
   resendActivation(id: $userId)
 }
 
-mutation Login($emailOrMobile: String!, $password: String!) {
-  login(data: { emailOrMobile: $emailOrMobile, password: $password })
-}
-
 mutation Logout {
   logout
 }
 
-mutation ResetPassword($oldPassword: String!, $newPassword: String!) {
-  resetPassword(oldPassword: $oldPassword, newPassword: $newPassword)
+mutation ResetPassword(
+  $oldPassword: String!
+  $newPassword: String!
+  $verificationLink: String!
+) {
+  resetPassword(
+    oldPassword: $oldPassword
+    newPassword: $newPassword
+    verificationLink: $verificationLink
+  )
 }
 
 mutation VerifyResetPassword($code: String!) {
   verifyResetPassword(code: $code)
+}
+
+# Admin side
+mutation DeleteUser($id: String!) {
+  deleteUser(id: $id)
 }

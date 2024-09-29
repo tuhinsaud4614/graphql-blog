@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 
 import { createPortal } from "react-dom";
@@ -6,17 +8,12 @@ interface Props {
   children: React.ReactNode;
 }
 
-const isBrowser = typeof window !== "undefined";
-
 const Portal = ({ children }: Props) => {
-  if (!isBrowser) {
-    return null;
-  }
+  const [mounted, setMounted] = React.useState(false);
 
-  return createPortal(
-    children,
-    document.getElementById("presentational") as HTMLElement,
-  );
+  React.useEffect(() => setMounted(true), []);
+
+  return mounted ? createPortal(<>{children}</>, document.body) : null;
 };
 
 export default Portal;

@@ -2,8 +2,6 @@ import { createYoga } from "graphql-yoga";
 
 import { useGraphQlJit } from "@envelop/graphql-jit";
 import { useRateLimiter } from "@envelop/rate-limiter";
-import { useResponseCache } from "@envelop/response-cache";
-import { createRedisCache } from "@envelop/response-cache-redis";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -14,6 +12,7 @@ import express, {
   static as expressStatic,
 } from "express";
 import { Server } from "http";
+import morgan from "morgan";
 import path from "path";
 
 import logger from "@/logger";
@@ -53,13 +52,13 @@ async function startServer() {
     },
     plugins: [
       useGraphQlJit(),
-      useResponseCache({
-        session: () => null,
-        cache: createRedisCache({ redis: redisClient }),
-        ttl: 1000 * 60,
-      }),
+      // useResponseCache({
+      //   session: () => null,
+      //   cache: createRedisCache({ redis: redisClient }),
+      //   ttl: 1000 * 60,
+      // }),
       useRateLimiter({
-        identifyFn: (context) => (context as YogaContextType).req.ip,
+        identifyFn: (context) => (context as YogaContextType).req.ip ?? "",
         onRateLimitError({ error }) {
           logger.error(error);
           throw new RateLimitError(error);
@@ -70,6 +69,9 @@ async function startServer() {
 
   const app = express();
 
+  app.use(
+    morgan(":method :url :status :res[content-length] - :response-time ms"),
+  );
   app.use(cors({ origin: config.CLIENT_ENDPOINT, credentials: true }));
   app.use(cookieParser());
   app.use(expressStatic(path.join(process.cwd(), "public")));
@@ -94,7 +96,7 @@ async function startServer() {
     SIGNALS.forEach((signal) => {
       process.on(signal, () => shutdown({ signal, server: httpServer }));
     });
-  } catch (error) {
+  } catch (_) {
     process.exit(1);
   }
 }

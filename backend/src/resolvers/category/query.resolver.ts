@@ -1,6 +1,7 @@
 import {
   categoriesByTextWithOffsetService,
   categoriesWithOffsetService,
+  categoryCountService,
 } from "@/services/category";
 import type {
   CategoriesByTextParams,
@@ -26,6 +27,16 @@ export const Query = {
     ___: unknown,
   ) {
     const result = await categoriesByTextWithOffsetService(prisma, params);
+    return result;
+  },
+
+  async categoryCount(
+    _: unknown,
+    __: unknown,
+    { prisma }: YogaContext,
+    ___: unknown,
+  ) {
+    const result = await categoryCountService(prisma);
     return result;
   },
 };

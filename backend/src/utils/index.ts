@@ -4,7 +4,8 @@ import { randomUUID } from "crypto";
 import fs, { unlink } from "fs";
 import { imageSize } from "image-size";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { random } from "lodash";
+import _omit from "lodash/omit";
+import _random from "lodash/random";
 import ms from "ms";
 import path from "path";
 import { promisify } from "util";
@@ -74,38 +75,36 @@ export function formatError(
     });
   }
 
-  return new GraphQLError(options?.message || "Something went wrong.", {
-    extensions: { code: options?.code || INTERNAL_SERVER_ERROR },
+  return new GraphQLError(options?.message ?? "Something went wrong.", {
+    extensions: { code: options?.code ?? INTERNAL_SERVER_ERROR },
   });
 }
 
 /**
- * The function generates a random string ID of a specified size using either a custom algorithm or a
- * random UUID generator.
+ * The function generates a _random string ID of a specified size using either a custom algorithm or a
+ * _random UUID generator.
  * @param {number} [size] - The `size` parameter is an optional number that specifies the length of the
- * generated ID. If provided and is less than or equal to 256, the function generates a random ID of
- * the specified length using a custom algorithm. Otherwise, it generates a random UUID using the
+ * generated ID. If provided and is less than or equal to 256, the function generates a _random ID of
+ * the specified length using a custom algorithm. Otherwise, it generates a _random UUID using the
  * `randomUUID()` function.
- * @returns a string that is either a random ID generated using the `randomUUID()` function if no
+ * @returns a string that is either a _random ID generated using the `randomUUID()` function if no
  * argument is passed, or a string of the specified length (up to 256 characters) that is generated
- * using a combination of random numbers and letters. The string is generated using the `reduce()`
- * method on an array of numbers generated using the `Array.from()` method and the `random()` function
+ * using a combination of _random numbers and letters. The string is generated using the `reduce()`
+ * method on an array of numbers generated using the `Array.from()` method and the `_random()` function
  */
 export function nanoid(size?: number) {
   if (size && size <= 256) {
-    const arr = Array.from({ length: size }, (_, i) => i * random(0, size));
-    return arr.reduce(
-      (t, e) =>
-        (t +=
-          (e &= 63) < 36
-            ? e.toString(36)
-            : e < 62
-            ? (e - 26).toString(36).toUpperCase()
-            : e > 62
-            ? "-"
-            : "_"),
-      "",
-    );
+    const arr = Array.from({ length: size }, (_, i) => i * _random(0, size));
+
+    // Extract the logic into a separate function for clarity
+    const mapValue = (e: number) => {
+      if (e < 36) return e.toString(36);
+      if (e < 62) return (e - 26).toString(36).toUpperCase();
+      if (e === 62) return "_";
+      return "-";
+    };
+
+    return arr.reduce((t, e) => t + mapValue(e & 63), "");
   }
   return randomUUID();
 }
@@ -227,7 +226,8 @@ export const generateToken = async (
   expires: string,
   settable = false,
 ) => {
-  const token = sign({ ...user }, key, {
+  const omittedUser = _omit(user, ["password"]);
+  const token = sign({ ...omittedUser }, key, {
     expiresIn: expires,
   });
 
@@ -269,13 +269,13 @@ export async function fileUpload(
     name?: string;
   },
 ) {
-  const newDest = dest || path.join(process.cwd(), "files");
+  const newDest = dest ?? path.join(process.cwd(), "files");
   fs.mkdirSync(newDest, { recursive: true });
 
   const newName = name ? name + path.extname(file.name) : file.name;
   const filePath = path.join(newDest, newName);
-
-  await fs.promises.writeFile(filePath, file.stream());
+  const fileArrayBuffer = await file.arrayBuffer();
+  await fs.promises.writeFile(filePath, Buffer.from(fileArrayBuffer));
   return { ...file, name: newName, ext: path.extname(newName), filePath };
 }
 

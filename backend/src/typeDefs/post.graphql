@@ -44,6 +44,11 @@ type ReactionToPostResult {
   mutation: EReactionsMutationStatus!
 }
 
+type PostCount {
+  published:Int!
+  unpublished:Int!
+}
+
 input CreatePostInput {
   title: String!
   image: File!
@@ -78,6 +83,7 @@ type Query {
   postReactionsCount(id: ID!): ReactionsCount!
   postCommentsCount(id: ID!): Int!
   postReactedBy(id: ID!, limit: Int!, after: ID): CursorUserResponse!
+  postCount: PostCount!
 }
 
 type Mutation {

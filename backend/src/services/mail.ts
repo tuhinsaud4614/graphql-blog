@@ -31,12 +31,11 @@ const attachments: Attachment[] = [
 export async function sendVerificationCodeService(
   userId: string,
   email: string,
-  host?: string,
+  verificationLink: string,
+  host = "http://localhost:4000",
 ) {
   const verificationCode = nanoid(6);
-  const href = `${
-    host || "http://localhost:4000"
-  }/account/verify?userId=${userId}&code=${verificationCode}`;
+  const href = `${host}${verificationLink}?userId=${userId}&code=${verificationCode}`;
 
   const html = generateVerificationMail(userId, email, verificationCode, href);
 
@@ -73,12 +72,11 @@ export async function sendResetPasswordVerificationCodeService(
   userId: string,
   email: string,
   password: string,
-  host?: string,
+  verificationLink: string,
+  host = "http://localhost:4000",
 ) {
   const verificationCode = nanoid(6);
-  const href = `${
-    host || "http://localhost:4000"
-  }/account/verify-reset-password?code=${verificationCode}`;
+  const href = `${host}${verificationLink}?code=${verificationCode}`;
 
   const html = generateVerificationMail(userId, email, verificationCode, href);
 

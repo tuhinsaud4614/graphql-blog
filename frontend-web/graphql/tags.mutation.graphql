@@ -1,0 +1,14 @@
+mutation CreateTag($title: String!) {
+  createTag(title: $title) {
+    ...FTag
+  }
+}
+mutation DeleteTag($id: String!) {
+  deleteTag(id: $id)
+}
+
+mutation UpdateTag($id: String!, $title: String!) {
+  updateTag(id: $id, title: $title) {
+    ...FTag
+  }
+}

@@ -15,4 +15,11 @@ type OffsetTagsResponse {
 type Query {
   tagsWithOffset(limit: Int, page: Int): OffsetTagsResponse!
   tagsByTextWithOffset(text: String!, limit: Int, page: Int): OffsetTagsResponse!
+  tagCount: Int!
+}
+
+type Mutation {
+  createTag(title: String!): Tag!
+  updateTag(id: String!, title: String!): Tag!
+  deleteTag(id: String!): ID!
 }

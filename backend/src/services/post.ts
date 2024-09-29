@@ -533,6 +533,16 @@ export async function postCommentsCountService(
   }
 }
 
+/**
+ * The function `postReactedByService` validates the parameters and then fetches post reactions using
+ * Prisma.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient, which is a
+ * database client for Node.js and TypeScript. It allows you to interact with your database using
+ * generated Prisma Client methods.
+ * @param {PostReactedByCursorParams} params - The `params` parameter is an object that contains the
+ * following properties:
+ * @returns the result of the `getPostReactedByWithCursor` function, which is a promise.
+ */
 export async function postReactedByService(
   prisma: PrismaClient,
   params: PostReactedByCursorParams,
@@ -549,5 +559,32 @@ export async function postReactedByService(
   } catch (error: unknown) {
     logger.error(error);
     return new UnknownError("Post reactedBy fetching failed.");
+  }
+}
+
+/**
+ * The `postCountService` function retrieves the count of published and unpublished posts using Prisma
+ * and returns the counts as an object.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database. It provides methods for querying, creating, updating,
+ * and deleting data in the database. In this code snippet, the `prisma` instance is used to perform
+ * two separate count
+ * @returns an object with two properties: "published" and "unpublished". These properties represent
+ * the count of published and unpublished posts, respectively.
+ */
+export async function postCountService(prisma: PrismaClient) {
+  try {
+    const [published, unpublished] = await prisma.$transaction([
+      prisma.post.count({
+        where: { published: { equals: true } },
+      }),
+      prisma.post.count({
+        where: { published: { equals: false } },
+      }),
+    ]);
+    return { published, unpublished };
+  } catch (error: unknown) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("post count"));
   }
 }

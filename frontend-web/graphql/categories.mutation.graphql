@@ -1,0 +1,14 @@
+mutation CreateCategory($title: String!) {
+  createCategory(title: $title) {
+    ...FCategory
+  }
+}
+mutation DeleteCategory($id: String!) {
+  deleteCategory(id: $id)
+}
+
+mutation UpdateCategory($id: String!, $title: String!) {
+  updateCategory(id: $id, title: $title) {
+    ...FCategory
+  }
+}

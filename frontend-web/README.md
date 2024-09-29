@@ -8,15 +8,17 @@ First, run the development server:
 npm run dev
 # or
 yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Learn More
 
@@ -33,11 +35,19 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-codegen packages
+Create Unique Hash Code
 
-```sh
-npm install -E @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo
-```
+`openssl rand -base64 32`
 
-`npx graphql-codegen init`
-`npm run codegen`
+#### Page Information
+
+| Route                                         |            Page Title            |                     Description                     |
+| :-------------------------------------------- | :------------------------------: | :-------------------------------------------------: |
+| `/`                                           |           Landing Page           |           This serves as the landing page           |
+| `/account/login`                              |            Login Page            |            This serves as the login page            |
+| `/account/register`                           |      Register/Sign Up Page       |          This serves as the register page           |
+| `/account/verify?userId=<userId>&code=<code>` |      User Verification Page      |      This serves as the user verification page      |
+| `/account/verify/reset-password?code=<code>`  | Reset Password Verification Page | This serves as the reset password verification page |
+| `/g/user/home`                                |            Home Page             |            This serves as the home page             |
+| `/g/user/settings`                            |        User Settings Page        |        This serves as the user settings page        |
+| `/g/admin/dashboard`                          |          Dashboard Page          |       This serves as the admin dashboard page       |

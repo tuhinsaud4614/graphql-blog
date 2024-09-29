@@ -4,24 +4,10 @@ import logger from "@/logger";
 
 import config from "./config";
 
-class RedisClient {
-  static #instance: Redis;
-
-  private constructor() {}
-
-  public static get instance() {
-    if (this.#instance) {
-      return this.#instance;
-    }
-    this.#instance = new Redis(
-      `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`,
-      { lazyConnect: true },
-    );
-    return this.#instance;
-  }
-}
-
-const redisClient = RedisClient.instance;
+const redisClient = new Redis(
+  `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`,
+  { lazyConnect: true },
+);
 
 redisClient.on("connect", () => {
   logger.info("Redis connected successfully.");

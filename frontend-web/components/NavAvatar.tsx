@@ -1,13 +1,10 @@
+"use client";
+
 import * as React from "react";
 
 import Image, { ImageProps } from "next/image";
 
-import { cn } from "@/utils";
-
-const className = {
-  avatar:
-    "rounded-full overflow-hidden border dark:border-none dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark active:scale-95",
-};
+import { cn } from "@/lib/utils";
 
 interface Props extends ImageProps {
   size: number;
@@ -22,16 +19,20 @@ export default function NavAvatar({
   ...rest
 }: Props) {
   return (
-    <button {...btnProps} className={cn(className.avatar, btnProps?.className)}>
+    <button
+      {...btnProps}
+      className={cn(
+        "overflow-hidden rounded-full border active:scale-95 dark:border-none dark:ring-1 dark:ring-secondary dark:hover:ring-2",
+        btnProps?.className,
+      )}
+    >
       <Image
         {...rest}
         src={src}
         alt={alt}
         width={size}
         height={size}
-        objectFit="cover"
-        layout="responsive"
-        className="rounded-full"
+        className="rounded-full object-cover"
       />
     </button>
   );

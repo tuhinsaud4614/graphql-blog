@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import useIsomorphicLayoutEffect from "./useIsomorphicLayoutEffect";
+import { useIsomorphicLayoutEffect } from "framer-motion";
 
-let previousTime: number | null = null;
+let previousTime: CSSNumberish | null = null;
 
 export default function useSynchronizeAnimation<
   T extends Element = HTMLDivElement,
@@ -38,7 +38,7 @@ export default function useSynchronizeAnimation<
     }
 
     if (myAnimation !== animations[0]) {
-      myAnimation.currentTime = animations[0].currentTime;
+      myAnimation.currentTime = animations[0]?.currentTime || null;
     }
 
     return () => {

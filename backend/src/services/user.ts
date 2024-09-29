@@ -1,4 +1,6 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { GraphQLError } from "graphql";
+
+import { Prisma, PrismaClient, UserRole } from "@prisma/client";
 import { hash, verify } from "argon2";
 import type { Request, Response } from "express";
 import { unlink } from "fs";
@@ -18,6 +20,7 @@ import { getAllPosts } from "@/repositories/post";
 import {
   createOrUpdateAvatar,
   createUser,
+  deleteUser,
   followTo,
   getUserAvatar,
   getUserByEmailOrMobile,
@@ -49,9 +52,12 @@ import config from "@/utils/config";
 import {
   AUTH_FAIL_ERR_MSG,
   FOLLOW_ERR_MSG,
+  FORBIDDEN,
   INVALID_CREDENTIAL,
+  NOT_EXIST,
   UN_AUTH_ERR_MSG,
   generateCreationErrorMessage,
+  generateDeleteErrorMessage,
   generateEntityNotExistErrorMessage,
   generateExistErrorMessage,
   generateFetchErrorMessage,
@@ -181,7 +187,7 @@ export async function userRegistrationService(
   }
 
   try {
-    const { email, password, mobile, name } = params;
+    const { email, password, mobile, name, verificationLink } = params;
     const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
 
     if (isUserExist?.authorStatus === "VERIFIED") {
@@ -206,7 +212,7 @@ export async function userRegistrationService(
       password: hashPassword,
     });
 
-    await sendVerificationCodeService(user.id, email, host);
+    await sendVerificationCodeService(user.id, email, verificationLink, host);
 
     return user.id;
   } catch (error) {
@@ -374,7 +380,7 @@ export async function loginService(
       sameSite: "none", // cross-site cookie
       maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
     });
-    return accessToken;
+    return { accessToken, refreshToken };
   } catch (error) {
     logger.error(error);
     return new UnknownError(AUTH_FAIL_ERR_MSG);
@@ -452,7 +458,7 @@ export async function resetPasswordService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    const { newPassword, oldPassword } = params;
+    const { newPassword, oldPassword, verificationLink } = params;
 
     if (!(await verify(user.password, oldPassword))) {
       return new UserInputError("Invalid credentials");
@@ -464,6 +470,7 @@ export async function resetPasswordService(
       userId,
       user.email,
       hashNewPassword,
+      verificationLink,
       host,
     );
 
@@ -615,7 +622,8 @@ export async function updateNameService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    return await updateUserName(prisma, user.id, params.name);
+    const updatedUser = await updateUserName(prisma, user.id, params.name);
+    return updatedUser.name;
   } catch (error) {
     logger.error(error);
     return new UnknownError("User name update failed.");
@@ -959,6 +967,29 @@ export async function authorFollowingsWithCursorService(
 }
 
 /**
+ * The function `userCountService` retrieves the count of users from a Prisma client and returns it.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class.
+ * Prisma is an open-source database toolkit that provides an Object-Relational Mapping (ORM) for
+ * Node.js and TypeScript. The PrismaClient instance is used to interact with the database and perform
+ * CRUD operations. In this
+ * @returns the count of users in the database.
+ */
+export async function userCountService(
+  prisma: PrismaClient,
+  withAdmin = false,
+) {
+  try {
+    const count = await prisma.user.count(
+      withAdmin ? undefined : { where: { role: { not: UserRole.ADMIN } } },
+    );
+    return count;
+  } catch (error) {
+    logger.error(error);
+    return new UnknownError(generateFetchErrorMessage("user count"));
+  }
+}
+
+/**
  * This function retrieves a user by their ID using Prisma and returns an error if the user does not
  * exist or if there is an unknown error.
  * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that is used to
@@ -974,7 +1005,7 @@ export async function userService(prisma: PrismaClient, id: string) {
   try {
     const user = await getUserById(prisma, id);
     return user ?? new ForbiddenError(generateNotExistErrorMessage("User"));
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(generateFetchErrorMessage("User"));
   }
 }
@@ -1111,7 +1142,7 @@ export async function userFollowByCountService(
 export async function userAvatarService(prisma: PrismaClient, userId: string) {
   try {
     return await getUserAvatar(prisma, userId);
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Avatar", "user"),
     );
@@ -1133,10 +1164,67 @@ export async function userAvatarService(prisma: PrismaClient, userId: string) {
 export async function userPostsService(prisma: PrismaClient, id: string) {
   try {
     return await getAllPosts(prisma, { where: { authorId: id } });
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Avatar", "user"),
     );
+  }
+}
+
+// Admin side
+/**
+ * The userDeletionService function handles the deletion of a user, performing validation, checking for
+ * existence, and role restrictions.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database in your application. It provides methods for querying,
+ * creating, updating, and deleting data from the database. In your `userDeletionService` function, the
+ * `prisma`
+ * @param {IDParams} params - The `params` object in the `userDeletionService` function likely contains
+ * information needed to identify and delete a user. It seems to include at least an `id` property,
+ * which is used to find the user to be deleted. The `IDParams` type is probably a custom type defined
+ * @returns The function `userDeletionService` is returning the ID of the deleted user if the deletion
+ * is successful. If there are any validation errors or if the user does not exist, appropriate error
+ * messages are logged and returned. If the user to be deleted is an admin account, an error message is
+ * logged and returned as well.
+ */
+export async function userDeletionService(
+  prisma: PrismaClient,
+  params: IDParams,
+) {
+  try {
+    await idParamsSchema.validate(params, {
+      abortEarly: false,
+    });
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, { key: "User deletion" });
+  }
+
+  try {
+    const { id } = params;
+    const isExist = await getUserById(prisma, id);
+
+    if (!isExist) {
+      logger.error(generateNotExistErrorMessage("User"));
+      return new GraphQLError(generateNotExistErrorMessage("User"), {
+        extensions: { code: NOT_EXIST },
+      });
+    }
+
+    if (isExist.role === UserRole.ADMIN) {
+      logger.error("Can't delete admin account.");
+      return new GraphQLError(generateDeleteErrorMessage("User"), {
+        extensions: { code: FORBIDDEN },
+      });
+    }
+
+    const user = await deleteUser(prisma, id);
+    return user.id;
+  } catch (error) {
+    logger.error(error);
+    return formatError(error, {
+      message: generateDeleteErrorMessage("User"),
+    });
   }
 }
 
@@ -1155,7 +1243,7 @@ export async function userPostsService(prisma: PrismaClient, id: string) {
 export async function userFollowByService(prisma: PrismaClient, id: string) {
   try {
     return await getUserFollowBy(prisma, id);
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Follow by", "user"),
     );
@@ -1177,7 +1265,7 @@ export async function userFollowByService(prisma: PrismaClient, id: string) {
 export async function userFollowersService(prisma: PrismaClient, id: string) {
   try {
     return await getUserFollowers(prisma, id);
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Followers", "user"),
     );

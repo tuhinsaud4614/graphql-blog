@@ -1,21 +1,9 @@
-import * as React from "react";
+"use client";
 
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 
-import Button from "./Button";
 import Sad from "./svg/Sad";
-
-const className = {
-  root: "flex flex-col rounded-2xl border border-error-content/50",
-  header:
-    "px-4 py-2.5 border-b border-error-content/50 dark:border-error-content/50",
-  title:
-    "text-error dark:text-error-dark text-lg font-medium line-clamp-1 text-ellipsis",
-  items: "list-item flex-col m-0 space-y-2",
-  item: "text-warning dark:text-warning-dark text-sm text-center",
-  footer:
-    "px-4 py-3 flex items-center justify-end space-x-3 border-t border-error-content/50 dark:border-error-content/50",
-};
+import Button from "./ui/Button";
 
 interface Props {
   title: string;
@@ -32,30 +20,68 @@ interface Props {
   };
 }
 
-function Component({ errors, onClose, title, classes, onRetry }: Props) {
+export default function ErrorBox({
+  errors,
+  onClose,
+  title,
+  classes,
+  onRetry,
+}: Props) {
   return (
-    <div className={cn(className.root, classes?.root)}>
-      <header className={cn(className.header, classes?.header)}>
-        <h1 className={cn(className.title, classes?.title)}>{title}</h1>
+    <div
+      className={cn(
+        "flex flex-col rounded-2xl border border-error-content/50",
+        classes?.root,
+      )}
+    >
+      <header
+        className={cn(
+          "border-b border-error-content/50 px-4 py-2.5 dark:border-error-content/50",
+          classes?.header,
+        )}
+      >
+        <h1
+          className={cn(
+            "line-clamp-1 text-ellipsis text-lg font-medium text-error",
+            classes?.title,
+          )}
+        >
+          {title}
+        </h1>
       </header>
       <div className="space-y-3 p-4">
         <div className="flex items-center justify-center">
-          <Sad className="h-auto w-20 text-warning dark:text-warning-dark sm:w-[6.25rem]" />
+          <Sad className="h-auto w-20 text-warning sm:w-[6.25rem]" />
         </div>
         {Array.isArray(errors) ? (
-          <ul className={cn(className.items, classes?.items)}>
+          <ul
+            className={cn("m-0 list-item flex-col space-y-2", classes?.items)}
+          >
             {errors.map((er) => (
-              <li key={er} className={cn(className.item, classes?.item)}>
+              <li
+                key={er}
+                className={cn(
+                  "text-center text-sm text-warning",
+                  classes?.item,
+                )}
+              >
                 {er}
               </li>
             ))}
           </ul>
         ) : (
-          <p className={cn(className.item, classes?.item)}>{errors}</p>
+          <p className={cn("text-center text-sm text-warning", classes?.item)}>
+            {errors}
+          </p>
         )}
       </div>
       {(onClose || onRetry) && (
-        <footer className={cn(className.footer, classes?.footer)}>
+        <footer
+          className={cn(
+            "flex items-center justify-end space-x-3 border-t border-error-content/50 px-4 py-3",
+            classes?.footer,
+          )}
+        >
           {onRetry && (
             <Button
               type="button"
@@ -85,9 +111,3 @@ function Component({ errors, onClose, title, classes, onRetry }: Props) {
     </div>
   );
 }
-
-const ErrorBox = React.memo(
-  Component,
-  (prev, next) => prev.errors === next.errors,
-);
-export default ErrorBox;

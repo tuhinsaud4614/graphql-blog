@@ -11,6 +11,7 @@ import {
   updateAboutService,
   updateNameService,
   uploadAvatarService,
+  userDeletionService,
   userRegistrationService,
   verifyResetPasswordService,
   verifyUserService,
@@ -20,6 +21,7 @@ import {
   FOLLOW_OWN_ERR_MSG,
   UN_AUTH_ERR_MSG,
   UN_FOLLOW_OWN_ERR_MSG,
+  generateRoleErrorMessage,
 } from "@/utils/constants";
 import { EFollowingMutationStatus } from "@/utils/enums";
 import type {
@@ -213,6 +215,25 @@ export const Mutation = {
       followedBy: user,
       mutation: EFollowingMutationStatus.Unfollow,
     });
+    return result;
+  },
+
+  // Admin side
+  async deleteUser(
+    _: unknown,
+    params: IDParams,
+    { prisma, user }: YogaContext,
+    _info: GraphQLResolveInfo,
+  ) {
+    if (user === null) {
+      return new AuthenticationError(UN_AUTH_ERR_MSG);
+    }
+
+    if (user.role !== "ADMIN") {
+      return new AuthenticationError(generateRoleErrorMessage("admin"));
+    }
+
+    const result = await userDeletionService(prisma, params);
     return result;
   },
 };

@@ -1,42 +1,3 @@
-query GetUserWithPost($id: ID!) {
-  user(id: $id) {
-    ...FUser
-    posts {
-      ...GetPostItem
-    }
-    followings {
-      id
-      name
-      email
-      mobile
-      avatar {
-        ...FImage
-      }
-    }
-    followers {
-      id
-      name
-      email
-      mobile
-      avatar {
-        ...FImage
-      }
-    }
-  }
-}
-
-query GetUsersWithOffset($limit: Int, $page: Int) {
-  usersWithOffset(limit: $limit, page: $page) {
-    total
-    data {
-      ...FUser
-    }
-    pageInfo {
-      ...FOffsetPageInfo
-    }
-  }
-}
-
 query RecommendAuthorsWithOffset($limit: Int, $page: Int) {
   recommendAuthorsWithOffset(limit: $limit, page: $page) {
     total
@@ -49,58 +10,19 @@ query RecommendAuthorsWithOffset($limit: Int, $page: Int) {
   }
 }
 
-query GetAuthorFollowersWithCursor($limit: Int!, $after: ID, $authorId: ID) {
-  authorFollowersWithCursor(limit: $limit, after: $after, authorId: $authorId) {
+query GetUsersWithOffset($limit: Int, $page: Int) {
+  usersWithOffset(limit: $limit, page: $page) {
     total
+    data {
+      ...FUser
+      updatedAt
+    }
     pageInfo {
-      ...FCursorPageInfo
-    }
-    edges {
-      cursor
-      node {
-        ...FUser
-      }
+      ...FOffsetPageInfo
     }
   }
 }
 
-query GetAuthorFollowingsWithCursor($limit: Int!, $after: ID, $authorId: ID) {
-  authorFollowingsWithCursor(
-    limit: $limit
-    after: $after
-    authorId: $authorId
-  ) {
-    total
-    pageInfo {
-      ...FCursorPageInfo
-    }
-    edges {
-      cursor
-      node {
-        ...FUser
-      }
-    }
-  }
-}
-
-query UserMentionTooltipStats($id: ID!) {
-  userResult(id: $id) {
-    followerCount
-    hasFollow
-  }
-}
-
-query GetUserFollow($id: ID!) {
-  userFollow(id: $id) {
-    followerCount
-    followingCount
-  }
-}
-
-query GetUserFollowers($id: ID!) {
-  userFollowers(id: $id)
-}
-
-query GetUserFollowings($id: ID!) {
-  userFollowings(id: $id)
+query GetUserCount {
+  userCount
 }

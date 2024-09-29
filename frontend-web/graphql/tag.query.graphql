@@ -10,14 +10,6 @@ query GetTagsWithOffset($limit: Int, $page: Int) {
   }
 }
 
-query GetTagsByTextWithOffset($text: String!, $limit: Int, $page: Int) {
-  tagsByTextWithOffset(text: $text, limit: $limit, page: $page) {
-    total
-    results {
-      ...TagItem
-    }
-    pageInfo {
-      ...FOffsetPageInfo
-    }
-  }
+query GetTagCount {
+  tagCount
 }

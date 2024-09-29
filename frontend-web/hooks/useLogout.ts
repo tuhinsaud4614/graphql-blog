@@ -1,23 +1,35 @@
-import { setAuthUser } from "@/features";
+import * as React from "react";
+
+import { signOut } from "next-auth/react";
+
 import { useLogoutMutation } from "@/graphql/generated/schema";
-import { useAppDispatch } from "@/store";
-import { isDev, setAccessToken } from "@/utils";
+import { ROUTES } from "@/lib/constants";
+import { isDev } from "@/lib/isType";
 
 export default function useLogout() {
-  const rdxDispatch = useAppDispatch();
-  const [logout, { loading, error, reset }] = useLogoutMutation({
+  const [loading, setLoading] = React.useState(false);
+  const [logout, { error, reset }] = useLogoutMutation({
     errorPolicy: "all",
   });
 
-  async function logoutHandler() {
+  const clickHandler = async () => {
     try {
+      setLoading(true);
+      await signOut({ callbackUrl: ROUTES.landing, redirect: true });
       await logout();
-      setAccessToken(null);
-      rdxDispatch(setAuthUser({ user: null, token: null }));
     } catch (error) {
-      isDev() && console.log("Logout error", error);
+      isDev() && console.error("Logout errors: ", error);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  return { logoutHandler, loading, error, reset };
+  const resetHandler = () => reset();
+
+  return {
+    logoutHandler: clickHandler,
+    reset: resetHandler,
+    loading,
+    error,
+  } as const;
 }

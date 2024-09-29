@@ -1,12 +1,8 @@
+"use client";
+
 import * as React from "react";
 
-import { cn } from "@/utils";
-
-const className = {
-  notFoundRoot: "py-[1.875rem] flex flex-col items-center",
-  notFoundTitle:
-    "text-neutral dark:text-neutral-dark text-sm font-normal text-center mb-6",
-};
+import { cn } from "@/lib/utils";
 
 interface Props {
   children: React.ReactNode;
@@ -15,8 +11,17 @@ interface Props {
 
 export default function NoResultFound({ children, classes }: Props) {
   return (
-    <div className={cn(className.notFoundRoot, classes?.root)}>
-      <p className={cn(className.notFoundTitle, classes?.title)}>{children}</p>
+    <div
+      className={cn("flex flex-col items-center py-[1.875rem]", classes?.root)}
+    >
+      <p
+        className={cn(
+          "mb-6 text-center text-sm font-normal text-neutral",
+          classes?.title,
+        )}
+      >
+        {children}
+      </p>
     </div>
   );
 }

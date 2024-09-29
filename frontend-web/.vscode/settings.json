@@ -1,38 +1,14 @@
 {
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.addMissingImports": true,
-    "source.fixAll.eslint": true,
-    "source.fixAll.tslint": true,
-    "source.organizeImports": true
-  },
   "tailwindCSS.experimental.classRegex": [
-    [
-      "cva(?:<[^>]*>)?(([^)]*))",
-      "[\"'`]([^\"'`]*).*?[\"'`]",
-      "(?:twMerge|twJoin)\\(([^\\);]*)[\\);]"
-    ]
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "eslint.validate": ["typescript", "javascript"],
-  "cSpell.words": [
-    "atrule",
-    "codegen",
-    "eventsource",
-    "extralight",
-    "Formik",
-    "immer",
-    "Loadbar",
-    "prismjs",
-    "reduxjs",
-    "semibold",
-    "Swiper",
-    "tailwindcss",
-    "toastify",
-    "unhang",
-    "unoptimized",
-    "webp"
-  ],
-  "docwriter.style": "Auto-detect",
-  "docwriter.progress.trackClasses": true,
-  "docwriter.progress.trackTypes": false
+  "editor.formatOnPaste": false,
+  // "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit",
+    "source.addMissingImports": "explicit"
+  },
+  "cSpell.words": ["editorjs", "lucide", "Numberish", "shadcn", "tailwindcss"]
 }

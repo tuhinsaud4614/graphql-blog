@@ -1,4 +1,4 @@
-import { has } from "lodash";
+import _has from "lodash/has";
 
 import {
   IExtensionsWithAuthorization,
@@ -25,13 +25,13 @@ export function isVowel(value: string) {
 }
 
 /**
- * This function checks if an input object has all the specified keys.
+ * This function checks if an input object _has all the specified keys.
  * @param {unknown} data - The data parameter is of type unknown, which means it can be any type of
  * value. However, the function checks if it is an object before proceeding with further checks.
  * @param {(keyof T)[]} keys - `keys` is an array of property names (keys) that are expected to exist
- * in the `data` object. The function checks if `data` is an object and if it has all the specified
+ * in the `data` object. The function checks if `data` is an object and if it _has all the specified
  * keys. If it does, the function returns `true` and `data` is typecast
- * @returns a boolean value. It returns `true` if the `data` parameter is an object that has all the
+ * @returns a boolean value. It returns `true` if the `data` parameter is an object that _has all the
  * keys specified in the `keys` parameter, and `false` otherwise.
  */
 export function isObjectWithKeys<T extends object>(
@@ -41,14 +41,14 @@ export function isObjectWithKeys<T extends object>(
   if (typeof data !== "object" || data === null) {
     return false;
   }
-  return keys.every((key) => has(data, key));
+  return keys.every((key) => _has(data, key));
 }
 
 /**
- * This function checks if an input object has the keys "code" and "hash" and returns a
+ * This function checks if an input object _has the keys "code" and "hash" and returns a
  * boolean value.
  * @param {unknown} data - The `data` parameter is of type `unknown`, which means it can be any type of
- * value. The purpose of this function is to check if the `data` object has the properties `code` and
+ * value. The purpose of this function is to check if the `data` object _has the properties `code` and
  * `hash`, and if it does, it returns `true` indicating that the `data
  * @returns A type guard function is being returned. It takes an argument of type `unknown`
  * and returns a boolean value indicating whether the argument is of type `IVerifyResetPassword`.
@@ -60,12 +60,12 @@ export function isVerifyResetPassword(
 }
 
 /**
- * This function checks if an object has specific keys and returns a boolean value.
+ * This function checks if an object _has specific keys and returns a boolean value.
  * @param {unknown} extensions - The `extensions` parameter is of type `unknown`, which means it can be
- * any type of value. The purpose of this function is to check if the `extensions` object has a
+ * any type of value. The purpose of this function is to check if the `extensions` object _has a
  * specific structure that matches the `IExtensionsWithAuthorization` interface.
  * @returns The function `isExtensionsWithAuthorization` is returning a boolean value. It returns
- * `true` if the `extensions` parameter is an object that has a `headers` property which is also an
+ * `true` if the `extensions` parameter is an object that _has a `headers` property which is also an
  * object with a `Authorization` property. Otherwise, it returns `false`.
  */
 export function isExtensionsWithAuthorization(
@@ -79,18 +79,3 @@ export function isExtensionsWithAuthorization(
     )
   );
 }
-
-// export function isAuthenticateUser(user: UserWithAvatar | null) {
-//   if (user === null) {
-//     throw new AuthenticationError();
-//   }
-//   if (user.role === "ADMIN") {
-//     return user;
-//   }
-
-//   if (user.authorStatus !== "VERIFIED") {
-//     throw new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
-//   }
-
-//   return { ...user, role: "AUTHOR", authorStatus: "VERIFIED" } as const;
-// }

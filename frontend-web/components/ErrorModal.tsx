@@ -1,16 +1,13 @@
-import * as React from "react";
-
-import Button from "./Button";
-import Modal from "./Modal";
-import ModalHeader from "./ModalHeader";
+import Modal from "./modal";
+import ModalHeader from "./modal/Header";
+import Button from "./ui/Button";
 
 const className = {
   title:
-    "text-error dark:text-error-dark text-lg font-medium flex-1 line-clamp-1 text-ellipsis pr-2 text-center",
+    "text-error selection:bg-error selection:text-base-100 text-lg font-medium flex-1 line-clamp-1 text-ellipsis pr-2 text-center",
   items: "list-item flex-col m-0 space-y-2",
-  item: "text-warning dark:text-warning-dark text-sm",
-  footer:
-    "px-4 py-3 flex items-center justify-end border-t dark:border-base-dark-300",
+  item: "text-warning text-sm selection:bg-warning selection:text-base-100",
+  footer: "px-4 py-3 flex items-center justify-end border-t",
 };
 
 interface Props {
@@ -19,7 +16,7 @@ interface Props {
   onClose(): void;
 }
 
-function Component({ errors, onClose, title }: Props) {
+export default function ErrorModal({ errors, onClose, title }: Props) {
   return (
     <Modal open={!!errors} locked>
       <ModalHeader>
@@ -53,9 +50,3 @@ function Component({ errors, onClose, title }: Props) {
     </Modal>
   );
 }
-
-const ErrorModal = React.memo(
-  Component,
-  (prev, next) => prev.errors === next.errors,
-);
-export default ErrorModal;

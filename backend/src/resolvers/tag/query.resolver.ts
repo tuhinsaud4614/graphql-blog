@@ -1,4 +1,5 @@
 import {
+  tagCountService,
   tagsByTextWithOffsetService,
   tagsWithOffsetService,
 } from "@/services/tag";
@@ -25,5 +26,15 @@ export const Query = {
     ___: unknown,
   ) {
     return await tagsByTextWithOffsetService(prisma, params);
+  },
+
+  async tagCount(
+    _: unknown,
+    __: unknown,
+    { prisma }: YogaContext,
+    ___: unknown,
+  ) {
+    const result = await tagCountService(prisma);
+    return result;
   },
 };

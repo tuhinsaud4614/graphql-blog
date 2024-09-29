@@ -1,12 +1,14 @@
+"use client";
+
 import * as React from "react";
 
-import { FaUserAlt } from "react-icons/fa";
+import { User2 } from "lucide-react";
 
-import { cn } from "@/utils";
-import type { PolymorphicPropsWithRef, PolymorphicRef } from "@/utils/types";
+import { PolymorphicPropsWithRef, PolymorphicRef } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const className = {
-  root: "shrink-0 outline-none flex items-center justify-center border rounded-full text-secondary dark:text-secondary-dark bg-transparent dark:border-none dark:ring-2 dark:ring-secondary-content",
+  root: "shrink-0 outline-none flex items-center justify-center border rounded-full text-secondary bg-transparent dark:border-none dark:ring-2 dark:ring-secondary-content",
 };
 
 type Props<T extends React.ElementType> = PolymorphicPropsWithRef<
@@ -16,23 +18,24 @@ type Props<T extends React.ElementType> = PolymorphicPropsWithRef<
   }
 >;
 
-const Comp: (<T extends React.ElementType = "div">(
+type CompReturnType = (<T extends React.ElementType = "div">(
   props: Props<T>,
-) => React.ReactElement | null) & { displayName?: string } = React.forwardRef(
-  <T extends React.ElementType = "div">(
-    { className: cls, as, size = 20, ...rest }: Props<T>,
-    ref?: PolymorphicRef<T>,
-  ) => {
-    const Component = as || "div";
+) => React.ReactNode) & { displayName?: string };
 
-    return (
-      <Component {...rest} ref={ref} className={cn(className.root, cls)}>
-        <FaUserAlt size={size} />
-      </Component>
-    );
-  },
-);
+const Avatar: CompReturnType = <T extends React.ElementType = "div">(
+  { className: cls, as, size = 20, ...rest }: Props<T>,
+  ref?: PolymorphicRef<T>,
+) => {
+  const Component = as || "div";
 
-Comp.displayName = "DemoAvatar";
-const DemoAvatar = Comp;
+  return (
+    <Component {...rest} ref={ref} className={cn(className.root, cls)}>
+      <User2 size={size} />
+    </Component>
+  );
+};
+
+const DemoAvatar = React.forwardRef(Avatar);
+
+DemoAvatar.displayName = "DemoAvatar";
 export default DemoAvatar;

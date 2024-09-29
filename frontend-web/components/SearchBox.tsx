@@ -1,15 +1,18 @@
+"use client";
+
 import * as React from "react";
 
-import { BiSearch } from "react-icons/bi";
+import { Search } from "lucide-react";
 
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 
 const className = {
   root: "relative",
-  container: "flex items-center rounded-full border dark:border-base-dark-300",
-  icon: "p-2 flex items-center justify-center text-neutral dark:text-base-dark-300",
+  container:
+    "flex items-center rounded-full border text-neutral-focus focus-within:text-neutral border-neutral-focus focus-within:border-neutral",
+  icon: "p-2 flex items-center justify-center",
   input:
-    "bg-transparent border-none outline-none mr-5 text-sm text-neutral dark:text-neutral-dark w-full",
+    "bg-transparent border-none outline-none mr-5 text-sm text-neutral w-full",
 };
 
 interface Props extends React.HTMLAttributes<HTMLInputElement> {
@@ -31,7 +34,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>(
           ref={rootRef}
         >
           <span className={cn(className.icon, className.icon)}>
-            <BiSearch size={24} />
+            <Search size={24} />
           </span>
           <input
             {...rest}

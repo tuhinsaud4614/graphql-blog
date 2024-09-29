@@ -1,17 +1,11 @@
+"use client";
+
 import * as React from "react";
 
-import { MotionProps, Variants, motion } from "framer-motion";
+import { MotionProps, motion } from "framer-motion";
 
-import { cn } from "@/utils";
-
-const backdropVariants: Variants = {
-  start: {
-    opacity: 0,
-  },
-  end: {
-    opacity: 1,
-  },
-};
+import { cn } from "@/lib/utils";
+import { backdropVariants } from "@/lib/variants/framer-variants";
 
 type Props = React.ComponentPropsWithoutRef<"div"> & MotionProps;
 

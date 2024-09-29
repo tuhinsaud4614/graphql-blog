@@ -15,7 +15,12 @@ import type { CursorParams, RegisterInput } from "@/utils/types";
  */
 export function createUser(
   prisma: PrismaClient,
-  { email, mobile, password, name }: Omit<RegisterInput, "confirmPassword">,
+  {
+    email,
+    mobile,
+    password,
+    name,
+  }: Omit<RegisterInput, "confirmPassword" | "verificationLink">,
 ) {
   return prisma.user.create({
     data: {
@@ -175,6 +180,23 @@ export function unfollowTo(prisma: PrismaClient, toId: string, ownId: string) {
   return prisma.user.update({
     where: { id: toId },
     data: { followers: { disconnect: { id: ownId } } },
+  });
+}
+
+/**
+ * This TypeScript function deletes a user from a Prisma database using the provided user ID.
+ * @param {PrismaClient} prisma - The `prisma` parameter is an instance of the PrismaClient class,
+ * which is used to interact with the database. It allows you to perform various database operations
+ * such as querying, creating, updating, and deleting records.
+ * @param {string} id - The `id` parameter in the `deleteUser` function is a string that represents the
+ * unique identifier of the user that you want to delete from the database.
+ * @returns The `deleteUser` function is returning a call to the `prisma.user.delete` method with the
+ * specified `id` as the parameter for the `where` condition. This function is used to delete a user
+ * from the database using Prisma Client.
+ */
+export function deleteUser(prisma: PrismaClient, id: string) {
+  return prisma.user.delete({
+    where: { id },
   });
 }
 
