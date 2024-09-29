@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Raleway } from "next/font/google";
+import { Abril_Fatface, Raleway } from "next/font/google";
 import localFont from "next/font/local";
+
 
 import { Toaster } from "sonner";
 
@@ -15,6 +16,13 @@ const title = Raleway({
   display: "swap",
   variable: "--font-title",
   subsets: ["latin"],
+});
+
+const postTitle = Abril_Fatface({
+  display: "swap",
+  variable: "--font-post-title",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const body = localFont({
@@ -43,13 +51,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
       lang="en"
-      className={cn(body.variable, title.variable)}
+      className={cn(body.variable, title.variable, postTitle.variable)}
       suppressHydrationWarning={isDev()}
     >
       <head>
@@ -59,6 +67,7 @@ export default function RootLayout({
         className="bg-base-100 font-body"
         suppressHydrationWarning={isDev()}
       >
+        {/* <NextTopLoader /> */}
         <Providers>{children}</Providers>
         <RouteChangeProgress />
         <Toaster richColors />

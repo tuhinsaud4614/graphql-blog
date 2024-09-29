@@ -25,5 +25,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/g/:path*", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/p/:path*", "/(api|trpc)(.*)"],
 };

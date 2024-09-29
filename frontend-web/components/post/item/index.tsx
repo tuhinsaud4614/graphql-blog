@@ -68,7 +68,7 @@ export default function PostItem({ classes, post }: Props) {
           classes={{ root: "dark:ml-0.5" }}
           text={userName || "Anonymous"}
         />
-        <Link href={ROUTES.post(post.id)} passHref>
+        <Link href={ROUTES.user.post(post.id)} passHref>
           <a
             aria-label={post.title}
             className={cn(className.title, classes?.title)}
@@ -76,7 +76,7 @@ export default function PostItem({ classes, post }: Props) {
             {post.title}
           </a>
         </Link>
-        <Link href={ROUTES.post(post.id)} passHref>
+        <Link href={ROUTES.user.post(post.id)} passHref>
           <a
             aria-label={post.title}
             className={cn(className.body, classes?.body)}

@@ -20,4 +20,172 @@
   .scrollbar::-webkit-scrollbar-thumb {
     @apply rounded-md bg-scrollbar dark:bg-scrollbar-dark;
   }
+
+  .post-editor .image-tool__caption {
+    @apply mx-auto w-[15.625rem] p-0 text-center text-base shadow-none border-0 font-body;
+  }
+
+  .post-editor .image-tool__caption::before {
+    @apply text-center left-1/2 -translate-x-1/2 w-fit;
+  }
+
+  .post-editor .image-tool.image-tool--uploading .cdx-button {
+    @apply bg-muted font-body text-foreground border-border dark:border-muted-foreground;
+  }
+
+  .post-editor
+    .ce-block:first-child
+    .ce-paragraph[data-placeholder-active]:empty::before,
+  .post-editor
+    .ce-block:first-child:only-of-type
+    .ce-paragraph[data-placeholder-active][data-empty="true"]::before {
+    content: var(--title-placeholder);
+  }
+
+  .post-editor .ce-block:first-child {
+    @apply font-post-title text-[2.125rem] leading-tight md:text-[2.625rem] capitalize;
+  }
+
+  .post-editor .editorjs-codeCup_input {
+    @apply text-xs bg-muted text-foreground;
+  }
+
+  .post-editor .editorjs-codeCup_inputButton {
+    @apply text-primary hover:bg-muted;
+  }
+
+  .post-editor .ce-block__content {
+    @apply rounded-lg;
+  }
+  .post-editor .ce-block__content a {
+    @apply underline hover:text-primary-focus decoration-primary;
+  }
+
+  .post-editor .editorjs-codeCup_Wrapper {
+    @apply dark:bg-muted rounded-lg border-muted;
+  }
+
+  .post-editor .codecup__textarea.codecup__flatten {
+    @apply bg-muted dark:bg-muted-foreground dark:caret-neutral rounded-r-md dark:text-transparent;
+  }
+
+  .post-editor .editorjs-codeCup_Wrapper .editorjs-codeCup_LangDisplay {
+    @apply bg-muted-foreground text-muted dark:bg-muted dark:text-muted-foreground z-10 font-body;
+  }
+
+  .post-editor .codecup.codecup--has-line-numbers::before {
+    @apply bg-muted-foreground dark:bg-muted dark:caret-neutral dark:border-muted rounded-l-md;
+  }
+
+  .post-editor .codecup__lines .codecup__lines__line {
+    @apply text-muted dark:text-muted-foreground;
+  }
+
+  .post-editor .cdx-marker {
+    @apply bg-warning text-warning-foreground;
+  }
+
+  .post-editor .ce-toolbox .ce-popover__container,
+  .post-editor .ce-settings .ce-popover__container,
+  .post-editor .ce-inline-toolbar .ce-popover__container {
+    @apply bg-popover text-popover-foreground shadow-mui border-border;
+  }
+  .post-editor .ce-toolbox .ce-popover__container .ce-popover-item,
+  .post-editor .ce-settings .ce-popover__container .ce-popover-item,
+  .post-editor
+    .ce-inline-toolbar
+    .ce-popover__container
+    .ce-popover-item-html
+    .ce-inline-tool,
+  .post-editor .ce-inline-toolbar .ce-popover__container .ce-popover-item {
+    @apply text-foreground hover:bg-muted;
+  }
+
+  .post-editor
+    .ce-settings
+    .ce-popover__container
+    .ce-popover-item.ce-popover-item--confirmation {
+    @apply bg-error hover:bg-error-focus;
+  }
+
+  .post-editor .tc-toolbox .tc-toolbox__toggler {
+    @apply text-foreground hover:bg-muted rounded-lg;
+  }
+
+  .post-editor .tc-wrap .tc-add-row,
+  .post-editor .tc-wrap .tc-add-column,
+  .post-editor .tc-wrap .tc-add-row::before {
+    @apply hover:bg-muted;
+  }
+  .post-editor .tc-wrap .tc-popover.tc-popover--opened {
+    @apply bg-popover text-popover-foreground shadow-mui border-border font-body;
+  }
+  .post-editor .tc-wrap .tc-popover.tc-popover--opened .tc-popover__item {
+    @apply hover:bg-muted;
+  }
+
+  .post-editor .tc-wrap {
+    @apply font-body text-foreground;
+  }
+
+  .post-editor
+    .tc-wrap
+    .tc-popover.tc-popover--opened
+    .tc-popover__item
+    .tc-popover__item-icon {
+    @apply bg-muted-foreground text-muted;
+  }
+
+  .post-editor
+    .tc-wrap
+    .tc-popover.tc-popover--opened
+    .tc-popover__item.tc-popover__item--confirm {
+    @apply bg-error hover:bg-error-focus;
+  }
+
+  .post-editor
+    .tc-wrap
+    .tc-popover.tc-popover--opened
+    .tc-popover__item.tc-popover__item--confirm .tc-popover__item-icon {
+    @apply text-error bg-muted;
+  }
+
+  .post-editor
+    .ce-inline-toolbar
+    .ce-popover__container
+    .ce-popover-item-separator__line {
+    @apply bg-popover-foreground;
+  }
+
+  .post-editor .tc-table .tc-cell.tc-cell--selected,
+  .post-editor .tc-table .tc-cell.tc-cell--selected::after,
+  .post-editor .tc-table .tc-row.tc-row--selected,
+  .post-editor .tc-table .tc-row.tc-row--selected::after {
+    @apply bg-muted;
+  }
+
+  .post-editor
+    .ce-toolbox
+    .ce-popover__container
+    .cdx-search-field.ce-popover__search,
+  .post-editor
+    .ce-settings
+    .ce-popover__container
+    .cdx-search-field.ce-popover__search,
+  .post-editor
+    .ce-inline-toolbar
+    .ce-popover__container
+    .ce-popover-item-html
+    .ce-inline-tool-input,
+  .post-editor
+    .ce-inline-toolbar
+    .ce-popover__container
+    .cdx-search-field.ce-popover__search {
+    @apply bg-muted text-foreground;
+  }
+
+  .post-editor .ce-toolbar__plus,
+  .post-editor .ce-toolbar__settings-btn {
+    @apply text-muted-foreground hover:bg-muted;
+  }
 }

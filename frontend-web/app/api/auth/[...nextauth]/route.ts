@@ -43,7 +43,7 @@ export const authOptions: AuthOptions = {
           }
           return null;
         } catch (error) {
-          return Promise.reject(error);
+          return Promise.reject(error as Error);
         }
       },
     }),

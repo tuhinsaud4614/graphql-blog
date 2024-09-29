@@ -12,21 +12,26 @@ import {
   selectURI,
   serializeFetchParameter,
 } from "@apollo/client";
-import { type UploadLinkOptions } from "apollo-upload-client/public/createUploadLink";
-import { type ExtractableFile, extractFiles } from "extract-files";
+import apolloCreateUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import extractFiles from "extract-files/extractFiles.mjs";
+import { ExtractableFile } from "extract-files/isExtractableFile.mjs";
 import { Kind, OperationTypeNode } from "graphql";
+
+type UploadLinkOptions = NonNullable<
+  Parameters<typeof apolloCreateUploadLink>[0]
+>;
 
 interface ReactNativeFileOptions {
   uri: string;
-  type?: string | undefined;
-  name?: string | undefined;
+  type?: string;
+  name?: string;
 }
 
 class ReactNativeFile {
   // @ts-ignore
   uri: string;
-  type?: string | undefined;
-  name?: string | undefined;
+  type?: string;
+  name?: string;
 
   // @ts-ignore
   constructor(options: ReactNativeFileOptions);
@@ -45,11 +50,11 @@ function formDataAppendFile(
   fieldName: string,
   file: ExtractableFile,
 ) {
-  "name" in file
-    ? // @ts-ignore
-      formData.append(fieldName, file, file.name)
-    : // @ts-ignore
-      formData.append(fieldName, file);
+  if ("name" in file) {
+    formData.append(fieldName, file, file.name);
+  } else {
+    formData.append(fieldName, file);
+  }
 }
 
 export default function createUploadLink({
@@ -97,7 +102,7 @@ export default function createUploadLink({
       contextConfig,
     );
 
-    const { clone, files } = extractFiles(body, "", customIsExtractableFile);
+    const { clone, files } = extractFiles(body, customIsExtractableFile, "");
 
     let uri = selectURI(operation, fetchUri);
 
@@ -121,7 +126,7 @@ export default function createUploadLink({
       form.append("map", JSON.stringify(map));
 
       i = 0;
-      files.forEach((_paths, file) => {
+      files.forEach((_, file) => {
         customFormDataAppendFile(form, String(++i), file);
       });
 
@@ -154,23 +159,25 @@ export default function createUploadLink({
 
     if (typeof controller !== "boolean") {
       if (options.signal)
-        // Respect the user configured abort controller signal.
-        options.signal.aborted
-          ? // Signal already aborted, so immediately abort.
-            controller.abort()
-          : // Signal not already aborted, so setup a listener to abort when it
-            // does.
-            options.signal.addEventListener(
-              "abort",
-              () => {
-                controller.abort();
-              },
-              {
-                // Prevent a memory leak if the user configured abort controller
-                // is long lasting, or controls multiple things.
-                once: true,
-              },
-            );
+        if (options.signal.aborted) {
+          // Respect the user configured abort controller signal.
+
+          // Signal already aborted, so immediately abort.
+          controller.abort();
+        } else {
+          // Signal not already aborted, so setup a listener to abort when it does.
+          options.signal.addEventListener(
+            "abort",
+            () => {
+              controller.abort();
+            },
+            {
+              // Prevent a memory leak if the user configured abort controller
+              // is long lasting, or controls multiple things.
+              once: true,
+            },
+          );
+        }
 
       options.signal = controller.signal;
     }
@@ -192,7 +199,7 @@ export default function createUploadLink({
           return response;
         })
         .then(parseAndCheckHttpResponse(operation))
-        .then((result) => {
+        .then((result: Parameters<typeof observer.next>[0]) => {
           observer.next(result);
           observer.complete();
         })
@@ -204,7 +211,7 @@ export default function createUploadLink({
           if (!cleaningUp) {
             // For errors such as an invalid fetch URI there will be no GraphQL
             // result with errors or data to forward.
-            if (error.result && error.result.errors && error.result.data)
+            if (error.result?.errors && error.result.data)
               observer.next(error.result);
 
             observer.error(error);

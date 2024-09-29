@@ -8,6 +8,6 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function ProtectedUserLayout({ children }: Props) {
+export default function ProtectedUserLayout({ children }: Readonly<Props>) {
   return <UserLayout>{children}</UserLayout>;
 }

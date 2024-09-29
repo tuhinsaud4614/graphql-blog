@@ -9,7 +9,7 @@ interface Props {
   direction?: "up" | "down";
 }
 
-export default function Counter({ value, direction = "up" }: Props) {
+export default function Counter({ value, direction = "up" }: Readonly<Props>) {
   const ref = React.useRef<HTMLSpanElement>(null);
   const motionValue = useMotionValue(direction === "down" ? value : 0);
   const springValue = useSpring(motionValue, {
@@ -30,7 +30,7 @@ export default function Counter({ value, direction = "up" }: Props) {
       springValue.on("change", (latest) => {
         if (ref.current) {
           ref.current.textContent = Intl.NumberFormat("en-US").format(
-            latest.toFixed(0),
+            Number(latest.toFixed(0)),
           );
         }
       }),

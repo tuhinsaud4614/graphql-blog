@@ -32,8 +32,8 @@ export default function VerifyAccountContent() {
     errorPolicy: "all",
     fetchPolicy: "network-only",
   });
-  const code = searchParams.get("code");
-  const userId = searchParams.get("userId");
+  const code = searchParams?.get("code");
+  const userId = searchParams?.get("userId");
 
   React.useEffect(() => {
     let timeout: number = 0;
@@ -65,10 +65,10 @@ export default function VerifyAccountContent() {
 
   const errors = gplErrorHandler(error);
 
-  if (_isEmpty(searchParams.size)) {
+  if (_isEmpty(searchParams?.size)) {
     return (
       <div className={className.container}>
-        <Loader className="h-48 w-48" />
+        <Loader className="size-48" />
       </div>
     );
   }
@@ -118,7 +118,7 @@ export default function VerifyAccountContent() {
   return (
     <div className={className.container}>
       <h3 className={className.text}>Verifying account</h3>
-      <Loader className="h-48 w-48" />
+      <Loader className="size-48" />
     </div>
   );
 }

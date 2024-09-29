@@ -11,7 +11,7 @@ export default function Sidebar() {
   const ignorePaths: string[] = [];
   const pathname = usePathname();
 
-  if (ignorePaths.includes(pathname)) {
+  if (ignorePaths.includes(pathname ?? "")) {
     return null;
   }
   return (

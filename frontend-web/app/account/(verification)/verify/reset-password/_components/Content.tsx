@@ -25,7 +25,7 @@ export default function Content() {
       fetchPolicy: "network-only",
     });
 
-  const code = searchParams.get("code");
+  const code = searchParams?.get("code");
 
   React.useEffect(() => {
     let timeout: number = 0;
@@ -59,10 +59,10 @@ export default function Content() {
 
   const errors = gplErrorHandler(error);
 
-  if (_isEmpty(searchParams.size)) {
+  if (_isEmpty(searchParams?.size)) {
     return (
       <div className="flex min-h-[40vh] flex-col items-center justify-center">
-        <Loader className="h-48 w-48" />
+        <Loader className="size-48" />
       </div>
     );
   }
@@ -110,7 +110,7 @@ export default function Content() {
       <h3 className="text-lg font-medium text-warning">
         Verifying Reset Password
       </h3>
-      <Loader className="h-48 w-48" />
+      <Loader className="size-48" />
     </div>
   );
 }

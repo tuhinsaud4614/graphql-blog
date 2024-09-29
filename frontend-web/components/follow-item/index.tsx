@@ -35,7 +35,11 @@ interface Props {
   followed?: boolean;
 }
 
-export default function FollowItem({ classes, user, followed = false }: Props) {
+export default function FollowItem({
+  classes,
+  user,
+  followed = false,
+}: Readonly<Props>) {
   const [isFollowed, setFollowed] = React.useState(followed);
 
   const userName = getUserName(user);
@@ -57,7 +61,7 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
             alt={userName || ""}
             width={32}
             height={32}
-            className="h-[inherit] w-[inherit] object-cover"
+            className="size-[inherit] object-cover"
           />
         </Link>
       ) : (
@@ -66,7 +70,7 @@ export default function FollowItem({ classes, user, followed = false }: Props) {
           href={href}
           aria-label={userName || ""}
           type="button"
-          className="h-8 w-8 dark:ml-0.5"
+          className="size-8 dark:ml-0.5"
           size={32 / 1.8}
         />
       )}

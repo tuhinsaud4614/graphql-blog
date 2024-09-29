@@ -372,7 +372,7 @@ export function formatLocaleDate(
 
     // Format the date
     return formatter.format(new Date(isNaN(date as any) ? date : +date));
-  } catch (error) {
+  } catch (_) {
     return date.toString();
   }
 }

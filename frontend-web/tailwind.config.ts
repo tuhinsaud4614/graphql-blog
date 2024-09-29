@@ -18,6 +18,7 @@ const config: Config = {
       fontFamily: {
         body: ["var(--font-body)", ...fontFamily.sans],
         title: ["var(--font-title)", ...fontFamily.sans],
+        "post-title": ["var(--font-post-title)", ...fontFamily.serif],
       },
     },
   },

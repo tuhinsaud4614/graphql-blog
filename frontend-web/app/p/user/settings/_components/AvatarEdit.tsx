@@ -23,7 +23,7 @@ interface Props {
   update: ReturnType<typeof useSession>["update"];
 }
 
-export default function AvatarEdit({ update, user }: Props) {
+export default function AvatarEdit({ update, user }: Readonly<Props>) {
   const [editable, setEditable] = React.useState(false);
   const [image, setImage] = React.useState<File | null>(null);
   const [uploadMutation, { error, loading, reset }] = useUploadAvatarMutation({
@@ -45,7 +45,7 @@ export default function AvatarEdit({ update, user }: Props) {
           );
           setEditable(false);
         }
-      } catch (error) {
+      } catch (_) {
         setImage(null);
       }
     }
@@ -55,9 +55,9 @@ export default function AvatarEdit({ update, user }: Props) {
     <>
       <li className="flex flex-wrap items-center justify-between space-y-3 py-8 sm:flex-nowrap">
         <div className="mr-4 flex flex-auto flex-col">
-          <label className="mb-3 !text-xl font-bold text-neutral selection:bg-primary selection:text-primary-foreground">
+          <span className="mb-3 !text-xl font-bold text-neutral selection:bg-primary selection:text-primary-foreground">
             Photo
-          </label>
+          </span>
           <div className="flex justify-between">
             <div>
               <p className="text-sm text-neutral/60 selection:bg-primary selection:text-primary-foreground">

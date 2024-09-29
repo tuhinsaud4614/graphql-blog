@@ -15,7 +15,7 @@ export default function useSetQueryOnPage(path?: string) {
 
   const setQueryString = React.useCallback(
     (query: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams ?? undefined);
       Object.entries(query).forEach(([key, value]) => params.set(key, value));
       return path ? `${path}?${params.toString()}` : params.toString();
     },

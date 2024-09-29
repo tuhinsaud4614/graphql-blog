@@ -57,7 +57,7 @@ export default function UserHeader() {
         <ul className={className.items}>
           {!!session?.user && (
             <li>
-              <NotificationBell pathname={pathname} />
+              <NotificationBell pathname={pathname ?? ""} />
             </li>
           )}
           <ThemeButton />

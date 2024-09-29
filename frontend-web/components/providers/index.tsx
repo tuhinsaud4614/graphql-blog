@@ -12,7 +12,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function Providers({ children }: Props) {
+export default function Providers({ children }: Readonly<Props>) {
   return (
     <SessionProvider>
       <ThemeProvider>

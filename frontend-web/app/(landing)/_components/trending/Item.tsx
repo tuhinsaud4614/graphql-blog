@@ -14,7 +14,7 @@ interface Props {
   post: GetTrendingPostsQuery["trendingPosts"][0];
 }
 
-export default function TrendingItem({ index, post }: Props) {
+export default function TrendingItem({ index, post }: Readonly<Props>) {
   const userName = getUserName(post.author);
   return (
     <li className="basis-full px-3 md:basis-1/2 md:px-4 md1:basis-1/3">
@@ -30,13 +30,12 @@ export default function TrendingItem({ index, post }: Props) {
               text={userName}
             />
           )}
-          <Link href={ROUTES.post(post.id)} passHref>
-            <a
-              aria-label={post.title}
-              className="line-clamp-2 py-2 font-bold leading-4 text-neutral-focus"
-            >
-              {post.title}
-            </a>
+          <Link
+            href={ROUTES.user.post(post.id)}
+            aria-label={post.title}
+            className="line-clamp-2 py-2 font-bold leading-4 text-neutral-focus"
+          >
+            {post.title}
           </Link>
           <span className="flex items-center text-xs text-neutral/70">
             {/* 31536000000 = 1 year in milliseconds */}

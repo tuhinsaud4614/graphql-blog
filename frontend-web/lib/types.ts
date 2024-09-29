@@ -32,7 +32,7 @@ export type PropsToOmit<T extends React.ElementType, P> = keyof (AsProps<T> &
 
 export type PolymorphicProps<
   T extends React.ElementType,
-  Props = {},
+  Props = object,
 > = React.PropsWithChildren<Props & AsProps<T>> &
   Omit<React.ComponentPropsWithoutRef<T>, PropsToOmit<T, Props>>;
 
@@ -41,5 +41,5 @@ export type PolymorphicRef<T extends React.ElementType> =
 
 export type PolymorphicPropsWithRef<
   T extends React.ElementType,
-  Props = {},
+  Props = object,
 > = PolymorphicProps<T, Props> & { ref?: PolymorphicRef<T> };

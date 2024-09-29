@@ -7,11 +7,11 @@ import { ApolloLink, fromPromise, split } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import {
+  ApolloClient,
   ApolloNextAppProvider,
-  NextSSRApolloClient,
-  NextSSRInMemoryCache,
+  InMemoryCache,
   SSRMultipartLink,
-} from "@apollo/experimental-nextjs-app-support/ssr";
+} from "@apollo/experimental-nextjs-app-support";
 import { YogaLink } from "@graphql-yoga/apollo-link";
 import { Kind, OperationTypeNode, getOperationAST } from "graphql";
 import { signOut } from "next-auth/react";
@@ -29,7 +29,7 @@ async function retryRefreshToken() {
     }
 
     return newAccessToken;
-  } catch (e) {
+  } catch (_) {
     return null;
   }
 }
@@ -93,10 +93,12 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-export function ApolloProvider({ children }: React.PropsWithChildren) {
+export function ApolloProvider({
+  children,
+}: Readonly<React.PropsWithChildren>) {
   const client = React.useMemo(() => {
-    return new NextSSRApolloClient({
-      cache: new NextSSRInMemoryCache(),
+    return new ApolloClient({
+      cache: new InMemoryCache(),
       link:
         typeof window === "undefined"
           ? ApolloLink.from([

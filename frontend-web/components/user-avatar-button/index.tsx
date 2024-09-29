@@ -41,7 +41,7 @@ export default function UserAvatarButton({
   hideOnSmallDevice = false,
   anchorOrigin,
   user,
-}: Props) {
+}: Readonly<Props>) {
   const { push } = useRouter();
   const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
     null,
@@ -59,7 +59,7 @@ export default function UserAvatarButton({
       <DemoAvatar
         as="button"
         aria-label="Demo avatar"
-        className="h-9 w-9 border-secondary"
+        className="size-9 border-secondary"
         onClick={() => push(ROUTES.account.login)}
       />
     );
@@ -95,7 +95,7 @@ export default function UserAvatarButton({
           as="button"
           aria-label="Demo avatar"
           type="button"
-          className="h-9 w-9 rounded-full border border-secondary/50 text-secondary hover:border-secondary hover:bg-secondary/5 dark:border-secondary-content/50 dark:text-secondary-content dark:hover:border-secondary-content dark:hover:bg-secondary-content/[8%]"
+          className="size-9 rounded-full border border-secondary/50 text-secondary hover:border-secondary hover:bg-secondary/5 dark:border-secondary-content/50 dark:text-secondary-content dark:hover:border-secondary-content dark:hover:bg-secondary-content/[8%]"
           onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
             setAnchorEle(e.currentTarget)
           }
@@ -144,11 +144,11 @@ export default function UserAvatarButton({
                   alt={userName || ""}
                   width={32}
                   height={32}
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 />
               </span>
             ) : (
-              <DemoAvatar className="mr-3 h-8 w-8 shrink-0" size={32 / 1.8} />
+              <DemoAvatar className="mr-3 size-8 shrink-0" size={32 / 1.8} />
             )}
             <div className={className.avatarInfoDetail}>
               <p className={className.name}>{userName}</p>

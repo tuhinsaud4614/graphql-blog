@@ -54,8 +54,7 @@ export default function Login() {
 
   const onSubmit = handleSubmit(async ({ emailMobile, password }) => {
     try {
-      const callbackUrl = searchParams.get("callbackUrl") ?? undefined;
-
+      const callbackUrl = searchParams?.get("callbackUrl");
       await client.resetStore();
       const response = await signIn("credentials", {
         emailOrMobile: emailMobile,
@@ -67,7 +66,7 @@ export default function Login() {
         reset();
         // For solving not replacing login url with redirect url
         callbackUrl && refresh();
-        replace(callbackUrl || ROUTES.user.home);
+        replace(callbackUrl ?? ROUTES.user.home);
       } else if (response?.error) {
         setError(response.error);
       }

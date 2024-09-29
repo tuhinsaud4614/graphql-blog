@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { type Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
 
@@ -6,6 +7,12 @@ const myPlugin = plugin(
   ({ addBase }) => {
     addBase({
       ":root": {
+        "--background": "0 0% 100%",
+        "--foreground": "219.23 20.31% 25.10%",
+        "--muted": "220 14.3% 95.9%",
+        "--muted-foreground": "220 8.9% 46.1%",
+        "--popover": "0 0% 100%",
+        "--popover-foreground": "224 71.4% 4.1%",
         "--primary": "258.89 94.38% 51.18%",
         "--primary-foreground": "210 20% 98%",
         "--primary-focus": "258.89 94.38% 51.18% / 0.9",
@@ -36,6 +43,7 @@ const myPlugin = plugin(
         "--success-content": "122.42 39.44% 49.22%",
         "--success-disabled": "124.62 39.39% 93.53%",
         "--warning": "30.37 100% 48.04%",
+        "--warning-foreground": "0 0% 0% / 87%",
         "--warning-focus": "30.37 100% 48.04% / 0.9",
         "--warning-content": "35.76 100% 50%",
         "--warning-disabled": "36.77 100% 93.92%",
@@ -44,8 +52,15 @@ const myPlugin = plugin(
         "--error-focus": "0 65.08% 50.59% / 0.9",
         "--error-content": "4.11 89.62% 58.43%",
         "--error-disabled": "351 100% 96.08%",
+        "--border": "220 13% 91%"
       },
       ".dark": {
+        "--background": "20 14.29% 4.12%",
+        "--foreground": "0 0% 100%",
+        "--muted": "215 27.9% 16.9%",
+        "--muted-foreground": "217.9 10.6% 64.9%",
+        "--popover": "224 71.4% 4.1%",
+        "--popover-foreground": "210 20% 98%",
         "--primary": "264.13 100% 63.92%",
         "--primary-foreground": "210 20% 98%",
         "--primary-focus": "263.94 80.34% 54.12%",
@@ -76,6 +91,7 @@ const myPlugin = plugin(
         "--success-content": "122.42 39.44% 49.22%",
         "--success-disabled": "124.62 39.39% 93.53%",
         "--warning": "35.67 100% 57.45%",
+        "--warning-foreground": "0 0% 0% / 87%",
         "--warning-focus": "27.11 100% 46.86%",
         "--warning-content": "35.76 100% 50%",
         "--warning-disabled": "36.77 100% 93.92%",
@@ -84,6 +100,7 @@ const myPlugin = plugin(
         "--error-focus": "0 66.39% 46.67%",
         "--error-content": "4.11 89.62% 58.43%",
         "--error-disabled": "351 100% 96.08%",
+        "--border": "215 27.9% 16.9%"
       },
     });
   },
@@ -117,6 +134,14 @@ const myPlugin = plugin(
           ring: "hsl(var(--ring))",
           background: "hsl(var(--background))",
           foreground: "hsl(var(--foreground))",
+          muted: {
+            DEFAULT: "hsl(var(--muted))",
+            foreground: "hsl(var(--muted-foreground))",
+          },
+          popover: {
+            DEFAULT: "hsl(var(--popover))",
+            foreground: "hsl(var(--popover-foreground))",
+          },
           primary: {
             DEFAULT: "hsl(var(--primary))",
             foreground: "hsl(var(--primary-foreground))",
@@ -152,6 +177,7 @@ const myPlugin = plugin(
           },
           warning: {
             DEFAULT: "hsl(var(--warning))",
+            foreground: "hsl(var(--warning-foreground))",
             focus: "hsl(var(--warning-focus))",
             content: "hsl(var(--warning-content))",
             disabled: "hsl(var(--warning-disabled))",

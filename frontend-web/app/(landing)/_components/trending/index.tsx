@@ -3,7 +3,7 @@ import { TrendingUp } from "lucide-react";
 import LandingContainer from "../Container";
 import TrendingList from "./List";
 
-export default function Tending() {
+export default function Trending() {
   return (
     <LandingContainer classes={{ root: "border-b" }}>
       <div className="mb-4 flex items-center">

@@ -7,7 +7,7 @@ import { VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const variants = cva(
-  "inline-flex min-h-[1.25rem] min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-xs font-bold leading-none ring-2 ring-base-100",
+  "inline-flex min-h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold leading-none ring-2 ring-base-100",
   {
     variants: {
       variant: {
@@ -38,7 +38,7 @@ export default function Badge({
   variant,
   float = true,
   className,
-}: Props) {
+}: Readonly<Props>) {
   return (
     <span
       className={cn(

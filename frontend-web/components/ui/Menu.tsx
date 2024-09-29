@@ -112,7 +112,7 @@ const Menu = ({
                 animate="visible"
                 exit="hidden"
                 className={cn(
-                  "fixed block h-3.5 w-3.5 rotate-45 bg-base-100 shadow-mui dark:bg-base-200",
+                  "fixed block size-3.5 rotate-45 bg-base-100 shadow-mui dark:bg-base-200",
                   classes?.arrow,
                 )}
                 style={{
@@ -123,7 +123,7 @@ const Menu = ({
             )}
             <div
               className={cn(
-                "relative z-10 h-full w-full overflow-hidden rounded bg-base-100 dark:bg-base-200",
+                "relative z-10 size-full overflow-hidden rounded bg-base-100 dark:bg-base-200",
                 classes?.container,
               )}
             >

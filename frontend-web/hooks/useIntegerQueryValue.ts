@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
  * parameters.
  * @returns The function `useIntegerQueryValue` returns an object with keys corresponding to the input
  * `keys` array, and values that are either integers or null. The values are obtained by parsing the
- * corresponding query parameter from the URL using `useSearchParams`, and converting it to an integer
+ * corresponding query parameter from the URL using `usesearchParams?`, and converting it to an integer
  * if it is a valid integer value. If the query parameter is not a valid integer, the value will be
  * null.
  */
@@ -16,7 +16,7 @@ export default function useIntegerQueryValue<T extends string>(keys: T[]) {
 
   return keys.reduce(
     (prev, key) => {
-      const value = searchParams.get(key);
+      const value = searchParams?.get(key);
       const integerValue =
         value && Number.isInteger(+value) ? Math.abs(+value) : undefined;
       return { ...prev, key: integerValue };

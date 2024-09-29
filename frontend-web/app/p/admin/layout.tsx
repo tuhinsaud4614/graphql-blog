@@ -2,7 +2,7 @@ import * as React from "react";
 
 import dynamic from "next/dynamic";
 
-import AdminDrawerControllerProvider from "@/app/g/admin/_context-hooks/adminDrawerControllerContext";
+import AdminDrawerControllerProvider from "@/app/p/admin/_context-hooks/adminDrawerControllerContext";
 import STYLES from "@/lib/styles";
 import { cn } from "@/lib/utils";
 

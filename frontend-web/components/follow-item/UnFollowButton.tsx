@@ -10,11 +10,11 @@ export default function UnFollowButton({
   className,
   onUnFollow,
   toId,
-}: {
+}: Readonly<{
   className: string;
   onUnFollow(): void;
   toId: string;
-}) {
+}>) {
   const [send, { loading, error, reset }] = useSendUnFollowRequestMutation({
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
@@ -29,7 +29,7 @@ export default function UnFollowButton({
           try {
             await send({ variables: { toId } });
             onUnFollow();
-          } catch (error) {}
+          } catch (_) {}
         }}
         mode="outline"
         loading={loading}
@@ -38,7 +38,7 @@ export default function UnFollowButton({
         Following
       </Button>
       <ErrorModal
-        onClose={() => void reset()}
+        onClose={reset}
         title="Send un-follow request errors"
         errors={gplErrorHandler(error)}
       />

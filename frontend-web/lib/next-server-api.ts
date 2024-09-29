@@ -37,7 +37,7 @@ export async function getAccessTokenFromNextAuth() {
     }
 
     return null;
-  } catch (error) {
+  } catch (_) {
     return null;
   }
 }

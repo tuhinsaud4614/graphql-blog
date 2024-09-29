@@ -57,7 +57,7 @@ export default function LandingHeader() {
       <nav className="flex h-full max-w-5xl items-center justify-between px-4 sm:mx-auto">
         <Link
           href={ROUTES.landing}
-          className="flex h-[3.75rem] w-[3.75rem] items-center justify-center"
+          className="flex size-[3.75rem] items-center justify-center"
           aria-label="Home"
         >
           <Image src="/logo.svg" alt="The Rat Diary" height={60} width={60} />

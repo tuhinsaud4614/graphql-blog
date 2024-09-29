@@ -22,20 +22,20 @@ type CompReturnType = (<T extends React.ElementType = "div">(
   props: Props<T>,
 ) => React.ReactNode) & { displayName?: string };
 
-const DemoAvatar: CompReturnType = React.forwardRef(
-  <T extends React.ElementType = "div">(
-    { className: cls, as, size = 20, ...rest }: Props<T>,
-    ref?: PolymorphicRef<T>,
-  ) => {
-    const Component = as || "div";
+const Avatar: CompReturnType = <T extends React.ElementType = "div">(
+  { className: cls, as, size = 20, ...rest }: Props<T>,
+  ref?: PolymorphicRef<T>,
+) => {
+  const Component = as || "div";
 
-    return (
-      <Component {...rest} ref={ref} className={cn(className.root, cls)}>
-        <User2 size={size} />
-      </Component>
-    );
-  },
-);
+  return (
+    <Component {...rest} ref={ref} className={cn(className.root, cls)}>
+      <User2 size={size} />
+    </Component>
+  );
+};
+
+const DemoAvatar = React.forwardRef(Avatar);
 
 DemoAvatar.displayName = "DemoAvatar";
 export default DemoAvatar;

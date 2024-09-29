@@ -2,12 +2,12 @@
 
 import * as React from "react";
 
-import { LinkProps } from "next/link";
+import Link, { LinkProps } from "next/link";
 
 import _isFunction from "lodash/isFunction";
 import _uniqueId from "lodash/uniqueId";
 import { ChevronRight } from "lucide-react";
-import { Link } from "next13-progressbar";
+import Next13ProgressBar from "next13-progressbar";
 
 import { cn } from "@/lib/utils";
 
@@ -81,7 +81,10 @@ export default function Breadcrumbs({ items, classes }: BreadcrumbsProps) {
               )}
             >
               {link ? (
-                <Link {...link}>{child(children, active)}</Link>
+                <>
+                  <Next13ProgressBar />
+                  <Link {...link}>{child(children, active)}</Link>
+                </>
               ) : (
                 child(children, active)
               )}

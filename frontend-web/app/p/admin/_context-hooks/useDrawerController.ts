@@ -1,6 +1,6 @@
 import { useContextSelector } from "use-context-selector";
 
-import { AdminDrawerControllerContext } from "@/app/g/admin/_context-hooks/adminDrawerControllerContext";
+import { AdminDrawerControllerContext } from "@/app/p/admin/_context-hooks/adminDrawerControllerContext";
 
 /**
  * The function "useAdminDrawerController" is a custom hook that returns the state from the

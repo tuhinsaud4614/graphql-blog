@@ -9,7 +9,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function UserLayout({ children }: Props) {
+export default function UserLayout({ children }: Readonly<Props>) {
   return (
     <>
       <UserHeader />

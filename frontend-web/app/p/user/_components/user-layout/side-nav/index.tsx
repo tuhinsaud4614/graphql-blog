@@ -102,7 +102,7 @@ export default function UserSideNav() {
       <nav className="sticky inset-0 z-10 flex h-screen flex-col items-center justify-between overflow-y-auto py-4 scrollbar-hide">
         <Link
           href={ROUTES.user.home}
-          className="flex h-[3.125rem] w-[3.125rem] items-center justify-center"
+          className="flex size-[3.125rem] items-center justify-center"
           aria-label="Home"
         >
           <Image
@@ -114,7 +114,7 @@ export default function UserSideNav() {
           />
         </Link>
         <ul className="flex w-full flex-col items-center justify-center py-3">
-          {getLinks(pathname).map((item) => (
+          {getLinks(pathname ?? "").map((item) => (
             <SideNavItem
               key={item.label}
               href={item.href}

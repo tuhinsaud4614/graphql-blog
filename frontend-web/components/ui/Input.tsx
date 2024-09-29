@@ -88,7 +88,7 @@ function Component(
             type="button"
             mode="text"
             variant="accent"
-            className="h-5 w-5 shrink-0 rounded-full p-0.5"
+            className="size-5 shrink-0 rounded-full p-0.5"
             aria-label={show ? "hide" : "show"}
             onClick={() => setShow((prev) => !prev)}
           >

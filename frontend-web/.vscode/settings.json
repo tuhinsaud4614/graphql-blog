@@ -4,11 +4,11 @@
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "editor.formatOnPaste": false,
-  "editor.formatOnSave": true,
+  // "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit",
     "source.addMissingImports": "explicit"
   },
-  "cSpell.words": ["lucide", "Numberish", "shadcn", "tailwindcss"]
+  "cSpell.words": ["editorjs", "lucide", "Numberish", "shadcn", "tailwindcss"]
 }
