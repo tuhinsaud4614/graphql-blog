@@ -1,6 +1,9 @@
 import envSchema from "env-schema";
 
 const properties = {
+  NODE_ENV: {
+    type: "string",
+  },
   PORT: {
     type: "number",
     default: 4000,

@@ -1,11 +1,9 @@
-version: "3.9"
-
 services:
   db:
-    image: postgres:16.2-alpine
+    image: postgres:16-alpine
     volumes:
       - pgdata:/var/lib/postgresql/data
-    restart: always
+    restart: unless-stopped
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     environment:
@@ -14,12 +12,12 @@ services:
       - ./.env
 
   cache:
-    image: redis:7.2.4-alpine
+    image: redis:7.2.1-alpine
     volumes:
       - rediscache:/data
     env_file:
       - ./.env
-    restart: always
+    restart: unless-stopped
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
 

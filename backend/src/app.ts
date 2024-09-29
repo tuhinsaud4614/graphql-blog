@@ -12,6 +12,7 @@ import express, {
   static as expressStatic,
 } from "express";
 import { Server } from "http";
+import morgan from "morgan";
 import path from "path";
 
 import logger from "@/logger";
@@ -57,7 +58,7 @@ async function startServer() {
       //   ttl: 1000 * 60,
       // }),
       useRateLimiter({
-        identifyFn: (context) => (context as YogaContextType).req.ip,
+        identifyFn: (context) => (context as YogaContextType).req.ip ?? "",
         onRateLimitError({ error }) {
           logger.error(error);
           throw new RateLimitError(error);
@@ -68,6 +69,9 @@ async function startServer() {
 
   const app = express();
 
+  app.use(
+    morgan(":method :url :status :res[content-length] - :response-time ms"),
+  );
   app.use(cors({ origin: config.CLIENT_ENDPOINT, credentials: true }));
   app.use(cookieParser());
   app.use(expressStatic(path.join(process.cwd(), "public")));
@@ -92,7 +96,7 @@ async function startServer() {
     SIGNALS.forEach((signal) => {
       process.on(signal, () => shutdown({ signal, server: httpServer }));
     });
-  } catch (error) {
+  } catch (_) {
     process.exit(1);
   }
 }

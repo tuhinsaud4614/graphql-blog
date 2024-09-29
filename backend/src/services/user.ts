@@ -1005,7 +1005,7 @@ export async function userService(prisma: PrismaClient, id: string) {
   try {
     const user = await getUserById(prisma, id);
     return user ?? new ForbiddenError(generateNotExistErrorMessage("User"));
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(generateFetchErrorMessage("User"));
   }
 }
@@ -1142,7 +1142,7 @@ export async function userFollowByCountService(
 export async function userAvatarService(prisma: PrismaClient, userId: string) {
   try {
     return await getUserAvatar(prisma, userId);
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Avatar", "user"),
     );
@@ -1164,7 +1164,7 @@ export async function userAvatarService(prisma: PrismaClient, userId: string) {
 export async function userPostsService(prisma: PrismaClient, id: string) {
   try {
     return await getAllPosts(prisma, { where: { authorId: id } });
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Avatar", "user"),
     );
@@ -1243,7 +1243,7 @@ export async function userDeletionService(
 export async function userFollowByService(prisma: PrismaClient, id: string) {
   try {
     return await getUserFollowBy(prisma, id);
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Follow by", "user"),
     );
@@ -1265,7 +1265,7 @@ export async function userFollowByService(prisma: PrismaClient, id: string) {
 export async function userFollowersService(prisma: PrismaClient, id: string) {
   try {
     return await getUserFollowers(prisma, id);
-  } catch (error) {
+  } catch (_) {
     return new UnknownError(
       generateEntityNotExistErrorMessage("Followers", "user"),
     );
