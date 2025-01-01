@@ -146,7 +146,8 @@
   .post-editor
     .tc-wrap
     .tc-popover.tc-popover--opened
-    .tc-popover__item.tc-popover__item--confirm .tc-popover__item-icon {
+    .tc-popover__item.tc-popover__item--confirm
+    .tc-popover__item-icon {
     @apply text-error bg-muted;
   }
 

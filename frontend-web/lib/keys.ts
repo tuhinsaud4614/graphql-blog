@@ -1,0 +1,1 @@
+export const NEW_POST_DRAFT = "NEW_POST_DRAFT";

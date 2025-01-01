@@ -26,6 +26,8 @@ export const EditorSchema = z.object({
   blocks: z.array(z.any()),
 });
 
+export type EditorData = z.infer<typeof EditorSchema>;
+
 interface Props
   extends Omit<React.ComponentPropsWithoutRef<"div">, "onChange"> {
   value?: Data | null;
@@ -39,6 +41,7 @@ interface Props
     | ClassNames;
   editorInstance?: (instance: EditorJS) => void;
   imageBaseUrl?: string;
+  shouldReplaceEmptyWithNull?: boolean;
 }
 
 export type EditorProps = Props & Pick<EditorConfig, "placeholder">;
@@ -53,6 +56,7 @@ export default function Editor({
   editorInstance,
   classNames,
   imageBaseUrl = BACKEND_API_URL,
+  shouldReplaceEmptyWithNull = false,
   ...rest
 }: EditorProps) {
   const onBlurRef = useCallbackRef(onBlur);
@@ -183,7 +187,10 @@ export default function Editor({
           editorRef.current
             ?.save()
             .then((value) => {
-              if (!value || value.blocks.length === 0) {
+              if (
+                shouldReplaceEmptyWithNull &&
+                (!value || value.blocks.length === 0)
+              ) {
                 setData(null);
               } else {
                 setData(value);
@@ -226,7 +233,7 @@ export default function Editor({
       ref={holderRef}
       className={cn(
         "relative bg-transparent",
-        isFocused && "outline-none ring-1 ring-ring",
+        isFocused && "ring-ring outline-none ring-1",
         disabled && "cursor-not-allowed opacity-50",
         className,
         typeof classNames === "function"
