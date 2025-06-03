@@ -9,7 +9,7 @@ interface Props {
   classes?: { root?: string; title?: string };
 }
 
-export default function NoResultFound({ children, classes }: Props) {
+export default function NoResultFound({ children, classes }: Readonly<Props>) {
   return (
     <div
       className={cn("flex flex-col items-center py-[1.875rem]", classes?.root)}

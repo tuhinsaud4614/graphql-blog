@@ -1,0 +1,31 @@
+mutation CreateUntitledPost {
+  createUntitledPost {
+    ...GetPostItem
+  }
+}
+
+mutation UpdatePostDraft($postId: ID!, $draft: JSON!) {
+  updateDraft(data: { id: $postId, draft: $draft })
+}
+
+mutation PublishPost(
+  $id: ID!
+  $title: String
+  $imageUrl: String
+  $categories: [ID!]
+  $tags: [ID!]
+) {
+  publishPost(
+    data: {
+      id: $id
+      title: $title
+      imageUrl: $imageUrl
+      categories: $categories
+      tags: $tags
+    }
+  )
+}
+
+mutation ReactToPost($toId: ID!) {
+  reactionToPost(toId: $toId)
+}

@@ -4,7 +4,7 @@ import { IPicture } from "./types";
 
 export interface UpdateSessionParams {
   name: string;
-  avatar: IPicture | null;
+  avatar?: IPicture | null;
   accessToken: string;
 }
 

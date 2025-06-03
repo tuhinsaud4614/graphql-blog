@@ -32,10 +32,10 @@ export default function TrendingItem({ index, post }: Readonly<Props>) {
           )}
           <Link
             href={ROUTES.user.post(post.id)}
-            aria-label={post.title}
+            aria-label={post.title ?? "Untitled"}
             className="line-clamp-2 py-2 font-bold leading-4 text-neutral-focus"
           >
-            {post.title}
+            {post.title ?? "Untitled"}
           </Link>
           <span className="flex items-center text-xs text-neutral/70">
             {/* 31536000000 = 1 year in milliseconds */}

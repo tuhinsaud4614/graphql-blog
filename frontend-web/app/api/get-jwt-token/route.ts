@@ -22,9 +22,10 @@ export async function GET(req: NextRequest) {
   });
   if (token) {
     if (token.error === REFRESH_TOKEN_ERROR) {
+      const cookieStore = await cookies()
       // If REFRESH_TOKEN_ERROR thrawed, but the 'next-auth.session-token' still exists in the cookies, remove it.
       const JWT_TOKEN_KEY = "next-auth.session-token";
-      cookies().has(JWT_TOKEN_KEY) && cookies().delete(JWT_TOKEN_KEY);
+      cookieStore.has(JWT_TOKEN_KEY) && cookieStore.delete(JWT_TOKEN_KEY);
       return Response.json(null);
     }
     return Response.json({

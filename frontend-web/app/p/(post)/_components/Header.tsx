@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 import UserShortProfile from "@/components/UserShortProfile";

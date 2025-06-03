@@ -1,9 +1,9 @@
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Bell, FileEdit, FileText, Heart, Home } from "lucide-react";
+import { Bell, FileText, Heart, Home } from "lucide-react";
 
 import UserShortProfile from "@/components/UserShortProfile";
 import { ROUTES } from "@/lib/constants";
@@ -12,6 +12,7 @@ import { skeletonVariant } from "@/lib/variants/classVariants";
 
 import SideNavItem from "../SideNavItem";
 import SideNavNotifyCount from "../SideNavNotifyCount";
+import CreatePost from "./CreatePost";
 
 const ThemeButton = dynamic(() => import("./ThemeButton"), {
   ssr: false,
@@ -83,12 +84,12 @@ const getLinks = (pathname: string) => {
       label: "My Posts",
       icon: <FileText size={24} />,
     },
-    {
-      href: ROUTES.user.postCreate,
-      active: pathname === ROUTES.user.postCreate,
-      label: "Create Post",
-      icon: <FileEdit size={24} />,
-    },
+    // {
+    //   href: ROUTES.user.postCreate,
+    //   active: pathname === ROUTES.user.postCreate,
+    //   label: "Create Post",
+    //   icon: <FileEdit size={24} />,
+    // },
   ];
 
   return list;
@@ -124,6 +125,9 @@ export default function UserSideNav() {
               {item.icon}
             </SideNavItem>
           ))}
+          <li className="w-full pb-8">
+            <CreatePost />
+          </li>
           <ThemeButton />
         </ul>
         <UserShortProfile />

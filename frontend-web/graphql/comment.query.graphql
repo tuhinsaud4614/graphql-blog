@@ -1,0 +1,24 @@
+query GetPostCommentsWithCursor(
+  $postId: ID!
+  $parentId: ID
+  $limit: Int!
+  $after: ID
+) {
+  postCommentsWithCursor(
+    postId: $postId
+    parentId: $parentId
+    limit: $limit
+    after: $after
+  ) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...FCommentWithReplies
+      }
+    }
+  }
+}

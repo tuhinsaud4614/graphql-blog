@@ -19,7 +19,10 @@ export default function LandingContentPosts() {
       errorPolicy: "all",
     });
 
-  if (networkStatus === NetworkStatus.refetch) {
+  if (
+    networkStatus === NetworkStatus.loading ||
+    networkStatus === NetworkStatus.refetch
+  ) {
     return (
       <ul className="m-0 flex list-none flex-col space-y-12 px-4 pb-3 pt-10 md1:basis-full md1:pt-3">
         <>
@@ -71,7 +74,7 @@ export default function LandingContentPosts() {
             ...prev,
             postsWithCursor: {
               ...prev.postsWithCursor,
-              pageInfo: { ...prev.postsWithCursor.pageInfo, hasNext: false },
+              pageInfo: { ...prev.postsWithCursor.pageInfo, hasNext: false, },
             },
           };
         }

@@ -1,17 +1,27 @@
 import { ApolloError } from "@apollo/client";
+import { OutputData } from "@editorjs/editorjs";
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { jwtDecode } from "jwt-decode";
 import _has from "lodash/has";
-import { Descendant, Node } from "slate";
+import {
+  BaseEditor,
+  Descendant,
+  Editor,
+  Element,
+  Node,
+  Range,
+  Transforms,
+} from "slate";
+import { ReactEditor } from "slate-react";
 import { twMerge } from "tailwind-merge";
 import { ZodType, z } from "zod";
 
-import { User } from "@/graphql/generated/schema";
+import { GetPostItemFragment, User } from "@/graphql/generated/schema";
 
-import { BACKEND_API_URL } from "./constants";
+import { BACKEND_API_URL, IMAGE_URL_REGEX, URL_REGEX } from "./constants";
 import { isAuthUser, isDev } from "./isType";
-import { IAnchorOrigin, IAuthUser } from "./types";
+import { IAnchorOrigin, IAuthUser, SlateLinkElement } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -374,5 +384,330 @@ export function formatLocaleDate(
     return formatter.format(new Date(isNaN(date as any) ? date : +date));
   } catch (_) {
     return date.toString();
+  }
+}
+
+function gcd(width: number, height: number): number {
+  return height == 0 ? width : gcd(height, width % height);
+}
+
+export function aspectRatio(width: number, height: number) {
+  const result = gcd(width, height);
+
+  return { left: width / result, right: height / result } as const;
+}
+
+// Start slate utils Start
+export const isMarkActive = (editor: BaseEditor, format: string) => {
+  const marks = Editor.marks(editor);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //   @ts-ignore
+  return marks ? marks[format] === true : false;
+};
+
+export function isBlockActive(
+  editor: BaseEditor,
+  format: string,
+  blockType = "type",
+) {
+  const { selection } = editor;
+  if (!selection) return false;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: (n) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        !Editor.isEditor(n) &&
+        Element.isElement(n) &&
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        n[blockType] === format,
+    }),
+  );
+
+  return !!match;
+}
+
+export const isImageUrl = (url: string) => {
+  if (!url) return false;
+  if (url.match(IMAGE_URL_REGEX) === null) return false;
+  return true;
+};
+
+export const insertImage = (editor: ReactEditor, url: string) => {
+  const text = { text: "" };
+  const image = { type: "image", url, children: [text] };
+  Transforms.insertNodes(editor, image);
+};
+
+export const withEmbeds = (editor: ReactEditor) => {
+  const { isVoid } = editor;
+  editor.isVoid = (element) =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    element.type === "video" ? true : isVoid(element);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return editor;
+};
+
+export const withImages = (editor: ReactEditor) => {
+  const { isVoid, insertData } = editor;
+
+  editor.isVoid = (element) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return element.type === "image" ? true : isVoid(element);
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData("text/plain");
+    if (isImageUrl(text)) {
+      insertImage(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return editor;
+};
+
+export const isLinkActive = (editor: BaseEditor) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const [link] = Editor.nodes(editor, {
+    match: (n) =>
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "link",
+  });
+  return !!link;
+};
+
+export const unwrapLink = (editor: BaseEditor) => {
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "link",
+  });
+};
+
+export const wrapLink = (editor: BaseEditor, url: string) => {
+  if (isLinkActive(editor)) {
+    unwrapLink(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link: SlateLinkElement = {
+    type: "link",
+    url,
+    children: isCollapsed ? [{ text: url }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+  } else {
+    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.collapse(editor, { edge: "end" });
+  }
+};
+
+export const insertLink = (editor: BaseEditor, url: string) => {
+  if (editor.selection) {
+    wrapLink(editor, url);
+  }
+};
+
+export function withLinks(editor: ReactEditor) {
+  const { insertData, insertText, isInline } = editor;
+  editor.isInline = (element) =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    element.type === "link" || isInline(element);
+
+  editor.insertText = (text: string) => {
+    if (text && URL_REGEX.test(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData("text/plain");
+
+    if (text && URL_REGEX.test(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return editor;
+}
+
+export function countConvert(count: number, text?: string, plural?: string) {
+  const num = Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(count);
+  if (!text) {
+    return num;
+  }
+
+  if (count <= 1) {
+    return `${num} ${text}`;
+  }
+
+  return `${num} ${plural ?? text + "s"}`;
+}
+
+function getPlainTextFromHTML(html: string): string {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  return doc.body.textContent || ""; // Extracts plain text
+}
+
+export function getImageFromEditorJsBlocks(data: OutputData | null) {
+  try {
+    const blocks = data?.blocks;
+    if (!Array.isArray(blocks)) {
+      return null; // Return null if blocks are not an array
+    }
+
+    for (const block of blocks) {
+      // Check if the block is an image block
+      if (block.type === "image") {
+        if (block.data && block.data.file && block.data.file.url) {
+          return block.data.file.url as string | null; // Return the image URL if found
+        }
+      }
+    }
+
+    return null; // Return null if no image block is found
+  } catch (error) {
+    isDev() &&
+      console.error("Error parsing post draft to extract image url:", error);
+    return null;
+  }
+}
+
+export function getTitleAndDescriptionFromEditorJsBlocks(
+  blocks: OutputData["blocks"],
+) {
+  if (!Array.isArray(blocks)) {
+    return {
+      title: "",
+      description: "",
+    };
+  }
+
+  const texts: string[] = []; // Array to store found texts
+
+  for (const block of blocks) {
+    // Check if the block contains text
+    if (block.type === "paragraph" || block.type === "header") {
+      if (block.data && block.data.text) {
+        // Clean the text to remove HTML tags or unwanted formatting
+        const plainText = block.data.text.replace(/<[^>]*>/g, "").trim();
+        if (plainText) {
+          texts.push(getPlainTextFromHTML(plainText)); // Add meaningful text to the list
+        }
+      }
+    }
+
+    // Break the loop if we already have both title and description
+    if (texts.length >= 2) {
+      break;
+    }
+  }
+
+  // Return the first and second text, or defaults if not found
+  return {
+    title: texts[0] || "", // First text as the title
+    description: texts[1] || "", // Second text as the description
+  };
+}
+
+export function getPostTitleFromDraft(draft: GetPostItemFragment["draft"]) {
+  const parseContent = (data: unknown) => {
+    const parsedData =
+      typeof data === "string"
+        ? JSON.parse(data)
+        : typeof data === "object" && data !== null
+          ? data
+          : {};
+    return getTitleAndDescriptionFromEditorJsBlocks(
+      (parsedData as OutputData).blocks,
+    );
+  };
+
+  try {
+    const { title } = parseContent(draft);
+
+    return title;
+  } catch (error) {
+    isDev() &&
+      console.error("Error parsing post draft to extract title:", error);
+    return null;
+  }
+}
+
+export function getPostTitleAndDescription(
+  post: Pick<GetPostItemFragment, "title" | "content" | "draft">,
+  user?: IAuthUser,
+  postAuthor?: GetPostItemFragment["author"],
+) {
+  const data = { title: "", description: "" };
+  const { title, content, draft } = post;
+
+  const parseContent = (data: unknown) => {
+    const parsedData =
+      typeof data === "string"
+        ? JSON.parse(data)
+        : typeof data === "object" && data !== null
+          ? data
+          : {};
+    return getTitleAndDescriptionFromEditorJsBlocks(
+      (parsedData as OutputData).blocks,
+    );
+  };
+
+  try {
+    if (title) {
+      data.title = title;
+    }
+
+    if (content) {
+      const { title: parsedTitle, description: parsedDescription } =
+        parseContent(content);
+      if (!data.title) {
+        data.title = parsedTitle;
+      }
+      if (parsedDescription) {
+        data.description = parsedDescription;
+      }
+    } else if (draft && user?.id && user.id === postAuthor?.id) {
+      const { title: draftTitle, description: draftDescription } =
+        parseContent(draft);
+      if (!data.title) {
+        data.title = draftTitle;
+      }
+      if (draftDescription) {
+        data.description = draftDescription;
+      }
+    }
+
+    return data;
+  } catch (error) {
+    isDev() && console.error("Error parsing post data:", error);
+    return data; // Return default data in case of error
   }
 }

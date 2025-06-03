@@ -2,6 +2,10 @@
 import { type Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
 
+// accent: ##003223
+// primary: #00FFB2
+// secondary: #FFDE33
+
 const myPlugin = plugin(
   // Add Css variable definitions to the base layer
   ({ addBase }) => {
@@ -52,7 +56,7 @@ const myPlugin = plugin(
         "--error-focus": "0 65.08% 50.59% / 0.9",
         "--error-content": "4.11 89.62% 58.43%",
         "--error-disabled": "351 100% 96.08%",
-        "--border": "220 13% 91%"
+        "--border": "220 13% 91%",
       },
       ".dark": {
         "--background": "20 14.29% 4.12%",
@@ -100,7 +104,7 @@ const myPlugin = plugin(
         "--error-focus": "0 66.39% 46.67%",
         "--error-content": "4.11 89.62% 58.43%",
         "--error-disabled": "351 100% 96.08%",
-        "--border": "215 27.9% 16.9%"
+        "--border": "215 27.9% 16.9%",
       },
     });
   },
@@ -304,6 +308,9 @@ const myPlugin = plugin(
             )`,
           scrollbar: `linear-gradient(180deg, transparent, ${theme(
             "colors.accent",
+          )})`,
+          "scrollbar-dark": `linear-gradient(180deg, transparent, ${theme(
+            "colors.accent-dark",
           )})`,
         }),
       },

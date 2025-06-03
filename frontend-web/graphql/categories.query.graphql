@@ -10,6 +10,18 @@ query GetCategoriesWithOffset($limit: Int, $page: Int) {
   }
 }
 
+query GetCategoriesByTextWithOffset($text: String!, $limit: Int, $page: Int) {
+  categoriesByTextWithOffset(text: $text, limit: $limit, page: $page) {
+    total
+    data {
+      ...FCategory
+    }
+    pageInfo {
+      ...FOffsetPageInfo
+    }
+  }
+}
+
 query GetCategoryCount {
   categoryCount
 }

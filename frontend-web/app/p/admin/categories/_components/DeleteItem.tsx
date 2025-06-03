@@ -5,9 +5,9 @@ import * as React from "react";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import Modal from "@/components/Modal";
+import ModalHeader from "@/components/ModalHeader";
 import ToastErrorMessage from "@/components/ToastErrorMessage";
-import Modal from "@/components/modal";
-import ModalHeader from "@/components/modal/Header";
 import Button from "@/components/ui/Button";
 import {
   Category,

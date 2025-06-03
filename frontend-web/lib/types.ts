@@ -2,6 +2,8 @@ import React from "react";
 
 import { z } from "zod";
 
+import { EmptyText } from "@/components/PostEditor/utils";
+import { Descendant } from "slate";
 import { pictureSchema, userAuthSchema } from "./schema";
 
 export interface IAnchorOrigin {
@@ -43,3 +45,15 @@ export type PolymorphicPropsWithRef<
   T extends React.ElementType,
   Props = object,
 > = PolymorphicProps<T, Props> & { ref?: PolymorphicRef<T> };
+
+export interface SlateLinkElement {
+  type: "link";
+  url: string;
+  children: Descendant[];
+}
+
+export interface SlateVideoElement {
+  type: "video";
+  url: string;
+  children: EmptyText[];
+}

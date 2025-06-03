@@ -31,7 +31,7 @@ export type EditorData = z.infer<typeof EditorSchema>;
 interface Props
   extends Omit<React.ComponentPropsWithoutRef<"div">, "onChange"> {
   value?: Data | null;
-  onValueChange?: React.Dispatch<React.SetStateAction<Data | null>>;
+  onValueChange?: (value: Data | null) => void;
   onBlur?(): void;
   disabled?: boolean;
   label?: string;
@@ -233,7 +233,7 @@ export default function Editor({
       ref={holderRef}
       className={cn(
         "relative bg-transparent",
-        isFocused && "ring-ring outline-none ring-1",
+        isFocused && "outline-none ring-1 ring-ring",
         disabled && "cursor-not-allowed opacity-50",
         className,
         typeof classNames === "function"

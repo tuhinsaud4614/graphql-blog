@@ -2,15 +2,15 @@
 
 import * as React from "react";
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 import { Bell, FileText, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import DemoAvatar from "@/components/DemoAvatar";
+import Modal from "@/components/Modal";
 import NavAvatar from "@/components/NavAvatar";
-import Modal from "@/components/modal";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
 import { generateFileUrl, getUserName } from "@/lib/utils";

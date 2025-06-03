@@ -1,5 +1,5 @@
-import Modal from "./modal";
-import ModalHeader from "./modal/Header";
+import Modal from "./Modal";
+import ModalHeader from "./ModalHeader";
 import Button from "./ui/Button";
 
 const className = {

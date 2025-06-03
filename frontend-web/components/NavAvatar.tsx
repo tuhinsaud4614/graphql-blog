@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import Image, { ImageProps } from "next/image";
+import Image, { ImageProps } from "next/legacy/image";
 
 import { cn } from "@/lib/utils";
 

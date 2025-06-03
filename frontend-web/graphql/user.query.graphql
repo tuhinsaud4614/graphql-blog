@@ -26,3 +26,79 @@ query GetUsersWithOffset($limit: Int, $page: Int) {
 query GetUserCount {
   userCount
 }
+
+query GetUserWithPost($id: ID!) {
+  user(id: $id) {
+    ...FUser
+    posts {
+      ...GetPostItem
+    }
+    followings {
+      id
+      name
+      email
+      mobile
+      avatar {
+        ...FImage
+      }
+    }
+    followers {
+      id
+      name
+      email
+      mobile
+      avatar {
+        ...FImage
+      }
+    }
+  }
+}
+
+query UserMentionTooltipStats($id: ID!) {
+  userResult(id: $id) {
+    followerCount
+    hasFollow
+  }
+}
+
+query GetAuthorFollowersWithCursor($limit: Int!, $after: ID, $authorId: ID) {
+  authorFollowersWithCursor(limit: $limit, after: $after, authorId: $authorId) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...FUser
+      }
+    }
+  }
+}
+
+query GetAuthorFollowingsWithCursor($limit: Int!, $after: ID, $authorId: ID) {
+  authorFollowingsWithCursor(
+    limit: $limit
+    after: $after
+    authorId: $authorId
+  ) {
+    total
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    edges {
+      cursor
+      node {
+        ...FUser
+      }
+    }
+  }
+}
+
+query GetUserFollowers($id: ID!) {
+  userFollowers(id: $id)
+}
+
+query GetUserFollowings($id: ID!) {
+  userFollowings(id: $id)
+}

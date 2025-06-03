@@ -5,11 +5,15 @@ import { produce } from "immer";
 import {
   FCategoryFragment,
   FTagFragment,
+  FUserFragment,
   GetCategoriesWithOffsetDocument,
   GetCategoriesWithOffsetQuery,
   GetCategoriesWithOffsetQueryVariables,
   GetCategoryCountDocument,
   GetCategoryCountQuery,
+  GetPostReactedByDocument,
+  GetPostReactedByQuery,
+  GetPostReactedByQueryVariables,
   GetTagCountDocument,
   GetTagCountQuery,
   GetTagsWithOffsetDocument,
@@ -334,5 +338,58 @@ export function deleteGetUsersWithOffsetQuery<T>(
     );
   } catch (error) {
     isDev() && console.error("DeleteGetUserWithOffsetQuery@Errors: ", error);
+  }
+}
+
+/**
+ * The function updates the `GetPostReactedByQuery` in the Apollo cache by adding or removing a user.
+ * @param cache - The `cache` parameter is an instance of the ApolloCache class, which is used to read
+ * and write data to the Apollo Client cache.
+ * @param {FUserFragment} user - The `user` parameter is of type `FUserFragment` and represents a user
+ * object that will be added or removed in the list of reactors.
+ * @param {"ADD" | "REMOVE"} mode - The `mode` parameter is used to determine how the reactors should
+ * be modified in the cache. It can have two possible values:
+ * - "ADD": The user will be added to the list of reactors.
+ * - "REMOVE": The user will be removed from the list of reactors.
+ * @param {GetPostReactedByQueryVariables} [variables] - The `variables` parameter is an optional
+ * parameter that allows you to pass additional variables to the query when updating the cache.
+ * These variables can be used to filter or modify the data that is updated.
+ */
+export function updateGetPostReactedByQuery<T>(
+  cache: ApolloCache<T>,
+  user: FUserFragment,
+  mode: "ADD" | "REMOVE",
+  variables?: GetPostReactedByQueryVariables,
+) {
+  try {
+    cache.updateQuery<GetPostReactedByQuery, GetPostReactedByQueryVariables>(
+      {
+        query: GetPostReactedByDocument,
+        variables,
+      },
+      (prevReactedBy) => {
+        if (!prevReactedBy) {
+          return null;
+        }
+        const updatedUsers = produce(prevReactedBy, (draft) => {
+          if (draft.postReactedBy.total > 0) {
+            draft.postReactedBy.edges =
+              mode === "ADD"
+                ? [
+                    ...draft.postReactedBy.edges,
+                    { cursor: variables?.after ?? user.id, node: user },
+                  ]
+                : draft.postReactedBy.edges.filter(
+                    (post) => post.node.id !== user.id,
+                  );
+            draft.postReactedBy.total =
+              draft.postReactedBy.total + (mode === "ADD" ? 1 : -1);
+          }
+        });
+        return updatedUsers;
+      },
+    );
+  } catch (error) {
+    isDev() && console.error("updateGetPostReactedByQuery@Errors: ", error);
   }
 }

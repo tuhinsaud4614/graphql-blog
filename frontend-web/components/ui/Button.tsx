@@ -8,7 +8,7 @@ import STYLES from "@/lib/styles";
 import { ButtonModeType, ColorVariantType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-interface Props extends React.ComponentPropsWithRef<"button"> {
+export interface ButtonProps extends React.ComponentPropsWithRef<"button"> {
   mode?: ButtonModeType;
   variant?: ColorVariantType;
   loading?: boolean;
@@ -22,7 +22,7 @@ export default function Button({
   circle = false,
   children,
   ...rest
-}: Props) {
+}: ButtonProps) {
   let style = cn(STYLES.btn.fill, !rest.disabled && STYLES.btn.fillEnabled);
   if (mode === "outline") {
     style = "border";

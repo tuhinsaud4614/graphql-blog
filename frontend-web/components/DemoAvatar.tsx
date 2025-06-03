@@ -26,7 +26,7 @@ const Avatar: CompReturnType = <T extends React.ElementType = "div">(
   { className: cls, as, size = 20, ...rest }: Props<T>,
   ref?: PolymorphicRef<T>,
 ) => {
-  const Component = as || "div";
+  const Component = as ?? "div";
 
   return (
     <Component {...rest} ref={ref} className={cn(className.root, cls)}>

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 import { cn, generateFileUrl } from "@/lib/utils";
@@ -16,7 +16,7 @@ interface Props {
   };
 }
 
-export default function UserLink({ href, src, classes, text }: Props) {
+export default function UserLink({ href, src, classes, text }: Readonly<Props>) {
   const imgUrl = generateFileUrl(src);
   return (
     <div className={cn("flex items-center", classes?.root)}>
@@ -25,13 +25,13 @@ export default function UserLink({ href, src, classes, text }: Props) {
           href={href}
           aria-label={text}
           className={cn(
-            "h-5 w-5 overflow-hidden rounded-full dark:ring-1 dark:ring-secondary dark:hover:ring-2",
+            "size-5 overflow-hidden rounded-full dark:ring-1 dark:ring-secondary dark:hover:ring-2",
             classes?.img,
           )}
         >
           <Image
             loader={({ src, width, quality }) =>
-              `${src}?w=${width}&q=${quality || 75}`
+              `${src}?w=${width}&q=${quality ?? 75}`
             }
             src={imgUrl}
             alt={text}
@@ -45,7 +45,7 @@ export default function UserLink({ href, src, classes, text }: Props) {
           as={Link}
           href={href}
           aria-label={text}
-          className="h-5 w-5"
+          className="size-5"
           size={20 / 1.8}
         />
       )}
