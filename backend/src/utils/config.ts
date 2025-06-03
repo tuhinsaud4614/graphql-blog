@@ -1,4 +1,4 @@
-import envSchema from "env-schema";
+import { envSchema } from "env-schema";
 
 const properties = {
   NODE_ENV: {

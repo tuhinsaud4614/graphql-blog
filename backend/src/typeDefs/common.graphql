@@ -1,4 +1,5 @@
 scalar File
+scalar JSON
 
 directive @rateLimit(
   max: Int

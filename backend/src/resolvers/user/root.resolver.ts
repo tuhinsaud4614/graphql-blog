@@ -21,8 +21,13 @@ export const User = {
     return await userAvatarService(prisma, id);
   },
 
-  async posts({ id }: IUser, _: unknown, { prisma }: YogaContext, __: unknown) {
-    return await userPostsService(prisma, id);
+  async posts(
+    { id }: IUser,
+    _: unknown,
+    { prisma, user }: YogaContext,
+    __: unknown,
+  ) {
+    return await userPostsService(prisma, id, user?.id);
   },
 
   async followings(

@@ -1,4 +1,5 @@
 import { Post, Prisma, PrismaClient, User } from "@prisma/client";
+import { InputJsonValue } from "@prisma/client/runtime/library";
 
 import type {
   IResponseWithCursor,
@@ -8,8 +9,69 @@ import type {
   CreatePostInput,
   CursorParams,
   PostReactedByCursorParams,
+  PublishPostInput,
+  UpdatePostDraftInput,
   UpdatePostInput,
 } from "@/utils/types";
+
+export function createUntitledPost(prisma: PrismaClient, authorId: string) {
+  return prisma.post.create({
+    data: {
+      authorId,
+    },
+  });
+}
+
+export function updatePostDraft(
+  prisma: PrismaClient,
+  { id, draft }: UpdatePostDraftInput,
+) {
+  return prisma.post.update({
+    where: { id },
+    data: {
+      published: false,
+      draft: draft as InputJsonValue,
+    },
+  });
+}
+
+export function publishPost(
+  prisma: PrismaClient,
+  {
+    id,
+    content,
+    categories,
+    imageUrl,
+    tags,
+    title,
+  }: PublishPostInput & { content: InputJsonValue },
+) {
+  return prisma.post.update({
+    where: { id },
+    data: {
+      published: true,
+      publishedAt: new Date(),
+      content,
+      draft: Prisma.JsonNull,
+      title: title || undefined,
+      image: imageUrl
+        ? {
+            connect: { url: imageUrl },
+          }
+        : undefined,
+      tags: tags
+        ? {
+            connect: tags.map((id) => ({ id })),
+          }
+        : undefined,
+      categories: categories
+        ? {
+            connect: categories.map((id) => ({ id })),
+          }
+        : undefined,
+    },
+  });
+}
 
 /**
  * This function creates a post with various properties and connects it to categories and tags using
@@ -335,22 +397,42 @@ export function getAuthorPostById(
   prisma: PrismaClient,
   id: string,
   authorId: string,
+  includeDraft = false,
 ) {
-  return prisma.post.findFirst({ where: { id, authorId } });
+  return prisma.post.findFirst({
+    where: { id, authorId },
+    omit: { draft: !includeDraft },
+  });
 }
 
 /**
- * This function retrieves a post from a Prisma client by its ID.
- * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
+ * This function retrieves a post by its ID using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
  * @param {string} id - The `id` parameter is a string that represents the unique identifier of a post.
- * It is used as a filter to find a specific post in the database using the `findUnique` method of the
- * Prisma client.
- * @returns The function `getPostById` is returning a Promise that resolves to a single post object
- * from the database, identified by the `id` parameter. The post object contains all the fields defined
- * in the Prisma schema for the `Post` model.
+ * @param {boolean} [includeDraft=false] - The `includeDraft` parameter is a boolean that specifies
+ * whether to include draft posts in the search. If `true`, the function will return a post even if it
+ * is a draft; if `false`, the function will only return published posts.
+ * @returns The function `getPostById` is returning a Promise that resolves to a single post object from
+ * the PrismaClient instance, where the post has the specified `id`. If the `includeDraft` parameter is
+ * `true`, the function will return a post even if it is a draft; otherwise, the function will only
+ * return published posts.
  */
-export function getPostById(prisma: PrismaClient, id: string) {
-  return prisma.post.findUnique({ where: { id } });
+export function getPostById(
+  prisma: PrismaClient,
+  id: string,
+  includeDraft = false,
+) {
+  return prisma.post.findUnique({
+    where: { id },
+    /**
+     * The `omit` option is used to exclude certain fields from the result. In this case, we want to
+     * exclude the `draft` field from the result if `includeDraft` is `false`. This means that we will
+     * not receive the `draft` field in the result if the post is a draft and `includeDraft` is
+     * `false`.
+     */
+    omit: { draft: !includeDraft },
+  });
 }
 
 /**
@@ -549,21 +631,6 @@ export async function getPostTags(prisma: PrismaClient, postId: string) {
 }
 
 /**
- * This function retrieves the image of a post from a Prisma database based on the post's
- * ID.
- * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
- * with the database.
- * @param {string} postId - postId is a string parameter that represents the unique identifier of a
- * post. It is used as a filter to retrieve a specific post from the database.
- * @returns the image of a post with the given postId.
- */
-export async function getPostImage(prisma: PrismaClient, postId: string) {
-  return prisma.post.findUnique({
-    where: { id: postId },
-  }).image;
-}
-
-/**
  * This function retrieves the users who reacted to a specific post using PrismaClient.
  * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client that allows us to
  * interact with the database.
@@ -600,4 +667,12 @@ export async function getPostComments(prisma: PrismaClient, postId: string) {
       where: { id: postId },
     })
     .comments();
+}
+
+export async function getPostImage(prisma: PrismaClient, postId: string) {
+  return prisma.post
+    .findUnique({
+      where: { id: postId },
+    })
+    .image();
 }

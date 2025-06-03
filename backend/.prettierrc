@@ -7,8 +7,9 @@
   "printWidth": 80,
   "endOfLine": "lf",
   "importOrder": [
-    "^graphql(.*)$",
     "<THIRD_PARTY_MODULES>",
+    "^@/utils/config$",
+    "^graphql(.*)$",
     "^@/(.*)$",
     "^[./]"
   ],

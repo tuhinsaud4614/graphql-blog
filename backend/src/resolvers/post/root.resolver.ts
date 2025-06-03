@@ -54,16 +54,6 @@ export const Post = {
       );
     }
   },
-  async image({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
-    try {
-      return await getPostImage(prisma, id);
-    } catch (error) {
-      logger.error(error);
-      return new UnknownError(
-        generateEntityNotExistErrorMessage("Image", "post"),
-      );
-    }
-  },
   async reactionsBy(
     { id }: IPost,
     _: unknown,
@@ -94,6 +84,16 @@ export const Post = {
       logger.error(error);
       return new UnknownError(
         generateEntityNotExistErrorMessage("Comments", "post"),
+      );
+    }
+  },
+  async image({ id }: IPost, _: unknown, { prisma }: YogaContext, __: unknown) {
+    try {
+      return await getPostImage(prisma, id);
+    } catch (error) {
+      logger.error(error);
+      return new UnknownError(
+        generateEntityNotExistErrorMessage("Image", "post"),
       );
     }
   },

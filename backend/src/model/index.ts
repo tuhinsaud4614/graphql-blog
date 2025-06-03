@@ -16,7 +16,11 @@ import {
 import type { IErrorResponse, ISuccessResponse } from "@/utils/interfaces";
 
 export class HttpError extends Error {
-  constructor(message: string, public code: number, public detail?: string) {
+  constructor(
+    message: string,
+    public code: number,
+    public detail?: string,
+  ) {
     super(message);
 
     // this is for instanceof behave properly

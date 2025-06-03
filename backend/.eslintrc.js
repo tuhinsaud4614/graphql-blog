@@ -6,7 +6,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
+    "prettier",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
@@ -16,7 +16,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "import", "prettier"],
+  plugins: ["@typescript-eslint", "prettier", "import"],
   rules: {
     "prettier/prettier": "error",
     "import/extensions": "off",

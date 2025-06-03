@@ -1,8 +1,8 @@
-import { YogaInitialContext } from "graphql-yoga";
-
 import type { User } from "@prisma/client";
 import type { Request, Response } from "express";
 import type { InferType } from "yup";
+
+import { YogaInitialContext } from "graphql-yoga";
 
 import {
   cursorParamsSchema,
@@ -28,6 +28,8 @@ import {
   createPostSchema,
   postReactedBySchema,
   postsByTagSchema,
+  publishPostSchema,
+  updatePostDraftSchema,
   updatePostSchema,
 } from "@/validations/post";
 import { tagsByTextWithOffsetSchema } from "@/validations/tag";
@@ -75,6 +77,8 @@ export type AuthorIdWithCursorParams = InferType<
 // Post Type
 export type CreatePostInput = InferType<typeof createPostSchema>;
 export type UpdatePostInput = InferType<typeof updatePostSchema>;
+export type UpdatePostDraftInput = InferType<typeof updatePostDraftSchema>;
+export type PublishPostInput = InferType<typeof publishPostSchema>;
 export type PostsByTagOffsetParams = InferType<typeof postsByTagSchema>;
 export type PostReactedByCursorParams = InferType<typeof postReactedBySchema>;
 

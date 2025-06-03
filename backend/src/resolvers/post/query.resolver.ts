@@ -52,10 +52,10 @@ export const Query = {
   async post(
     _: unknown,
     { id }: { id: string },
-    { prisma }: YogaContext,
+    { prisma, user }: YogaContext,
     ___: unknown,
   ) {
-    return await postByIdService(prisma, id);
+    return await postByIdService(prisma, id, user?.id);
   },
   async trendingPosts(
     _: unknown,

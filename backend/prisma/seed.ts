@@ -27,6 +27,17 @@ async function main() {
       role: "AUTHOR",
     },
   });
+  await prisma.user.upsert({
+    where: { email: 't2@gmail.com' },
+    update: {},
+    create: {
+      email: "t2@gmail.com",
+      authorStatus: "VERIFIED",
+      password: userHashPassword,
+      mobile: "01611111112",
+      role: "AUTHOR",
+    },
+  });
 }
 main()
   .then(async () => {

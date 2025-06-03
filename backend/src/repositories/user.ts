@@ -228,6 +228,7 @@ export async function getUserByEmailOrMobile(
  * with a database.
  * @param {string} email - The email parameter is a string that represents the email address of a user.
  * @param {string} mobile - The `mobile` parameter is a string that represents the user's mobile phone
+ * @param {boolean} includePassword - The `includePassword` parameter is a boolean used to include password or not
  * number. It is used as one of the criteria to search for a user in the database along with their
  * email address.
  * @returns The function `getUserByEmailOrMobileWithAvatar` is returning a Promise that resolves to the
@@ -238,9 +239,11 @@ export async function getUserByEmailOrMobileWithAvatar(
   prisma: PrismaClient,
   email: string,
   mobile: string,
+  includePassword?: boolean,
 ) {
   return prisma.user.findFirst({
     where: { OR: [{ email }, { mobile }] },
+    omit: { password: !includePassword },
     include: {
       avatar: { select: { id: true, height: true, width: true, url: true } },
     },

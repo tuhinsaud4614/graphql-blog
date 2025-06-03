@@ -25,13 +25,13 @@ export const Mutation = {
   async uploadImage(
     _: unknown,
     params: ImageParams,
-    { user }: YogaContext,
+    { user, prisma }: YogaContext,
     ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
     }
 
-    return await uploadImageService(params);
+    return await uploadImageService(prisma, params);
   },
 };

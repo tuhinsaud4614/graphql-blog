@@ -1,8 +1,16 @@
+import { PrismaClient } from "@prisma/client";
 import path from "path";
 
 import logger from "@/logger";
 import { UnknownError } from "@/model";
-import { fileUpload, formatError, imageUpload, nanoid } from "@/utils";
+import { createImageInDb } from "@/repositories/common";
+import {
+  fileUpload,
+  formatError,
+  imageUpload,
+  nanoid,
+  removeFile,
+} from "@/utils";
 import { generateCreationErrorMessage } from "@/utils/constants";
 import type { FileParams, ImageParams } from "@/utils/types";
 import { fileParamsSchema, imageParamsSchema } from "@/validations";
@@ -40,12 +48,16 @@ export async function uploadFileService(params: FileParams) {
 
 /**
  * This function uploads an image and returns its file path.
+ * @param {PrismaClient} prisma - The `prisma` parameter is a db client
  * @param {ImageParams} params - The `params` parameter is an object that contains the following
  * properties:
  * @returns a string that represents the path to the uploaded image file. If there is an error during
  * the validation or upload process, it will return an error object.
  */
-export async function uploadImageService(params: ImageParams) {
+export async function uploadImageService(
+  prisma: PrismaClient,
+  params: ImageParams,
+) {
   try {
     await imageParamsSchema.validate(params, {
       abortEarly: false,
@@ -54,13 +66,27 @@ export async function uploadImageService(params: ImageParams) {
     logger.error(error);
     return formatError(error, { key: "upload image" });
   }
+
+  let imagePath;
   try {
     const uId = nanoid();
     const dest = path.join(process.cwd(), "images");
 
-    const { name } = await imageUpload(params.image, dest, uId);
-    return `images/${name}`;
+    const { name, height, width, filePath } = await imageUpload(
+      params.image,
+      dest,
+      uId,
+    );
+
+    imagePath = filePath;
+    const newImage = await createImageInDb(prisma, {
+      imgUrl: `images/${name}`,
+      height,
+      width,
+    });
+    return newImage.url;
   } catch (error) {
+    removeFile(imagePath);
     logger.error(error);
     return new UnknownError(generateCreationErrorMessage("Image"));
   }
