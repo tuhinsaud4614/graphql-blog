@@ -25,6 +25,8 @@ const ThemeSwitch = dynamic(() => import("@/components/theme-switch"), {
   ),
 });
 
+const MotionLink = motion.create(Link);
+
 export default function LandingHeader() {
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
@@ -74,25 +76,20 @@ export default function LandingHeader() {
             )}
             unAuth={
               <li>
-                <Link
+                <MotionLink
                   href={
                     pathname === ROUTES.account.login
                       ? ROUTES.account.register
                       : ROUTES.account.login
                   }
-                  passHref
-                  legacyBehavior
+                  style={{ color: linkColor }}
+                  className="inline-block cursor-pointer select-none active:scale-95"
+                  aria-label={
+                    pathname === ROUTES.account.login ? "Sign Up" : "Sign In"
+                  }
                 >
-                  <motion.a
-                    style={{ color: linkColor }}
-                    className="inline-block cursor-pointer select-none active:scale-95"
-                    aria-label={
-                      pathname === ROUTES.account.login ? "Sign Up" : "Sign In"
-                    }
-                  >
-                    {pathname === ROUTES.account.login ? "Sign Up" : "Sign In"}
-                  </motion.a>
-                </Link>
+                  {pathname === ROUTES.account.login ? "Sign Up" : "Sign In"}
+                </MotionLink>
               </li>
             }
             loader={

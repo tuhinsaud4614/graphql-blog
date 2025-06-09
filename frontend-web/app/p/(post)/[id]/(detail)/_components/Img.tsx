@@ -13,7 +13,7 @@ import { useEventListener } from "usehooks-ts";
 
 const className = {
   root: "relative w-full",
-  shade: "fixed inset-0 bg-white z-[998]",
+  shade: "fixed inset-0 bg-base-100 z-[998]",
   shadeOpen: "pointer-events-auto opacity-1",
   shadeClose: "pointer-events-none opacity-0",
   img: "inset-0",

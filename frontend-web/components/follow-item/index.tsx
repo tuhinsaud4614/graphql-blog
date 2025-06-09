@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 
 import { FUserFragment } from "@/graphql/generated/schema";
@@ -10,14 +10,16 @@ import { ROUTES } from "@/lib/constants";
 import { cn, generateFileUrl, getUserName } from "@/lib/utils";
 
 import DemoAvatar from "../DemoAvatar";
+import SlateViewer from "../SlateViewer";
 import FollowButton from "./FollowButton";
 import UnFollowButton from "./UnFollowButton";
 
 const className = {
-  root: "space-y-3 flex items-center dark:ml-0.5",
+  root: "flex dark:ml-0.5 items-start",
   avatar: "h-8 w-8 min-w-0 rounded-full shrink-0 overflow-hidden inline-block",
   mid: "flex flex-col ml-2 mr-4 flex-1",
-  title: "font-bold text-neutral line-clamp-2 text-ellipsis break-all",
+  title:
+    "font-bold text-neutral line-clamp-2 text-ellipsis break-all leading-tight",
   subtitle: "mt-1 text-sm text-neutral/60 line-clamp-2 text-ellipsis",
   btn: "text-sm py-1 px-3",
 };
@@ -61,7 +63,7 @@ export default function FollowItem({
             alt={userName || ""}
             width={32}
             height={32}
-            className="size-[inherit] object-cover"
+            className="size-8 object-cover"
           />
         </Link>
       ) : (
@@ -80,11 +82,12 @@ export default function FollowItem({
         className={cn(className.mid, classes?.mid)}
       >
         <h2 className={cn(className.title, classes?.title)}>{userName}</h2>
-        <p className={cn(className.subtitle, classes?.subtitle)}>
-          {user.about ||
-            `Technical Writer | Editor | Coder | Active Stackoveflow contributor
-            | Love to learn More |`}
-        </p>
+        {!!user.about && (
+          <SlateViewer
+            value={JSON.parse(user.about)}
+            className="line-clamp-1 [&_*]:!text-muted-foreground"
+          />
+        )}
       </Link>
       {isFollowed ? (
         <UnFollowButton

@@ -1,0 +1,18 @@
+query UserBookmarksWithCursor($limit: Int!, $after: ID) {
+  userBookmarksWithCursor(limit: $limit, after: $after) {
+    edges {
+      cursor
+      node {
+        ...FBookmark
+      }
+    }
+    pageInfo {
+      ...FCursorPageInfo
+    }
+    total
+  }
+}
+
+query IsBookmarked($postId: ID!) {
+  isBookmarked(postId: $postId)
+}

@@ -2,12 +2,12 @@
 
 import * as React from "react";
 
+import { MessageCircleIcon } from "lucide-react";
 import { Descendant } from "slate";
 
 import { Button, SlateViewer } from "@/components";
 import useElementSize from "@/hooks/useElementSize";
 import { cn, countConvert } from "@/lib/utils";
-import { MessageCircleIcon } from "lucide-react";
 
 const className = {
   body: "mt-1.5",
@@ -28,6 +28,7 @@ interface Props {
   showReplies: boolean;
   toggleReplies?(): void;
   toggleReplyEditor?(): void;
+  hideReplyButton?: boolean;
 }
 
 export default function Body({
@@ -37,6 +38,7 @@ export default function Body({
   showReplies,
   toggleReplies,
   toggleReplyEditor,
+  hideReplyButton,
 }: Props) {
   const [ref, { height }] = useElementSize();
   const [show, setShow] = React.useState(false);
@@ -55,7 +57,7 @@ export default function Body({
         }
       >
         <div ref={ref}>
-          <SlateViewer value={body} />
+          <SlateViewer value={body} className="[&_*]:text-sm" />
         </div>
       </div>
 
@@ -108,16 +110,18 @@ export default function Body({
           </div>
         )}
         <div className={className.actionsContainer}>
-          <Button
-            mode="text"
-            variant="secondary"
-            type="button"
-            aria-label="Reply"
-            className="!p-1 text-sm"
-            onClick={toggleReplyEditor}
-          >
-            Reply
-          </Button>
+          {!hideReplyButton && (
+            <Button
+              mode="text"
+              variant="secondary"
+              type="button"
+              aria-label="Reply"
+              className="!p-1 text-sm"
+              onClick={toggleReplyEditor}
+            >
+              Reply
+            </Button>
+          )}
         </div>
       </div>
       {/* Actions bar End */}

@@ -35,7 +35,7 @@ export default function Login() {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const emailOrPasswordId = React.useId();
   const passwordId = React.useId();
-  const { replace, refresh } = useRouter();
+  const { replace } = useRouter();
   const searchParams = useSearchParams();
 
   const {
@@ -64,8 +64,8 @@ export default function Login() {
 
       if (response?.ok) {
         reset();
-        // For solving not replacing login url with redirect url
-        callbackUrl && refresh();
+        // // For solving not replacing login url with redirect url
+        // callbackUrl && refresh();
         replace(callbackUrl ?? ROUTES.user.home);
       } else if (response?.error) {
         setError(response.error);

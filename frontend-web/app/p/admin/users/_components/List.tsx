@@ -94,10 +94,10 @@ export default function AdminUserList({ users }: Props) {
                   alt="Avatar"
                   width={40}
                   height={40}
-                  className="h-10 w-10 rounded-full object-cover"
+                  className="size-10 rounded-full object-cover"
                 />
               ) : (
-                <DemoAvatar as="span" className="h-10 w-10" size={40 / 1.8} />
+                <DemoAvatar as="span" className="size-10" size={40 / 1.8} />
               )}
               <span className="truncate text-sm font-medium selection:bg-primary selection:text-primary-foreground">
                 {row.original.name}

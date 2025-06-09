@@ -5,6 +5,7 @@ import * as React from "react";
 import dynamic from "next/dynamic";
 
 import pipe from "lodash/fp/pipe";
+import { useSession } from "next-auth/react";
 import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
@@ -15,11 +16,13 @@ import {
   Slate,
   withReact,
 } from "slate-react";
+import { toast } from "sonner";
 
 import { Button, ErrorModal, SlateElement, SlateLeaf } from "@/components";
 import { useUpdateAboutMutation } from "@/graphql/generated/schema";
-import { gplErrorHandler, withLinks } from "@/lib/utils";
-import { toast } from "sonner";
+import { ABOUT_ME_KEY } from "@/lib/constants";
+import { updateSession } from "@/lib/updateSession";
+import { gplErrorHandler, setLocalStorageValue, withLinks } from "@/lib/utils";
 
 const HoveringToolbar = dynamic(() => import("./HoveringToolbar"), {
   ssr: false,
@@ -43,6 +46,7 @@ interface Props {
 }
 
 export default function AddAbout({ previousValue }: Readonly<Props>) {
+  const { update } = useSession();
   const [editor] = React.useState(() =>
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     withPlugins(createEditor() as ReactEditor),
@@ -50,9 +54,8 @@ export default function AddAbout({ previousValue }: Readonly<Props>) {
   const [value, setValue] = React.useState(previousValue || initialValue);
   const [editMode, setEditMode] = React.useState(false);
 
-  // const rdxDispatch = useAppDispatch();
 
-  const [updateABout, { loading, error, reset }] = useUpdateAboutMutation({
+  const [updateAbout, { loading, error, reset }] = useUpdateAboutMutation({
     notifyOnNetworkStatusChange: true,
   });
 
@@ -68,18 +71,18 @@ export default function AddAbout({ previousValue }: Readonly<Props>) {
 
   const onSubmit = async () => {
     try {
-      const { data } = await updateABout({
-        variables: { value: JSON.stringify(value) },
+      const about = JSON.stringify(value);
+      console.log("new about", about);
+      console.log(typeof about);
+      const { data } = await updateAbout({
+        variables: { value: about },
       });
       if (data && data.updateAbout) {
         const newAbout = data.updateAbout;
-        // rdxDispatch(updateUserAbout(newAbout));
+        await updateSession({ about: newAbout }, update);
         setEditMode(false);
         toast.success("User about update successfully", {
           position: "top-center",
-          // autoClose: 2000,
-          // hideProgressBar: false,
-          // closeOnClick: true,
         });
       }
     } catch {}
@@ -133,16 +136,16 @@ export default function AddAbout({ previousValue }: Readonly<Props>) {
               aria-label="Add bio"
               renderLeaf={renderLeaf}
               renderElement={renderElement}
-              // onChange={(value) => {
-              //   const isAstChange = editor.operations.some(
-              //     (op: any) => "set_selection" !== op.type
-              //   );
-              //   if (isAstChange) {
-              //     // Save the value to Local Storage.
-              //     const content = JSON.stringify(value);
-              //     setLocalStorageValue(ABOUT_ME_KEY, content);
-              //   }
-              // }}
+              onChange={(value) => {
+                const isAstChange = editor.operations.some(
+                  (op: any) => "set_selection" !== op.type,
+                );
+                if (isAstChange) {
+                  // Save the value to Local Storage.
+                  const content = JSON.stringify(value);
+                  setLocalStorageValue(ABOUT_ME_KEY, content);
+                }
+              }}
             />
           </section>
         </Slate>

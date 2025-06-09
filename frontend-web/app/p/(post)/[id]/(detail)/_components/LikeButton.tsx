@@ -5,17 +5,23 @@ import * as React from "react";
 import { useParams } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 
-import { useReactDispatch, useReactState } from "@/context/ReactCountContext";
+import {
+  useReactDispatch,
+  useReactState,
+} from "@/app/p/(post)/_context/react-count-context";
 import {
   EReactionsMutationStatus,
   useReactToPostMutation,
 } from "@/graphql/generated/schema";
 import useTooltip from "@/hooks/useTooltip";
+import useUser from "@/hooks/useUser";
 import { isDev } from "@/lib/isType";
 import { cn, countConvert } from "@/lib/utils";
-import FloatingLikes from "./FloatingLikes";
 
+import { usePostDetail } from "../../../_context/post-detail-context";
+import FloatingLikes from "./FloatingLikes";
 
 const className = {
   like: "flex items-center",
@@ -49,21 +55,31 @@ const iconVariants = {
 export default function LikeButton({ className: cls }: Props) {
   const params = useParams<{ id: string }>();
   const [openLikeModal, setOpenLikeBox] = React.useState(false);
+  const id = React.useId();
   const { count, isReacted } = useReactState((state) => state);
   const { onHoverEnd, onHoverStart } = useTooltip();
 
   const reactDispatch = useReactDispatch();
   const postId = params?.id;
 
+  const author = usePostDetail((state) => state.post.author);
+  const authUser = useUser();
+
   const [reactAction] = useReactToPostMutation({
     notifyOnNetworkStatusChange: true,
     update(cache) {
-      cache.evict({ id: `Post:${postId}`, fieldName: "postReactedBy" });
+      cache.evict({ id: postId, fieldName: "postReactedBy" });
       cache.gc();
     },
   });
 
   const likeHandler = async () => {
+    if (!authUser || authUser.id === author.id) {
+      toast.warning("You can't bookmark your own post", {
+        position: "top-center",
+      });
+      return;
+    }
     // Store previous state for rollback
     const prevState = { count, isReacted };
     const nextReacted = !isReacted;
@@ -120,6 +136,7 @@ export default function LikeButton({ className: cls }: Props) {
               checked={isReacted}
               onChange={likeHandler}
               className="absolute size-0 cursor-pointer opacity-0"
+              id={id}
             />
 
             <AnimatePresence mode="wait">

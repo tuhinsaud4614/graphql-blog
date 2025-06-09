@@ -2,8 +2,8 @@
 
 import { AlertCircleIcon, RefreshCwIcon } from "lucide-react";
 
-import Button from "../ui/Button";
-import Skeleton from "../ui/Skeleton";
+import { Button } from "@/components";
+import Skeleton from "@/components/ui/Skeleton";
 
 interface LoadingSkeletonProps {
   error?: Error;
@@ -11,7 +11,10 @@ interface LoadingSkeletonProps {
   isLoading?: boolean;
 }
 
-export default function BottomReactionsSkeleton({ error, retry }: LoadingSkeletonProps) {
+export default function BottomReactionsSkeleton({
+  error,
+  retry,
+}: LoadingSkeletonProps) {
   if (error) {
     return (
       <div className="mt-4 flex items-center justify-between">

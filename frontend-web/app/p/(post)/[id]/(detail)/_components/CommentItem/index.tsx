@@ -5,10 +5,10 @@ import * as React from "react";
 import { Variants, motion } from "framer-motion";
 import { Descendant } from "slate";
 
-
 import { FCommentFragment } from "@/graphql/generated/schema";
 import useUser from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
+
 import Body from "./Body";
 import EditComment from "./EditComment";
 import Header from "./Header";
@@ -49,6 +49,8 @@ interface Props {
   replyCount: number;
   body: Descendant[];
   classes?: ClassesType;
+  depth: number;
+  maxDepth: number;
 }
 
 export default function CommentItem({
@@ -56,8 +58,10 @@ export default function CommentItem({
   body,
   classes,
   replyCount,
+  depth,
+  maxDepth,
 }: Props) {
-  const user = useUser()
+  const user = useUser();
   const [showReplies, setShowReplies] = React.useState(false);
   const [openReplyEditor, setOpenReplyEditor] = React.useState(false);
 
@@ -102,6 +106,7 @@ export default function CommentItem({
               toggleReplies={() => setShowReplies((prev) => !prev)}
               toggleReplyEditor={() => setOpenReplyEditor((prev) => !prev)}
               className={classes?.bodyContainer}
+              hideReplyButton={depth > maxDepth}
             />
           </Wrapper>
         </EditProvider>
@@ -122,7 +127,13 @@ export default function CommentItem({
               replyFor={comment.parentComment?.id}
             />
           )}
-          {showReplies && replyCount > 0 && <Replies commentId={comment.id} />}
+          {showReplies && replyCount > 0 && (
+            <Replies
+              commentId={comment.id}
+              depth={comment.parentComment ? depth + 1 : depth}
+              maxDepth={maxDepth}
+            />
+          )}
         </section>
       )}
       {/* Replies End */}

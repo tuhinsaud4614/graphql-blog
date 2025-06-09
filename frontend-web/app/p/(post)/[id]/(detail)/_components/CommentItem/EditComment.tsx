@@ -2,16 +2,14 @@
 
 import * as React from "react";
 
-
-
 import { Descendant } from "slate";
+import { toast } from "sonner";
 
 import { CommentBox, ToastErrorMessage } from "@/components";
 import { useUpdateCommentMutation } from "@/graphql/generated/schema";
-
 import { isDev } from "@/lib/isType";
 import { gplErrorHandler } from "@/lib/utils";
-import { toast } from "sonner";
+
 import { useEditorCloser } from "./context";
 
 const initialValue: Descendant[] = [
@@ -29,7 +27,6 @@ export default function EditComment({
   oldValue = initialValue,
   commentId,
 }: Props) {
-
   const [value, setValue] = React.useState<Descendant[]>(oldValue);
   const [expand, setExpand] = React.useState(true);
   const closer = useEditorCloser();
@@ -52,7 +49,7 @@ export default function EditComment({
       setExpand(false);
       closer();
     } catch (error) {
-      isDev() && console.error(error)
+      isDev() && console.error(error);
     }
   };
 

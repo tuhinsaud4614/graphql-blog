@@ -53,7 +53,9 @@ export default function VerifyAccountContent() {
               replace(ROUTES.account.login);
             }, 2000);
           }
-        } catch (error) {}
+        } catch (error) {
+          isDev() && console.error("VerifyUser@Error: ", error);
+        }
       };
       void handler();
     }

@@ -1,4 +1,6 @@
-import Image from "next/legacy/image";
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
 
 import { cn, generateFileUrl } from "@/lib/utils";
@@ -16,7 +18,12 @@ interface Props {
   };
 }
 
-export default function UserLink({ href, src, classes, text }: Readonly<Props>) {
+export default function UserLink({
+  href,
+  src,
+  classes,
+  text,
+}: Readonly<Props>) {
   const imgUrl = generateFileUrl(src);
   return (
     <div className={cn("flex items-center", classes?.root)}>
@@ -35,9 +42,9 @@ export default function UserLink({ href, src, classes, text }: Readonly<Props>) 
             }
             src={imgUrl}
             alt={text}
-            width={20}
-            height={20}
-            className="object-cover"
+            width={0}
+            height={0}
+            className="size-5 object-cover"
           />
         </Link>
       ) : (

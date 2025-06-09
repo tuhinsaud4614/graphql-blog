@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Descendant } from "slate";
@@ -26,11 +26,11 @@ const className = {
   userTile: "flex items-center justify-between",
   userTileLeft: "flex items-start min-w-0 flex-1",
   userTileAuthorName:
-    "font-medium text-sm text-neutral dark:text-neutral-dark hover:text-neutral-focus dark:hover:text-neutral-dark-focus active:scale-95 line-clamp-1 text-ellipsis",
+    "font-medium text-sm text-neutral dark:text-neutral-dark hover:text-accent active:scale-95 line-clamp-1 text-ellipsis w-max",
   userTileAuthorAbout:
     "text-xs text-neutral/60 dark:text-neutral-dark/60 line-clamp-1 text-ellipsis mt-1",
   userTileImg:
-    "w-10 h-10 inline-block rounded-full overflow-hidden mr-5 border dark:border-none dark:ring-1 dark:ring-secondary-dark",
+    "size-10 inline-block rounded-full overflow-hidden border dark:border-none dark:ring-1 dark:ring-secondary-dark",
   skeltonCommon:
     "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20 rounded-full",
   skeletonText: "w-16 h-6",
@@ -70,16 +70,15 @@ export default function ReactorItem({ user }: Readonly<Props>) {
               }
               src={imgUrl}
               alt={username ?? ""}
-              width={40}
-              height={40}
-              layout="responsive"
-              objectFit="cover"
+              width={0}
+              height={0}
+              className="size-10 object-cover"
             />
           </span>
         ) : (
           <DemoAvatar className="size-10" size={40 / 1.8} />
         )}
-        <span className="flex min-w-0 flex-1 flex-col pr-3">
+        <span className="flex min-w-0 flex-1 flex-col px-3">
           <Link
             href={ROUTES.user.userProfile(user.id)}
             aria-label={username}

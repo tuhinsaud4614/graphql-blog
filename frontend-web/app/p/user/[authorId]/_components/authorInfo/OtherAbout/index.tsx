@@ -7,10 +7,10 @@ import { Descendant } from "slate";
 import { Button, ReactorModal, SlateViewer } from "@/components";
 import { useGetUserFollowingsQuery } from "@/graphql/generated/schema";
 
-import BottomFollowers from "./BottomFollowers";
-import BottomFollowings from "./BottomFollowings";
 import useLockBody from "@/hooks/useLockBody";
 import { cn, countConvert } from "@/lib/utils";
+import BottomFollowers from "./BottomFollowers";
+import BottomFollowings from "./BottomFollowings";
 
 const className = {
   root: "flex flex-col",
@@ -22,42 +22,6 @@ const className = {
     "bg-neutral/20 animate-pulse dark:bg-neutral-dark/20 rounded-full",
   skeletonText: "w-16 h-6",
 };
-
-// const initialValue = [
-//   { children: [{ text: "shshjhjsdhs", bold: true }], type: "heading-one" },
-//   { type: "heading-two", children: [{ bold: true, text: "kjdshdhjshjds" }] },
-//   { children: [{ bold: true, text: "mndsmndsbmnbmds" }] },
-//   { children: [{ text: "dsmnbmdsbmdsbnm", bold: false }], type: "code" },
-//   { type: "block-quote", children: [{ bold: false, text: "dshjsdhjjsdhjd" }] },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   {
-//     type: "link",
-//     url: "https://miro.medium.com/max/1400/0*iTuEmxLD1IOJ5Xf1.png",
-//     children: [{ text: "tuhin hhhhhh" }],
-//   },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   {
-//     type: "image",
-//     url: "/demo.png",
-//     children: [{ text: "" }],
-//   },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   {
-//     type: "video",
-//     url: "https://player.vimeo.com/video/26689853",
-//     children: [{ text: "" }],
-//   },
-//   { type: "paragraph", children: [{ bold: false, text: "" }] },
-//   {
-//     type: "numbered-list",
-//     children: [
-//       { type: "list-item", children: [{ bold: false, text: "dnsdhjdhjs" }] },
-//     ],
-//   },
-// ];
 
 interface Props {
   about?: Descendant[] | null;

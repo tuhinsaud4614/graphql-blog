@@ -20,21 +20,20 @@ import { BACKEND_GRAPHQL_URL, ROUTES } from "@/lib/constants";
 import { getAccessTokenFromNextAuth } from "@/lib/next-server-api";
 import createUploadLink from "@/lib/uploadLink";
 
-function makeClient() {
-  async function retryRefreshToken() {
-    try {
-      const newAccessToken = await getAccessTokenFromNextAuth();
-      if (!newAccessToken) {
-        await signOut({ callbackUrl: ROUTES.landing, redirect: true });
-        return null;
-      }
-
-      return newAccessToken;
-    } catch (_) {
+async function retryRefreshToken() {
+  try {
+    const newAccessToken = await getAccessTokenFromNextAuth();
+    if (!newAccessToken) {
+      await signOut({ callbackUrl: ROUTES.landing, redirect: true });
       return null;
     }
-  }
 
+    return newAccessToken;
+  } catch (_) {
+    return null;
+  }
+}
+function makeClient() {
   const errorLink = onError(({ graphQLErrors, operation, forward }) => {
     if (graphQLErrors) {
       for (const err of graphQLErrors) {

@@ -1,13 +1,12 @@
-import * as React from "react";
-
 import Link from "next/link";
 
 import moment from "moment";
 
-import UserLink from "@/components/UserLink";
+import { UserLink } from "@/components";
 import { GetTrendingPostsQuery } from "@/graphql/generated/schema";
 import { ROUTES } from "@/lib/constants";
 import { getUserName } from "@/lib/utils";
+
 
 interface Props {
   index: number;
@@ -39,12 +38,13 @@ export default function TrendingItem({ index, post }: Readonly<Props>) {
           </Link>
           <span className="flex items-center text-xs text-neutral/70">
             {/* 31536000000 = 1 year in milliseconds */}
-            {Math.abs(Date.now() - +post.updatedAt) / 31536000000 > 1 ? (
-              <React.Fragment>
+            {/* {Math.abs(Date.now() - +post.updatedAt) / 31536000000 > 1 ? ( */}
+            {moment().diff(+post.updatedAt, "years") > 1 ? (
+              <>
                 <time>{moment(+post.updatedAt).format("MMM Do YY")}</time>
                 <span className="px-1.5">·</span>
                 <time>{moment(+post.updatedAt).format("h:mm a")}</time>
-              </React.Fragment>
+              </>
             ) : (
               <time>{moment(+post.updatedAt).startOf("second").fromNow()}</time>
             )}

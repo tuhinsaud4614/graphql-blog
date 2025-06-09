@@ -11,7 +11,7 @@ import {
   AuthorInfoAboutTab,
   AuthorInfoHomeTab,
 } from "@/app/p/user/[authorId]/_components/authorInfo";
-import { ClientOnly, DemoAvatar, Tabs } from "@/components";
+import { DemoAvatar, Tabs } from "@/components";
 import CreatePostTitle from "@/components/post-create/CreatePostTitle";
 import {
   FUserFragment,
@@ -20,8 +20,6 @@ import {
 import { ROUTES } from "@/lib/constants";
 import { IAuthUser } from "@/lib/types";
 import { generateFileUrl, getUserName } from "@/lib/utils";
-
-
 
 const className = {
   title: "mb-4 mt-8 flex items-center",
@@ -120,14 +118,10 @@ export default function AboutPage({ params }: Readonly<Props>) {
           <AuthorInfoHomeTab posts={data.user.posts} />
         ) : null}
         {currentTab === 1 ? (
-          <ClientOnly>
-            {
-              <AuthorInfoAboutTab
-                user={user as IAuthUser}
-                userId={user.id || authorId}
-              />
-            }
-          </ClientOnly>
+          <AuthorInfoAboutTab
+            user={user as IAuthUser}
+            userId={user.id || authorId}
+          />
         ) : null}
       </Tabs>
     </>

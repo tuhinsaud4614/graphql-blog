@@ -48,8 +48,7 @@ export default function FloatingReactions({ comments, siblingRef }: Props) {
 
     const onScrolling = () => {
       const isShow =
-        window.innerHeight + window.pageYOffset <=
-        height + (matches ? 32 : 144);
+        window.innerHeight + window.scrollY <= height + (matches ? 32 : 144);
 
       if (isShow) {
         if (!show) {

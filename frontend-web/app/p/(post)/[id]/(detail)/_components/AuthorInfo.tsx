@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,10 +9,10 @@ import { ROUTES } from "@/lib/constants";
 import { generateFileUrl, getUserName } from "@/lib/utils";
 
 const className = {
-  root: "my-8 flex items-center",
+  root: "mb-4 flex items-center",
   img: "w-12 h-12 inline-block rounded-full overflow-hidden mr-4 dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark",
   content: "flex flex-col justify-center flex-1 min-w-0",
-  title: "text-neutral dark:text-neutral-dark line-clamp-1 text-ellipsis",
+  title: "text-neutral dark:text-neutral-dark line-clamp-1 text-ellipsis w-max",
   timeBox: "text-neutral/60 dark:text-neutral-dark/60 text-sm",
 };
 
@@ -38,7 +40,7 @@ export default function AuthorInfo({ author, postDate }: Props) {
             alt={userName ?? ""}
             width={48}
             height={48}
-            className="object-cover"
+            className="h-12 object-cover"
             priority
           />
         ) : (

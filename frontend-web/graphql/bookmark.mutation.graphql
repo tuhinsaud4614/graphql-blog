@@ -1,0 +1,13 @@
+mutation CreateBookmark($postId: ID!) {
+  createBookmark(postId: $postId) {
+    ...FBookmark
+  }
+}
+
+mutation DeleteBookmark($id: ID!) {
+  deleteBookmark(id: $id)
+}
+
+mutation ToggleBookmark($postId: ID!) {
+  toggleBookmark(postId: $postId)
+}

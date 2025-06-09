@@ -8,6 +8,10 @@ mutation UpdatePostDraft($postId: ID!, $draft: JSON!) {
   updateDraft(data: { id: $postId, draft: $draft })
 }
 
+mutation DeletePost($id: ID!) {
+  deletePost(id: $id)
+}
+
 mutation PublishPost(
   $id: ID!
   $title: String

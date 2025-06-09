@@ -45,8 +45,6 @@ export default function PostContextProvider({
     [isDrafted, isSaving, wantToPublish],
   );
 
-  console.log(memoSettings);
-
   return (
     <PostDraftSettings.Provider value={memoSettings}>
       {children}

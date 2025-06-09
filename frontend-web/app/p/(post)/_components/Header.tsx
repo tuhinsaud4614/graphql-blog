@@ -26,7 +26,7 @@ interface Props {
 
 export default function PostHeader({ children }: Readonly<Props>) {
   return (
-    <header className="dark:bg-base-dark-200 fixed inset-x-0 top-0 z-50">
+    <header className="dark:bg-base-dark-200 fixed inset-x-0 top-0 z-50 bg-base-100">
       <nav className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-5">
         <Link
           href={ROUTES.user.home}

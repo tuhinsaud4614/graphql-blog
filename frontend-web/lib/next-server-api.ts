@@ -1,6 +1,6 @@
-import axios from "axios";
 
-import { fetchRefreshToken, getAuthUser } from "./utils";
+import { getSession } from "next-auth/react";
+import { getAuthUser } from "./utils";
 
 /**
  * The function `getAccessTokenFromNextAuth` retrieves an access token from an API endpoint and checks
@@ -11,30 +11,36 @@ import { fetchRefreshToken, getAuthUser } from "./utils";
  */
 export async function getAccessTokenFromNextAuth() {
   try {
-    const { data } = await axios.get("/api/get-jwt-token");
-    if (!data) {
-      return null;
+    const session = await getSession();
+    const accessToken = session?.accessToken;
+    const user = getAuthUser(accessToken);
+    if (user && user.exp * 1000 > Date.now()) {
+      return accessToken;
     }
-    const _has = await import("lodash/has").then((mod) => mod.default);
-    if (
-      _has(data, "refreshToken") &&
-      _has(data, "accessToken") &&
-      data.refreshToken &&
-      data.accessToken
-    ) {
-      const accessToken = data.accessToken as string;
-      const user = getAuthUser(accessToken);
-      if (user && user.exp * 1000 > Date.now()) {
-        return accessToken;
-      }
+    // const { data } = await axios.get("/api/get-jwt-token");
+    // if (!data) {
+    //   return null;
+    // }
+    // const _has = await import("lodash/has").then((mod) => mod.default);
+    // if (
+    //   _has(data, "refreshToken") &&
+    //   _has(data, "accessToken") &&
+    //   data.refreshToken &&
+    //   data.accessToken
+    // ) {
+    //   const accessToken = data.accessToken as string;
+    //   const user = getAuthUser(accessToken);
+    //   if (user && user.exp * 1000 > Date.now()) {
+    //     return accessToken;
+    //   }
 
-      const newAccessToken = await fetchRefreshToken(data.refreshToken);
+    //   const newAccessToken = await fetchRefreshToken(data.refreshToken);
 
-      if (!newAccessToken) {
-        return null;
-      }
-      return newAccessToken;
-    }
+    //   if (!newAccessToken) {
+    //     return null;
+    //   }
+    //   return newAccessToken;
+    // }
 
     return null;
   } catch (_) {

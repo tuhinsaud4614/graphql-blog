@@ -65,7 +65,7 @@ export default function Editor({
     onChange: onValueChange,
     prop: value,
   });
-  const holderRef = React.useRef<HTMLDivElement>(null);
+  const holderRef = React.useRef<React.ComponentRef<"div">>(null!);
   const editorRef = React.useRef<EditorJS | null>(null);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isFocused, setIsFocused] = React.useState(false);

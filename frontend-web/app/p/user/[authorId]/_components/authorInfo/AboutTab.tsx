@@ -16,9 +16,10 @@ interface Props {
 
 export default function AboutTab({ user, userId }: Readonly<Props>) {
   const authUser = useUser();
+  console.log(authUser);
   if (user && authUser && user.id === authUser.id) {
-    const about = authUser.about
-      ? (JSON.parse(authUser.about) as Descendant[])
+    const about = user.about
+      ? (JSON.parse(user.about) as Descendant[])
       : null;
     return <AddAbout previousValue={about} />;
   }

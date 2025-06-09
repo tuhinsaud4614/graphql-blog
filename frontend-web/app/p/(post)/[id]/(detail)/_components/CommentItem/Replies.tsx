@@ -10,17 +10,18 @@ import _uniqBy from "lodash/uniqBy";
 
 import { Button } from "@/components";
 import { useGetPostCommentsWithCursorQuery } from "@/graphql/generated/schema";
-
-
 import { isDev } from "@/lib/isType";
+
 import CommentItem from ".";
 import CommentItemSkeleton from "./ItemSkeleton";
 
 interface Props {
   commentId: string;
+  depth: number;
+  maxDepth: number;
 }
 
-export default function Replies({ commentId }: Props) {
+export default function Replies({ commentId, depth, maxDepth }: Props) {
   const params = useParams<{ id: string }>();
   const postId = params?.id;
   const { data, networkStatus, fetchMore } = useGetPostCommentsWithCursorQuery({
@@ -56,7 +57,7 @@ export default function Replies({ commentId }: Props) {
         variables: {
           after: endCursor,
         },
-        updateQuery(prev, { fetchMoreResult }) : typeof prev {
+        updateQuery(prev, { fetchMoreResult }): typeof prev {
           if (!fetchMoreResult) {
             return {
               ...prev,
@@ -100,6 +101,8 @@ export default function Replies({ commentId }: Props) {
               root: "ml-4",
             }}
             replyCount={reply.node.replies}
+            maxDepth={maxDepth}
+            depth={reply.node.parentComment ? depth + 1 : depth}
           />
         ))}
       </AnimatePresence>

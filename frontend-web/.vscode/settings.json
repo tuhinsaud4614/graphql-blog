@@ -10,5 +10,12 @@
     "source.organizeImports": "explicit",
     "source.addMissingImports": "explicit"
   },
-  "cSpell.words": ["editorjs", "lucide", "Numberish", "shadcn", "tailwindcss"]
+  "cSpell.words": [
+    "editorjs",
+    "extralight",
+    "lucide",
+    "Numberish",
+    "shadcn",
+    "tailwindcss"
+  ]
 }

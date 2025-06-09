@@ -2,45 +2,9 @@
 
 import * as React from "react";
 
-import dynamic, { DynamicOptionsLoadingProps } from "next/dynamic";
-
+import { PostDetailBottomReactions } from "@/app/p/(post)/[id]/(detail)/_components";
+import BottomReactionsSkeleton from "@/app/p/(post)/[id]/(detail)/_components/BottomReactionsSkeleton";
 import AuthComponentGuard from "@/components/AuthComponentGuard";
-import { PostDetailBottomReactions } from "@/components/post-detail";
-import BottomReactionsSkeleton from "@/components/post-detail/BottomReactionsSkeleton";
-
-function createLoadingComponent() {
-  return function LoadingComponent({
-    error,
-    isLoading,
-  }: Readonly<DynamicOptionsLoadingProps>) {
-    const [, setRetryKey] = React.useState(0);
-
-    const handleRetry = React.useCallback(() => {
-      setRetryKey((prev) => prev + 1);
-      // Force re-import by updating the key
-      window.location.reload();
-    }, []);
-
-    return (
-      <BottomReactionsSkeleton
-        error={error || undefined}
-        retry={error ? handleRetry : undefined}
-        isLoading={isLoading}
-      />
-    );
-  };
-}
-
-const LazyPostDetailBottomReactions = dynamic(
-  () =>
-    import("@/components/post-detail").then(
-      (mod) => mod.PostDetailBottomReactions,
-    ),
-  {
-    ssr: false,
-    loading: createLoadingComponent(),
-  },
-);
 
 interface Props {
   children: React.ReactNode;

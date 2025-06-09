@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-export default function PostDetail({
+export default function PostDetailError({
   error,
   reset,
 }: Readonly<{

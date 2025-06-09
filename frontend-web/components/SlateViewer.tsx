@@ -9,9 +9,10 @@ import SlateLeaf from "./SlateLeaf";
 
 interface Props {
   value: Descendant[];
+  className?: string
 }
 
-export default function SlateViewer({ value }: Props) {
+export default function SlateViewer({ value,className }: Props) {
   const [editor] = React.useState(() =>
     withReact(createEditor() as ReactEditor),
   );
@@ -34,6 +35,7 @@ export default function SlateViewer({ value }: Props) {
         aria-label="Post content"
         renderLeaf={renderLeaf}
         renderElement={renderElement}
+        className={className}
       />
     </Slate>
   );

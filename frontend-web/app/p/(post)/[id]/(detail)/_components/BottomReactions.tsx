@@ -4,13 +4,14 @@ import * as React from "react";
 
 import { useParams } from "next/navigation";
 
-import { useReactDispatch } from "@/context/ReactCountContext";
+import { useReactDispatch } from "@/app/p/(post)/_context/react-count-context";
 import {
   useGetPostCommentsCountQuery,
   useGetPostReactionsCountQuery,
 } from "@/graphql/generated/schema";
 import { isDev } from "@/lib/isType";
 
+import FloatingReactions from "./FloatingReactions";
 import Reactions from "./Reactions";
 
 interface Props {
@@ -53,10 +54,10 @@ export default function BottomReactions({ siblingRef }: Props) {
 
   return (
     <React.Fragment>
-      {/* <FloatingReactions
+      <FloatingReactions
         siblingRef={siblingRef}
         comments={commentCount?.postCommentsCount ?? 0}
-      /> */}
+      />
       <Reactions comments={commentCount?.postCommentsCount ?? 0} />
     </React.Fragment>
   );

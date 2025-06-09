@@ -1,5 +1,5 @@
 /** For improve type suggestion  https://next-auth.js.org/getting-started/typescript */
-import { DefaultSession, DefaultUser } from "next-auth";
+import type { DefaultSession, DefaultUser } from "@auth/core/types";
 import "next-auth/jwt";
 
 import { IAuthUser } from "./lib/types";

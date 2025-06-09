@@ -121,7 +121,7 @@ export default function CommentBox({
       <Slate editor={editor} value={value} onChange={onChange}>
         <section
           className={cn(
-            "duration-[400ms]",
+            "duration-300",
             expanded ? className.editorBox : "min-h-4",
             classes?.editorBox,
           )}

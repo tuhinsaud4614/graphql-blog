@@ -10,9 +10,9 @@ import _uniqBy from "lodash/uniqBy";
 import { Waypoint } from "react-waypoint";
 
 import { ModalHeader } from "@/components";
-
 import { useGetPostCommentsWithCursorQuery } from "@/graphql/generated/schema";
 import { isDev } from "@/lib/isType";
+
 import CommentEditor from "../CommentEditor";
 import CommentItem from "../CommentItem";
 import CommentItemSkeleton from "../CommentItem/ItemSkeleton";
@@ -96,6 +96,8 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
                 replyContainer: "overflow-x-auto scrollbar-hide",
               }}
               replyCount={comment.node.replies}
+              depth={0}
+              maxDepth={2}
             />
           ))}
         </AnimatePresence>
@@ -110,9 +112,11 @@ export default function Fetcher({ onClose }: { onClose(): void }) {
   return (
     <React.Fragment>
       <ModalHeader onClose={onClose} className={className.bottomHeader}>
-        Responses
-        {!!data?.postCommentsWithCursor.total &&
-          `  (${data.postCommentsWithCursor.total})`}
+        <h2 className="font-title text-xl font-semibold">
+          Responses{" "}
+          {!!data?.postCommentsWithCursor.total &&
+            `(${data.postCommentsWithCursor.total})`}
+        </h2>
       </ModalHeader>
       <div className={className.bottomBody}>{component}</div>
     </React.Fragment>

@@ -1,13 +1,9 @@
 "use client";
 
-import useTooltip from "@/hooks/useTooltip";
-import { cn } from "@/lib/utils";
 import { MessageSquare } from "lucide-react";
 
-const className = {
-  commentBtn:
-    "flex items-center outline-none border-none text-neutral/60 dark:text-neutral-dark/60 hover:text-neutral dark:hover:text-neutral-dark active:scale-95",
-};
+import useTooltip from "@/hooks/useTooltip";
+import { cn } from "@/lib/utils";
 
 interface Props {
   onComment?(): void;
@@ -25,7 +21,10 @@ export default function CommentButton({
     <button
       aria-label="Comments"
       type="button"
-      className={cn(className.commentBtn, cls)}
+      className={cn(
+        "dark:text-neutral-dark/60 dark:hover:text-neutral-dark flex items-center border-none text-neutral/60 outline-none hover:text-neutral active:scale-95",
+        cls,
+      )}
       onClick={onComment}
       onMouseEnter={(e) => {
         onHoverStart(e, {

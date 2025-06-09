@@ -18,10 +18,9 @@ import {
 import { isDev } from "@/lib/isType";
 import { gplErrorHandler } from "@/lib/utils";
 
+import { CommentBox, CommentBoxCommenter, ToastErrorMessage } from "@/components";
 import useUser from "@/hooks/useUser";
-import { CommentBoxCommenter } from "..";
-import CommentBox from "../CommentBox";
-import ToastErrorMessage from "../ToastErrorMessage";
+
 
 const initialValue: Descendant[] = [
   {
