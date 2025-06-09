@@ -7,3 +7,8 @@ export enum EReactionsMutationStatus {
   React = "REACT",
   Withdraw = "WITHDRAW",
 }
+
+export enum EToggleMutationStatus {
+  Added = "ADDED",
+  Removed = "REMOVED",
+}

@@ -660,7 +660,8 @@ export async function updateAboutService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    return await updateUserAbout(prisma, user.id, params.value);
+    const { about } = await updateUserAbout(prisma, user.id, params.value);
+    return about;
   } catch (error) {
     logger.error(error);
     return new UnknownError("User about update failed.");

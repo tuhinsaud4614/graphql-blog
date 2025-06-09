@@ -1,3 +1,5 @@
+import config from "@/utils/config";
+
 import { type GraphQLResolveInfo } from "graphql";
 
 import { AuthenticationError, ForbiddenError } from "@/model";
@@ -16,7 +18,6 @@ import {
   verifyResetPasswordService,
   verifyUserService,
 } from "@/services/user";
-import config from "@/utils/config";
 import {
   FOLLOW_OWN_ERR_MSG,
   UN_AUTH_ERR_MSG,

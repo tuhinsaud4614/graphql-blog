@@ -1,0 +1,42 @@
+type Bookmark {
+  id: ID!
+  user: User!
+  post: Post!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type OffsetBookmarksResponse {
+  data: [Bookmark!]!
+  total: Int!
+  pageInfo: OffsetPageInfo
+}
+
+type CursorBookmarkEdge {
+  cursor: ID!
+  node: Bookmark!
+}
+
+type CursorBookmarksResponse {
+  edges: [CursorBookmarkEdge!]!
+  pageInfo: CursorPageInfo!
+  total: Int!
+}
+
+type Query {
+  userBookmarksWithOffset(limit: Int, page: Int): OffsetBookmarksResponse!
+  userBookmarksWithCursor(limit: Int!, after: ID): CursorBookmarksResponse!
+  bookmarkCount: Int!
+  isBookmarked(postId: ID!): Boolean!
+}
+
+type Mutation {
+  createBookmark(postId: ID!): Bookmark!
+  deleteBookmark(id: ID!): ID!
+  toggleBookmark(postId: ID!): EToggleMutationStatus!
+}
+
+enum EToggleMutationStatus {
+  ADDED
+  REMOVED
+}
