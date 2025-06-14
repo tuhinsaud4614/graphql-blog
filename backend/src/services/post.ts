@@ -353,7 +353,7 @@ export async function postsWithOffsetService(
   try {
     const { limit, page } = params;
     const condition = {
-      where: { published: true },
+      where: { published: true, deleted: false },
     };
     const args: Prisma.PostFindManyArgs = {
       ...condition,
@@ -397,9 +397,11 @@ export async function postsWithCursorService(
   try {
     const args: Prisma.PostFindManyArgs = {
       orderBy: { updatedAt: "desc" },
-      where: { published: true },
+      where: { published: true, deleted: false },
     };
-    const count = await prisma.post.count({ where: { published: true } });
+    const count = await prisma.post.count({
+      where: { published: true, deleted: false },
+    });
 
     return await getPostsWithCursor(prisma, params, args, count);
   } catch (error) {
@@ -508,7 +510,7 @@ export async function trendingPostsService(prisma: PrismaClient) {
   try {
     return await getAllPosts(prisma, {
       take: 6,
-      where: { published: true },
+      where: { published: true, deleted: false },
       orderBy: [
         {
           reactionsBy: { _count: "desc" },

@@ -1195,7 +1195,11 @@ export async function userPostsService(
 ) {
   try {
     return await getAllPosts(prisma, {
-      where: { authorId: id },
+      where: {
+        authorId: id,
+        deleted: false,
+        publishedAt: authUserId !== id ? { not: null } : undefined,
+      },
       omit: { draft: !(authUserId === id) },
     });
   } catch (_) {

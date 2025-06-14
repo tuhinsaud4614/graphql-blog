@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "omitApi"]
+  previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
@@ -47,6 +47,8 @@ model Post {
   publishedAt DateTime?
   content     Json?
   draft       Json?
+  deleted     Boolean    @default(false)
+  deletedAt   DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)

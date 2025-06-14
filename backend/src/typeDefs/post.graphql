@@ -61,7 +61,7 @@ input CreatePostInput {
 
 
 input UpdatePostInput {
-  id: String!
+  id: ID!
   title: String
   image: File
   categories: [ID!]

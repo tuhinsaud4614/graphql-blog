@@ -27,7 +27,7 @@ export function updatePostDraft(
   { id, draft }: UpdatePostDraftInput,
 ) {
   return prisma.post.update({
-    where: { id },
+    where: { id, deleted: false },
     data: {
       published: false,
       draft: draft as InputJsonValue,
@@ -47,7 +47,7 @@ export function publishPost(
   }: PublishPostInput & { content: InputJsonValue },
 ) {
   return prisma.post.update({
-    where: { id },
+    where: { id, deleted: false },
     data: {
       published: true,
       publishedAt: new Date(),
@@ -155,7 +155,7 @@ export function updatePost(
   },
 ) {
   return prisma.post.update({
-    where: { id },
+    where: { id, deleted: false },
     data: {
       title,
       content,
@@ -184,7 +184,7 @@ export function updatePost(
 }
 
 /**
- * This function deletes a post from a Prisma database based on its ID.
+ * This function soft deletes a post from a Prisma database based on its ID.
  * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
  * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
  * post that needs to be deleted. It is used in the `where` clause of the `prisma.post.delete` method
@@ -194,10 +194,19 @@ export function updatePost(
  * based on its `id`.
  */
 export function deletePost(prisma: PrismaClient, id: string) {
-  return prisma.post.delete({
+  return prisma.post.update({
     where: { id },
+    data: {
+      deleted: true,
+      deletedAt: new Date(),
+    },
   });
 }
+// export function deletePost(prisma: PrismaClient, id: string) {
+//   return prisma.post.delete({
+//     where: { id },
+//   });
+// }
 
 /**
  * This function adds a reaction to a post in a Prisma database.
@@ -215,7 +224,7 @@ export function addReactionToPost(
   reactById: string,
 ) {
   return prisma.post.update({
-    where: { id },
+    where: { id, deleted: false },
     data: { reactionsBy: { connect: { id: reactById } } },
   });
 }
@@ -236,7 +245,7 @@ export function removeReactionFromPost(
   withdrawById: string,
 ) {
   return prisma.post.update({
-    where: { id },
+    where: { id, deleted: false },
     data: { reactionsBy: { disconnect: { id: withdrawById } } },
   });
 }
@@ -400,7 +409,7 @@ export function getAuthorPostById(
   includeDraft = false,
 ) {
   return prisma.post.findFirst({
-    where: { id, authorId },
+    where: { id, authorId, deleted: false },
     omit: { draft: !includeDraft },
   });
 }
@@ -424,7 +433,7 @@ export function getPostById(
   includeDraft = false,
 ) {
   return prisma.post.findUnique({
-    where: { id },
+    where: { id, deleted: false },
     /**
      * The `omit` option is used to exclude certain fields from the result. In this case, we want to
      * exclude the `draft` field from the result if `includeDraft` is `false`. This means that we will
@@ -452,7 +461,11 @@ export function hasUserReactedToPost(
   userId: string,
 ) {
   return prisma.post.findFirst({
-    where: { id: postId, reactionsBy: { some: { id: userId } } },
+    where: {
+      id: postId,
+      deleted: false,
+      reactionsBy: { some: { id: userId } },
+    },
   });
 }
 
@@ -469,7 +482,7 @@ export function hasUserReactedToPost(
  */
 export function getPostReactionsCount(prisma: PrismaClient, id: string) {
   return prisma.post.findUnique({
-    where: { id },
+    where: { id, deleted: false },
     select: { _count: { select: { reactionsBy: true } } },
   });
 }
@@ -487,7 +500,7 @@ export function getPostReactionsCount(prisma: PrismaClient, id: string) {
  */
 export function getPostCommentsCount(prisma: PrismaClient, id: string) {
   return prisma.post.findUnique({
-    where: { id },
+    where: { id, deleted: false },
     select: { _count: { select: { comments: true } } },
   });
 }
@@ -518,7 +531,7 @@ export async function getPostReactedByWithCursor(
     : { take: limit };
 
   const query = await prisma.post.findUnique({
-    where: { id },
+    where: { id, deleted: false },
     select: {
       reactionsBy: {
         ...condition,
@@ -537,7 +550,7 @@ export async function getPostReactedByWithCursor(
   if (resultsLen > 0) {
     const lastUser = results[resultsLen - 1];
     const newResults = await prisma.post.findUnique({
-      where: { id },
+      where: { id, deleted: false },
       select: {
         reactionsBy: {
           skip: 1,
@@ -586,7 +599,7 @@ export async function getPostReactedByWithCursor(
 export async function getPostAuthor(prisma: PrismaClient, postId: string) {
   return prisma.post
     .findUnique({
-      where: { id: postId },
+      where: { id: postId, deleted: false },
     })
     .author();
 }
@@ -606,7 +619,7 @@ export async function getPostAuthor(prisma: PrismaClient, postId: string) {
 export async function getPostCategories(prisma: PrismaClient, postId: string) {
   return prisma.post
     .findUnique({
-      where: { id: postId },
+      where: { id: postId, deleted: false },
     })
     .categories();
 }
@@ -625,7 +638,7 @@ export async function getPostCategories(prisma: PrismaClient, postId: string) {
 export async function getPostTags(prisma: PrismaClient, postId: string) {
   return prisma.post
     .findUnique({
-      where: { id: postId },
+      where: { id: postId, deleted: false },
     })
     .tags();
 }
@@ -644,7 +657,7 @@ export async function getPostTags(prisma: PrismaClient, postId: string) {
 export async function getPostReactedBy(prisma: PrismaClient, postId: string) {
   return prisma.post
     .findUnique({
-      where: { id: postId },
+      where: { id: postId, deleted: false },
     })
     .reactionsBy();
 }
@@ -664,7 +677,7 @@ export async function getPostReactedBy(prisma: PrismaClient, postId: string) {
 export async function getPostComments(prisma: PrismaClient, postId: string) {
   return prisma.post
     .findUnique({
-      where: { id: postId },
+      where: { id: postId, deleted: false },
     })
     .comments();
 }
@@ -672,7 +685,7 @@ export async function getPostComments(prisma: PrismaClient, postId: string) {
 export async function getPostImage(prisma: PrismaClient, postId: string) {
   return prisma.post
     .findUnique({
-      where: { id: postId },
+      where: { id: postId, deleted: false },
     })
     .image();
 }
