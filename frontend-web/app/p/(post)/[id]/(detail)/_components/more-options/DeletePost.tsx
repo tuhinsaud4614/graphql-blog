@@ -2,29 +2,17 @@
 
 import * as React from "react";
 
-import { Button, Modal, ModalHeader, ToastErrorMessage } from "@/components";
-import { FCommentWithRepliesFragment, FCommentWithRepliesFragmentDoc, GetPostCommentsCountDocument, GetPostCommentsCountQuery, GetPostCommentsWithCursorDocument, GetPostCommentsWithCursorQuery, useDeletePostMutation } from "@/graphql/generated/schema";
-import { isDev } from "@/lib/isType";
-import { gplErrorHandler } from "@/lib/utils";
-import { produce } from "immer";
+import { useRouter } from "next/navigation";
+
 import { toast } from "sonner";
 
-const className = {
-  root: "flex flex-col",
-  title:
-    "font-bold line-clamp-2 text-ellipsis text-neutral dark:text-neutral-dark inline-block",
-  body: "line-clamp-2 leading-5 text-ellipsis text-neutral/50 dark:text-neutral-dark/50 inline-block mt-1",
-  other:
-    "flex items-center pt-2 text-sm text-neutral/70 dark:text-neutral-dark/70",
-  moreBtn: "ml-2 border-none outline-none active:scale-95 hover:text-accent",
-  actions: "w-32 flex flex-col py-2",
-  actionsBtn: "outline-none border-none px-5 py-2 text-sm active:scale-95",
-  modalBody: "px-14 pb-11 flex flex-col justify-center items-center",
-  modalBodyTitle:
-    "font-medium text-[1.375rem] md:text-[1.875rem] leading-7 md:leading-9 text-neutral dark:text-neutral-dark",
-  modalBodyText:
-    "pt-1.5 pb-9 text-sm md:text-base text-neutral/60 dark:text-neutral-dark/60 text-center",
-};
+import { Button, Modal, ModalHeader, ToastErrorMessage } from "@/components";
+import { useDeletePostMutation } from "@/graphql/generated/schema";
+import useUser from "@/hooks/useUser";
+import { clearCacheAfterDeletePost } from "@/lib/cache-utils";
+import { ROUTES } from "@/lib/constants";
+import { isDev } from "@/lib/isType";
+import { gplErrorHandler } from "@/lib/utils";
 
 interface Props {
   postId: string;
@@ -37,6 +25,8 @@ export default function DeletePost({
   openModel,
   setOpenModel,
 }: Readonly<Props>) {
+  const router = useRouter();
+  const authUser = useUser();
   const [deletePost, { loading, error }] = useDeletePostMutation({
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
@@ -44,6 +34,9 @@ export default function DeletePost({
   });
 
   const submitHandler = async () => {
+    if (!authUser) {
+      return;
+    }
     try {
       const { data } = await deletePost({
         variables: {
@@ -53,79 +46,7 @@ export default function DeletePost({
           if (!data) {
             return;
           }
-          try {
-            cache.updateQuery<GetPostCommentsWithCursorQuery>(
-              {
-                query: GetPostCommentsWithCursorDocument,
-                variables: {
-                  postId: postId,
-                  limit: 6,
-                  parentId: replyFor,
-                },
-              },
-              (prevComments) => {
-                if (
-                  !prevComments ||
-                  prevComments.postCommentsWithCursor.total === 0
-                ) {
-                  return;
-                }
-                const newComments = produce(prevComments, (draft) => {
-                  const secondLastComment =
-                    draft.postCommentsWithCursor.edges[
-                      draft.postCommentsWithCursor.edges.length - 2
-                    ];
-                  draft.postCommentsWithCursor.edges =
-                    draft.postCommentsWithCursor.edges.filter((comment) => {
-                      if (comment.cursor === data.deleteComment) {
-                        if (
-                          secondLastComment &&
-                          draft.postCommentsWithCursor.pageInfo.endCursor ===
-                            data.deleteComment
-                        ) {
-                          draft.postCommentsWithCursor.pageInfo.endCursor =
-                            secondLastComment.cursor;
-                        }
-                        return false;
-                      }
-                      return true;
-                    });
-                  draft.postCommentsWithCursor.total -= 1;
-                });
-                return newComments;
-              },
-            );
-            if (replyFor) {
-              cache.updateFragment<FCommentWithRepliesFragment>(
-                {
-                  fragment: FCommentWithRepliesFragmentDoc,
-                  fragmentName: "FCommentWithReplies",
-                  id: `Comment:${replyFor}`,
-                },
-                (prevFrag: FCommentWithRepliesFragment | null) => {
-                  return prevFrag
-                    ? { ...prevFrag, replies: prevFrag.replies - 1 }
-                    : undefined;
-                },
-              );
-            } else {
-              cache.updateQuery<GetPostCommentsCountQuery>(
-                {
-                  query: GetPostCommentsCountDocument,
-                  variables: { id: postId },
-                },
-                (prevCount) => {
-                  return prevCount && prevCount.postCommentsCount > 0
-                    ? {
-                        postCommentsCount: prevCount.postCommentsCount - 1,
-                      }
-                    : undefined;
-                },
-              );
-            }
-          } catch (error) {
-            isDev() && console.log(error);
-          }
+          clearCacheAfterDeletePost(cache, authUser.id, postId);
         },
       });
 
@@ -135,7 +56,8 @@ export default function DeletePost({
         });
       }
 
-      setConfirmDelete(false);
+      setOpenModel(false);
+      router.replace(ROUTES.user.userProfile(authUser.id));
     } catch (error) {
       isDev() && console.log(error);
     }
@@ -149,6 +71,7 @@ export default function DeletePost({
       });
     }
   }, [error]);
+
   return (
     <Modal
       open={openModel}
@@ -182,9 +105,11 @@ export default function DeletePost({
           <Button
             aria-label="Delete"
             type="button"
-            onClick={() => {}}
+            onClick={submitHandler}
             className="!px-4 !py-1.5 text-sm"
             variant="error"
+            loading={loading}
+            disabled={loading}
           >
             Delete
           </Button>

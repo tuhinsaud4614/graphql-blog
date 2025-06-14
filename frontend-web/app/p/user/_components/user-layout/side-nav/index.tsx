@@ -14,7 +14,7 @@ import SideNavItem from "../SideNavItem";
 import SideNavNotifyCount from "../SideNavNotifyCount";
 import CreatePost from "./CreatePost";
 
-const ThemeButton = dynamic(() => import("./ThemeButton"), {
+const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
   loading() {
     return (

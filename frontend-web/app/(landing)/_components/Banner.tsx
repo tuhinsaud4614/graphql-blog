@@ -9,7 +9,7 @@ export default function Banner() {
           <h2 className="mb-8 font-title text-6xl font-semibold text-base-100 selection:bg-base-100 selection:text-primary dark:text-neutral dark:selection:bg-neutral md:text-8xl">
             Stay curious.
           </h2>
-          <h3 className="mb-12 w-[80%] text-2xl leading-6 text-base-100 selection:bg-base-100 selection:text-primary dark:text-neutral dark:selection:bg-neutral">
+          <h3 className="mb-12 w-4/5 text-2xl leading-6 text-base-100 selection:bg-base-100 selection:text-primary dark:text-neutral dark:selection:bg-neutral">
             Discover stories, thinking, and expertise from writers on any topic.
           </h3>
           <LinkButton

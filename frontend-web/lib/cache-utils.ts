@@ -21,6 +21,8 @@ import {
   GetTagsWithOffsetQueryVariables,
   GetUserCountDocument,
   GetUserCountQuery,
+  GetUserWithPostDocument,
+  GetUserWithPostQuery,
   GetUsersWithOffsetDocument,
   GetUsersWithOffsetQuery,
   GetUsersWithOffsetQueryVariables,
@@ -391,5 +393,57 @@ export function updateGetPostReactedByQuery<T>(
     );
   } catch (error) {
     isDev() && console.error("updateGetPostReactedByQuery@Errors: ", error);
+  }
+}
+
+/**
+ * The function clears the cache for the GetPostsWithCursorQuery
+ * @param cache - The Apollo cache instance used to clear the query cache
+ */
+export function clearGetPostsWithCursorQuery<T>(cache: ApolloCache<T>) {
+  try {
+    cache.evict({ fieldName: "postsWithCursor" });
+    cache.gc();
+  } catch (error) {
+    isDev() && console.error("clearGetPostsWithCursorQuery@Errors: ", error);
+  }
+}
+
+export function clearCacheAfterDeletePost<T>(
+  cache: ApolloCache<T>,
+  authorId: string,
+  postId: string,
+) {
+  try {
+    cache.updateQuery<GetUserWithPostQuery>(
+      {
+        query: GetUserWithPostDocument,
+        variables: {
+          id: authorId,
+        },
+      },
+      (authorWithPost) => {
+        if (!authorWithPost || authorWithPost.user.posts.length === 0) {
+          return;
+        }
+        const newAuthorWithPost = produce(authorWithPost, (draft) => {
+          draft.user.posts = draft.user.posts.filter(
+            (post) => post.id !== postId,
+          );
+        });
+        return newAuthorWithPost;
+      },
+    );
+    cache.evict({ fieldName: "trendingPosts" });
+    cache.evict({ fieldName: "postsWithCursor" });
+    cache.evict({ fieldName: "postsWithOffset" });
+    cache.evict({ fieldName: "postCount" });
+    cache.evict({ fieldName: "post", args: { id: postId } });
+    cache.evict({ fieldName: "postReactionsCount", args: { id: postId } });
+    cache.evict({ fieldName: "postCommentsCount", args: { id: postId } });
+    cache.evict({ fieldName: "postReactedBy", args: { id: postId } });
+    cache.gc();
+  } catch (error) {
+    isDev() && console.error(error);
   }
 }

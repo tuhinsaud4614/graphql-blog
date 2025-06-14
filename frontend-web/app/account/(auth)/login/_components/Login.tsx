@@ -62,6 +62,8 @@ export default function Login() {
         redirect: false,
       });
 
+      console.log(response)
+
       if (response?.ok) {
         reset();
         // // For solving not replacing login url with redirect url

@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+
 import { useParams, useRouter } from "next/navigation";
 
 import { LoaderIcon, PlusIcon } from "lucide-react";
@@ -11,13 +13,19 @@ import { useCreateUntitledPostMutation } from "@/graphql/generated/schema";
 import useUser from "@/hooks/useUser";
 import { ROUTES } from "@/lib/constants";
 import { gplErrorHandler } from "@/lib/utils";
-import * as React from "react";
 
 type CreatePostTitleProps = {
-  children?: React.ReactElement;
+  children?: React.ReactElement<{
+    onClick?: () => Promise<void>;
+    disabled?: boolean;
+  }>;
+  onSuccess?: () => void;
 };
 
-export default function CreatePostTitle({ children }: CreatePostTitleProps) {
+export default function CreatePostTitle({
+  children,
+  onSuccess,
+}: CreatePostTitleProps) {
   const user = useUser();
   const params = useParams<{ authorId: string }>();
   const router = useRouter();
@@ -35,21 +43,21 @@ export default function CreatePostTitle({ children }: CreatePostTitleProps) {
     onCompleted(data) {
       router.refresh();
       router.push(ROUTES.user.editPost(data.createUntitledPost.id));
+      onSuccess?.();
     },
   });
 
-  
   async function onClick() {
     await createUntitledPost();
   }
-  
-  if(children) {
+
+  if (children) {
     return React.cloneElement(children, {
       onClick,
       disabled: loading,
     });
   }
-  
+
   if (user?.id !== params?.authorId) {
     return null;
   }

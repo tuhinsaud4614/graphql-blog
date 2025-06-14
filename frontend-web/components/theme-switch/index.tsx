@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { MoonStar, Sun, Tv2 } from "lucide-react";
+import { MoonStarIcon, SunIcon, Tv2Icon } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import useTooltip from "@/hooks/useTooltip";
@@ -38,7 +38,7 @@ export default function ThemeSwitch({
   classes,
 }: Props) {
   const [anchorEle, setAnchorEle] =
-    React.useState<React.ElementRef<"button">>();
+    React.useState<React.ComponentRef<"button">>();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { onHoverEnd, onHoverStart } = useTooltip();
 
@@ -66,9 +66,9 @@ export default function ThemeSwitch({
         }}
       >
         {resolvedTheme === "light" ? (
-          <Sun className={className.itemIcon} />
+          <SunIcon className={className.itemIcon} />
         ) : (
-          <MoonStar className={cn(className.itemIcon)} />
+          <MoonStarIcon className={cn(className.itemIcon)} />
         )}
       </Button>
       <Menu
@@ -88,7 +88,7 @@ export default function ThemeSwitch({
               setAnchorEle(undefined);
             }}
           >
-            <Sun className={className.itemIcon} />
+            <SunIcon className={className.itemIcon} />
           </ThemeSwitchItem>
           <ThemeSwitchItem
             text="Dark"
@@ -98,7 +98,7 @@ export default function ThemeSwitch({
               setAnchorEle(undefined);
             }}
           >
-            <MoonStar className={cn(className.itemIcon)} />
+            <MoonStarIcon className={cn(className.itemIcon)} />
           </ThemeSwitchItem>
           <ThemeSwitchItem
             text="System"
@@ -108,7 +108,7 @@ export default function ThemeSwitch({
               setAnchorEle(undefined);
             }}
           >
-            <Tv2 className={className.itemIcon} />
+            <Tv2Icon className={className.itemIcon} />
           </ThemeSwitchItem>
         </ul>
       </Menu>

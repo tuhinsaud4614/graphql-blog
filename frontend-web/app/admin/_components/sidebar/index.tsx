@@ -14,9 +14,13 @@ import Top from "./Top";
 export default function AdminLayoutSidebar() {
   const { isOpen, setIsOpen } = useAdminDrawerController();
 
-  const handleToggle = () => setIsOpen?.((prev) => !prev);
+  const handleToggle = () => {
+    setIsOpen?.((prev) => !prev);
+  };
 
-  const handleClose = () => setIsOpen?.(false);
+  const handleClose = () => {
+    setIsOpen?.(false);
+  };
 
   return (
     <SidebarContainer onClose={handleClose} visible={isOpen}>
@@ -37,7 +41,7 @@ export default function AdminLayoutSidebar() {
         <AdminSidebarItem
           href={ROUTES.admin.categories}
           icon={
-            <CategoryIcon className="h-6 w-6 shrink-0 [&_path]:fill-current" />
+            <CategoryIcon className="size-6 shrink-0 [&_path]:fill-current" />
           }
           onClick={handleClose}
         >
@@ -45,14 +49,14 @@ export default function AdminLayoutSidebar() {
         </AdminSidebarItem>
         <AdminSidebarItem
           href={ROUTES.admin.tags}
-          icon={<Tag className="h-6 w-6 shrink-0" />}
+          icon={<Tag className="size-6 shrink-0" />}
           onClick={handleClose}
         >
           <AdminSidebarTitle visible={isOpen}>Tags</AdminSidebarTitle>
         </AdminSidebarItem>
         <AdminSidebarItem
           href={ROUTES.admin.users}
-          icon={<Users className="h-6 w-6 shrink-0" />}
+          icon={<Users className="size-6 shrink-0" />}
           onClick={handleClose}
         >
           <AdminSidebarTitle visible={isOpen}>Users</AdminSidebarTitle>

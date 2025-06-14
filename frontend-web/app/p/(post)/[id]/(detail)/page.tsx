@@ -3,7 +3,6 @@ import Head from "next/head";
 import Blocks from "editorjs-blocks-react-renderer";
 import moment from "moment";
 
-import { PostDetailAuthorInfo } from "@/app/p/(post)/[id]/(detail)/_components";
 import { ErrorBox } from "@/components";
 import {
   GetPostByIdDocument,
@@ -15,6 +14,7 @@ import { getUserName, gplErrorHandler } from "@/lib/utils";
 
 import { PostDetailProvider } from "../../_context/post-detail-context";
 import { ReactProvider } from "../../_context/react-count-context";
+import { PostDetailAuthorInfo } from "./_components";
 import PostArticle from "./_components/Article";
 import NotFoundPost from "./_components/NotFoundPost";
 import PostDetailLoading from "./loading";
@@ -32,10 +32,6 @@ interface Props {
 export const revalidate = 60;
 
 export const dynamicParams = true;
-
-export function generateStaticParams() {
-  return [];
-}
 
 export default async function PostDetailPage({ params }: Readonly<Props>) {
   const paramsData = await params;
@@ -83,7 +79,38 @@ export default async function PostDetailPage({ params }: Readonly<Props>) {
               author={author}
               postDate={moment(+rest.updatedAt).startOf("second").fromNow()}
             />
-            {!!rest.content && <Blocks data={rest.content} />}
+            {!!rest.content && (
+              <Blocks
+                data={rest.content}
+                config={{
+                  header: { className: "text-2xl font-bold my-4" },
+                  paragraph: {
+                    className: "text-base text-gray-800 leading-relaxed mb-3",
+                  },
+                  list: {
+                    className: "list-inside list-disc mb-3 pl-10",
+                  },
+                  quote: {
+                    className: "border-l-4 border-gray-300 pl-4 italic my-4",
+                  },
+                  image: {
+                    className: "w-full rounded overflow-hidden my-4",
+                    actionsClassNames: {
+                      stretched: "w-full h-[400px] object-cover",
+                      withBorder: "border border-gray-200",
+                      withBackground: "p-2 bg-gray-100",
+                    },
+                  },
+                  code: {
+                    className:
+                      "bg-gray-100 rounded p-2 font-mono text-sm overflow-auto mb-3",
+                  },
+                  delimiter: { className: "border-t my-6" },
+                  table: { className: "table-auto border-collapse mb-4" },
+                  embed: { className: "w-full h-[400px] mb-4" },
+                }}
+              />
+            )}
           </PostArticle>
         </PostDetailProvider>
       </ReactProvider>

@@ -75,7 +75,7 @@ export default function LikeButton({ className: cls }: Props) {
 
   const likeHandler = async () => {
     if (!authUser || authUser.id === author.id) {
-      toast.warning("You can't bookmark your own post", {
+      toast.warning("You can't liked your own post", {
         position: "top-center",
       });
       return;

@@ -11,7 +11,7 @@ import {
   AuthorInfoAboutTab,
   AuthorInfoHomeTab,
 } from "@/app/p/user/[authorId]/_components/authorInfo";
-import { DemoAvatar, Tabs } from "@/components";
+import { DemoAvatar, ErrorBox, Tabs } from "@/components";
 import CreatePostTitle from "@/components/post-create/CreatePostTitle";
 import {
   FUserFragment,
@@ -19,7 +19,7 @@ import {
 } from "@/graphql/generated/schema";
 import { ROUTES } from "@/lib/constants";
 import { IAuthUser } from "@/lib/types";
-import { generateFileUrl, getUserName } from "@/lib/utils";
+import { generateFileUrl, getUserName, gplErrorHandler } from "@/lib/utils";
 
 const className = {
   title: "mb-4 mt-8 flex items-center",
@@ -64,11 +64,27 @@ export default function AboutPage({ params }: Readonly<Props>) {
     );
   });
 
-  const { data } = useGetUserWithPostQuery({
+  const { data, error, refetch } = useGetUserWithPostQuery({
     notifyOnNetworkStatusChange: true,
     variables: { id: authorId },
     fetchPolicy: "network-only",
+    errorPolicy: "all",
   });
+
+  if (error) {
+    return (
+      <ErrorBox
+        title="Fetching your posts errors"
+        errors={gplErrorHandler(error)}
+        classes={{
+          root: "md1:basis-full h-min mx-4 mt-10 md1:mt-3 mb-3",
+        }}
+        onRetry={async () => {
+          await refetch();
+        }}
+      />
+    );
+  }
 
   if (!data?.user) {
     return null;
@@ -90,10 +106,9 @@ export default function AboutPage({ params }: Readonly<Props>) {
             <Image
               src={imgUrl}
               alt={userName ?? ""}
-              width={32}
-              height={32}
-              className="object-cover"
-              priority
+              width={0}
+              height={0}
+              className="size-8 object-cover"
             />
           </span>
         ) : (

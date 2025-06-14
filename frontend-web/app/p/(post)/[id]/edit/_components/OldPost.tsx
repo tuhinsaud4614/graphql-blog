@@ -5,6 +5,7 @@ import { useGetPostWithAuthorIdQuery } from "@/graphql/generated/schema";
 import { gplErrorHandler } from "@/lib/utils";
 
 import PostForm from "../../../_components/post-form";
+import NewPostSkeleton from "./Skeleton";
 
 interface Props {
   id: string;
@@ -17,7 +18,7 @@ export default function OldPost({ id }: Readonly<Props>) {
   });
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <NewPostSkeleton />;
   }
 
   if (error) {

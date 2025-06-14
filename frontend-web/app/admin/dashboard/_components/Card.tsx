@@ -22,7 +22,7 @@ export default function AdminDashboardCard({
   href,
 }: Props) {
   return (
-    <div className="rounded-xl bg-secondary/5 p-6 shadow-mui transition-colors dark:bg-base-200">
+    <div className="rounded-xl bg-[linear-gradient(266deg,_#c8ffeb,_#dcffe4)] p-6 shadow-mui transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex flex-col justify-center">
           <Link

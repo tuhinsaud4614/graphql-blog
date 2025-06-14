@@ -2,24 +2,31 @@
 
 import * as React from "react";
 
-import Image from "next/legacy/image";
+import Image from "next/image";
 
 import { User2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 
+import DemoAvatar from "@/components/DemoAvatar";
 import Button from "@/components/ui/Button";
 import Menu from "@/components/ui/Menu";
 import LogoutButton from "@/components/user-avatar-button/LogoutButton";
+import useUser from "@/hooks/useUser";
 import { generateFileUrl, getUserName } from "@/lib/utils";
 import { skeletonVariant } from "@/lib/variants/classVariants";
 
 export default function UserShortProfile() {
-  const { data: session } = useSession();
+  const user = useUser();
   const [anchorEle, setAnchorEle] = React.useState<null | HTMLButtonElement>(
     null,
   );
 
-  if (!session?.user) {
+  // Show loading state only on client-side
+  const [isLoading, setIsLoading] = React.useState(true);
+  React.useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
     return (
       <span
         className={skeletonVariant({
@@ -30,7 +37,17 @@ export default function UserShortProfile() {
     );
   }
 
-  const { user } = session;
+  if (!user) {
+    return (
+      <DemoAvatar
+        as="button"
+        aria-label="Demo avatar"
+        type="button"
+        className="size-9 rounded-full border border-secondary/50 text-secondary hover:border-secondary hover:bg-secondary/5 dark:border-secondary-content/50 dark:text-secondary-content dark:hover:border-secondary-content dark:hover:bg-secondary-content/[8%]"
+      />
+    );
+  }
+
   const imgUrl = generateFileUrl(user.avatar?.url);
   const userName = getUserName(user);
   return (
@@ -38,7 +55,7 @@ export default function UserShortProfile() {
       <Button
         type="button"
         mode="outline"
-        className="h-9 w-9 shrink-0 overflow-hidden rounded-full border p-0 active:scale-95 dark:border-none dark:ring-1 dark:ring-accent dark:hover:ring-2"
+        className="size-9 shrink-0 overflow-hidden rounded-full border p-0 active:scale-95 dark:border-none dark:ring-1 dark:ring-accent dark:hover:ring-2"
         onClick={(e) => {
           setAnchorEle(e.currentTarget);
         }}
@@ -52,7 +69,7 @@ export default function UserShortProfile() {
             alt="Avatar"
             width={36}
             height={36}
-            className="rounded-full object-cover"
+            className="size-9 rounded-full object-cover"
           />
         ) : (
           <User2 size={20} />

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { createContext } from "use-context-selector";
+import { createContext, useContextSelector } from "use-context-selector";
 
 export interface DraftSettings {
   isSaving?: boolean;
@@ -50,4 +50,11 @@ export default function PostContextProvider({
       {children}
     </PostDraftSettings.Provider>
   );
+}
+
+export function usePostDraftSettings<T>(selector: (state: DraftSettings) => T) {
+  return useContextSelector(PostDraftSettings, (ctx) => {
+    if (!ctx) throw new Error("PostDraftSettings is not available.");
+    return selector(ctx);
+  });
 }

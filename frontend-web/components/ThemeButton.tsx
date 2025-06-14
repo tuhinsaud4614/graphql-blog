@@ -1,3 +1,5 @@
+"use client";
+
 import ThemeSwitch from "@/components/theme-switch";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
@@ -8,11 +10,9 @@ export default function ThemeButton() {
     return null;
   }
   return (
-    <li>
-      <ThemeSwitch
-        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-        tooltipOrigin={{ horizontal: "right", vertical: "bottom" }}
-      />
-    </li>
+    <ThemeSwitch
+      anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+      tooltipOrigin={{ horizontal: "right", vertical: "bottom" }}
+    />
   );
 }

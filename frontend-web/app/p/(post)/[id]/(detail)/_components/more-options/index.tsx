@@ -2,20 +2,21 @@
 
 import * as React from "react";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import {
-    ChartNetworkIcon,
-    CogIcon,
-    EllipsisVerticalIcon,
-    PencilIcon,
-    Trash2Icon,
+  ChartNetworkIcon,
+  CogIcon,
+  EllipsisVerticalIcon,
+  PencilIcon,
+  Trash2Icon,
 } from "lucide-react";
 
 import { usePostDetail } from "@/app/p/(post)/_context/post-detail-context";
 import { Menu } from "@/components";
 import useTooltip from "@/hooks/useTooltip";
 import useUser from "@/hooks/useUser";
+import { ROUTES } from "@/lib/constants";
 
 import DeletePost from "./DeletePost";
 
@@ -41,7 +42,7 @@ export default function MoreOptions() {
     null,
   );
   const { onHoverEnd, onHoverStart } = useTooltip();
-  const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const { replace } = useRouter();
 
   if (!authUser || authUser.id !== author.id) {
     return null;
@@ -78,12 +79,11 @@ export default function MoreOptions() {
         <ul className={className.items}>
           <li>
             <button
-              type="button"
               aria-label="Edit"
               className={className.btn}
               onClick={() => {
+                replace(ROUTES.user.editPost(postId || ""));
                 setAnchorEle(null);
-                opener();
               }}
             >
               <PencilIcon size={18} />

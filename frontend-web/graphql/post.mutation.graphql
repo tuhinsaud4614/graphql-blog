@@ -33,3 +33,27 @@ mutation PublishPost(
 mutation ReactToPost($toId: ID!) {
   reactionToPost(toId: $toId)
 }
+
+mutation UpdatePost(
+  $id: ID!
+  $title: String
+  $image: File
+  $categories: [ID!]
+  $published: Boolean
+  $content: String
+  $tags: [ID!]
+) {
+  updatePost(
+    data: {
+      id: $id
+      title: $title
+      image: $image
+      categories: $categories
+      published: $published
+      content: $content
+      tags: $tags
+    }
+  ) {
+    ...GetPostItem
+  }
+}

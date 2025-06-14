@@ -39,12 +39,12 @@ export const ROUTES = {
     categories: "/p/user/categories",
   },
   admin: {
-    startWith: "/p/admin",
-    dashboard: "/p/admin/dashboard",
-    categories: "/p/admin/categories",
-    tags: "/p/admin/tags",
-    users: "/p/admin/users",
-    posts: "/p/admin/posts",
+    startWith: "/admin",
+    dashboard: "/admin/dashboard",
+    categories: "/admin/categories",
+    tags: "/admin/tags",
+    users: "/admin/users",
+    posts: "/admin/posts",
   },
 } as const;
 

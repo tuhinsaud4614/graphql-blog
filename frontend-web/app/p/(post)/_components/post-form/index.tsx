@@ -15,12 +15,10 @@ import {
 import { ROUTES } from "@/lib/constants";
 import { gplErrorHandler } from "@/lib/utils";
 
-import { DraftSettings } from "../../_context/post-context";
 import {
-  usePostDraftSetSaving,
-  usePostSetIsDrafted,
-  usePostWantToPublish,
-} from "../../_hooks/usePost";
+  DraftSettings,
+  usePostDraftSettings,
+} from "../../_context/post-context";
 import PublishPost from "../publish";
 
 interface Props {
@@ -31,9 +29,12 @@ export default function PostForm({ post }: Readonly<Props>) {
   const [draft, setDraft] = React.useState<OutputData | null>(
     post?.draft || post?.content,
   );
-  const setDraftSaving = usePostDraftSetSaving();
-  const setIsDrafted = usePostSetIsDrafted();
-  const wantToPublish = usePostWantToPublish();
+  const {
+    setIsSaving: setDraftSaving,
+    setIsDrafted,
+    wantToPublish,
+    setWantToPublish,
+  } = usePostDraftSettings((state) => state);
   const [updateDraft] = useUpdatePostDraftMutation({
     notifyOnNetworkStatusChange: true,
     onError(error) {
@@ -46,17 +47,30 @@ export default function PostForm({ post }: Readonly<Props>) {
     },
   });
 
+  const isAlreadyPublished = post?.content && post.content.blocks.length > 0;
+
+  React.useEffect(() => {
+    if (isAlreadyPublished) {
+      setWantToPublish?.("SAVE_AND_PUBLISH");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAlreadyPublished]);
+
   const debounced = useDebounceCallback(
     async (postId: string, draft: OutputData | null) => {
       if (draft) {
         // Update the post object so that we can use it to save
         setDraft(draft);
-        setDraftSaving(true);
+        setDraftSaving?.(true);
         await updateDraft({ variables: { draft, postId } });
         if (draft && draft.blocks.length > 0) {
-          setIsDrafted("DRAFT_ONLY");
+          if (isAlreadyPublished) {
+            setIsDrafted?.("PUBLISHED_&_DRAFTED");
+          } else {
+            setIsDrafted?.("DRAFT_ONLY");
+          }
         }
-        setDraftSaving(false);
+        setDraftSaving?.(false);
       }
     },
     500,
@@ -79,7 +93,7 @@ export default function PostForm({ post }: Readonly<Props>) {
         <PublishPost post={{ ...post, draft }} />
       )}
       <Editor
-        value={post.draft}
+        value={post.draft || post.content}
         placeholder="What's on your mind?"
         className="post-editor font-body [--title-placeholder:'Title']"
         onValueChange={async (value) => await debounced(post.id, value)}
@@ -89,7 +103,7 @@ export default function PostForm({ post }: Readonly<Props>) {
 }
 
 function CheckIsDrafted({ post }: Readonly<{ post: GetPostItemFragment }>) {
-  const setIsDrafted = usePostSetIsDrafted();
+  const setIsDrafted = usePostDraftSettings((state) => state.setIsDrafted);
   let isDrafted: DraftSettings["isDrafted"] = undefined;
 
   if (post.draft && post.draft.blocks.length > 0 && !post.content) {
@@ -99,7 +113,7 @@ function CheckIsDrafted({ post }: Readonly<{ post: GetPostItemFragment }>) {
   }
 
   React.useEffect(() => {
-    setIsDrafted(isDrafted);
+    setIsDrafted?.(isDrafted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return null;

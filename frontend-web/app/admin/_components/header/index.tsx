@@ -1,35 +1,17 @@
-import dynamic from "next/dynamic";
+"use client";
 
-import { Bell, Globe } from "lucide-react";
+import { BellIcon, GlobeIcon } from "lucide-react";
 
+import { ClientOnly } from "@/components";
+import ThemeSwitch from "@/components/theme-switch";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import LinkButton from "@/components/ui/LinkButton";
 import STYLES from "@/lib/styles";
 import { cn } from "@/lib/utils";
-import { skeletonVariant } from "@/lib/variants/classVariants";
 
-const Hamburger = dynamic(() => import("./Hamburger"), {
-  ssr: false,
-});
-
-const UserShortProfile = dynamic(
-  () => import(/* webpackChunkName: "UserShortProfile" */ "./UserShortProfile"),
-);
-
-const ThemeButton = dynamic(() => import("@/components/theme-switch"), {
-  ssr: false,
-  loading() {
-    return (
-      <span
-        className={skeletonVariant({
-          className: "h-9 w-9",
-          shape: "circle",
-        })}
-      />
-    );
-  },
-});
+import Hamburger from "./Hamburger";
+import UserShortProfile from "./UserShortProfile";
 
 export default function AdminLayoutHeader() {
   return (
@@ -42,35 +24,39 @@ export default function AdminLayoutHeader() {
       <section className="max-w-screen-xl px-4 md:px-6 xl:mx-auto">
         <nav className="flex items-center">
           <div className="flex shrink-0 items-center gap-4">
-            <Hamburger />
+            <ClientOnly>
+              <Hamburger />
+            </ClientOnly>
             <LinkButton
               href="/"
               variant="accent"
-              className="hidden min-h-[2.5rem] items-center gap-2 !py-0 text-sm font-semibold capitalize sm:flex"
+              className="hidden items-center gap-2 rounded-l-3xl !rounded-br-3xl rounded-tr-lg px-3 py-2 text-sm font-semibold uppercase sm:inline-flex"
             >
-              <Globe size={24} />
+              <GlobeIcon size={16} />
               Browse Website
             </LinkButton>
           </div>
           <div className="ml-auto flex flex-wrap items-center gap-4 rounded-full">
-            <Button mode="outline" className="h-9 w-9 rounded-full !p-0">
+            <Button mode="outline" className="size-9 rounded-full !p-0">
               <span className={STYLES.indicator.root}>
                 <Badge
                   variant="error"
                   className={cn(
                     STYLES.indicator.item,
-                    "!min-h-[0.75rem] !min-w-[0.75rem] !p-0 ring-0",
+                    "!min-h-3 !min-w-3 !p-0 ring-0",
                   )}
                   float={false}
                 />
-                <Bell size={24} />
+                <BellIcon size={24} />
               </span>
             </Button>
             <UserShortProfile />
-            <ThemeButton
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              classes={{ menuRoot: "mt-6" }}
-            />
+            <ClientOnly>
+              <ThemeSwitch
+                anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+                tooltipOrigin={{ horizontal: "right", vertical: "bottom" }}
+              />
+            </ClientOnly>
           </div>
         </nav>
       </section>

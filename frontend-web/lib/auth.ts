@@ -59,7 +59,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return Promise.resolve(newSession);
     },
   },
-  pages: { signIn: ROUTES.account.login },
+  pages: { signIn: ROUTES.account.login, error: ROUTES.account.login },
   secret: process.env.NEXTAUTH_SECRET,
   debug: isDev(),
   useSecureCookies: isProduction(),

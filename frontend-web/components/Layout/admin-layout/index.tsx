@@ -1,14 +1,8 @@
 import * as React from "react";
 
-import dynamic from "next/dynamic";
-
+import Sidebar from "./Sidebar";
 import Wrapper from "./Wrapper";
 import Header from "./header";
-
-const Sidebar = dynamic(
-  () => import(/* webpackChunkName: "Sidebar" */ "./Sidebar"),
-  { ssr: false },
-);
 
 interface Props {
   children?: React.ReactNode;

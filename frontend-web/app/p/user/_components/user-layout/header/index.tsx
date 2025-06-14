@@ -12,11 +12,11 @@ import { skeletonVariant } from "@/lib/variants/classVariants";
 
 import NotificationBell from "./NotificationBell";
 
-const ThemeButton = dynamic(() => import("./ThemeButton"), {
+const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
   loading() {
     return (
-      <li
+      <span
         className={skeletonVariant({
           className: "h-9 w-9",
           shape: "circle",
@@ -60,7 +60,9 @@ export default function UserHeader() {
               <NotificationBell pathname={pathname ?? ""} />
             </li>
           )}
-          <ThemeButton />
+          <li>
+            <ThemeButton />
+          </li>
         </ul>
       </nav>
     </header>

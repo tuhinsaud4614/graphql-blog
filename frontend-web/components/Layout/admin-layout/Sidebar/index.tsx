@@ -2,15 +2,13 @@
 
 import * as React from "react";
 
-import { useRouter } from "next/navigation";
-
 import { LayoutDashboardIcon } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
+import CategoryIcon from "@/components/svg/Category";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-import CategoryIcon from "@/components/svg/Category";
 import Container from "./Container";
 import Item from "./Item";
 import Top from "./Top";
@@ -32,7 +30,6 @@ function Title({
 }
 
 export default function Sidebar() {
-  const { asPath } = useRouter();
   const matches = useMediaQuery("(min-width: 1280px)");
   // const visible = useAppSelector(selectAdminSidebar);
   const visible = false;

@@ -43,7 +43,7 @@ export default function CreatePost() {
             >
               Cancel
             </Button>
-            <CreatePostTitle>
+            <CreatePostTitle onSuccess={closeHandler}>
               <Button
                 variant="accent"
                 aria-label="Create a post"
