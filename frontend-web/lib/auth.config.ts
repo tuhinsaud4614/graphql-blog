@@ -1,4 +1,4 @@
-import { NextAuthConfig, User } from "next-auth";
+import { CredentialsSignin, NextAuthConfig, User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 import {
@@ -9,6 +9,13 @@ import {
 
 import { getClient } from "./apolloClient";
 import { getAuthUser } from "./utils";
+
+class CustomAuthError extends CredentialsSignin {
+  constructor(message: string, errorOptions?: any) {
+    super(message, errorOptions);
+    this.name = "CustomAuthError";
+  }
+}
 
 export default {
   providers: [
@@ -39,7 +46,8 @@ export default {
           }
           return null;
         } catch (error) {
-          return Promise.reject(error as Error);
+          console.log("error", error);
+          throw new CustomAuthError((error as Error).message);
         }
       },
     }),

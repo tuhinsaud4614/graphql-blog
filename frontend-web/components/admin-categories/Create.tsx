@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { BiPlus } from "react-icons/bi";
+import { PlusCircleIcon } from "lucide-react";
 
 import { Button, Modal, ModalHeader } from "@/components";
 
@@ -25,7 +25,7 @@ export default function CreateCategory() {
         onClick={handleClick}
         disabled={isOpen}
       >
-        <BiPlus size={24} className="[&_path]:stroke-current" />
+        <PlusCircleIcon size={24} className="[&_path]:stroke-current" />
         add category
       </Button>
       <Modal
@@ -35,7 +35,7 @@ export default function CreateCategory() {
         classes={{ container: "sm:max-w-md" }}
       >
         <ModalHeader onClose={handleClose}>
-          <h3 className="flex-1 text-center text-xl font-extrabold text-neutral dark:text-neutral-dark">
+          <h3 className="dark:text-neutral-dark flex-1 text-center text-xl font-extrabold text-neutral">
             Create Category
           </h3>
         </ModalHeader>

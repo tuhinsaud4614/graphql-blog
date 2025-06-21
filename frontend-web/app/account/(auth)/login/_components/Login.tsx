@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useApolloClient } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -14,6 +13,7 @@ import AccountForm from "@/app/account/(auth)/_components/Form";
 import ErrorModal from "@/components/ErrorModal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { doCredentialLogin } from "@/lib/actions";
 import { ROUTES, VALID_EMAIL_REGEX, VALID_MOBILE_REGEX } from "@/lib/constants";
 import { isDev } from "@/lib/isType";
 
@@ -56,23 +56,27 @@ export default function Login() {
     try {
       const callbackUrl = searchParams?.get("callbackUrl");
       await client.resetStore();
-      const response = await signIn("credentials", {
-        emailOrMobile: emailMobile,
+      // const response = await signIn("credentials", {
+      //   emailOrMobile: emailMobile,
+      //   password,
+      //   redirect: false,
+      // });
+      const response = await doCredentialLogin({
+        email: emailMobile,
         password,
-        redirect: false,
       });
 
-      console.log(response)
-
-      if (response?.ok) {
+      if (response?.error) {
+        console.log("error1", error);
+        setError(response.error);
+      } else {
         reset();
         // // For solving not replacing login url with redirect url
         // callbackUrl && refresh();
         replace(callbackUrl ?? ROUTES.user.home);
-      } else if (response?.error) {
-        setError(response.error);
       }
     } catch (error) {
+      setError((error as Error).message);
       isDev() && console.error("Login@Errors: ", error);
     }
   });

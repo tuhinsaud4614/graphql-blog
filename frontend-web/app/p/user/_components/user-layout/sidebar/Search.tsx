@@ -20,7 +20,7 @@ const className = {
 
 export default function SidebarSearch() {
   const [anchorEle, setAnchorEle] =
-    React.useState<React.ElementRef<"div"> | null>(null);
+    React.useState<React.ComponentRef<"div"> | null>(null);
   const [_, setRecentSearches] = useLocalStorage<string[] | null>(
     RECENT_SEARCHES_KEY,
     null,
@@ -60,7 +60,7 @@ export default function SidebarSearch() {
     <>
       <SearchBox
         ref={inputRef}
-        rootRef={searchRef}
+        rootRef={searchRef as React.RefObject<HTMLDivElement>}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
         classes={{ root: className.searchBox }}

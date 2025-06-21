@@ -27,7 +27,7 @@ const className = {
 
 export default function HoveringToolbar() {
   const [show, setShow] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement | null>(null);
+  const ref = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const editor = useSlate() as ReactEditor;
   const { selection } = editor;
@@ -80,7 +80,7 @@ export default function HoveringToolbar() {
     };
   }, [editor, selection]);
 
-  useOnClickOutside(ref, () => {
+  useOnClickOutside(ref as React.RefObject<HTMLDivElement>, () => {
     ref.current?.removeAttribute("style");
   });
 

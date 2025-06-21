@@ -8,6 +8,8 @@ import { FUserFragment } from "@/graphql/generated/schema";
 import { ROUTES } from "@/lib/constants";
 import { generateFileUrl, getUserName } from "@/lib/utils";
 
+import MoreOptions from "./more-options";
+
 const className = {
   root: "mb-4 flex items-center",
   img: "w-12 h-12 inline-block rounded-full overflow-hidden mr-4 dark:ring-1 dark:hover:ring-2 dark:ring-secondary-dark",
@@ -57,6 +59,7 @@ export default function AuthorInfo({ author, postDate }: Props) {
         </Link>
         <time className={className.timeBox}>{postDate}</time>
       </div>
+      <MoreOptions />
     </section>
   );
 }

@@ -1,10 +1,12 @@
 "use client";
 
-import { ErrorBox, NoResultFound } from "@/components";
+import { ErrorBox } from "@/components";
 import { useGetPostWithAuthorIdQuery } from "@/graphql/generated/schema";
+import useUser from "@/hooks/useUser";
 import { gplErrorHandler } from "@/lib/utils";
 
 import PostForm from "../../../_components/post-form";
+import NotFoundPost from "../../_components/NotFoundPost";
 import NewPostSkeleton from "./Skeleton";
 
 interface Props {
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export default function OldPost({ id }: Readonly<Props>) {
+  const user = useUser();
   const { data, loading, error, refetch } = useGetPostWithAuthorIdQuery({
     notifyOnNetworkStatusChange: true,
     variables: { id },
@@ -33,17 +36,8 @@ export default function OldPost({ id }: Readonly<Props>) {
     );
   }
 
-  if (!data || !data.post) {
-    return (
-      <NoResultFound
-        classes={{
-          root: "!items-start",
-          title: "text-lg selection:bg-neutral selection:text-base-100",
-        }}
-      >
-        No post for you
-      </NoResultFound>
-    );
+  if (!data || !data.post || !user || user.id !== data.post.author.id) {
+    return <NotFoundPost />;
   }
 
   return <PostForm post={data?.post} />;

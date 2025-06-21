@@ -1,7 +1,7 @@
 import LinkTextButton from "@/components/ui/LinkTextButton";
 import { ROUTES } from "@/lib/constants";
 
-import RecommendationList from "./RecommendationList";
+import RecommendationList from "../(detail)/_components/RecommendationList";
 
 export default function NotFoundPost() {
   return (

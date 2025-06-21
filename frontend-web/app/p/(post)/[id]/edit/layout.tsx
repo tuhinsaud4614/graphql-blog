@@ -19,7 +19,7 @@ export default function PostLayout({ children }: Readonly<Props>) {
       <PostHeader>
         <HeaderContent />
       </PostHeader>
-      <main className="mx-auto mt-16 max-w-3xl bg-base-100">{children}</main>
+      <main className="mx-auto mt-16 max-w-4xl bg-base-100">{children}</main>
     </NewPostProviders>
   );
 }
