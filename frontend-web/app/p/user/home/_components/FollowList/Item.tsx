@@ -44,6 +44,7 @@ export default function FollowItem({ user }: Props) {
       aria-label={username}
       className="size-12"
       size={48 / 1.8}
+      href={ROUTES.user.userProfile(user.id)}
     />
   );
 }

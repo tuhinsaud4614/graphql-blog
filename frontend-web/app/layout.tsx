@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Abril_Fatface, Raleway } from "next/font/google";
 import localFont from "next/font/local";
 
-
 import { Toaster } from "sonner";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 import RouteChangeProgress from "@/components/RouteChangeProgress";
 import Providers from "@/components/providers";

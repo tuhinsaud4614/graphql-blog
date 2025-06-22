@@ -1,10 +1,10 @@
+import * as React from "react";
+
+import { LoaderIcon } from "lucide-react";
+
 import STYLES from "@/lib/styles";
 import { ButtonModeType, ColorVariantType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { LoaderIcon } from "lucide-react";
-import * as React from "react";
-
-
 
 interface Props extends React.ComponentPropsWithRef<"button"> {
   mode?: ButtonModeType;

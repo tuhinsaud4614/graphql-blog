@@ -1,3 +1,5 @@
+"use client";
+
 import { NetworkStatus } from "@apollo/client";
 import _uniqBy from "lodash/uniqBy";
 import { Waypoint } from "react-waypoint";
@@ -10,8 +12,9 @@ import {
   TabBox,
 } from "@/components";
 import { useGetPostsWithCursorQuery } from "@/graphql/generated/schema";
-import { gplErrorHandler, isDev } from "@/utils";
-import { ROUTES } from "@/utils/constants";
+import { ROUTES } from "@/lib/constants";
+import { isDev } from "@/lib/isType";
+import { gplErrorHandler } from "@/lib/utils";
 
 const className = {
   item: "border-b dark:border-base-dark-300 last:border-none py-5 last:pb-0",
@@ -25,7 +28,10 @@ export default function TabRecommended() {
       errorPolicy: "all",
     });
 
-  if (networkStatus === NetworkStatus.refetch) {
+  if (
+    networkStatus === NetworkStatus.refetch ||
+    networkStatus === NetworkStatus.loading
+  ) {
     return (
       <TabBox classes={{ items: "space-y-6" }}>
         <PostItemSkeleton />
@@ -64,7 +70,7 @@ export default function TabRecommended() {
         notFound={
           <NotFoundMessage
             title="Recommended posts will appear here."
-            goto={ROUTES.myHome}
+            goto={ROUTES.user.home}
             gotoText="Browse following posts"
           />
         }

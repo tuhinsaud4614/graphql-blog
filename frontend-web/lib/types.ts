@@ -1,9 +1,10 @@
-import React from "react";
+import * as React from "react";
 
+import { Descendant } from "slate";
 import { z } from "zod";
 
 import { EmptyText } from "@/components/PostEditor/utils";
-import { Descendant } from "slate";
+
 import { pictureSchema, userAuthSchema } from "./schema";
 
 export interface IAnchorOrigin {

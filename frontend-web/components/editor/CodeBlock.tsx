@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import * as React from "react";
 
 import { ClipboardIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
-    oneDark,
-    oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+  oneDark,
+  oneLight,
+} from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 import Button from "../Button";
 
@@ -19,18 +19,18 @@ interface CodeBlockProps {
   showCopyButton?: boolean;
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({
+export default function CodeBlock({
   code,
-  language = "javascript",
-  showLineNumbers = true,
+  language,
   showCopyButton,
-}) => {
+  showLineNumbers,
+}: Readonly<CodeBlockProps>) {
   const { resolvedTheme } = useTheme();
   const selectedTheme = resolvedTheme === "dark" ? oneDark : oneLight;
-  const [copied, setCopied] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [copied, setCopied] = React.useState(false);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -46,7 +46,9 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
-        timeoutRef.current = setTimeout(() => setCopied(false), 2000);
+        timeoutRef.current = setTimeout(() => {
+          setCopied(false);
+        }, 2000);
       })
       .catch(console.error);
   };
@@ -90,6 +92,4 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       )}
     </div>
   );
-};
-
-export default CodeBlock;
+}

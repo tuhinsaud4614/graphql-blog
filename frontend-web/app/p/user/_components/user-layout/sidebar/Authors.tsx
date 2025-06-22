@@ -60,7 +60,7 @@ export default function SidebarAuthors() {
           ? "See more suggestions"
           : undefined
       }
-      classes={{ items: "pb-8 overflow-x-hidden" }}
+      classes={{ items: "pb-8 overflow-x-hidden space-y-4" }}
     >
       {data.recommendAuthorsWithOffset.data.map((user) => (
         <FollowItem key={user.id} user={user} />

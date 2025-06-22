@@ -2,7 +2,6 @@
 
 import * as React from "react";
 
-import { useParams } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
@@ -13,6 +12,7 @@ import {
 } from "@/app/p/(post)/_context/react-count-context";
 import {
   EReactionsMutationStatus,
+  GetPostItemFragment,
   useReactToPostMutation,
 } from "@/graphql/generated/schema";
 import useTooltip from "@/hooks/useTooltip";
@@ -20,7 +20,6 @@ import useUser from "@/hooks/useUser";
 import { isDev } from "@/lib/isType";
 import { cn, countConvert } from "@/lib/utils";
 
-import { usePostDetail } from "../../../_context/post-detail-context";
 import FloatingLikes from "./FloatingLikes";
 
 const className = {
@@ -33,6 +32,8 @@ const className = {
 
 interface Props {
   className?: string;
+  author: GetPostItemFragment["author"];
+  postId: GetPostItemFragment["id"];
 }
 
 const iconVariants = {
@@ -52,17 +53,13 @@ const iconVariants = {
   },
 };
 
-export default function LikeButton({ className: cls }: Props) {
-  const params = useParams<{ id: string }>();
+export default function LikeButton({ className: cls, author, postId }: Props) {
   const [openLikeModal, setOpenLikeBox] = React.useState(false);
   const id = React.useId();
   const { count, isReacted } = useReactState((state) => state);
   const { onHoverEnd, onHoverStart } = useTooltip();
 
   const reactDispatch = useReactDispatch();
-  const postId = params?.id;
-
-  const author = usePostDetail((state) => state.post.author);
   const authUser = useUser();
 
   const [reactAction] = useReactToPostMutation({
@@ -90,7 +87,7 @@ export default function LikeButton({ className: cls }: Props) {
         payload: nextReacted,
       });
       const { data } = await reactAction({
-        variables: { toId: postId as string },
+        variables: { toId: postId },
       });
       if (data?.reactionToPost) {
         // Confirm with server response

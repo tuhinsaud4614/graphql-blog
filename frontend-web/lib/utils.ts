@@ -711,3 +711,29 @@ export function getPostTitleAndDescription(
     return data; // Return default data in case of error
   }
 }
+
+/**
+ * Checks if a query contains a specified query parameter and returns the index of
+ * that parameter's value in a list of tabs. If the parameter is not found or is
+ * not valid, a default value is returned.
+ *
+ * @template T - The type of the query object.
+ * @param {T} query - The query object containing query parameters.
+ * @param {string[] | Readonly<string[]>} tabs - An array of tab names or labels.
+ * @param {keyof T} queryName - The key name of the query parameter to check within the query object.
+ * @param {number} [defaultReturn=0] - The default value to return if the query parameter is not found or invalid.
+ * @returns {number} - The index of the query parameter's value in the tabs array, or the default value.
+ */
+
+export function queryChecking<T extends { [key: string]: any }>(
+  query: T,
+  tabs: string[] | Readonly<string[]>,
+  queryName: keyof T,
+  defaultReturn = 0,
+) {
+  if (query && queryName in query && query[queryName]) {
+    const tab = tabs.findIndex((t) => t === decodeURI(query[queryName]));
+    return tab === -1 ? defaultReturn : tab;
+  }
+  return defaultReturn;
+}

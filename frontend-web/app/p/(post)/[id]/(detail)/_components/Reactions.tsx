@@ -2,9 +2,12 @@
 
 import * as React from "react";
 
+import { useParams } from "next/navigation";
+
+import AddToBookmark from "@/components/post/AddToBookmark";
 import useLockBody from "@/hooks/useLockBody";
 
-import AddToBookmark from "./AddToBookmark";
+import { usePostDetail } from "../../../_context/post-detail-context";
 import CommentButton from "./CommentButton";
 import FloatingComments from "./FloatingComments";
 import LikeButton from "./LikeButton";
@@ -15,15 +18,18 @@ interface Props {
 }
 
 export default function Reactions({ comments }: Props) {
+  const params = useParams<{ id: string }>();
   const [openCommentModal, setOpenCommentModal] = React.useState(false);
 
+  const author = usePostDetail((state) => state.post.author);
   useLockBody(openCommentModal);
+  const postId = params?.id;
 
   return (
     <React.Fragment>
       <section className="mt-4 flex items-center justify-between">
         <div className="flex items-center">
-          <LikeButton className="py-2" />
+          <LikeButton author={author} postId={postId || ""} className="py-2" />
           <CommentButton
             count={comments}
             className="ml-6 py-2"
@@ -31,7 +37,7 @@ export default function Reactions({ comments }: Props) {
           />
         </div>
         <span className="flex items-center gap-6">
-          <AddToBookmark />
+          <AddToBookmark author={author} postId={postId || ""} />
           <MoreOptions />
         </span>
       </section>
