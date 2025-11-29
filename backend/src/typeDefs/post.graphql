@@ -15,6 +15,15 @@ type Post {
   updatedAt: String!
 }
 
+type PostCache {
+  id: ID!
+  author: AuthorCache!
+  title: String
+  content: String
+  tags: [TagCache!]!
+  categories: [CategoryCache!]!
+}
+
 # Offset types start
 
 type OffsetPostsResponse {
@@ -117,5 +126,6 @@ enum EReactionsMutationStatus {
 }
 
 type Subscription {
-  reactions(postId: ID!): ReactionToPostResult!
+  reactions(post: ID!): ReactionToPostResult!
+  postPublishToCache(postId: ID!): PostCache!
 }

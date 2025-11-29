@@ -48,7 +48,7 @@ export async function sendVerificationCodeService(
   });
   logger.info(info);
 
-  await redisClient.setex(
+  await redisClient.generalClient.setex(
     generateUserVerificationKey(userId),
     600,
     verificationCode,
@@ -89,7 +89,7 @@ export async function sendResetPasswordVerificationCodeService(
   });
   logger.info(info);
 
-  await redisClient.setex(
+  await redisClient.generalClient.setex(
     generateResetPasswordVerificationKeyForId(userId),
     600,
     JSON.stringify({ code: verificationCode, hash: password }),

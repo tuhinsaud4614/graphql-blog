@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApolloCache } from "@apollo/client";
+import { ApolloCache } from "@apollo/client/cache";
 import { produce } from "immer";
 
 import {
@@ -378,12 +378,12 @@ export function updateGetPostReactedByQuery<T>(
             draft.postReactedBy.edges =
               mode === "ADD"
                 ? [
-                    ...draft.postReactedBy.edges,
-                    { cursor: variables?.after ?? user.id, node: user },
-                  ]
+                  ...draft.postReactedBy.edges,
+                  { cursor: variables?.after ?? user.id, node: user },
+                ]
                 : draft.postReactedBy.edges.filter(
-                    (post) => post.node.id !== user.id,
-                  );
+                  (post) => post.node.id !== user.id,
+                );
             draft.postReactedBy.total =
               draft.postReactedBy.total + (mode === "ADD" ? 1 : -1);
           }

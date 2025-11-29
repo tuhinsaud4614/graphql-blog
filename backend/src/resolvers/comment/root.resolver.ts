@@ -20,6 +20,7 @@ export const Comment = {
     try {
       return await getCommenter(prisma, id);
     } catch (error) {
+      logger.error(error);
       return new UnknownError(
         generateEntityNotExistErrorMessage("Commenter", "user"),
       );
@@ -34,6 +35,7 @@ export const Comment = {
     try {
       return await getParentComment(prisma, id);
     } catch (error) {
+      logger.error(error);
       return new UnknownError(
         generateEntityNotExistErrorMessage("Parent comment", "user"),
       );

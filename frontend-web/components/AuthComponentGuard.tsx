@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/providers/SessionProvider";
 
 import { UserRole } from "@/graphql/generated/schema";
 

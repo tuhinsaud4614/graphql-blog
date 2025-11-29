@@ -2,7 +2,6 @@ import { useGraphQlJit } from "@envelop/graphql-jit";
 import { useRateLimiter } from "@envelop/rate-limiter";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import express, {
   NextFunction,
   Request,
@@ -11,6 +10,7 @@ import express, {
 } from "express";
 import { Server } from "http";
 import morgan from "morgan";
+import passport from "passport";
 import path from "path";
 
 import config from "@/utils/config";
@@ -27,6 +27,13 @@ import { SIGNALS } from "@/utils/constants";
 import redisClient from "@/utils/redis";
 import { YogaContextType } from "@/utils/types";
 
+import { initializeEventSystem, shutdownEventSystem } from "./events/core";
+import routes from "./routes";
+import {
+  passportGoogleOAuth2Config,
+  passportJWTConfig,
+} from "./utils/passport.config";
+
 async function shutdown({
   signal,
   server,
@@ -34,7 +41,13 @@ async function shutdown({
   signal: (typeof SIGNALS)[number];
   server: Server;
 }) {
-  redisClient.disconnect();
+  // 1. Shutdown event system first (unsubscribe all handlers)
+  await shutdownEventSystem();
+
+  // 2. Disconnect Redis clients
+  redisClient.generalClient.disconnect();
+
+  // 3. Close HTTP server
   logger.info(`Got signal ${signal} Good bye.`);
   server.close(() => {
     process.exit(0);
@@ -42,6 +55,8 @@ async function shutdown({
 }
 
 async function startServer() {
+  // Initialize event system before anything else
+  await initializeEventSystem();
   const server = createYoga({
     // cors: { origin: [config.CLIENT_ENDPOINT], credentials: true },
     schema: makeExecutableSchema({
@@ -73,10 +88,20 @@ async function startServer() {
   app.use(
     morgan(":method :url :status :res[content-length] - :response-time ms"),
   );
-  app.use(cors({ origin: config.CLIENT_ENDPOINT, credentials: true }));
+  // app.use(
+  //   cors({
+  //     credentials: true,
+  //     origin: getAllowedOriginsFromEnv(),
+  //   }),
+  // );
   app.use(cookieParser());
   app.use(expressStatic(path.join(process.cwd(), "public")));
+  app.use(passport.initialize());
+  passportGoogleOAuth2Config(passport);
+  passportJWTConfig(passport);
+
   app.use("/images", expressStatic(path.join(process.cwd(), "images")));
+  app.use("/api", routes);
   app.use("/graphql", server.requestListener);
 
   // No Route found
@@ -87,7 +112,7 @@ async function startServer() {
   app.use(errorHandler);
 
   try {
-    await redisClient.connect();
+    await redisClient.generalClient.connect();
     const httpServer = app.listen(config.PORT, async () => {
       logger.info(
         `Running a GraphQL server at ${config.HOST}:${config.PORT}/graphql`,
@@ -97,7 +122,8 @@ async function startServer() {
     SIGNALS.forEach((signal) => {
       process.on(signal, () => shutdown({ signal, server: httpServer }));
     });
-  } catch (_) {
+  } catch (err) {
+    logger.error(`Encountered an error starting server: ${err}`);
     process.exit(1);
   }
 }

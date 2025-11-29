@@ -3,7 +3,7 @@ enum UserRole {
   AUTHOR
 }
 
-enum AuthorStatus {
+enum UserStatus {
   PENDING
   VERIFIED
 }
@@ -11,7 +11,6 @@ enum AuthorStatus {
 type UserFollow {
   id: ID!
   name: String
-  mobile: String!
   email: String!
   avatar: Picture
 }
@@ -19,11 +18,10 @@ type UserFollow {
 type User {
   id: ID!
   name: String
-  mobile: String!
   email: String!
   password: String
   role: UserRole!
-  authorStatus: AuthorStatus
+  userStatus: UserStatus
   avatar: Picture
   about: String
   posts: [Post!]!
@@ -31,6 +29,12 @@ type User {
   followers: [UserFollow!]!
   createdAt: String!
   updatedAt: String!
+}
+
+type AuthorCache {
+  authorId: ID!
+  firstName: String
+  lastName: String
 }
 
 type Tokens {
@@ -48,12 +52,11 @@ input RegisterInput {
   email: String!
   password: String!
   confirmPassword: String!
-  mobile: String!
   name: String
 }
 
 input LoginInput {
-  emailOrMobile: String!
+  email: String!
   password: String!
 }
 

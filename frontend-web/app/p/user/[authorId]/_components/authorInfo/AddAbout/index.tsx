@@ -5,7 +5,6 @@ import * as React from "react";
 import dynamic from "next/dynamic";
 
 import pipe from "lodash/fp/pipe";
-import { useSession } from "next-auth/react";
 import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
@@ -19,6 +18,7 @@ import {
 import { toast } from "sonner";
 
 import { Button, ErrorModal, SlateElement, SlateLeaf } from "@/components";
+import { useSession } from "@/components/providers/SessionProvider";
 import { useUpdateAboutMutation } from "@/graphql/generated/schema";
 import { ABOUT_ME_KEY } from "@/lib/constants";
 import { updateSession } from "@/lib/updateSession";
@@ -54,7 +54,6 @@ export default function AddAbout({ previousValue }: Readonly<Props>) {
   const [value, setValue] = React.useState(previousValue || initialValue);
   const [editMode, setEditMode] = React.useState(false);
 
-
   const [updateAbout, { loading, error, reset }] = useUpdateAboutMutation({
     notifyOnNetworkStatusChange: true,
   });
@@ -72,14 +71,12 @@ export default function AddAbout({ previousValue }: Readonly<Props>) {
   const onSubmit = async () => {
     try {
       const about = JSON.stringify(value);
-      console.log("new about", about);
-      console.log(typeof about);
       const { data } = await updateAbout({
         variables: { value: about },
       });
       if (data && data.updateAbout) {
         const newAbout = data.updateAbout;
-        await updateSession({ about: newAbout }, update);
+        updateSession({ about: newAbout }, update);
         setEditMode(false);
         toast.success("User about update successfully", {
           position: "top-center",

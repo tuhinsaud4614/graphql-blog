@@ -24,4 +24,5 @@ export default function useRouteChangeEffect(
   React.useEffect(() => {
     closeHandler.current?.();
   }, [url]);
+  
 }

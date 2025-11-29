@@ -8,6 +8,7 @@
   "endOfLine": "auto",
   "importOrder": [
     "^(react/(.*)$)|^(react$)",
+    "server-only",
     "^(next/(.*)$)|^(next$)",
     "<THIRD_PARTY_MODULES>",
     "^@/(.*)$",

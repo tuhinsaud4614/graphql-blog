@@ -4,7 +4,7 @@ import * as React from "react";
 
 import Link from "next/link";
 
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/providers/SessionProvider";
 import { Toaster, toast } from "sonner";
 
 import ErrorModal from "@/components/ErrorModal";
@@ -61,7 +61,7 @@ export default function NameEdit({ user, update }: Props) {
             position: "top-center",
             id: nameId,
           });
-          await updateSession({ name: data.updateName }, update);
+          updateSession({ name: data.updateName }, update);
           setNameEdit(false);
         }
       } catch (error) {

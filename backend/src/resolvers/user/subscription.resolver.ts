@@ -4,6 +4,7 @@ import logger from "@/logger";
 import { AuthenticationError, UnknownError } from "@/model";
 import { verifyAccessTokenFromExtensions } from "@/utils";
 import {
+  PUBSUB_EVENTS,
   SUBSCRIPTION_FOLLOWING_ERR_MSG,
   SUBSCRIPTION_USER_VERIFICATION_ERR_MSG,
   UN_AUTH_ERR_MSG,
@@ -25,7 +26,7 @@ export const Subscription = {
           return new AuthenticationError(UN_AUTH_ERR_MSG);
         }
 
-        return pubSub.subscribe("following", user.id);
+        return pubSub.subscribe(PUBSUB_EVENTS.FOLLOWING, user.id);
       } catch (error) {
         logger.error(error);
         return new UnknownError(SUBSCRIPTION_FOLLOWING_ERR_MSG);
@@ -42,7 +43,7 @@ export const Subscription = {
     ) {
       try {
         // return pubSub.subscribe(SUBSCRIPTION_USER_VERIFICATION(userId));
-        return pubSub.subscribe("verifyUser", userId);
+        return pubSub.subscribe(PUBSUB_EVENTS.VERIFY_USER, userId);
       } catch (error) {
         logger.error(error);
         return new UnknownError(SUBSCRIPTION_USER_VERIFICATION_ERR_MSG);

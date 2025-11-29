@@ -31,7 +31,7 @@ import { DataTablePagination } from "@/components/data-table/Pagination";
 import TableRow from "@/components/data-table/Row";
 import Table from "@/components/data-table/Table";
 import { DataTableToolbar } from "@/components/data-table/Toolbar";
-import { AuthorStatus, FUserFragment } from "@/graphql/generated/schema";
+import { FUserFragment, UserStatus } from "@/graphql/generated/schema";
 import { FORMAT_LOCALE_DATE_VARIANTS } from "@/lib/constants";
 import { formatLocaleDate, generateFileUrl, getUserName } from "@/lib/utils";
 
@@ -118,32 +118,32 @@ export default function AdminUserList({ users }: Props) {
         ),
         enableHiding: false,
       },
+      // {
+      //   accessorKey: "mobile",
+      //   header: ({ column }) => (
+      //     <DataTableColumnHeader column={column} title="Mobile" />
+      //   ),
+      //   cell: ({ row }) => (
+      //     <div className="text-start selection:bg-primary selection:text-primary-foreground">
+      //       {row.original.mobile}
+      //     </div>
+      //   ),
+      //   enableHiding: false,
+      // },
       {
-        accessorKey: "mobile",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Mobile" />
-        ),
-        cell: ({ row }) => (
-          <div className="text-start selection:bg-primary selection:text-primary-foreground">
-            {row.original.mobile}
-          </div>
-        ),
-        enableHiding: false,
-      },
-      {
-        accessorKey: "authorStatus",
+        accessorKey: "userStatus",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Status" />
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            {row.original.authorStatus === AuthorStatus.Verified ? (
+            {row.original.userStatus === UserStatus.Verified ? (
               <BadgeCheck className="text-success" size={16} />
             ) : (
               <CircleDotDashed className="text-warning" size={16} />
             )}
             <span className="selection:bg-primary selection:text-primary-foreground">
-              {row.original.authorStatus}
+              {row.original.userStatus}
             </span>
           </div>
         ),

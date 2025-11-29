@@ -1,6 +1,6 @@
-import { GraphQLError } from "graphql";
-
 import { Prisma, PrismaClient } from "@prisma/client";
+
+import { GraphQLError } from "graphql";
 
 import logger from "@/logger";
 import {

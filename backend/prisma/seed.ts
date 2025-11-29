@@ -10,9 +10,8 @@ async function main() {
     update: {},
     create: {
       email: "admin@gmail.com",
-      authorStatus: "VERIFIED",
+      userStatus: "VERIFIED",
       password: adminHashPassword,
-      mobile: "01612345678",
       role: "ADMIN",
     },
   });
@@ -21,20 +20,18 @@ async function main() {
     update: {},
     create: {
       email: "t@gmail.com",
-      authorStatus: "VERIFIED",
+      userStatus: "VERIFIED",
       password: userHashPassword,
-      mobile: "01611111111",
       role: "AUTHOR",
     },
   });
   await prisma.user.upsert({
-    where: { email: 't2@gmail.com' },
+    where: { email: 't2@gmail.com' }, 
     update: {},
     create: {
       email: "t2@gmail.com",
-      authorStatus: "VERIFIED",
+      userStatus: "VERIFIED",
       password: userHashPassword,
-      mobile: "01611111112",
       role: "AUTHOR",
     },
   });

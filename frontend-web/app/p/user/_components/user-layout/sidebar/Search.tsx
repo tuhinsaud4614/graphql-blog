@@ -25,8 +25,8 @@ export default function SidebarSearch() {
     RECENT_SEARCHES_KEY,
     null,
   );
-  const searchRef = React.useRef<React.ElementRef<"div">>(null);
-  const inputRef = React.useRef<React.ElementRef<"input">>(null);
+  const searchRef = React.useRef<React.ComponentRef<"div">>(null);
+  const inputRef = React.useRef<React.ComponentRef<"input">>(null);
 
   const { push } = useRouter();
 
@@ -63,7 +63,7 @@ export default function SidebarSearch() {
         rootRef={searchRef as React.RefObject<HTMLDivElement>}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
-        classes={{ root: className.searchBox }}
+        classes={{ root: "py-8" }}
       />
       {matches && (
         <Menu
@@ -71,7 +71,7 @@ export default function SidebarSearch() {
           anchorEle={anchorEle}
           onClose={() => setAnchorEle(null)}
         >
-          <section className={className.result}>
+          <section className="w-80 p-4">
             <SearchResult title="People">
               {Array.from({ length: 3 }).map((_, index) => (
                 <SearchResultItem

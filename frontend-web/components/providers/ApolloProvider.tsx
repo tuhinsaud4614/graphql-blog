@@ -3,47 +3,50 @@
 /* This is setup with https://www.npmjs.com/package/@apollo/client-integration-nextjs */
 import * as React from "react";
 
-import { ApolloLink, fromPromise, split } from "@apollo/client";
+import { from } from "rxjs";
+import { filter, mergeMap } from "rxjs/operators";
+
+import { ApolloLink, CombinedGraphQLErrors, setLogVerbosity } from "@apollo/client";
 import {
   ApolloClient,
   ApolloNextAppProvider,
   InMemoryCache,
   SSRMultipartLink,
 } from "@apollo/client-integration-nextjs";
-import { setContext } from "@apollo/client/link/context";
-import { onError } from "@apollo/client/link/error";
-import { YogaLink } from "@graphql-yoga/apollo-link";
-import { Kind, OperationTypeNode, getOperationAST } from "graphql";
-import { signOut } from "next-auth/react";
+import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
 
-import { BACKEND_GRAPHQL_URL, ROUTES } from "@/lib/constants";
-import { getAccessTokenFromNextAuth } from "@/lib/next-server-api";
+import { SetContextLink } from "@apollo/client/link/context";
+import { ErrorLink } from "@apollo/client/link/error";
+import { } from "@apollo/client/link/http";
+import { YogaLink } from "@graphql-yoga/apollo-link";
+import { getOperationAST, Kind, OperationTypeNode } from "graphql";
+
+import { retryRefreshToken } from "@/lib/actions";
+import { BACKEND_GRAPHQL_URL } from "@/lib/constants";
 import createUploadLink from "@/lib/uploadLink";
 
-async function retryRefreshToken() {
-  try {
-    const newAccessToken = await getAccessTokenFromNextAuth();
-    if (!newAccessToken) {
-      await signOut({ callbackUrl: ROUTES.landing, redirect: true });
-      return null;
-    }
+import { isDev } from "@/lib/isType";
+import { Defer20220824Handler } from "@apollo/client/incremental";
+import { useSession } from "./SessionProvider";
 
-    return newAccessToken;
-  } catch (_) {
-    return null;
-  }
+
+if (isDev()) {
+  setLogVerbosity("debug");
+  loadDevMessages();
+  loadErrorMessages();
 }
-function makeClient() {
-  const errorLink = onError(({ graphQLErrors, operation, forward }) => {
-    if (graphQLErrors) {
-      for (const err of graphQLErrors) {
+
+function makeClient(accessToken?: string | null) {
+  const errorLink = new ErrorLink(({ error: graphQLErrors, operation, forward }) => {
+    if (CombinedGraphQLErrors.is(graphQLErrors)) {
+      for (const err of graphQLErrors.errors) {
         if (
           err?.extensions?.code &&
           err.extensions.code === "UNAUTHENTICATED"
         ) {
-          return fromPromise(retryRefreshToken())
-            .filter((value) => Boolean(value))
-            .flatMap((newAccessToken) => {
+          return from(retryRefreshToken()).pipe(
+            filter((value) => Boolean(value)),
+            mergeMap((newAccessToken) => {
               const oldHeaders = operation.getContext().headers;
               operation.setContext({
                 headers: {
@@ -56,13 +59,14 @@ function makeClient() {
 
               // retry the request, returning the new observable
               return forward(operation);
-            });
+            })
+          );
         }
       }
     }
   });
 
-  const yogaLink = split(
+  const yogaLink = ApolloLink.split(
     ({ query, operationName }) => {
       const definition = getOperationAST(query, operationName);
       return (
@@ -78,13 +82,12 @@ function makeClient() {
     }),
   );
 
-  const authLink = setContext(async (_, { headers }) => {
-    const newAccessToken = await getAccessTokenFromNextAuth();
-    if (newAccessToken) {
+  const authLink = new SetContextLink(({ headers }) => {
+    if (accessToken) {
       return {
         headers: {
           ...headers,
-          Authorization: `Bearer ${newAccessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       };
     }
@@ -101,22 +104,26 @@ function makeClient() {
     link:
       typeof window === "undefined"
         ? ApolloLink.from([
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-            authLink,
-            errorLink,
-            yogaLink,
-          ])
+          new SSRMultipartLink({
+            stripDefer: true,
+          }),
+          authLink,
+          errorLink,
+          yogaLink,
+        ])
         : ApolloLink.from([authLink, errorLink, yogaLink]),
+    incrementalHandler: new Defer20220824Handler(),
   });
 }
 
 export function ApolloProvider({
   children,
 }: Readonly<React.PropsWithChildren>) {
+  const session = useSession();
   return (
-    <ApolloNextAppProvider makeClient={makeClient}>
+    <ApolloNextAppProvider
+      makeClient={() => makeClient(session.data?.accessToken)}
+    >
       {children}
     </ApolloNextAppProvider>
   );

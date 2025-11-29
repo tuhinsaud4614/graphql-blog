@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/providers/SessionProvider";
 
 import AvatarEdit from "./AvatarEdit";
 import NameEdit from "./NameEdit";

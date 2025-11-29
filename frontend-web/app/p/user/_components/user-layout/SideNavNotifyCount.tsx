@@ -1,7 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-
+import { useSession } from "@/components/providers/SessionProvider";
 import Badge from "@/components/ui/Badge";
 
 export default function SideNavNotifyCount() {

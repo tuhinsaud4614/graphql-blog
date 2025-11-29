@@ -8,14 +8,13 @@ export const pictureSchema = z.object({
 });
 
 export const userAuthSchema = z.object({
-  about: z.string().nullable(),
-  authorStatus: z.enum(["PENDING", "VERIFIED"]).nullable(),
-  avatar: pictureSchema.optional().nullable(),
+  about: z.string().nullable().optional(),
+  userStatus: z.enum(["PENDING", "VERIFIED"]).nullable().optional(),
+  avatar: pictureSchema.optional().nullable().optional(),
   email: z.string().email(),
   exp: z.number(),
   iat: z.number(),
   id: z.string(),
-  mobile: z.string(),
-  name: z.string().nullable(),
+  name: z.string().nullable().optional(),
   role: z.enum(["ADMIN", "AUTHOR"]),
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/providers/SessionProvider";
 
 import UserAvatarButton from "@/components/user-avatar-button";
 import { skeletonVariant } from "@/lib/variants/classVariants";

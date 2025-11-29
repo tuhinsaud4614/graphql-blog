@@ -4,13 +4,13 @@ import {
   GetTrendingPostsDocument,
   GetTrendingPostsQuery,
 } from "@/graphql/generated/schema";
-import { getClient } from "@/lib/apolloClient";
+import { gqlRSCQuery } from "@/lib/apolloClient";
 import { gplErrorHandler } from "@/lib/utils";
 
 import TrendingItem from "./Item";
 
 export default async function TrendingList() {
-  const { data, error } = await getClient().query<GetTrendingPostsQuery>({
+  const { data, error } = await gqlRSCQuery<GetTrendingPostsQuery>({
     query: GetTrendingPostsDocument,
   });
 

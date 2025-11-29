@@ -6,6 +6,11 @@ type Category {
   updatedAt: String!
 }
 
+type CategoryCache {
+  id: ID!
+  name: String!
+}
+
 type PaginateCategories {
   data: [Category!]!
   total: Int!

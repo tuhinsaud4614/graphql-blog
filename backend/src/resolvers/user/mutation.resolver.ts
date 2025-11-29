@@ -20,6 +20,7 @@ import {
 } from "@/services/user";
 import {
   FOLLOW_OWN_ERR_MSG,
+  PUBSUB_EVENTS,
   UN_AUTH_ERR_MSG,
   UN_FOLLOW_OWN_ERR_MSG,
   generateRoleErrorMessage,
@@ -75,7 +76,7 @@ export const Mutation = {
     const verifiedUserId = await verifyUserService(prisma, params);
 
     if (typeof verifiedUserId === "string") {
-      pubSub.publish("verifyUser", verifiedUserId, {
+      pubSub.publish(PUBSUB_EVENTS.VERIFY_USER, verifiedUserId, {
         mutation: "VERIFIED",
         userId: verifiedUserId,
       });
@@ -189,7 +190,7 @@ export const Mutation = {
     }
 
     const result = await followRequestService(prisma, toId, user.id);
-    pubSub.publish("following", toId, {
+    pubSub.publish(PUBSUB_EVENTS.FOLLOWING, toId, {
       followedBy: user,
       mutation: EFollowingMutationStatus.Follow,
     });
@@ -212,7 +213,7 @@ export const Mutation = {
     }
 
     const result = await unfollowRequestService(prisma, toId, user.id);
-    pubSub.publish("following", toId, {
+    pubSub.publish(PUBSUB_EVENTS.FOLLOWING, toId, {
       followedBy: user,
       mutation: EFollowingMutationStatus.Unfollow,
     });

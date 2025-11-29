@@ -29,12 +29,11 @@ export const isAuthUser = (data: unknown): data is IAuthUser => {
   return (
     typeof data === "object" && data !== null && _has(data, "email"),
     _has(data, "about"),
-    _has(data, "authorStatus"),
+    _has(data, "userStatus"),
     _has(data, "avatar"),
     _has(data, "exp"),
     _has(data, "iat"),
     _has(data, "id"),
-    _has(data, "mobile"),
     _has(data, "role")
   );
 };

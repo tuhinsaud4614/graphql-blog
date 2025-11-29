@@ -4,8 +4,8 @@ import * as React from "react";
 
 import Link from "next/link";
 
+import { useSession } from "@/components/providers/SessionProvider";
 import _omit from "lodash/omit";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
 import ErrorModal from "@/components/ErrorModal";
@@ -39,7 +39,7 @@ export default function AvatarEdit({ update, user }: Readonly<Props>) {
           toast.success("Upload avatar successfully.", {
             position: "top-center",
           });
-          await updateSession(
+          updateSession(
             { avatar: _omit(data.uploadAvatar, ["__typename"]) },
             update,
           );

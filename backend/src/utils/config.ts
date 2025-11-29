@@ -1,4 +1,5 @@
 import { envSchema } from "env-schema";
+import type { StringValue } from "ms";
 
 const properties = {
   NODE_ENV: {
@@ -11,6 +12,27 @@ const properties = {
   HOST: {
     type: "string",
     default: "http://localhost",
+  },
+  CLIENT_ENDPOINT: {
+    type: "string",
+  },
+  ALLOWED_ORIGINS: {
+    type: "string",
+  },
+  GOOGLE_OAUTH2_CLIENT_ID: {
+    type: "string",
+  },
+  GOOGLE_OAUTH2_CLIENT_SECRET: {
+    type: "string",
+  },
+  GOOGLE_OAUTH2_CALLBACK_URL: {
+    type: "string",
+  },
+  GOOGLE_OAUTH2_AUTHORIZATION_SUCCESS_REDIRECT_URL: {
+    type: "string",
+  },
+  GOOGLE_OAUTH2_AUTHORIZATION_FAILED_REDIRECT_URL: {
+    type: "string",
   },
   DATABASE_URL: {
     type: "string",
@@ -48,7 +70,25 @@ const properties = {
   REFRESH_TOKEN_EXPIRES: {
     type: "string",
   },
-  CLIENT_ENDPOINT: {
+  ES_STACK_VERSION: {
+    type: "string",
+  },
+  ES_HOST: {
+    type: "string",
+  },
+  ES_PORT: {
+    type: "number",
+  },
+  KIBANA_PORT: {
+    type: "number",
+  },
+  ELASTIC_USERNAME: {
+    type: "string",
+  },
+  ELASTIC_PASSWORD: {
+    type: "string",
+  },
+  KIBANA_PASSWORD: {
     type: "string",
   },
 };
@@ -56,6 +96,13 @@ const properties = {
 type ENV = {
   PORT: number;
   HOST: string;
+  CLIENT_ENDPOINT: string;
+  ALLOWED_ORIGINS: string;
+  GOOGLE_OAUTH2_CLIENT_ID: string;
+  GOOGLE_OAUTH2_CLIENT_SECRET: string;
+  GOOGLE_OAUTH2_CALLBACK_URL: string;
+  GOOGLE_OAUTH2_AUTHORIZATION_SUCCESS_REDIRECT_URL: string;
+  GOOGLE_OAUTH2_AUTHORIZATION_FAILED_REDIRECT_URL: string;
   DATABASE_URL: string;
   REDIS_HOST: string;
   REDIS_PORT: number;
@@ -66,9 +113,15 @@ type ENV = {
   SMTP_SECURITY: number;
   ACCESS_TOKEN_SECRET_KEY: string;
   REFRESH_TOKEN_SECRET_KEY: string;
-  ACCESS_TOKEN_EXPIRES: string;
-  REFRESH_TOKEN_EXPIRES: string;
-  CLIENT_ENDPOINT: string;
+  ACCESS_TOKEN_EXPIRES: StringValue;
+  REFRESH_TOKEN_EXPIRES: StringValue;
+  STACK_VERSION: string;
+  ES_HOST: string;
+  ES_PORT: number;
+  KIBANA_PORT: number;
+  ELASTIC_USERNAME: string;
+  ELASTIC_PASSWORD: string;
+  KIBANA_PASSWORD: string;
 };
 
 const schema = {

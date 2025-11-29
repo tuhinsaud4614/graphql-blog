@@ -4,13 +4,16 @@ import type { Request, Response } from "express";
 import { unlink } from "fs";
 import { verify as jwtVerify } from "jsonwebtoken";
 import { pick } from "lodash";
-import ms from "ms";
+import _isEmpty from "lodash/isEmpty";
+import GoogleOAuth2Strategy from "passport-google-oauth2";
+import { VerifyCallback } from "passport-jwt";
 import path from "path";
 
 import config from "@/utils/config";
 
 import { GraphQLError } from "graphql";
 
+import { googleOAuth2ProfileSchema, passportJwtPayload } from "@/dto/user.dto";
 import logger from "@/logger";
 import {
   AuthenticationError,
@@ -20,13 +23,14 @@ import {
 } from "@/model";
 import { getAllPosts } from "@/repositories/post";
 import {
+  createGoogleOAuth2User,
   createOrUpdateAvatar,
   createUser,
   deleteUser,
   followTo,
   getUserAvatar,
-  getUserByEmailOrMobile,
-  getUserByEmailOrMobileWithAvatar,
+  getUserByEmail,
+  getUserByEmailWithAvatar,
   getUserById,
   getUserByIdWithAvatar,
   getUserFollowBy,
@@ -63,11 +67,13 @@ import {
   generateExistErrorMessage,
   generateFetchErrorMessage,
   generateNotExistErrorMessage,
-  generateRefreshTokenKeyName,
   generateResetPasswordVerificationKeyForId,
   generateUserVerificationKey,
 } from "@/utils/constants";
+import { clearRefreshTokeCookie, setRefreshTokeCookie } from "@/utils/cookies";
+import prisma from "@/utils/db-client";
 import { IUserPayload } from "@/utils/interfaces";
+import { publicUserInfo } from "@/utils/object-transfer";
 import redisClient from "@/utils/redis";
 import { isVerifyResetPassword } from "@/utils/type-guard";
 import type {
@@ -104,6 +110,7 @@ import {
   sendResetPasswordVerificationCodeService,
   sendVerificationCodeService,
 } from "./mail";
+import { checkUserTokenOnCache, removeUserTokenOnCache } from "./user.cache";
 
 /**
  * This function generates access and refresh tokens for a given user.
@@ -115,7 +122,7 @@ import {
  * `user` object, secret keys, and expiration times. The `refreshToken` is generated with an additional
  * parameter `true` to indicate that it is a refresh token. The `as const` assertion is used to
  */
-async function generateTokensService(user: UserWithAvatar) {
+export async function generateTokensService(user: UserWithAvatar) {
   const accessToken = await generateToken(
     user,
     config.ACCESS_TOKEN_SECRET_KEY,
@@ -146,13 +153,11 @@ const verifyRefreshToken = async (token: string) => {
     const decoded = jwtVerify(token, config.REFRESH_TOKEN_SECRET_KEY);
     const payload = getUserPayload(decoded);
 
-    const value = await redisClient.get(
-      generateRefreshTokenKeyName(payload.id),
-    );
-    if (value && token === JSON.parse(value)) {
+    const exist = await checkUserTokenOnCache(payload.id, token);
+    if (exist) {
       return payload;
     }
-    redisClient.del(generateRefreshTokenKeyName(payload.id));
+    removeUserTokenOnCache(payload.id, token);
     throw new AuthenticationError(UN_AUTH_ERR_MSG);
   } catch (error) {
     logger.error(error);
@@ -188,10 +193,10 @@ export async function userRegistrationService(
   }
 
   try {
-    const { email, password, mobile, name, verificationLink } = params;
-    const isUserExist = await getUserByEmailOrMobile(prisma, email, mobile);
+    const { email, password, name, verificationLink } = params;
+    const isUserExist = await getUserByEmail(prisma, email);
 
-    if (isUserExist?.authorStatus === "VERIFIED") {
+    if (isUserExist?.userStatus === "VERIFIED") {
       return new ForbiddenError(generateExistErrorMessage("User"));
     }
 
@@ -208,7 +213,6 @@ export async function userRegistrationService(
 
     const user = await createUser(prisma, {
       email,
-      mobile,
       name,
       password: hashPassword,
     });
@@ -256,9 +260,9 @@ export async function resendActivationService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    const { authorStatus, email, id } = user;
+    const { userStatus, email, id } = user;
 
-    if (authorStatus === "VERIFIED") {
+    if (userStatus === "VERIFIED") {
       return new ForbiddenError("User already verified");
     }
 
@@ -302,21 +306,21 @@ export async function verifyUserService(
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    const { authorStatus } = user;
+    const { userStatus } = user;
 
-    if (authorStatus === "VERIFIED") {
+    if (userStatus === "VERIFIED") {
       return new ForbiddenError("User already verified");
     }
 
     const VRKey = generateUserVerificationKey(id);
 
-    const redisCode = await redisClient.get(VRKey);
+    const redisCode = await redisClient.generalClient.get(VRKey);
 
     if (code !== redisCode) {
       return new ForbiddenError("User verification failed");
     }
 
-    await redisClient.del(VRKey);
+    await redisClient.generalClient.del(VRKey);
     await updateAuthorStatusToVerified(prisma, id);
 
     return id;
@@ -355,20 +359,15 @@ export async function loginService(
   }
 
   try {
-    const { emailOrMobile } = params;
+    const { email } = params;
 
-    const user = await getUserByEmailOrMobileWithAvatar(
-      prisma,
-      emailOrMobile,
-      emailOrMobile,
-      true,
-    );
+    const user = await getUserByEmailWithAvatar(prisma, email, true);
 
     if (!user) {
       return new ForbiddenError(generateNotExistErrorMessage("User"));
     }
 
-    const isValidPassword = await verify(user.password, params.password);
+    const isValidPassword = await verify(user.password || "", params.password);
 
     if (!isValidPassword) {
       return new UserInputError(INVALID_CREDENTIAL);
@@ -376,18 +375,104 @@ export async function loginService(
 
     const { accessToken, refreshToken } = await generateTokensService(user);
 
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true, // accessible only by web server
-      secure: true, // https
-      sameSite: "none", // cross-site cookie
-      maxAge: ms(config.REFRESH_TOKEN_EXPIRES), // cookie expiry
-    });
+    setRefreshTokeCookie(res, refreshToken);
     return { accessToken, refreshToken };
   } catch (error) {
     logger.error(error);
     return new UnknownError(AUTH_FAIL_ERR_MSG);
   }
 }
+
+/**
+ * Verify callback for JWT strategy.
+ *
+ * @param {object} jwtPayload - The JWT payload.
+ * @param {function} done - The done callback.
+ * @return {Promise<void>} Promise that resolves when the verification is complete.
+ */
+export const verifyCallback: VerifyCallback = async (
+  jwtPayload,
+  done,
+): Promise<void> => {
+  try {
+    // Parse the JWT payload
+    const payload = await passportJwtPayload.validate(jwtPayload, {
+      abortEarly: false,
+    });
+
+    // Get the user by id with avatar included
+    const user = await getUserByIdWithAvatar(prisma, payload.id || "");
+
+    // If the user exists, return the public user info
+    if (user) {
+      done(null, publicUserInfo(user));
+    } else {
+      // Otherwise, return false
+      done(null, false);
+    }
+  } catch (error) {
+    // If there's an error, return the error
+    done(error, false);
+  }
+};
+
+/**
+ * Verify callback for Google OAuth2 strategy.
+ *
+ * @param {string} _accessToken - The access token.
+ * @param {string} _refreshToken - The refresh token.
+ * @param {unknown} profile - The profile.
+ * @param {GoogleOAuth2Strategy.VerifyCallback} cb - The done callback.
+ * @return {Promise<void>} Promise that resolves when the verification is complete.
+ */
+export const verifyGoogleOAuth2Callback: GoogleOAuth2Strategy.VerifyFunction =
+  async (
+    _accessToken: string,
+    _refreshToken: string,
+    profile: unknown,
+    cb: GoogleOAuth2Strategy.VerifyCallback,
+  ): Promise<void> => {
+    try {
+      // Check if the profile is empty
+      if (_isEmpty(profile)) {
+        // Return false if it is
+        return cb(null, false);
+      }
+
+      // Parse the profile
+      const oauth2Profile = await googleOAuth2ProfileSchema.validate(profile, {
+        abortEarly: false,
+      });
+
+      // Get the user by profile id with avatar included
+      const user = await getUserByEmailWithAvatar(prisma, oauth2Profile.email);
+
+      // If the user exists, return the public user info
+      if (user) {
+        // If there is profile id in the user and the new profile id does not match, create a new user
+        if (!user.profileId) {
+          const newUser = await createGoogleOAuth2User(prisma, oauth2Profile);
+          return cb(null, publicUserInfo(newUser ?? user));
+        } else {
+          return cb(null, publicUserInfo(user));
+        }
+      }
+
+      // Otherwise, create a new user with the profile
+      const newUser = await createGoogleOAuth2User(prisma, oauth2Profile);
+
+      // If the new user exists, return the public user info
+      if (newUser) {
+        return cb(null, publicUserInfo(newUser));
+      }
+
+      // Otherwise, return false
+      cb(null, false);
+    } catch (error) {
+      // If there's an error, return the error
+      cb(error, false);
+    }
+  };
 
 /**
  * This is a function that logs out a user by deleting their refresh token and clearing
@@ -414,9 +499,13 @@ export async function logoutService(
       return new ForbiddenError("Logout failed.");
     }
 
-    await redisClient.del(generateRefreshTokenKeyName(user.id));
+    await removeUserTokenOnCache(user.id, jwt);
 
-    res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "none" });
+    res.clearCookie("jwt", {
+      httpOnly: true, // accessible only by web server
+      secure: true, // https
+      sameSite: "none", // cross-site cookie
+    });
 
     return user.id;
   } catch (error) {
@@ -462,7 +551,7 @@ export async function resetPasswordService(
 
     const { newPassword, oldPassword, verificationLink } = params;
 
-    if (!(await verify(user.password, oldPassword))) {
+    if (!(await verify(user.password || "", oldPassword))) {
       return new UserInputError("Invalid credentials");
     }
 
@@ -522,13 +611,13 @@ export async function verifyResetPasswordService(
     const key = generateResetPasswordVerificationKeyForId(userId);
     const { code } = params;
 
-    const data = await redisClient.get(key);
+    const data = await redisClient.generalClient.get(key);
     const result = data ? JSON.parse(data) : null;
 
     if (!isVerifyResetPassword(result) || result.code !== code) {
       return new ForbiddenError("Reset password verification failed");
     }
-    await redisClient.del(key);
+    await redisClient.generalClient.del(key);
 
     await resetNewPassword(prisma, userId, result.hash);
 
@@ -743,10 +832,12 @@ export async function unfollowRequestService(
  */
 export async function tokenService(
   prisma: PrismaClient,
+  res: Response,
   refreshToken?: string,
 ) {
   try {
     if (!refreshToken) {
+      clearRefreshTokeCookie(res);
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
@@ -754,6 +845,7 @@ export async function tokenService(
     const isExist = await getUserByIdWithAvatar(prisma, user.id);
 
     if (!isExist) {
+      clearRefreshTokeCookie(res);
       return new AuthenticationError(UN_AUTH_ERR_MSG);
     }
 
@@ -762,10 +854,10 @@ export async function tokenService(
       config.ACCESS_TOKEN_SECRET_KEY,
       config.ACCESS_TOKEN_EXPIRES,
     );
-
     return accessToken;
   } catch (error) {
     logger.error(error);
+    clearRefreshTokeCookie(res);
     return new AuthenticationError(UN_AUTH_ERR_MSG);
   }
 }

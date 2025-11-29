@@ -12,23 +12,23 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String?
-  mobile       String        @unique
-  email        String        @unique
-  password     String
-  role         UserRole      @default(AUTHOR)
-  authorStatus AuthorStatus?
-  about        String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  avatar       Picture?
-  posts        Post[]
-  followings   User[]        @relation("follow")
-  followers    User[]        @relation("follow")
-  reactionsTo  Post[]        @relation("reaction")
-  comments     Comment[]
-  bookmarks    Bookmark[]
+  id          String      @id @default(cuid())
+  name        String?
+  email       String      @unique
+  password    String?
+  role        UserRole    @default(AUTHOR)
+  userStatus  UserStatus?
+  profileId   String?     @unique // Used for social auth
+  about       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  avatar      Picture?
+  posts       Post[]
+  followings  User[]      @relation("follow")
+  followers   User[]      @relation("follow")
+  reactionsTo Post[]      @relation("reaction")
+  comments    Comment[]
+  bookmarks   Bookmark[]
 }
 
 model Category {
@@ -113,7 +113,7 @@ enum UserRole {
   ADMIN
 }
 
-enum AuthorStatus {
+enum UserStatus {
   PENDING
   VERIFIED
 }

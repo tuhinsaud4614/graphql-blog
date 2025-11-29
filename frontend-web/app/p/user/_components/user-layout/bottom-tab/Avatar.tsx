@@ -6,11 +6,11 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 
 import { Bell, FileText, Settings } from "lucide-react";
-import { useSession } from "next-auth/react";
 
 import DemoAvatar from "@/components/DemoAvatar";
 import Modal from "@/components/Modal";
 import NavAvatar from "@/components/NavAvatar";
+import { useSession } from "@/components/providers/SessionProvider";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { ROUTES } from "@/lib/constants";
 import { generateFileUrl, getUserName } from "@/lib/utils";
@@ -47,7 +47,7 @@ export default function BottomTabAvatar() {
         as="button"
         aria-label="Demo avatar"
         type="button"
-        className="h-7 w-7"
+        className="size-7"
         size={28 / 1.8}
       />
     );
@@ -78,7 +78,7 @@ export default function BottomTabAvatar() {
           as="button"
           aria-label={username}
           type="button"
-          className="h-7 w-7"
+          className="size-7"
           size={28 / 1.8}
           onClick={() => setOpen((prev) => !prev)}
         />
@@ -96,7 +96,7 @@ export default function BottomTabAvatar() {
           {imgUrl ? (
             <span
               aria-label={username}
-              className="mr-3 inline-block h-8 w-8 overflow-hidden rounded-full dark:ring-1 dark:ring-secondary dark:group-hover:ring-2"
+              className="mr-3 inline-block size-8 overflow-hidden rounded-full dark:ring-1 dark:ring-secondary dark:group-hover:ring-2"
             >
               <Image
                 loader={({ src, width, quality }) =>
@@ -106,12 +106,12 @@ export default function BottomTabAvatar() {
                 alt={username || ""}
                 width={32}
                 height={32}
-                className="object-fit h-full w-full"
+                className="object-fit size-full"
               />
             </span>
           ) : (
             <DemoAvatar
-              className="mr-3 h-8 w-8 dark:ml-1 dark:mt-1"
+              className="mr-3 size-8 dark:ml-1 dark:mt-1"
               size={32 / 1.8}
             />
           )}

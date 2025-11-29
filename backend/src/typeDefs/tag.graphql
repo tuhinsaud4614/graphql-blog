@@ -6,6 +6,11 @@ type Tag {
   updatedAt: String!
 }
 
+type TagCache {
+  id: ID!
+  name: String!
+}
+
 type OffsetTagsResponse {
   results: [Tag!]!
   total: Int!

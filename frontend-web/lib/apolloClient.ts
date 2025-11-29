@@ -1,40 +1,46 @@
-import { ApolloLink, HttpLink, fromPromise } from "@apollo/client";
+import { ApolloLink, CombinedGraphQLErrors, HttpLink } from "@apollo/client";
 import {
   ApolloClient,
   InMemoryCache,
   registerApolloClient,
 } from "@apollo/client-integration-nextjs";
-import { setContext } from "@apollo/client/link/context";
-import { onError } from "@apollo/client/link/error";
+import { SetContextLink } from "@apollo/client/link/context";
+import { ErrorLink } from "@apollo/client/link/error";
+import { from } from "rxjs";
+import { filter, mergeMap } from "rxjs/operators";
 
+import { Defer20220824Handler } from "@apollo/client/incremental";
+import { getSession } from "./actions";
 import { BACKEND_GRAPHQL_URL } from "./constants";
-import { getAccessTokenFromNextAuth } from "./next-server-api";
 import { fetchRefreshToken } from "./utils";
 
-const authLink = setContext(async (_, { headers }) => {
-  const newAccessToken = await getAccessTokenFromNextAuth();
-  if (newAccessToken) {
+const authLink = new SetContextLink(async (previousCtx) => {
+
+  const newAccessToken = await getSession();
+  if (newAccessToken?.accessToken) {
     return {
       headers: {
-        ...headers,
-        Authorization: `Bearer ${newAccessToken}`,
+        ...previousCtx.headers,
+        Authorization: `Bearer ${newAccessToken.accessToken}`,
       },
     };
   }
 
   return {
     headers: {
-      ...headers,
+      ...previousCtx.headers,
     },
   };
 });
-const errorLink = onError(({ graphQLErrors, operation, forward }) => {
-  if (graphQLErrors) {
-    for (const err of graphQLErrors) {
-      if (err?.extensions?.code && err.extensions.code === "UNAUTHENTICATED") {
-        return fromPromise(fetchRefreshToken())
-          .filter((value) => Boolean(value))
-          .flatMap((newAccessToken) => {
+
+
+const errorLink = new ErrorLink(({ error, operation, forward }) => {
+  if (CombinedGraphQLErrors.is(error)) {
+    for (const { extensions } of error.errors) {
+      if (extensions?.code && extensions.code === "UNAUTHENTICATED") {
+        return from(fetchRefreshToken()).pipe(
+          filter((value) => Boolean(value)),
+          mergeMap((newAccessToken) => {
             const oldHeaders = operation.getContext().headers;
             operation.setContext({
               headers: {
@@ -47,7 +53,8 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
 
             // retry the request, returning the new observable
             return forward(operation);
-          });
+          })
+        );
       }
     }
   }
@@ -65,5 +72,6 @@ export const {
       errorLink,
       new HttpLink({ credentials: "include", uri: BACKEND_GRAPHQL_URL }),
     ]),
+    incrementalHandler: new Defer20220824Handler(),
   });
 });

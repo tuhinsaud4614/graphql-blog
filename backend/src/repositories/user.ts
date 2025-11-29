@@ -1,8 +1,13 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
 
+import { GoogleOAuth2Profile } from "@/dto/user.dto";
 import { imageUpload } from "@/utils";
 import { IResponseWithCursor, IResponseWithOffset } from "@/utils/interfaces";
-import type { CursorParams, RegisterInput } from "@/utils/types";
+import type {
+  CursorParams,
+  RegisterInput,
+  UserWithAvatar,
+} from "@/utils/types";
 
 /**
  * This function creates a new user with the given input data and sets their role and author status.
@@ -11,13 +16,12 @@ import type { CursorParams, RegisterInput } from "@/utils/types";
  * @param  - The `createUser` function takes in two parameters:
  * @returns The `createUser` function is returning a Promise that resolves to a newly created user
  * object in the database. The user object contains the properties `email`, `mobile`, `password`,
- * `name`, `role`, and `authorStatus`.
+ * `name`, `role`, and `userStatus`.
  */
 export function createUser(
   prisma: PrismaClient,
   {
     email,
-    mobile,
     password,
     name,
   }: Omit<RegisterInput, "confirmPassword" | "verificationLink">,
@@ -25,12 +29,52 @@ export function createUser(
   return prisma.user.create({
     data: {
       email,
-      mobile,
       password,
       name,
       role: "AUTHOR",
-      authorStatus: "PENDING",
+      userStatus: "PENDING",
     },
+  });
+}
+
+/**
+ * Creates a new user with Google OAuth2 profile information.
+ *
+ * @param {GoogleOAuth2Profile} profile - The Google OAuth2 profile of the user.
+ * @return {Promise<UserWithAvatar | null>} A promise that resolves to the created user with avatar, or null if not created.
+ */
+export async function createGoogleOAuth2User(
+  prisma: PrismaClient,
+  profile: GoogleOAuth2Profile,
+): Promise<UserWithAvatar | null> {
+  // Extract relevant information from the profile
+  const { email, id, picture, displayName } = profile;
+
+  // Use Prisma client to upsert (create or update) a user based on the provided email
+  return prisma.user.upsert({
+    where: { email },
+    create: {
+      // Create a new user with the provided profile information
+      profileId: id,
+      name: displayName,
+      email: email,
+      userStatus: "VERIFIED",
+      avatar: picture
+        ? {
+            connectOrCreate: {
+              // Connect or create an avatar record based on the provided picture URL
+              where: { url: picture },
+              create: { url: picture },
+            },
+          }
+        : undefined,
+    },
+    update: {
+      // Update the user's profile information
+      name: displayName,
+      profileId: id,
+    },
+    include: { avatar: true },
   });
 }
 
@@ -41,11 +85,11 @@ export function createUser(
  * @param {string} id - The id parameter is a string that represents the unique identifier of a user in
  * the database. It is used to locate the user whose author status needs to be updated to "Verified".
  * @returns The `updateAuthorStatusToVerified` function is returning a Promise that resolves to the
- * updated user object with the `authorStatus` property set to `"VERIFIED"`.
+ * updated user object with the `userStatus` property set to `"VERIFIED"`.
  */
 export function updateAuthorStatusToVerified(prisma: PrismaClient, id: string) {
   return prisma.user.update({
-    data: { authorStatus: "VERIFIED" },
+    data: { userStatus: "VERIFIED" },
     where: { id },
   });
 }
@@ -205,19 +249,14 @@ export function deleteUser(prisma: PrismaClient, id: string) {
  * number.
  * @param {PrismaClient} prisma - The PrismaClient instance used to interact with the database.
  * @param {string} email - The email parameter is a string that represents the email address of a user.
- * @param {string} mobile - The `mobile` parameter is a string that represents a user's mobile phone
  * number. It is used as one of the criteria to search for a user in the database along with their
  * email address.
  * @returns a Promise that resolves to a user object from the PrismaClient database that matches either
  * the email or mobile number provided as arguments.
  */
-export async function getUserByEmailOrMobile(
-  prisma: PrismaClient,
-  email: string,
-  mobile: string,
-) {
+export async function getUserByEmail(prisma: PrismaClient, email: string) {
   return await prisma.user.findFirst({
-    where: { OR: [{ email }, { mobile }] },
+    where: { email },
   });
 }
 
@@ -227,7 +266,6 @@ export async function getUserByEmailOrMobile(
  * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
  * with a database.
  * @param {string} email - The email parameter is a string that represents the email address of a user.
- * @param {string} mobile - The `mobile` parameter is a string that represents the user's mobile phone
  * @param {boolean} includePassword - The `includePassword` parameter is a boolean used to include password or not
  * number. It is used as one of the criteria to search for a user in the database along with their
  * email address.
@@ -235,14 +273,13 @@ export async function getUserByEmailOrMobile(
  * result of a Prisma query. The query searches for a user in the database whose email or mobile
  * matches the provided parameters, and includes the user's avatar data.
  */
-export async function getUserByEmailOrMobileWithAvatar(
+export async function getUserByEmailWithAvatar(
   prisma: PrismaClient,
   email: string,
-  mobile: string,
   includePassword?: boolean,
 ) {
   return prisma.user.findFirst({
-    where: { OR: [{ email }, { mobile }] },
+    where: { email },
     omit: { password: !includePassword },
     include: {
       avatar: { select: { id: true, height: true, width: true, url: true } },

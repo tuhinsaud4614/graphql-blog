@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/providers/SessionProvider";
 
 import { IAuthUser, IPicture } from "./types";
 
@@ -9,7 +9,7 @@ export interface UpdateSessionParams {
   accessToken: string;
 }
 
-export async function updateSession<T extends Partial<UpdateSessionParams>>(
+export function updateSession<T extends Partial<UpdateSessionParams>>(
   params: T,
   update: ReturnType<typeof useSession>["update"],
 ) {
@@ -19,6 +19,6 @@ export async function updateSession<T extends Partial<UpdateSessionParams>>(
     params.avatar ||
     params.about
   ) {
-    return await update({ ...params });
+    return update({ ...params });
   }
 }

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 
-import Image from "next/legacy/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -15,6 +14,7 @@ import { cn, generateFileUrl, getUserName } from "@/lib/utils";
 
 import DemoAvatar from "../DemoAvatar";
 import NavAvatar from "../NavAvatar";
+import ProxiedImage from "../ProxiedImage";
 import Menu from "../ui/Menu";
 import LogoutButton from "./LogoutButton";
 
@@ -136,7 +136,7 @@ export default function UserAvatarButton({
           >
             {imgUrl ? (
               <span className={className.avatarInfoImg}>
-                <Image
+                <ProxiedImage
                   loader={({ src, width, quality }) =>
                     `${src}?w=${width}&q=${quality || 75}`
                   }

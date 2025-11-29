@@ -2,11 +2,11 @@
 
 import * as React from "react";
 
-import { Eye, EyeOff, Info } from "lucide-react";
+import { Info } from "lucide-react";
+import UseAnimations from "react-useanimations";
+import visibility2 from "react-useanimations/lib/visibility2";
 
 import { cn } from "@/lib/utils";
-
-import Button from "./Button";
 
 interface Props extends React.ComponentPropsWithoutRef<"input"> {
   leftIcon?: React.ReactNode;
@@ -84,16 +84,15 @@ function Component(
           required={required}
         />
         {rest.type === "password" ? (
-          <Button
-            type="button"
-            mode="text"
-            variant="accent"
-            className="size-5 shrink-0 rounded-full p-0.5"
-            aria-label={show ? "hide" : "show"}
-            onClick={() => setShow((prev) => !prev)}
-          >
-            {show ? <EyeOff /> : <Eye />}
-          </Button>
+          <UseAnimations
+            reverse={show}
+            onClick={() => {
+              setShow((prev) => !prev);
+            }}
+            strokeColor="currentColor"
+            animation={visibility2}
+            className="size-4 shrink-0 cursor-pointer text-accent"
+          />
         ) : (
           !valid && (
             <Info

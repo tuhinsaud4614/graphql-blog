@@ -190,3 +190,13 @@
     @apply text-muted-foreground hover:bg-muted;
   }
 }
+
+/* NProgress customization */
+#nprogress .bar {
+  background: hsl(var(--secondary)) !important;
+  height: 0.25rem !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px hsl(var(--secondary)), 0 0 5px hsl(var(--secondary)) !important;
+}

@@ -1,4 +1,4 @@
-import { ApolloError } from "@apollo/client";
+import { CombinedGraphQLErrors } from "@apollo/client/errors";
 import { OutputData } from "@editorjs/editorjs";
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
@@ -131,9 +131,9 @@ export function generateFileUrl(fileUrl?: string) {
   const serverEndpoint = BACKEND_API_URL;
 
   if (fileUrl && serverEndpoint) {
-    return `${serverEndpoint}${
-      fileUrl.startsWith("/") ? fileUrl : "/" + fileUrl
-    }`;
+    return fileUrl.startsWith("http")
+      ? fileUrl
+      : `${serverEndpoint}${fileUrl.startsWith("/") ? fileUrl : "/" + fileUrl}`;
   }
   return undefined;
 }
@@ -161,11 +161,11 @@ export function getUserName(user: Pick<IAuthUser | User, "email" | "name">) {
  * returns the error message from the `ApolloError` object. If there is no error object, it returns
  * nothing.
  */
-export const gplErrorHandler = (error: ApolloError | undefined) => {
+export const gplErrorHandler = (error: CombinedGraphQLErrors | undefined) => {
   if (!error) {
     return;
   }
-  const extensions = error.graphQLErrors[0]?.extensions;
+  const extensions = error.extensions;
 
   if (
     extensions &&
@@ -336,6 +336,33 @@ export async function fetchRefreshToken(
   );
   if (data && _has(data, "data") && _has(data.data, "token")) {
     return data.data.token as string;
+  }
+  return null;
+}
+
+export async function signIn(
+  email: string,
+  password: string,
+): Promise<{ accessToken: string; refreshToken: string } | null | undefined> {
+  const { data } = await axios.post(
+    `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!}/graphql`,
+    {
+      query: `
+      mutation Login($email: String!, $password: String!) {
+        login(data: { email: $email, password: $password }) {
+          accessToken
+          refreshToken
+        }
+      }
+    `,
+      variables: { email, password },
+    },
+    {
+      withCredentials: true,
+    },
+  );
+  if (data && _has(data, "data") && _has(data.data, "login")) {
+    return data.data as { accessToken: string; refreshToken: string };
   }
   return null;
 }

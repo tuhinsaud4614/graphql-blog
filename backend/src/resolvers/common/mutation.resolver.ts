@@ -16,7 +16,7 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 

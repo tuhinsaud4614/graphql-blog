@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/providers/SessionProvider";
 
 export default function useUser() {
   const { data } = useSession();

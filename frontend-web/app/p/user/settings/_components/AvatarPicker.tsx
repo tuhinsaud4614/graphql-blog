@@ -2,12 +2,12 @@
 
 import * as React from "react";
 
-import Image from "next/legacy/image";
 
 import _has from "lodash/has";
 import { Camera } from "lucide-react";
 
 import DemoAvatar from "@/components/DemoAvatar";
+import ProxiedImage from "@/components/ProxiedImage";
 import { IMAGE_MIMES } from "@/lib/constants";
 import { cn, maxFileSize } from "@/lib/utils";
 
@@ -40,12 +40,12 @@ export default function AvatarPicker({
     <div className="ml-5 shrink-0">
       <div
         className={cn(
-          "relative h-20 w-20 rounded-full",
+          "relative size-20 rounded-full",
           image && "overflow-hidden",
         )}
       >
         {image ? (
-          <Image
+          <ProxiedImage
             loader={({ src, width, quality }) =>
               `${src}?w=${width}&q=${quality || 75}`
             }
@@ -53,10 +53,10 @@ export default function AvatarPicker({
             alt="Avatar"
             width={80}
             height={80}
-            className="h-full w-full rounded-full object-cover"
+            className="size-20 rounded-full object-cover"
           />
         ) : (
-          <DemoAvatar className="h-20 w-20" size={80 / 1.8} />
+          <DemoAvatar className="size-20" size={80 / 1.8} />
         )}
         {editable ? (
           <div className="absolute inset-0 z-10 overflow-hidden rounded-full bg-black/[54%]">
@@ -71,7 +71,7 @@ export default function AvatarPicker({
             <button
               aria-label="Avatar picker"
               type="button"
-              className="flex h-full w-full items-center justify-center border-none text-base-100/60 outline-none hover:text-base-100"
+              className="flex size-full items-center justify-center border-none text-base-100/60 outline-none hover:text-base-100"
               onClick={() => {
                 if (inputRef.current) {
                   inputRef.current.click();
@@ -88,7 +88,7 @@ export default function AvatarPicker({
           <button
             aria-label="Editable"
             type="button"
-            className="absolute inset-0 z-10 block h-full w-full border-none outline-none"
+            className="absolute inset-0 z-10 block size-full border-none outline-none"
             onClick={onEdit}
           />
         )}

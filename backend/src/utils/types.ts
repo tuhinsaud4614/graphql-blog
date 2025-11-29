@@ -51,7 +51,7 @@ export type YogaContextType = YogaInitialContext & {
   req: Request;
   res: Response;
 };
-export type YogaContext = ReturnType<typeof createContext>;
+export type YogaContext = Awaited<ReturnType<typeof createContext>>;
 
 export type CursorParams = InferType<typeof cursorParamsSchema>;
 export type OffsetParams = InferType<typeof offsetParamsSchema>;

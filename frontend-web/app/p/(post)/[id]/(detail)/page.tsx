@@ -4,7 +4,7 @@ import moment from "moment";
 
 import { ErrorBox } from "@/components";
 import EditorRenderer from "@/components/editor/EditorRenderer";
-import { getPostByIdQuery } from "@/lib/cacheed-api";
+import { getPostByIdQuery } from "@/lib/cached-api";
 import { getUserName, gplErrorHandler } from "@/lib/utils";
 
 import { PostDetailProvider } from "../../_context/post-detail-context";
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   const paramsData = await params;
   const post = await getPostByIdQuery(paramsData.id);
 
-  if (!post.data.post) {
+  if (!post?.data?.post) {
     return {
       title: "Post not found",
       description: "Post not found",

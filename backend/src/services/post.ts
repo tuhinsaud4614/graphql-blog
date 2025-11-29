@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { InputJsonValue } from "@prisma/client/runtime/library";
 import path from "path";
 
+import { EventEmitter } from "@/events/emitter";
 import logger from "@/logger";
 import { NoContentError, UnknownError } from "@/model";
 import {
@@ -25,6 +26,7 @@ import {
 } from "@/repositories/post";
 import { formatError, imageUpload, nanoid, removeFile } from "@/utils";
 import {
+  PUBSUB_EVENTS,
   REACTIONS_ERR_MSG,
   generateCreationErrorMessage,
   generateDeleteErrorMessage,
@@ -98,7 +100,8 @@ export async function updatePostDraftService(
 export async function publishPostService(
   prisma: PrismaClient,
   params: PublishPostInput,
-  userId: string,
+  authorId: string,
+  eventEmitter: EventEmitter,
 ) {
   try {
     await publishPostSchema.validate(params, { abortEarly: false });
@@ -108,7 +111,7 @@ export async function publishPostService(
   }
 
   try {
-    const isExist = await getAuthorPostById(prisma, params.id, userId, true);
+    const isExist = await getAuthorPostById(prisma, params.id, authorId, true);
 
     if (!isExist) {
       return new NoContentError(generateNotExistErrorMessage("Post"));
@@ -118,10 +121,13 @@ export async function publishPostService(
       return new NoContentError(generateNotExistErrorMessage("Post draft"));
     }
 
-    await publishPost(prisma, {
+    const newPost = await publishPost(prisma, {
       ...params,
       content: isExist.draft as InputJsonValue,
     });
+
+    await eventEmitter.emit(PUBSUB_EVENTS.POST_PUBLISH, { postID: newPost.id });
+
     return "Published post successfully";
   } catch (error) {
     logger.error(error);
@@ -309,7 +315,7 @@ export async function toggleReactionToPostService(
     if (!isReacted) {
       await addReactionToPost(prisma, toId, user.id);
 
-      pubSub.publish("reactions", toId, {
+      pubSub.publish(PUBSUB_EVENTS.REACTIONS, toId, {
         reactBy: user,
         mutation: EReactionsMutationStatus.React,
       });
@@ -317,7 +323,7 @@ export async function toggleReactionToPostService(
     }
 
     await removeReactionFromPost(prisma, toId, user.id);
-    pubSub.publish("reactions", toId, {
+    pubSub.publish(PUBSUB_EVENTS.REACTIONS, toId, {
       reactBy: user,
       mutation: EReactionsMutationStatus.Withdraw,
     });

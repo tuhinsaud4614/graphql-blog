@@ -30,7 +30,7 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
@@ -46,7 +46,7 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
@@ -55,18 +55,18 @@ export const Mutation = {
   async publishPost(
     _: unknown,
     { data }: { data: PublishPostInput },
-    { prisma, user }: YogaContext,
+    { prisma, user, eventEmitter }: YogaContext,
     ___: GraphQLResolveInfo,
   ) {
     if (user === null) {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
-    return await publishPostService(prisma, data, user.id);
+    return await publishPostService(prisma, data, user.id, eventEmitter);
   },
   async createPost(
     _: unknown,
@@ -78,7 +78,7 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
@@ -95,7 +95,7 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 
@@ -112,7 +112,7 @@ export const Mutation = {
       return new AuthenticationError();
     }
 
-    if (user.role === "AUTHOR" && user.authorStatus !== "VERIFIED") {
+    if (user.role === "AUTHOR" && user.userStatus !== "VERIFIED") {
       return new ForbiddenError(VERIFIED_AUTHOR_ERR_MSG);
     }
 

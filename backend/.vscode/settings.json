@@ -6,5 +6,5 @@
     "source.addMissingImports": "explicit",
     "source.organizeImports": "explicit"
   },
-  "cSpell.words": ["graphiql", "typegen", "unfollow"]
+  "cSpell.words": ["editorjs", "edjs", "graphiql", "typegen", "unfollow"]
 }

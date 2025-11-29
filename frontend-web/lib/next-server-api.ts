@@ -1,5 +1,4 @@
-
-import { getSession } from "next-auth/react";
+import { getSession } from "./actions";
 import { getAuthUser } from "./utils";
 
 /**

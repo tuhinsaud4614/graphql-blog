@@ -2,8 +2,7 @@
 
 import * as React from "react";
 
-import { useSession } from "next-auth/react";
-
+import { useSession } from "@/components/providers/SessionProvider";
 import { IAuthUser } from "@/lib/types";
 
 interface Props {

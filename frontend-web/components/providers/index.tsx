@@ -1,23 +1,21 @@
 import * as React from "react";
 
-import { SessionProvider } from "next-auth/react";
-
-import { auth } from "@/lib/auth";
-import CheckAuth from "../CheckAuth";
 import { ApolloProvider } from "./ApolloProvider";
+import SessionProvider from "./SessionProvider";
 import ThemeProvider from "./ThemeProvider";
 
 interface Props {
   children: React.ReactNode;
 }
 
-export default async function Providers({ children }: Readonly<Props>) {
-  const session = await auth()
+export default function Providers({ children }: Readonly<Props>) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       <ThemeProvider>
         <ApolloProvider>
-          <CheckAuth>{children}</CheckAuth>
+          {/* <CheckAuth> */}
+          {children}
+          {/* </CheckAuth> */}
         </ApolloProvider>
       </ThemeProvider>
     </SessionProvider>

@@ -2,9 +2,11 @@
 
 import * as React from "react";
 
-import Image, { ImageProps } from "next/legacy/image";
+import { ImageProps } from "next/image";
 
 import { cn } from "@/lib/utils";
+
+import ProxiedImage from "./ProxiedImage";
 
 interface Props extends ImageProps {
   size: number;
@@ -26,8 +28,11 @@ export default function NavAvatar({
         btnProps?.className,
       )}
     >
-      <Image
+      <ProxiedImage
         {...rest}
+        loader={({ src, width, quality }) =>
+          `${src}?w=${width}&q=${quality || 75}`
+        }
         src={src}
         alt={alt}
         width={size}

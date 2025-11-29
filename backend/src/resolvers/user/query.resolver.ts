@@ -25,9 +25,9 @@ export const Query = {
   async token(
     _: unknown,
     { refreshToken }: { refreshToken?: string },
-    { prisma, req }: YogaContext,
+    { prisma, req, res }: YogaContext,
   ) {
-    return await tokenService(prisma, refreshToken || req.cookies?.jwt);
+    return await tokenService(prisma, res, refreshToken || req.cookies?.jwt);
   },
 
   async usersWithOffset(

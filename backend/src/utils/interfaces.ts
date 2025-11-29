@@ -1,4 +1,4 @@
-import type { AuthorStatus, Category, UserRole } from "@prisma/client";
+import type { Category, UserRole, UserStatus } from "@prisma/client";
 
 // Payload
 export interface PicturePayload {
@@ -10,17 +10,15 @@ export interface PicturePayload {
 export interface IUserFollow {
   id: string;
   name: string | null;
-  mobile: string;
   email: string;
   avatar: null | PicturePayload;
 }
 export interface IUserPayload {
   id: string;
   name: string | null;
-  mobile: string;
   email: string;
   role: UserRole;
-  authorStatus: AuthorStatus | null;
+  userStatus: UserStatus | null;
   avatar: PicturePayload | null;
   about: string | null;
 }

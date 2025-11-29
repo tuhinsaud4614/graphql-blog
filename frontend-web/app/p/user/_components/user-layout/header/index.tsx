@@ -5,8 +5,7 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useSession } from "next-auth/react";
-
+import { useSession } from "@/components/providers/SessionProvider";
 import { ROUTES } from "@/lib/constants";
 import { skeletonVariant } from "@/lib/variants/classVariants";
 

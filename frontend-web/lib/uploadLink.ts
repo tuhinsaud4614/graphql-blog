@@ -10,16 +10,28 @@ import {
   rewriteURIForGET,
   selectHttpOptionsAndBodyInternal,
   selectURI,
-  serializeFetchParameter,
 } from "@apollo/client";
-import apolloCreateUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import extractFiles from "extract-files/extractFiles.mjs";
 import { ExtractableFile } from "extract-files/isExtractableFile.mjs";
 import { Kind, OperationTypeNode } from "graphql";
 
-type UploadLinkOptions = NonNullable<
-  Parameters<typeof apolloCreateUploadLink>[0]
->;
+interface UploadLinkOptions {
+  uri?: string;
+  useGETForQueries?: boolean;
+  isExtractableFile?: (value: unknown) => value is ExtractableFile;
+  FormData?: typeof FormData;
+  formDataAppendFile?: (
+    formData: FormData,
+    fieldName: string,
+    file: ExtractableFile,
+  ) => void;
+  print?: typeof defaultPrinter;
+  fetch?: typeof fetch;
+  fetchOptions?: RequestInit;
+  credentials?: RequestCredentials;
+  headers?: Record<string, string>;
+  includeExtensions?: boolean;
+}
 
 interface ReactNativeFileOptions {
   uri: string;
@@ -102,7 +114,11 @@ export default function createUploadLink({
       contextConfig,
     );
 
-    const { clone, files } = extractFiles(body, customIsExtractableFile, "");
+    const { clone, files } = extractFiles(
+      body,
+      customIsExtractableFile as (value: unknown) => value is ExtractableFile,
+      "",
+    );
 
     let uri = selectURI(operation, fetchUri);
 
@@ -113,7 +129,7 @@ export default function createUploadLink({
 
       const form = new RuntimeFormData();
 
-      form.append("operations", serializeFetchParameter(clone, "Payload"));
+      form.append("operations", JSON.stringify(clone));
 
       /** @type {{ [key: string]: Array<string> }} */
       const map = {};
@@ -127,7 +143,11 @@ export default function createUploadLink({
 
       i = 0;
       files.forEach((_, file) => {
-        customFormDataAppendFile(form, String(++i), file);
+        customFormDataAppendFile(
+          form,
+          String(++i),
+          file as ExtractableFile,
+        );
       });
 
       options.body = form;
@@ -152,7 +172,7 @@ export default function createUploadLink({
             observer.error(parseError);
           });
         uri = newURI;
-      } else options.body = serializeFetchParameter(clone, "Payload");
+      } else options.body = JSON.stringify(clone);
     }
 
     const { controller } = createSignalIfSupported();

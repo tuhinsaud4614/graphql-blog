@@ -445,6 +445,37 @@ export function getPostById(
 }
 
 /**
+ * This function retrieves a post by its ID and returns all information associated with it
+ * from the database using PrismaClient.
+ * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
+ * with the database.
+ * @param {string} id - The `id` parameter is a string that represents the unique identifier of a post
+ * in the database. It is used to locate the post in the `post` table of the database.
+ * @param {Parameters<typeof prisma.post.findUnique>["0"]["include"]} [include] - The `include`
+ * parameter is an optional parameter that specifies the fields and relationships to include in the
+ * result. This parameter is passed directly to the `prisma.post.findUnique` method.
+ * @returns The function `getPostByIdWithAllInformation` is returning a Promise that resolves to a
+ * single post object from the PrismaClient instance, where the post has the specified `id`. The
+ * returned post object includes all information associated with the post, including its fields and
+ * relationships.
+ */
+export function getPostByIdWithAllInformation(
+  prisma: PrismaClient,
+  id: string,
+  include?: Parameters<typeof prisma.post.findUnique>["0"]["include"],
+) {
+  return prisma.post.findUnique({
+    where: { id, deleted: false },
+    include: {
+      author: true,
+      categories: true,
+      tags: true,
+      ...include,
+    },
+  });
+}
+
+/**
  * This function checks if a user has reacted to a specific post using PrismaClient.
  * @param {PrismaClient} prisma - Prisma is an instance of the PrismaClient, which is a type of
  * database client used to interact with a Prisma schema.

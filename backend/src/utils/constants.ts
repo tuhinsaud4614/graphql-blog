@@ -339,3 +339,10 @@ export const PERSISTED_QUERY_NOT_FOUND = "PERSISTED_QUERY_NOT_FOUND";
 export const GRAPHQL_PARSE_FAILED = "GRAPHQL_PARSE_FAILED"; // The GraphQL operation string contains a syntax error.
 
 export const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
+
+export const PUBSUB_EVENTS = {
+  FOLLOWING: "user:following",
+  VERIFY_USER: "user:verifyUser",
+  REACTIONS: "post:reactions",
+  POST_PUBLISH: "post:publish",
+} as const;

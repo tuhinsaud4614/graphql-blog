@@ -1,15 +1,17 @@
-import { GraphQLError } from "graphql";
-
-import { randomUUID } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
+import edjsHTML from "editorjs-html";
 import fs, { unlink } from "fs";
 import { imageSize } from "image-size";
-import { JwtPayload, sign, verify } from "jsonwebtoken";
+import { JwtPayload, Secret, sign, verify } from "jsonwebtoken";
 import _omit from "lodash/omit";
 import _random from "lodash/random";
-import ms from "ms";
+import ms, { StringValue } from "ms";
 import path from "path";
-import { promisify } from "util";
-import { ValidationError } from "yup";
+import * as yup from "yup";
+
+import { GraphQLError } from "graphql";
+
+import { addUserTokenOnCache } from "@/services/user.cache";
 
 import logger from "../logger";
 import { AuthenticationError, UserInputError } from "../model";
@@ -17,10 +19,8 @@ import config from "./config";
 import {
   INTERNAL_SERVER_ERROR,
   UN_AUTH_ERR_MSG,
-  generateRefreshTokenKeyName,
   generateValidationErrorMessage,
 } from "./constants";
-import redisClient from "./redis";
 import { isExtensionsWithAuthorization } from "./type-guard";
 import type { UserWithAvatar } from "./types";
 
@@ -38,7 +38,7 @@ export { default as createContext } from "./context";
  * validation error. The `message` property is a string that contains the error message. The function
  * is used to format validation errors thrown by the Yup library.
  */
-export const formatYupError = (err: ValidationError) => {
+export const formatYupError = (err: yup.ValidationError) => {
   const errors: { path?: string; message: string }[] = [];
   err.inner.forEach((e) => {
     errors.push({
@@ -69,7 +69,7 @@ export function formatError(
     code?: string;
   },
 ) {
-  if (error instanceof ValidationError) {
+  if (error instanceof yup.ValidationError) {
     return new UserInputError(generateValidationErrorMessage(options?.key), {
       fields: formatYupError(error),
     });
@@ -116,7 +116,7 @@ export function nanoid(size?: number) {
  * if the `decoded` parameter is an object that contains certain properties such as `id` and `email`,
  * and if
  * @returns an object of type `IUserPayload` which contains the decoded user information such as id,
- * name, mobile, email, role, authorStatus, avatar, and about. If the decoded parameter is not an
+ * name, mobile, email, role, userStatus, avatar, and about. If the decoded parameter is not an
  * object with the required properties, the function throws an `AuthenticationError` with an error
  * message.
  */
@@ -126,9 +126,8 @@ export function getUserPayload(decoded: string | JwtPayload) {
     "id" in decoded &&
     "name" in decoded &&
     "email" in decoded &&
-    "mobile" in decoded &&
     "role" in decoded &&
-    "authorStatus" in decoded &&
+    "userStatus" in decoded &&
     "avatar" in decoded &&
     "about" in decoded
   ) {
@@ -136,9 +135,8 @@ export function getUserPayload(decoded: string | JwtPayload) {
       id: decoded.id,
       name: decoded.name,
       email: decoded.email,
-      mobile: decoded.mobile,
       role: decoded.role,
-      authorStatus: decoded.authorStatus,
+      userStatus: decoded.userStatus,
       avatar: decoded.avatar,
       about: decoded.about,
     } as UserWithAvatar;
@@ -169,6 +167,7 @@ export const verifyAccessTokenInContext = (request: Request) => {
     const decoded = verify(token, config.ACCESS_TOKEN_SECRET_KEY);
     return getUserPayload(decoded);
   } catch (error) {
+    logger.error(error);
     return null;
   }
 };
@@ -198,6 +197,7 @@ export const verifyAccessTokenFromExtensions = (extensions: unknown) => {
     const decoded = verify(token, config.ACCESS_TOKEN_SECRET_KEY);
     return getUserPayload(decoded);
   } catch (error) {
+    logger.error(error);
     return null;
   }
 };
@@ -223,33 +223,37 @@ export const verifyAccessTokenFromExtensions = (extensions: unknown) => {
 export const generateToken = async (
   user: UserWithAvatar,
   key: string,
-  expires: string,
+  expires: StringValue,
   settable = false,
 ) => {
   const omittedUser = _omit(user, ["password"]);
-  const token = sign({ ...omittedUser }, key, {
+  const token = sign({ ...omittedUser }, key as Secret, {
     expiresIn: expires,
   });
 
-  const exp = isNaN(+expires) ? ms(expires) / 1000 : +expires;
+  const exp = ms(expires) / 1000;
 
   if (settable) {
-    await redisClient.setex(
-      generateRefreshTokenKeyName(user.id),
-      exp,
-      JSON.stringify(token),
-    );
+    await addUserTokenOnCache(user.id, token, exp);
   }
   return token;
 };
 
-export const AsyncImageSize = promisify(imageSize);
+/**
+ * Async wrapper for imageSize that reads file buffer
+ */
+export const AsyncImageSize = async (filePath: string) => {
+  const buffer = await fs.promises.readFile(filePath);
+  return imageSize(buffer);
+};
 
 /**
  * The function calculates the maximum file size in bytes based on the input in megabytes.
  * @param {number} mb - The parameter "mb" is a number representing the size of a file in megabytes.
  */
-export const maxFileSize = (mb: number) => mb * 1000000;
+export function maxFileSize(mb: number) {
+  return mb * 1000000;
+}
 
 /**
  * This function uploads a file to a specified destination with an optional new name.
@@ -326,4 +330,143 @@ export function removeFile(filePath?: string) {
       logger.error(linkErr?.message);
     }
   });
+}
+
+/**
+ * Extracts plain text from editor data by converting it to HTML and removing HTML tags.
+ *
+ * @param {unknown} editorData - The data from the editor that needs to be converted to plain text.
+ *
+ * @returns {string} The plain text extracted from the editor data.
+ */
+export function extractText(editorData: unknown): string {
+  const edjsParser = edjsHTML();
+  const fullHtml = edjsParser.parse(editorData);
+  return fullHtml.replace(/<[^>]+>/g, " ");
+}
+
+/**
+ * This function takes a full name string and attempts to extract the first and last names into
+ * an array of two strings. The extraction is done by looking for common patterns such as double
+ * quotes, single quotes, parentheses and commas. The function will return an array of two empty
+ * strings if the input string is empty, or if the extraction fails.
+ *
+ * @param {string} fullName - The full name string to be extracted.
+ *
+ * @returns {[string, string]} An array of two strings, where the first element is the first name
+ * and the second element is the last name. If the extraction fails, both elements will be empty
+ * strings.
+ */
+export function extractFNAndLNFromFullName(fullName: string): [string, string] {
+  const fnAndLn: [string, string] = ["", ""];
+
+  if (!fullName || !fullName.trim()) return fnAndLn;
+
+  const pattern = /"[^"]+"|'[^']+'|\u2018[^\u2019]+\u2019|\([^)]+\)|[^\s]+/g;
+  const tokens = fullName.match(pattern) || [];
+
+  let firstNameFound = false;
+  const firstName: string[] = [];
+  const lastName: string[] = [];
+
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+
+    if (tok) {
+      const firstChar = tok.charAt(0);
+      if (firstChar === '"' || firstChar === "'" || firstChar === "\u2018") {
+        firstName.push(tok);
+      } else if (firstChar === "(") {
+        lastName.push(tok);
+      } else if (!firstNameFound) {
+        firstName.push(tok);
+        firstNameFound = true;
+      } else {
+        lastName.push(tok);
+        break;
+      }
+    }
+  }
+
+  if (firstName.length > 0) {
+    fnAndLn[0] = firstName
+      .join(" ")
+      .trim()
+      .replace(/^[,.]+|[,.]+$/g, "");
+  }
+  if (lastName.length > 0) {
+    fnAndLn[1] = lastName
+      .join(" ")
+      .trim()
+      .replace(/^[,.]+|[,.]+$/g, "");
+  }
+
+  return fnAndLn;
+}
+
+export function getAllowedOriginsFromEnv() {
+  // Get the allowed origins from the environment variables
+  const origins = config.ALLOWED_ORIGINS;
+
+  // Split the origins by comma and validate each one
+  const allowedOrigins = origins.split(",").reduce((prev, curr) => {
+    // Parse the origin as a URL and check if it is valid
+    const success = yup.string().url().isValidSync(curr);
+    if (success) {
+      prev.push(curr);
+    }
+    return prev;
+  }, [] as string[]);
+
+  return allowedOrigins;
+}
+
+/**
+ * Generates a state value for OAuth2 authentication process.
+ *
+ * @param {string} redirectUrl - The URL to redirect the user after authentication.
+ * @returns {string} The generated state value.
+ */
+export function generateOauth2State(
+  redirectUrl: string,
+): `${string}:${string}` {
+  // Generate a random state value using 8 bytes of random data.
+  const state = randomBytes(8).toString("hex");
+
+  // Encode the redirect URL and concatenate it with the state value.
+  // The separator is a colon (:) to separate the state value and the encoded redirect URL.
+  return `${state}:${redirectUrl}`;
+}
+
+/**
+ * Generates a redirect URL for the authentication process.
+ *
+ * @param {string} redirectUrl - The URL to redirect the user after authentication.
+ * @param {Record<string, string>} [queries] - The query parameters to append to the redirect URL.
+ * @returns {string} The generated redirect URL
+ */
+export function generateAuthRedirectUrl(
+  redirectUrl: string,
+  queries?: Record<string, string>,
+) {
+  try {
+    // Create a new URL object from the redirect URL
+    const url = new URL(redirectUrl);
+
+    // Append the query parameters to the URL if provided
+    if (queries) {
+      Object.entries(queries).forEach(([key, value]) => {
+        if (key && value) {
+          url.searchParams.append(key, decodeURIComponent(value));
+        }
+      });
+    }
+
+    // Return the generated URL
+    return url.href;
+  } catch (error) {
+    // Log and return null if an error occurred
+    logger.error("Failed to generate auth redirect url. Error: ", error);
+    throw new Error("Failed to generate auth redirect url");
+  }
 }
