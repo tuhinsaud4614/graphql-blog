@@ -1,6 +1,8 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier";
+import storybook from "eslint-plugin-storybook";
 import tailwindcss from "eslint-plugin-tailwindcss";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
@@ -9,6 +11,7 @@ export default defineConfig([
   ...nextVitals,
   ...nextTs,
   ...tseslint.configs.recommendedTypeChecked,
+  ...storybook.configs["flat/recommended"],
   ...tailwindcss.configs["flat/recommended"],
   prettier,
   {

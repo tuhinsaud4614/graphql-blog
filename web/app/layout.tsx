@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Montserrat, Noto_Serif_Georgian, Open_Sans } from "next/font/google";
+import {
+  Montserrat,
+  Noto_Serif_Georgian,
+  Open_Sans,
+  Poetsen_One,
+} from "next/font/google";
 
 import "./globals.css";
 
@@ -16,6 +21,12 @@ const fontSans = Open_Sans({
 const fontSans1 = Montserrat({
   variable: "--font-sans1",
   subsets: ["latin"],
+});
+
+const fontSans2 = Poetsen_One({
+  variable: "--font-sans2",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 const fontSerif = Noto_Serif_Georgian({
@@ -50,6 +61,7 @@ export default function RootLayout({
       className={cn(
         fontSans.variable,
         fontSans1.variable,
+        fontSans2.variable,
         fontSerif.variable,
         "antialiased"
       )}
